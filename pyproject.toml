@@ -1,0 +1,14 @@
+[project]
+name = "answerrocket-client"
+version = "0.1.0"
+description = "Python client for interacting with AnswerRocket's skill API"
+readme = "readme.md"
+requires-python = ">=3.10.7"
+
+dependencies = [
+    "sgqlc"
+]
+
+[build-system]
+requires = ["setuptools"]
+build-backend = "setuptools.build_meta"
