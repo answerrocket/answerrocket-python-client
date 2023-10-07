@@ -8,8 +8,9 @@ from answer_rocket.auth import AuthHelper
 from answer_rocket.graphql.client import GraphQlClient
 from answer_rocket.graphql.schema import UUID as GQL_UUID
 
-# Not clear to what degree there will be distinct "local" vs "server" modes. If there end up being 0 examples of config that must be grabbed from a server even
-# while developing locally then it may make sense to have two different helpers rather than checking this variable in every single method.
+# Not clear to what degree there will be distinct "local" vs "server" modes. If there end up being 0 examples of config
+# that must be grabbed from a server even while developing locally then it may make sense to have two different helpers
+# rather than checking this variable in every single method.
 USE_SERVER_CONFIG = os.getenv('AR_USE_SERVER_CONFIG')
 
 
