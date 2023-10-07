@@ -2,17 +2,6 @@
 This is a client library for interacting with an AnswerRocket instance. Its purpose is to enable developing skills (custom AnswerRocket extensions) without needing AnswerRocket running locally.
 
 ## Installation
-You can pip install from your local source for now:
-
-`pip install ~/<path to this repo on your machine>`
-
-or
-
-`pip install -e ~/<path to this repo on your machine>`
-
-The latter is useful if you are actively making changes in this repository locally as you won't need to repeatedly reinstall to test changes.
-
-Once it is on pypi:
 
 `pip install answerrocket-client`
 
