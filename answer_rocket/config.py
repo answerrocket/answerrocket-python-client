@@ -26,19 +26,22 @@ class Config:
 
     def get_json_artifact(self, artifact_path: str):
         """
-		artifact path: this is the filepath to your artifact relative to the root of your project.
+        artifact path: this is the filepath to your artifact relative to the root of your project.
         Server-side overrides are keyed on this path and will be fetched first when running inside AnswerRocket
-		"""
+        """
         if USE_SERVER_CONFIG:
             server_artifact = self._get_json_artifact_from_server(artifact_path)
             if server_artifact:
                 return server_artifact
 
-        # it is possible this could be put inside an else block if the above call were changed to get either the override or the base artifact if one does not exist
-        with open(self._complete_artifact_path(artifact_path)) as artifact_file:
+        # it is possible this could be put inside an else block if the above call were changed to get either the
+        # override or the base artifact if one does not exist
+        with open(_complete_artifact_path(artifact_path)) as artifact_file:
             return json.load(artifact_file)
-           
+
     def _get_json_artifact_from_server(self, artifact_path: str) -> Optional[dict]:
+        if not self.copilot_id or not self.copilot_skill_id:
+            return None
         artifact_query_args = {
             'copilotId': self.copilot_id,
             'copilotSkillId': self.copilot_skill_id,
@@ -51,20 +54,21 @@ class Config:
         }
         operation = self._gql_client.query(variables=artifact_query_vars)
         copilot_query = operation.get_copilot_skill_artifact_by_path(
-                copilot_id=Variable('copilot_id'),
-                copilot_skill_id=Variable('copilot_skill_id'),
-                artifact_path=Variable('artifact_path'),
+            copilot_id=Variable('copilot_id'),
+            copilot_skill_id=Variable('copilot_skill_id'),
+            artifact_path=Variable('artifact_path'),
         )
         copilot_query.artifact()
         result = self._gql_client.submit(operation, artifact_query_args)
         if result.get_copilot_skill_artifact_by_path.artifact:
             return json.loads(result.get_copilot_skill_artifact_by_path.artifact)
 
-    def _complete_artifact_path(self, artifact_path: str) -> str:
-        """
-        adjust the path according to the runtime env if needed.
-        a noop when running locally, and possibly something we can remove entirely in the future
-        """
-        if os.getenv('AR_SKILL_RESOURCE_BASE_PATH'):
-            return os.path.join(os.getenv('AR_SKILL_RESOURCE_BASE_PATH'), artifact_path)
-        return artifact_path
+
+def _complete_artifact_path(artifact_path: str) -> str:
+    """
+    adjust the path according to the runtime env if needed.
+    a noop when running locally, and possibly something we can remove entirely in the future
+    """
+    if os.getenv('AR_SKILL_RESOURCE_BASE_PATH'):
+        return os.path.join(os.getenv('AR_SKILL_RESOURCE_BASE_PATH'), artifact_path)
+    return artifact_path

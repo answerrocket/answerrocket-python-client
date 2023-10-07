@@ -1,11 +1,8 @@
-import logging
 from typing import Optional
 
 from answer_rocket.auth import AuthHelper, init_auth_helper
 from answer_rocket.config import Config
 from answer_rocket.graphql.client import GraphQlClient
-
-logger = logging.getLogger(__name__)
 
 
 class AnswerRocketClient:
@@ -25,9 +22,5 @@ class AnswerRocketClient:
 		"""
 		ping_op = self._gql_client.query()
 		ping_op.ping()
-		try:
-			result = self._gql_client.submit(ping_op)
-			return result.ping == 'pong'
-		except Exception as e:
-			logger.error('Failed checking connection', exc_info=True)
-			return False
+		result = self._gql_client.submit(ping_op)
+		return result.ping == 'pong'
