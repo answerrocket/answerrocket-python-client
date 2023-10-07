@@ -3,6 +3,8 @@ schema.json
 requirements.txt
 .direnv
 
+.DS_store
+
 # below is from the github stock python gitignore
 
 # Byte-compiled / optimized / DLL files
