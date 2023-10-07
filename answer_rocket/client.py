@@ -10,7 +10,7 @@ logger = logging.getLogger(__name__)
 
 class AnswerRocketClient:
 
-	def __init__(self, url: Optional[str], token: Optional[str] = None):
+	def __init__(self, url: Optional[str] = None, token: Optional[str] = None):
 		"""
 		url: the url of your AnswerRocket instance. You may also set the AR_URL env var instead.
 		token: a valid sdk token. You may also set the AR_TOKEN env var instead to keep it out of your code.
