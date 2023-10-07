@@ -19,7 +19,7 @@ Once it is on pypi:
 ## Use
 
 ```
-from answer_rocket.client import AnswerRocketClient
+from answer_rocket import AnswerRocketClient
 arc = AnswerRocketClient(url='https://your-answerrocket-instance.com', token='<your_api_token>')
 # test that the config is valid
 arc.can_connect()
