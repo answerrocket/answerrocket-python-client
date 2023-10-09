@@ -1,5 +1,5 @@
 # AnswerRocket Skill API Client
-This is a client library for interacting with an AnswerRocket instance. Its purpose is to enable developing skills (custom AnswerRocket extensions) without needing AnswerRocket running locally.
+This is a client library for interacting with an AnswerRocket instance.  Its purpose is to enable the development of skills (custom AnswerRocket extensions) without the need for AnswerRocket to be running locally.
 
 ## Installation
 
@@ -13,7 +13,7 @@ arc = AnswerRocketClient(url='https://your-answerrocket-instance.com', token='<y
 # test that the config is valid
 arc.can_connect()
 
-# get a json resource file. when running in an AnswerRocket instance, this call with fetch a customized version of the resource if one has been created
+# Gets a json resource file.  When running in an AnswerRocket instance, this call will fetch a customized version of the resource if one has been created.
 some_json_resource = arc.config.get_json_artifact('path/to/my/file.json')
 ```
 
@@ -26,6 +26,6 @@ This repository contains a .envrc file for use with direnv. With that installed 
 Once you have direnv set up and activating inside the repo, just `make` to install dev dependencies and get started.
 
 ## Finding things in the codebase
-The main point of contact with users of this sdk is `AnswerRocketClient` in `answer_rocket/client.py`. That is, it is what users will import and initialize. Different categories of utilities can be grouped into modules however is most convenient, but they should be exposed via the client rather than through a separate import so that utilities for authentication etc. can be reused.
+The main point of contact with users of this sdk is `AnswerRocketClient` in `answer_rocket/client.py`. That is, it is what users will import and initialize. Different categories of utilities can be grouped into modules in whatever way is most convenient, but they should be exposed via the client rather than through a separate import so that utilities for authentication, etc., can be reused.
 
 The client hits an sdk-specific GraphQL API on its target AnswerRocket server. There is a `graphql/schema.py` with generated python types for what queries are available. When needed it can be regenerated with the `generate-gql-schema` makefile target. See the Makefile for details.
