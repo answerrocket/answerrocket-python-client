@@ -1,5 +1,4 @@
 import os
-import json
 from typing import Optional
 
 from sgqlc.types import Variable, Arg, non_null, String
@@ -25,22 +24,22 @@ class Config:
         self.copilot_id = os.getenv('AR_COPILOT_ID')
         self.copilot_skill_id = os.getenv('AR_COPILOT_SKILL_ID')
 
-    def get_json_artifact(self, artifact_path: str):
+    def get_artifact(self, artifact_path: str) -> str:
         """
         artifact path: this is the filepath to your artifact relative to the root of your project.
         Server-side overrides are keyed on this path and will be fetched first when running inside AnswerRocket
         """
         if USE_SERVER_CONFIG:
-            server_artifact = self._get_json_artifact_from_server(artifact_path)
+            server_artifact = self._get_artifact_from_server(artifact_path)
             if server_artifact:
                 return server_artifact
 
         # it is possible this could be put inside an else block if the above call were changed to get either the
         # override or the base artifact if one does not exist
         with open(_complete_artifact_path(artifact_path)) as artifact_file:
-            return json.load(artifact_file)
+            return artifact_file.read()
 
-    def _get_json_artifact_from_server(self, artifact_path: str) -> Optional[dict]:
+    def _get_artifact_from_server(self, artifact_path: str) -> Optional[dict]:
         if not self.copilot_id or not self.copilot_skill_id:
             return None
         artifact_query_args = {
@@ -61,8 +60,8 @@ class Config:
         )
         copilot_query.artifact()
         result = self._gql_client.submit(operation, artifact_query_args)
-        if result.get_copilot_skill_artifact_by_path.artifact:
-            return json.loads(result.get_copilot_skill_artifact_by_path.artifact)
+        if result.get_copilot_skill_artifact_by_path and result.get_copilot_skill_artifact_by_path.artifact:
+            return result.get_copilot_skill_artifact_by_path.artifact
 
 
 def _complete_artifact_path(artifact_path: str) -> str:

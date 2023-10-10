@@ -8,13 +8,14 @@ This is a client library for interacting with an AnswerRocket instance.  Its pur
 ## Use
 
 ```
+import json
 from answer_rocket import AnswerRocketClient
 arc = AnswerRocketClient(url='https://your-answerrocket-instance.com', token='<your_api_token>')
 # test that the config is valid
 arc.can_connect()
 
-# Gets a json resource file.  When running in an AnswerRocket instance, this call will fetch a customized version of the resource if one has been created.
-some_json_resource = arc.config.get_json_artifact('path/to/my/file.json')
+# Gets a resource file.  When running in an AnswerRocket instance, this call will fetch a customized version of the resource if one has been created.
+some_resource = json.loads(arc.config.get_artifact('path/to/my/file.json'))
 ```
 
 Note that both the token and instance URL can be provided via the AR_TOKEN and AR_URL env vars instead, respectively. This is recommended to avoid accidentally committing a dev api token in your skill code.
