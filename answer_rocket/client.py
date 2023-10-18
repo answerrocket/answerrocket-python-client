@@ -2,6 +2,7 @@ from typing import Optional
 
 from answer_rocket.auth import AuthHelper, init_auth_helper
 from answer_rocket.config import Config
+from answer_rocket.data import Data
 from answer_rocket.graphql.client import GraphQlClient
 from answer_rocket.chat import Chat
 
@@ -17,6 +18,7 @@ class AnswerRocketClient:
 		self._gql_client: GraphQlClient = GraphQlClient(self._auth_helper)
 		self.config = Config(self._auth_helper, self._gql_client)
 		self.chat = Chat(self._auth_helper, self._gql_client)
+		self.data = Data(self._auth_helper, self._gql_client)
 
 	def can_connect(self) -> bool:
 		"""

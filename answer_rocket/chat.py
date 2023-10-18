@@ -42,6 +42,7 @@ class Chat:
 
         for fragment in llm_config_fragments:
             llm_config_query.__fragment__(fragment)
+
         llm_config_query.api_type()
         llm_config_query.model_type()
         llm_config_query.model_name()
