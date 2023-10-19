@@ -1,15 +1,15 @@
-import os
+from typing import Optional
 from uuid import UUID
 
 import pandas as pd
-from typing import Optional
-
-from pandas import DataFrame
+from sgqlc.operation import Fragment
 from sgqlc.types import Variable, Arg, non_null, String, Int
 
 from answer_rocket.auth import AuthHelper
 from answer_rocket.graphql.client import GraphQlClient
-from answer_rocket.graphql.schema import UUID as GQL_UUID, ExecuteSqlQueryResponse, MaxMetricAttribute
+from answer_rocket.graphql.schema import UUID as GQL_UUID, MaxMetricAttribute, MaxDomainObject, \
+    MaxDimensionEntity, MaxFactEntity, MaxNormalAttribute, \
+    MaxPrimaryAttribute, MaxReferenceAttribute, MaxCalculatedMetric
 
 
 class ExecuteSqlQueryResult:
@@ -122,11 +122,11 @@ class Data:
 
             return execute_sql_query_result
 
-    def get_metric_attribute_by_name(self, dataset_id: UUID, rql_name: str) -> MaxMetricAttribute:
+    def get_domain_object_by_name(self, dataset_id: UUID, rql_name: str) -> MaxDomainObject:
         try:
             """
             dataset_id: the UUID of the dataset
-            rql_name: the fully qualified RQL name of the metric (e.g. transactions.sales)
+            rql_name: the fully qualified RQL name of the domain object (e.g. transactions.sales, transactions, net_sales)
             """
             query_args = {
                 'datasetId': dataset_id,
@@ -140,7 +140,7 @@ class Data:
 
             operation = self._gql_client.query(variables=query_vars)
 
-            gql_query = operation.get_metric_attribute_by_name(
+            gql_query = operation.get_domain_object_by_name(
                 dataset_id=Variable('dataset_id'),
                 rql_name=Variable('rql_name'),
             )
@@ -148,36 +148,72 @@ class Data:
             gql_query.type()
             gql_query.id()
             gql_query.name()
-            gql_query.display_names()
-            gql_query.display_format()
-            gql_query.pluralized_display_name()
-            gql_query.hide_from_user()
             gql_query.description()
+            gql_query.output_label()
+            gql_query.synonyms()
+            gql_query.output_label_plural()
+            gql_query.hide_from_user()
 
-            gql_query.db_metric_column()
-            gql_query.agg_method()
-            gql_query.row_level_filter()
-            gql_query.positive_direction_up()
-            gql_query.can_be_averaged()
-            gql_query.not_additive()
-            gql_query.growth_output_format()
-            gql_query.hide_percentage_change()
+            fact_entity_frag = Fragment(MaxFactEntity, 'MaxFactEntityFragment')
+            self._add_domain_entity_fields(fact_entity_frag)
+            gql_query.__fragment__(fact_entity_frag)
 
-            gql_query.plural()
-            gql_query.headline_name()
-            gql_query.is_favorite()
+            dimension_entity_frag = Fragment(MaxDimensionEntity, 'MaxDimensionEntityFragment')
+            self._add_domain_entity_fields(dimension_entity_frag)
+            gql_query.__fragment__(dimension_entity_frag)
 
-            gql_query.domain_entity()
-            gql_query.domain_entity().id()
-            gql_query.domain_entity().name()
-            gql_query.domain_entity().db_table()
+            normal_attribute_frag = Fragment(MaxNormalAttribute, 'MaxNormalAttributeFragment')
+            self._add_domain_attribute_fields(normal_attribute_frag)
+            self._add_dimension_attribute_fields(normal_attribute_frag)
+            normal_attribute_frag.db_column()
+            normal_attribute_frag.db_secondary_column()
+            gql_query.__fragment__(normal_attribute_frag)
+
+            primary_attribute_frag = Fragment(MaxPrimaryAttribute, 'MaxPrimaryAttributeFragment')
+            self._add_domain_attribute_fields(primary_attribute_frag)
+            self._add_dimension_attribute_fields(primary_attribute_frag)
+            primary_attribute_frag.db_primary_key_columns()
+            primary_attribute_frag.db_secondary_column()
+            gql_query.__fragment__(primary_attribute_frag)
+
+            reference_attribute_frag = Fragment(MaxReferenceAttribute, 'MaxReferenceAttributeFragment')
+            self._add_domain_attribute_fields(reference_attribute_frag)
+            self._add_dimension_attribute_fields(reference_attribute_frag)
+            reference_attribute_frag.db_foreign_key_columns()
+            reference_attribute_frag.referenced_dimension_entity_id()
+            gql_query.__fragment__(reference_attribute_frag)
+
+            metric_attribute_frag = Fragment(MaxMetricAttribute, 'MaxMetricAttributeFragment')
+            self._add_domain_attribute_fields(metric_attribute_frag)
+            metric_attribute_frag.db_metric_column()
+            metric_attribute_frag.agg_method()
+            metric_attribute_frag.is_row_level_filter()
+            metric_attribute_frag.is_positive_direction_up()
+            metric_attribute_frag.can_be_averaged()
+            metric_attribute_frag.is_not_additive()
+            metric_attribute_frag.growth_output_format()
+            metric_attribute_frag.hide_percentage_change()
+            gql_query.__fragment__(metric_attribute_frag)
+
+            calc_metric_attribute_frag = Fragment(MaxCalculatedMetric, 'MaxCalculatedMetricFragment')
+            self._add_domain_object_fields(calc_metric_attribute_frag)
+            calc_metric_attribute_frag.display_format()
+            calc_metric_attribute_frag.rql()
+            calc_metric_attribute_frag.agg_method()
+            calc_metric_attribute_frag.is_positive_direction_up()
+            calc_metric_attribute_frag.can_be_averaged()
+            calc_metric_attribute_frag.is_not_additive()
+            calc_metric_attribute_frag.growth_output_format()
+            calc_metric_attribute_frag.hide_percentage_change()
+            gql_query.__fragment__(calc_metric_attribute_frag)
 
             result = self._gql_client.submit(operation, query_args)
 
-            gql_response = result.get_metric_attribute_by_name
+            gql_response = result.get_domain_object_by_name
 
             return gql_response
         except Exception as e:
+            # TODO: make real
             execute_sql_query_result = ExecuteSqlQueryResult()
 
             execute_sql_query_result.success = False
@@ -185,3 +221,25 @@ class Data:
             execute_sql_query_result.code = 1000
 
             return execute_sql_query_result
+
+    def _add_domain_entity_fields(self, fragment: Fragment):
+        fragment.db_table()
+
+    def _add_domain_object_fields(self, domain_object):
+        domain_object.type()
+        domain_object.id()
+        domain_object.name()
+        domain_object.description()
+        domain_object.output_label()
+        domain_object.synonyms()
+        domain_object.output_label_plural()
+        domain_object.hide_from_user()
+    def _add_domain_attribute_fields(self, fragment: Fragment):
+        fragment.display_format()
+        fragment.headline_name()
+        fragment.is_favorite()
+        # fragment.domain_entity()
+
+    def _add_dimension_attribute_fields(self, fragment: Fragment):
+        fragment.default_filter_value()
+        fragment.is_required_in_query()
