@@ -65,24 +65,32 @@ class Chat:
             to fetch the appropriate config from the remote AnswerRocket instance, but you can override them by
             providing explicit arguments. It will __not__ fetch the API key. When running locally, you must provide this
             yourself in the OPENAI_API_KEY env var that the openai sdk expects you to set.
+            Note that kwarg "messages" can be a string for simple completion or a list of role/content message objects for a full conversation history
+
+        :return: success indicator (true/false), and a result which is an error string if success is false, or the assistant's reply object if success is true
         """
         llm_api_config = self._get_llm_config(model_type=model_type)
         mapped_api_args = _map_llm_api_config_parameters(llm_api_config=llm_api_config, model_type=model_type)
-
-        if stream_callback:
-            kwargs["stream"] = True
-        else:
-            kwargs["stream"] = False
 
         args = {
             **mapped_api_args,
             **kwargs
         }
 
+        if stream_callback:
+            args["stream"] = True
+        else:
+            args["stream"] = False
+
+        if isinstance(args.get("messages"), str):
+            args["messages"] = [{"role": "system", "content":args["messages"] }]
+
         import time
         dead_man = 3
         error_backoff_multiplier = 1.5
         retry_sleep_time = 1
+
+        last_error = None
 
         while dead_man > 0:
             dead_man -= 1
@@ -90,7 +98,7 @@ class Chat:
                 gpt_res = openai.ChatCompletion.create(**args)
 
                 if not args.get("stream"):
-                    return gpt_res
+                    return True, gpt_res
 
                 # rebuild the response data structure from streaming delta chunks
                 response = {}
@@ -119,16 +127,16 @@ class Chat:
                 if not response.get("content"):
                     response["content"] = ""
 
-                return {"choices": [{"message": response}]}
+                return True, {"choices": [{"message": response}]}
 
             # there was commented out code here that was checking for specific openai errors, but I assume it was
             # difficult to know which errors warranted abandoning early vs which just meant we should try again
             except Exception as e:
                 time.sleep(retry_sleep_time)
+                last_error = e
                 retry_sleep_time *= error_backoff_multiplier
 
-        return {"choices": [{"error": True, "message": {"role": "assistant",
-                                                        "content": "Retries exceeded"}}]}
+        return False, str(last_error)
 
 
 def _create_llm_config_fragments():
