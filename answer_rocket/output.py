@@ -26,7 +26,7 @@ class ContentBlock(TypedDict):
     Represents a block of content that is produced by a skill and displayed to the user. Blocks contain metadata as
     well as their final XML payload.
     """
-    id: UUID
+    id: str
     """
     Unique ID for the block
     """
@@ -69,8 +69,8 @@ IS_LIVE_RUN = os.getenv("AR_IS_RUNNING_ON_FLEET")
 class OutputBuilder:
 
     def __init__(self, auth_helper: AuthHelper, gql_client: GraphQlClient):
-        self.auth_helper = auth_helper
-        self.gql_client = gql_client
+        self._auth_helper = auth_helper
+        self._gql_client = gql_client
         self.answer_id = os.getenv('AR_ANSWER_ID')
         self.current_output = ChatReportOutput(
             payload=None,
@@ -85,23 +85,23 @@ class OutputBuilder:
         if self.answer_id and IS_LIVE_RUN:
             query_args = {
                 'answerId': self.answer_id,
-                'payload': json.dumps(self.current_output)
+                'payload': self.current_output
             }
             query_vars = {
                 'answer_id': Arg(sgqlc.types.non_null(GQL_UUID)),
                 'payload': Arg(sgqlc.types.non_null(JSON))
             }
 
-            operation = self.gql_client.mutation(variables=query_vars)
+            operation = self._gql_client.mutation(variables=query_vars)
 
             update_mutation = operation.update_chat_answer_payload(
                 answer_id=Variable('answer_id'),
                 payload=Variable('payload'),
             )
 
-            self.gql_client.submit(update_mutation, query_args)
+            self._gql_client.submit(operation, query_args)
 
-    def add_block(self, title: str = None, loading_status: ChatLoadingInfo = None, xml: str = None) -> UUID:
+    def add_block(self, title: str = None, loading_status: ChatLoadingInfo = None, xml: str = None) -> str:
         """
         Adds a new content block to the report output. The newly added blocks becomes the default block for
         future updates until a new block is added.
@@ -110,7 +110,7 @@ class OutputBuilder:
         :param loading_status: The loading state of the block
         :param xml: XML payload for the block to display, represented as a string.
         """
-        new_block = ContentBlock(id=uuid.uuid4(), title=title, loading_info=loading_status, payload=xml)
+        new_block = ContentBlock(id=str(uuid.uuid4()), title=title, loading_info=loading_status, payload=xml)
         self.current_output["content_blocks"].append(new_block)
         self._update_answer()
         return new_block['id']
@@ -157,7 +157,7 @@ class OutputBuilder:
 
         raise Exception(f"Unable to perform block update: block with id {block_id} not found!")
 
-    def end_block(self, block_id: UUID = None) -> ContentBlock:
+    def end_block(self, block_id: str = None) -> ContentBlock:
         """
         Marks the specified content block as complete, removing its loading info.
         If no block_id is provided, the last block to be added will be marked as complete.

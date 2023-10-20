@@ -75,7 +75,7 @@ class ExecuteSqlQueryResponse(sgqlc.types.Type):
 class Mutation(sgqlc.types.Type):
     __schema__ = schema
     __field_names__ = ('update_chat_answer_payload',)
-    update_chat_answer_payload = sgqlc.types.Field(JSON, graphql_name='UpdateChatAnswerPayload', args=sgqlc.types.ArgDict((
+    update_chat_answer_payload = sgqlc.types.Field(JSON, graphql_name='updateChatAnswerPayload', args=sgqlc.types.ArgDict((
         ('answer_id', sgqlc.types.Arg(sgqlc.types.non_null(UUID), graphql_name='answerId', default=None)),
         ('payload', sgqlc.types.Arg(sgqlc.types.non_null(JSON), graphql_name='payload', default=None)),
 ))
