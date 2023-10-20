@@ -12,12 +12,18 @@ from answer_rocket.graphql.schema import UUID as GQL_UUID, MaxMetricAttribute, M
     MaxPrimaryAttribute, MaxReferenceAttribute, MaxCalculatedMetric
 
 
-class ExecuteSqlQueryResult:
+class MaxResult:
     success = False
     code = None
     error = None
+
+
+class ExecuteSqlQueryResult(MaxResult):
     df = None
 
+
+class DomainObjectResult(MaxResult):
+    domain_object = None
 
 class Data:
     """
@@ -122,7 +128,7 @@ class Data:
 
             return execute_sql_query_result
 
-    def get_domain_object_by_name(self, dataset_id: UUID, rql_name: str) -> MaxDomainObject:
+    def get_domain_object_by_name(self, dataset_id: UUID, rql_name: str) -> DomainObjectResult:
         try:
             """
             dataset_id: the UUID of the dataset
@@ -145,43 +151,50 @@ class Data:
                 rql_name=Variable('rql_name'),
             )
 
-            gql_query.type()
-            gql_query.id()
-            gql_query.name()
-            gql_query.description()
-            gql_query.output_label()
-            gql_query.synonyms()
-            gql_query.output_label_plural()
-            gql_query.hide_from_user()
+            gql_query.success()
+            gql_query.code()
+            gql_query.error()
+            domain_object = gql_query.domain_object()
+
+            # domain_object_frag = Fragment(MaxDomainObject, 'MaxDomainObjectFragment')
+            # gql_query.domain_object.__fragment__(domain_object_frag)
+
+            domain_object.type()
+            domain_object.id()
+            domain_object.description()
+            domain_object.output_label()
+            domain_object.synonyms()
+            domain_object.output_label_plural()
+            domain_object.hide_from_user()
 
             fact_entity_frag = Fragment(MaxFactEntity, 'MaxFactEntityFragment')
             self._add_domain_entity_fields(fact_entity_frag)
-            gql_query.__fragment__(fact_entity_frag)
+            domain_object.__fragment__(fact_entity_frag)
 
             dimension_entity_frag = Fragment(MaxDimensionEntity, 'MaxDimensionEntityFragment')
             self._add_domain_entity_fields(dimension_entity_frag)
-            gql_query.__fragment__(dimension_entity_frag)
+            domain_object.__fragment__(dimension_entity_frag)
 
             normal_attribute_frag = Fragment(MaxNormalAttribute, 'MaxNormalAttributeFragment')
             self._add_domain_attribute_fields(normal_attribute_frag)
             self._add_dimension_attribute_fields(normal_attribute_frag)
             normal_attribute_frag.db_column()
             normal_attribute_frag.db_secondary_column()
-            gql_query.__fragment__(normal_attribute_frag)
+            domain_object.__fragment__(normal_attribute_frag)
 
             primary_attribute_frag = Fragment(MaxPrimaryAttribute, 'MaxPrimaryAttributeFragment')
             self._add_domain_attribute_fields(primary_attribute_frag)
             self._add_dimension_attribute_fields(primary_attribute_frag)
             primary_attribute_frag.db_primary_key_columns()
             primary_attribute_frag.db_secondary_column()
-            gql_query.__fragment__(primary_attribute_frag)
+            domain_object.__fragment__(primary_attribute_frag)
 
             reference_attribute_frag = Fragment(MaxReferenceAttribute, 'MaxReferenceAttributeFragment')
             self._add_domain_attribute_fields(reference_attribute_frag)
             self._add_dimension_attribute_fields(reference_attribute_frag)
             reference_attribute_frag.db_foreign_key_columns()
             reference_attribute_frag.referenced_dimension_entity_id()
-            gql_query.__fragment__(reference_attribute_frag)
+            domain_object.__fragment__(reference_attribute_frag)
 
             metric_attribute_frag = Fragment(MaxMetricAttribute, 'MaxMetricAttributeFragment')
             self._add_domain_attribute_fields(metric_attribute_frag)
@@ -193,10 +206,10 @@ class Data:
             metric_attribute_frag.is_not_additive()
             metric_attribute_frag.growth_output_format()
             metric_attribute_frag.hide_percentage_change()
-            gql_query.__fragment__(metric_attribute_frag)
+            domain_object.__fragment__(metric_attribute_frag)
 
             calc_metric_attribute_frag = Fragment(MaxCalculatedMetric, 'MaxCalculatedMetricFragment')
-            self._add_domain_object_fields(calc_metric_attribute_frag)
+            # self._add_domain_object_fields(calc_metric_attribute_frag)
             calc_metric_attribute_frag.display_format()
             calc_metric_attribute_frag.rql()
             calc_metric_attribute_frag.agg_method()
@@ -205,22 +218,28 @@ class Data:
             calc_metric_attribute_frag.is_not_additive()
             calc_metric_attribute_frag.growth_output_format()
             calc_metric_attribute_frag.hide_percentage_change()
-            gql_query.__fragment__(calc_metric_attribute_frag)
+            domain_object.__fragment__(calc_metric_attribute_frag)
 
             result = self._gql_client.submit(operation, query_args)
 
             gql_response = result.get_domain_object_by_name
 
-            return gql_response
+            domain_object_result = DomainObjectResult()
+
+            domain_object_result.success = gql_response.success
+            domain_object_result.error = gql_response.error
+            domain_object_result.code = gql_response.code
+            domain_object_result.domain_object = gql_response.domain_object
+
+            return domain_object_result
         except Exception as e:
-            # TODO: make real
-            execute_sql_query_result = ExecuteSqlQueryResult()
+            domain_object_result = DomainObjectResult()
 
-            execute_sql_query_result.success = False
-            execute_sql_query_result.error = e
-            execute_sql_query_result.code = 1000
+            domain_object_result.success = False
+            domain_object_result.error = e
+            domain_object_result.code = 1000
 
-            return execute_sql_query_result
+            return domain_object_result
 
     def _add_domain_entity_fields(self, fragment: Fragment):
         fragment.db_table()

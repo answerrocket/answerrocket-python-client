@@ -132,6 +132,15 @@ class CopilotSkillArtifact(sgqlc.types.Type):
     is_deleted = sgqlc.types.Field(sgqlc.types.non_null(Boolean), graphql_name='isDeleted')
 
 
+class DomainObjectResponse(sgqlc.types.Type):
+    __schema__ = schema
+    __field_names__ = ('success', 'code', 'error', 'domain_object')
+    success = sgqlc.types.Field(sgqlc.types.non_null(Boolean), graphql_name='success')
+    code = sgqlc.types.Field(String, graphql_name='code')
+    error = sgqlc.types.Field(String, graphql_name='error')
+    domain_object = sgqlc.types.Field(MaxDomainObject, graphql_name='domainObject')
+
+
 class ExecuteSqlQueryResponse(sgqlc.types.Type):
     __schema__ = schema
     __field_names__ = ('success', 'code', 'error', 'data')
@@ -161,7 +170,7 @@ class Query(sgqlc.types.Type):
         ('dataset_name', sgqlc.types.Arg(sgqlc.types.non_null(String), graphql_name='datasetName', default=None)),
 ))
     )
-    get_domain_object_by_name = sgqlc.types.Field(MaxDomainObject, graphql_name='getDomainObjectByName', args=sgqlc.types.ArgDict((
+    get_domain_object_by_name = sgqlc.types.Field(DomainObjectResponse, graphql_name='getDomainObjectByName', args=sgqlc.types.ArgDict((
         ('dataset_id', sgqlc.types.Arg(sgqlc.types.non_null(UUID), graphql_name='datasetId', default=None)),
         ('rql_name', sgqlc.types.Arg(sgqlc.types.non_null(String), graphql_name='rqlName', default=None)),
 ))
