@@ -15,6 +15,12 @@ class GraphQlClient:
         
     def submit(self, operation, variables=None):
         raw_response = self._endpoint(operation, variables)
+
+        if 'errors' in raw_response:
+            raise Exception(raw_response['errors'][0]['message'])
+        if 'errorMessage' in raw_response:
+            raise Exception(raw_response['errorMessage'])
+
         return operation + raw_response
     
     def query(self, variables: dict | None = None):
