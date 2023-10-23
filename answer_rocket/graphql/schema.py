@@ -150,6 +150,16 @@ class ExecuteSqlQueryResponse(sgqlc.types.Type):
     data = sgqlc.types.Field(JSON, graphql_name='data')
 
 
+class Mutation(sgqlc.types.Type):
+    __schema__ = schema
+    __field_names__ = ('update_chat_answer_payload',)
+    update_chat_answer_payload = sgqlc.types.Field(JSON, graphql_name='updateChatAnswerPayload', args=sgqlc.types.ArgDict((
+        ('answer_id', sgqlc.types.Arg(sgqlc.types.non_null(UUID), graphql_name='answerId', default=None)),
+        ('payload', sgqlc.types.Arg(sgqlc.types.non_null(JSON), graphql_name='payload', default=None)),
+))
+    )
+
+
 class Query(sgqlc.types.Type):
     __schema__ = schema
     __field_names__ = ('ping', 'get_copilot_skill_artifact_by_path', 'execute_sql_query', 'get_dataset_id', 'get_domain_object', 'get_domain_object_by_name', 'llmapi_config_for_sdk')
@@ -293,6 +303,6 @@ class OpenaiEmbeddingLLMApiConfig(sgqlc.types.Type, LLMApiConfig):
 # Schema Entry Points
 ########################################################################
 schema.query_type = Query
-schema.mutation_type = None
+schema.mutation_type = Mutation
 schema.subscription_type = None
 
