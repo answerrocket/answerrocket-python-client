@@ -3,7 +3,7 @@ from sgqlc.endpoint.http import HTTPEndpoint
 
 from answer_rocket.auth import AuthHelper
 
-from answer_rocket.graphql.schema import Query
+from answer_rocket.graphql.schema import Query, Mutation
 
 
 class GraphQlClient:
@@ -27,4 +27,9 @@ class GraphQlClient:
         if variables:
             return Operation(Query, variables=variables)
         return Operation(Query)
+
+    def mutation(self, variables: dict | None = None):
+        if variables:
+            return Operation(Mutation, variables=variables)
+        return Operation(Mutation)
     
