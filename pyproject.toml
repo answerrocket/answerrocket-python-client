@@ -8,7 +8,7 @@ requires-python = ">=3.10.7"
 dependencies = [
     "sgqlc",
     "openai",
-    "pandas==1.5.1"
+    "pandas>=1.5.1"
 ]
 
 [build-system]
