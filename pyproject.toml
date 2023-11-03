@@ -11,6 +11,9 @@ dependencies = [
     "pandas>=1.5.1"
 ]
 
+[project.optional-dependencies]
+test = ["pytest"]
+
 [build-system]
 requires = ["setuptools"]
 build-backend = "setuptools.build_meta"

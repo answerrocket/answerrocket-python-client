@@ -2,7 +2,7 @@ dev-install: generate-requirements
 	python -m piptools sync requirements.txt
 
 generate-requirements: setup-pip-tools
-	pip-compile -o requirements.txt pyproject.toml
+	pip-compile --extra=test -o requirements.txt pyproject.toml
 
 setup-pip-tools:
 	python -m pip install pip-tools
