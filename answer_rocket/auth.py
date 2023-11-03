@@ -33,14 +33,15 @@ class ExternalAuthHelper(AuthHelper):
 class InternalAuthHelper(AuthHelper):
 	url: str
 	tenant: str
-	user: str
+	user: str | None
 
 	def headers(self) -> dict:
 		headers = {
 			'Max-Tenant': self.tenant,
 			'Authorization': 'Max-Internal',
-			'Max-User': self.user,
 		}
+		if self.user:
+			headers['Max-User'] = self.user
 		return headers
 	
 
