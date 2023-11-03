@@ -4,3 +4,4 @@ __all__ = [
 ]
 
 from answer_rocket.client import AnswerRocketClient
+from answer_rocket.error import AnswerRocketClientError

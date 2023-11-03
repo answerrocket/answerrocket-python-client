@@ -1,0 +1,4 @@
+
+
+class AnswerRocketClientError(Exception):
+    pass
