@@ -33,12 +33,15 @@ class ExternalAuthHelper(AuthHelper):
 class InternalAuthHelper(AuthHelper):
 	url: str
 	tenant: str
+	user: str | None
 
 	def headers(self) -> dict:
 		headers = {
 			'Max-Tenant': self.tenant,
-			'Authorization': 'Max-Internal'
+			'Authorization': 'Max-Internal',
 		}
+		if self.user:
+			headers['Max-User'] = self.user
 		return headers
 	
 
@@ -50,4 +53,5 @@ def init_auth_helper(url: Optional[str], token: Optional[str]) -> AuthHelper:
 	if token:
 		return ExternalAuthHelper(url=url, token=token)
 	tenant = os.getenv('AR_TENANT_ID')
-	return InternalAuthHelper(url=url, tenant=tenant)
+	user = os.getenv('AR_USER_ID')
+	return InternalAuthHelper(url=url, tenant=tenant, user=user)
