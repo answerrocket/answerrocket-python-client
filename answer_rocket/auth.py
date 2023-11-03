@@ -3,6 +3,8 @@ import os
 from dataclasses import dataclass
 from typing import Optional
 
+from answer_rocket.error import AnswerRocketClientError
+
 
 class AuthHelper(abc.ABC):
 	"""
@@ -43,6 +45,8 @@ class InternalAuthHelper(AuthHelper):
 def init_auth_helper(url: Optional[str], token: Optional[str]) -> AuthHelper:
 	token = token or os.getenv('AR_TOKEN')
 	url = url or os.getenv('AR_URL')
+	if not url:
+		raise AnswerRocketClientError('No AnswerRocket url provided')
 	if token:
 		return ExternalAuthHelper(url=url, token=token)
 	tenant = os.getenv('AR_TENANT_ID')

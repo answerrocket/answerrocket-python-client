@@ -8,8 +8,12 @@ requires-python = ">=3.10.7"
 dependencies = [
     "sgqlc",
     "openai",
-    "pandas>=1.5.1"
+    "pandas>=1.5.1",
+    "typing-extensions",
 ]
+
+[project.optional-dependencies]
+test = ["pytest"]
 
 [build-system]
 requires = ["setuptools"]
