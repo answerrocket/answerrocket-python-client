@@ -141,6 +141,17 @@ class DomainObjectResponse(sgqlc.types.Type):
     domain_object = sgqlc.types.Field(MaxDomainObject, graphql_name='domainObject')
 
 
+class ExecuteRqlQueryResponse(sgqlc.types.Type):
+    __schema__ = schema
+    __field_names__ = ('success', 'code', 'error', 'process_rql_script_response', 'sql', 'data')
+    success = sgqlc.types.Field(sgqlc.types.non_null(Boolean), graphql_name='success')
+    code = sgqlc.types.Field(String, graphql_name='code')
+    error = sgqlc.types.Field(String, graphql_name='error')
+    process_rql_script_response = sgqlc.types.Field(JSON, graphql_name='processRqlScriptResponse')
+    sql = sgqlc.types.Field(String, graphql_name='sql')
+    data = sgqlc.types.Field(JSON, graphql_name='data')
+
+
 class ExecuteSqlQueryResponse(sgqlc.types.Type):
     __schema__ = schema
     __field_names__ = ('success', 'code', 'error', 'data')
@@ -162,7 +173,7 @@ class Mutation(sgqlc.types.Type):
 
 class Query(sgqlc.types.Type):
     __schema__ = schema
-    __field_names__ = ('ping', 'get_copilot_skill_artifact_by_path', 'execute_sql_query', 'get_dataset_id', 'get_domain_object', 'get_domain_object_by_name', 'llmapi_config_for_sdk')
+    __field_names__ = ('ping', 'get_copilot_skill_artifact_by_path', 'execute_sql_query', 'execute_rql_query', 'get_dataset_id', 'get_domain_object', 'get_domain_object_by_name', 'llmapi_config_for_sdk')
     ping = sgqlc.types.Field(String, graphql_name='ping')
     get_copilot_skill_artifact_by_path = sgqlc.types.Field(CopilotSkillArtifact, graphql_name='getCopilotSkillArtifactByPath', args=sgqlc.types.ArgDict((
         ('copilot_id', sgqlc.types.Arg(sgqlc.types.non_null(UUID), graphql_name='copilotId', default=None)),
@@ -173,6 +184,12 @@ class Query(sgqlc.types.Type):
     execute_sql_query = sgqlc.types.Field(ExecuteSqlQueryResponse, graphql_name='executeSqlQuery', args=sgqlc.types.ArgDict((
         ('database_id', sgqlc.types.Arg(sgqlc.types.non_null(UUID), graphql_name='databaseId', default=None)),
         ('sql_query', sgqlc.types.Arg(sgqlc.types.non_null(String), graphql_name='sqlQuery', default=None)),
+        ('row_limit', sgqlc.types.Arg(Int, graphql_name='rowLimit', default=None)),
+))
+    )
+    execute_rql_query = sgqlc.types.Field(ExecuteRqlQueryResponse, graphql_name='executeRqlQuery', args=sgqlc.types.ArgDict((
+        ('dataset_id', sgqlc.types.Arg(sgqlc.types.non_null(UUID), graphql_name='datasetId', default=None)),
+        ('rql_query', sgqlc.types.Arg(sgqlc.types.non_null(String), graphql_name='rqlQuery', default=None)),
         ('row_limit', sgqlc.types.Arg(Int, graphql_name='rowLimit', default=None)),
 ))
     )

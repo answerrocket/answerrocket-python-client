@@ -22,6 +22,11 @@ class ExecuteSqlQueryResult(MaxResult):
     df = None
 
 
+class ExecuteRqlQueryResult(MaxResult):
+    df = None
+    rql_script_response = None
+
+
 class DomainObjectResult(MaxResult):
     domain_object = None
 
@@ -37,6 +42,7 @@ class Data:
     def execute_sql_query(self, database_id: UUID, sql_query: str, row_limit: Optional[int]) -> ExecuteSqlQueryResult:
         try:
             """
+            database_id: the database_id of the connection to execute against.
             sql_query: the SQL query to execute.
             row_limit: the optional row limit of the query results.
             """
@@ -49,7 +55,7 @@ class Data:
             query_vars = {
                 'database_id': Arg(non_null(GQL_UUID)),
                 'sql_query': Arg(non_null(String)),
-                'row_limit': Arg(non_null(Int)),
+                'row_limit': Arg(Int),
             }
 
             operation = self._gql_client.query(variables=query_vars)
@@ -94,6 +100,66 @@ class Data:
             execute_sql_query_result.code = 1000
 
             return execute_sql_query_result
+
+    def execute_rql_query(self, dataset_id: UUID, rql_query: str) -> ExecuteRqlQueryResult:
+        try:
+            """
+            dataset_id: the dataset_id of the dataset to execute against.
+            rql_query: the RQL query to execute.
+            """
+            query_args = {
+                'datasetId': dataset_id,
+                'rqlQuery': rql_query
+            }
+
+            query_vars = {
+                'dataset_id': Arg(non_null(GQL_UUID)),
+                'rql_query': Arg(non_null(String))
+            }
+
+            operation = self._gql_client.query(variables=query_vars)
+
+            execute_rql_query = operation.execute_rql_query(
+                dataset_id=Variable('dataset_id'),
+                rql_query=Variable('rql_query')
+            )
+
+            execute_rql_query.success()
+            execute_rql_query.code()
+            execute_rql_query.error()
+            execute_rql_query.data()
+            execute_rql_query.process_rql_script_response()
+
+            result = self._gql_client.submit(operation, query_args)
+
+            execute_rql_query_response = result.execute_rql_query
+
+            execute_rql_query_result = ExecuteRqlQueryResult()
+
+            execute_rql_query_result.success = execute_rql_query_response.success
+            execute_rql_query_result.error = execute_rql_query_response.error
+            execute_rql_query_result.code = execute_rql_query_response.code
+
+            if execute_rql_query_response.success:
+                data = execute_rql_query_response.data
+
+                columns = [column["name"] for column in data["columns"]]
+                rows = [row["data"] for row in data["rows"]]
+
+                df = pd.DataFrame(rows, columns=columns)
+
+                execute_rql_query_result.df = df
+                execute_rql_query_result.rql_script_response = execute_rql_query_response.process_rql_script_response
+
+            return execute_rql_query_result
+        except Exception as e:
+            execute_rql_query_result = ExecuteRqlQueryResult()
+
+            execute_rql_query_result.success = False
+            execute_rql_query_result.error = e
+            execute_rql_query_result.code = 1000
+
+            return execute_rql_query_result
 
     def get_dataset_id(self, dataset_name: str) -> Optional[UUID]:
         try:
