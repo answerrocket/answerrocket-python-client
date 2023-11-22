@@ -149,7 +149,8 @@ class Data:
                 df = pd.DataFrame(rows, columns=columns)
 
                 execute_rql_query_result.df = df
-                execute_rql_query_result.rql_script_response = execute_rql_query_response.process_rql_script_response
+
+            execute_rql_query_result.rql_script_response = execute_rql_query_response.process_rql_script_response
 
             return execute_rql_query_result
         except Exception as e:
