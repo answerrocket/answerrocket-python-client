@@ -7,6 +7,7 @@ from answer_rocket.data import Data
 from answer_rocket.graphql.client import GraphQlClient
 from answer_rocket.chat import Chat
 from answer_rocket.output import OutputBuilder
+from answer_rocket.skill import Skill
 
 
 class AnswerRocketClient:
@@ -22,6 +23,7 @@ class AnswerRocketClient:
 		self.chat = Chat(self._auth_helper, self._gql_client)
 		self.data = Data(self._auth_helper, self._gql_client)
 		self.output = OutputBuilder(self._auth_helper, self._gql_client)
+		self.skill = Skill(self._auth_helper, self._gql_client)
 		self.is_running_on_live_environment = bool(os.getenv("AR_IS_RUNNING_ON_FLEET"))
 
 	def can_connect(self) -> bool:
