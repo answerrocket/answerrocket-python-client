@@ -1,8 +1,4 @@
-import os
-
-from mypy_extensions import Arg
-from sgqlc.types import non_null, Variable
-
+from sgqlc.types import Arg, non_null, Variable
 from answer_rocket.auth import AuthHelper
 from answer_rocket.graphql.client import GraphQlClient
 from answer_rocket.graphql.schema import JSON, String, UUID
