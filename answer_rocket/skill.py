@@ -23,10 +23,11 @@ class Skill:
         """
         Runs a skill and returns its full output (does not stream intermediate skill output).
 
-        copilot_id: the id of the copilot to run the skill on
-        skill_name: the name of the skill to execute
-        parameters: a dict of parameters to pass to the skill where keys are the param keys and values are the values
+        :param copilot_id: the id of the copilot to run the skill on
+        :param skill_name: the name of the skill to execute
+        :param parameters: a dict of parameters to pass to the skill where keys are the param keys and values are the values
          to populate them with
+        :return the full output object of the skill
         """
 
         preview_query_args = {
