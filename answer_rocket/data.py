@@ -10,12 +10,7 @@ from answer_rocket.graphql.client import GraphQlClient
 from answer_rocket.graphql.schema import UUID as GQL_UUID, MaxMetricAttribute, MaxDomainObject, \
     MaxDimensionEntity, MaxFactEntity, MaxNormalAttribute, \
     MaxPrimaryAttribute, MaxReferenceAttribute, MaxCalculatedMetric
-
-
-class MaxResult:
-    success = False
-    code = None
-    error = None
+from answer_rocket.types import MaxResult, RESULT_EXCEPTION_CODE
 
 
 class ExecuteSqlQueryResult(MaxResult):
@@ -97,7 +92,7 @@ class Data:
 
             execute_sql_query_result.success = False
             execute_sql_query_result.error = e
-            execute_sql_query_result.code = 1000
+            execute_sql_query_result.code = RESULT_EXCEPTION_CODE
 
             return execute_sql_query_result
 
@@ -149,7 +144,8 @@ class Data:
                 df = pd.DataFrame(rows, columns=columns)
 
                 execute_rql_query_result.df = df
-                execute_rql_query_result.rql_script_response = execute_rql_query_response.process_rql_script_response
+
+            execute_rql_query_result.rql_script_response = execute_rql_query_response.process_rql_script_response
 
             return execute_rql_query_result
         except Exception as e:
@@ -157,7 +153,7 @@ class Data:
 
             execute_rql_query_result.success = False
             execute_rql_query_result.error = e
-            execute_rql_query_result.code = 1000
+            execute_rql_query_result.code = RESULT_EXCEPTION_CODE
 
             return execute_rql_query_result
 
@@ -190,7 +186,7 @@ class Data:
 
             execute_sql_query_result.success = False
             execute_sql_query_result.error = e
-            execute_sql_query_result.code = 1000
+            execute_sql_query_result.code = RESULT_EXCEPTION_CODE
 
             return execute_sql_query_result
 
@@ -236,7 +232,7 @@ class Data:
 
             domain_object_result.success = False
             domain_object_result.error = e
-            domain_object_result.code = 1000
+            domain_object_result.code = RESULT_EXCEPTION_CODE
 
             return domain_object_result
 
@@ -282,7 +278,7 @@ class Data:
 
             domain_object_result.success = False
             domain_object_result.error = e
-            domain_object_result.code = 1000
+            domain_object_result.code = RESULT_EXCEPTION_CODE
 
             return domain_object_result
 
