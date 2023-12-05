@@ -132,6 +132,15 @@ class CopilotSkillArtifact(sgqlc.types.Type):
     is_deleted = sgqlc.types.Field(sgqlc.types.non_null(Boolean), graphql_name='isDeleted')
 
 
+class CopilotSkillRunResponse(sgqlc.types.Type):
+    __schema__ = schema
+    __field_names__ = ('success', 'code', 'errors', 'data')
+    success = sgqlc.types.Field(sgqlc.types.non_null(Boolean), graphql_name='success')
+    code = sgqlc.types.Field(String, graphql_name='code')
+    errors = sgqlc.types.Field(sgqlc.types.list_of(String), graphql_name='errors')
+    data = sgqlc.types.Field(JSON, graphql_name='data')
+
+
 class DomainObjectResponse(sgqlc.types.Type):
     __schema__ = schema
     __field_names__ = ('success', 'code', 'error', 'domain_object')
@@ -181,7 +190,7 @@ class Query(sgqlc.types.Type):
         ('artifact_path', sgqlc.types.Arg(sgqlc.types.non_null(String), graphql_name='artifactPath', default=None)),
 ))
     )
-    run_copilot_skill = sgqlc.types.Field(JSON, graphql_name='runCopilotSkill', args=sgqlc.types.ArgDict((
+    run_copilot_skill = sgqlc.types.Field(CopilotSkillRunResponse, graphql_name='runCopilotSkill', args=sgqlc.types.ArgDict((
         ('copilot_id', sgqlc.types.Arg(sgqlc.types.non_null(UUID), graphql_name='copilotId', default=None)),
         ('skill_name', sgqlc.types.Arg(sgqlc.types.non_null(String), graphql_name='skillName', default=None)),
         ('parameters', sgqlc.types.Arg(JSON, graphql_name='parameters', default=None)),

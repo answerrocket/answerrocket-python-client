@@ -4,6 +4,11 @@ from answer_rocket.graphql.client import GraphQlClient
 from answer_rocket.graphql.schema import JSON, String, UUID
 from answer_rocket.output import ChatReportOutput
 from answer_rocket.graphql.schema import UUID as GQL_UUID
+from answer_rocket.types import MaxResult, RESULT_EXCEPTION_CODE
+
+
+class RunSkillResult(MaxResult):
+    data: ChatReportOutput
 
 
 class Skill:
@@ -15,7 +20,7 @@ class Skill:
         self._auth_helper = auth_helper
         self._gql_client = gql_client
 
-    def run(self, copilot_id: str, skill_name: str, parameters: dict | None = None) -> ChatReportOutput:
+    def run(self, copilot_id: str, skill_name: str, parameters: dict | None = None) -> RunSkillResult:
         """
         Runs a skill and returns its full output (does not stream intermediate skill output).
 
@@ -25,6 +30,8 @@ class Skill:
          to populate them with
         :return the full output object of the skill
         """
+
+        final_result = RunSkillResult()
 
         preview_query_args = {
             "copilotId": UUID(copilot_id),
@@ -46,6 +53,27 @@ class Skill:
             parameters=Variable('parameters'),
         )
 
-        result = self._gql_client.submit(operation, preview_query_args)
+        try:
 
-        return result.run_copilot_skill
+            result = self._gql_client.submit(operation, preview_query_args)
+
+            preview_query.success()
+            preview_query.code()
+            preview_query.errors()
+            preview_query.data()
+
+            skill_run_result = result.run_copilot_skill
+
+            final_result.success = skill_run_result.success
+            final_result.error = skill_run_result.errors
+            final_result.code = skill_run_result.code
+
+            if skill_run_result.data:
+                final_result.data = skill_run_result.data
+
+        except Exception as e:
+            final_result.success = False
+            final_result.error = str(e)
+            final_result.code = RESULT_EXCEPTION_CODE
+
+        return final_result
