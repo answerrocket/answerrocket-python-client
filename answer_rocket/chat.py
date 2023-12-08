@@ -195,7 +195,7 @@ class Chat:
             'end_date': Arg(DateTime),
         }
         operation = self.gql_client.query(variables=get_threads_query_vars)
-        get_threads_query = operation.chat_threads(
+        get_threads_query = operation.user_chat_threads(
             copilot_id=Variable('copilot_id'),
             start_date=Variable('start_date'),
             end_date=Variable('end_date'),
@@ -203,7 +203,7 @@ class Chat:
 
         result = self.gql_client.submit(operation, get_threads_query_args)
 
-        return result.chat_threads
+        return result.user_chat_threads
 
     def get_entries(self, thread_id: str, offset: int = None, limit: int = None):
         """
@@ -224,7 +224,7 @@ class Chat:
             'limit': Arg(Int),
         }
         operation = self.gql_client.query(variables=get_entries_query_vars)
-        get_entries_query = operation.chat_entries(
+        get_entries_query = operation.user_chat_entries(
             thread_id=Variable('thread_id'),
             offset=Variable('offset'),
             limit=Variable('limit'),
@@ -232,7 +232,7 @@ class Chat:
 
         result = self.gql_client.submit(operation, get_entries_query_args)
 
-        return result.chat_entries
+        return result.user_chat_entries
 
 
 def _create_llm_config_fragments():
