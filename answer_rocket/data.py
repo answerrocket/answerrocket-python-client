@@ -139,7 +139,7 @@ class Data:
                 data = execute_rql_query_response.data
 
                 columns = [column["name"] for column in data["columns"]]
-                rows = [row["data"] for row in data["rows"]]
+                rows = [row["data"] for row in data["rows"]] if "rows" in data else []
 
                 df = pd.DataFrame(rows, columns=columns)
 
