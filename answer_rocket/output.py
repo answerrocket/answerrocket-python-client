@@ -42,6 +42,10 @@ class ContentBlock(TypedDict):
     """
     XML payload for the block to display, represented as a string.
     """
+    is_collapsible: bool | None
+    """
+    Whether or not the block can be collapsed by the user
+    """
 
 
 class ChatReportOutput(TypedDict, total=False):
@@ -101,7 +105,8 @@ class OutputBuilder:
 
             self._gql_client.submit(operation, query_args)
 
-    def add_block(self, title: str = None, loading_status: ChatLoadingInfo = None, xml: str = None) -> str:
+    def add_block(self, title: str = None, loading_status: ChatLoadingInfo = None, xml: str = None,
+                  is_collapsible: bool = True) -> str:
         """
         Adds a new content block to the report output. The newly added blocks becomes the default block for
         future updates until a new block is added.
@@ -109,14 +114,16 @@ class OutputBuilder:
         :param title: The user-friendly name of the block that will be displayed on the frontend
         :param loading_status: The loading state of the block
         :param xml: XML payload for the block to display, represented as a string.
+        :param is_collapsible: Whether the block can be collapsed by the user
         """
-        new_block = ContentBlock(id=str(uuid.uuid4()), title=title, loading_info=loading_status, payload=xml)
+        new_block = ContentBlock(id=str(uuid.uuid4()), title=title, loading_info=loading_status, payload=xml,
+                                 is_collapsible=is_collapsible)
         self.current_output["content_blocks"].append(new_block)
         self._update_answer()
         return new_block['id']
 
     def update_block(self, block_id: UUID = None, title: str = None, loading_info: ChatLoadingInfo = None,
-                     xml: str = None) -> ContentBlock:
+                     xml: str = None, is_collapsible: bool = None) -> ContentBlock:
         """
         Updates the specified content block with any or all of the provided parameters. If no block_id is provided,
         the last block to be added will be updated.
@@ -125,6 +132,7 @@ class OutputBuilder:
         :param title: The user-friendly name of the block that will be displayed on the frontend, leave blank for no-update
         :param loading_info: The loading state of the block, leave blank for no-update
         :param xml: XML payload for the block to display, represented as a string, leave blank for no-update
+        :param is_collapsible: Whether the block can be collapsed by the user, leave blank for no-update
         """
 
         def get_updated_block(b: ContentBlock):
@@ -134,6 +142,8 @@ class OutputBuilder:
                 b['loading_info'] = loading_info
             if xml:
                 b['payload'] = xml
+            if is_collapsible is not None:
+                b['is_collapsible'] = is_collapsible
             return b
 
         content_blocks = self.current_output["content_blocks"]
