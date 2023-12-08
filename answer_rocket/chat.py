@@ -170,7 +170,7 @@ class Chat:
 
         return result.ask_chat_question
 
-    def get_threads(self, copilot_id: str, start_date: datetime, end_date: datetime):
+    def get_threads(self, copilot_id: str, start_date: datetime = None, end_date: datetime = None):
         """
         Fetches all threads for a given copilot and date range.
         :param copilot_id: the ID of the copilot to fetch threads for
@@ -180,6 +180,8 @@ class Chat:
         """
 
         def format_date(input_date: datetime):
+            if not input_date:
+                return None
             return str(input_date.isoformat()).replace(" ", "T") + "Z"
 
         get_threads_query_args = {
@@ -189,8 +191,8 @@ class Chat:
         }
         get_threads_query_vars = {
             'copilot_id': Arg(non_null(UUID)),
-            'start_date': Arg(non_null(DateTime)),
-            'end_date': Arg(non_null(DateTime)),
+            'start_date': Arg(DateTime),
+            'end_date': Arg(DateTime),
         }
         operation = self.gql_client.query(variables=get_threads_query_vars)
         get_threads_query = operation.chat_threads(
