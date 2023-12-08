@@ -11,6 +11,10 @@ schema = sgqlc.types.Schema()
 ########################################################################
 Boolean = sgqlc.types.Boolean
 
+class ChatEntry(sgqlc.types.Scalar):
+    __schema__ = schema
+
+
 DateTime = sgqlc.types.datetime.DateTime
 
 class DpsAggMethod(sgqlc.types.Enum):
@@ -114,6 +118,18 @@ class MaxDomainEntity(sgqlc.types.Interface):
     attributes = sgqlc.types.Field(sgqlc.types.non_null(sgqlc.types.list_of(MaxDomainAttribute)), graphql_name='attributes')
 
 
+class ChatThread(sgqlc.types.Type):
+    __schema__ = schema
+    __field_names__ = ('id', 'entry_count', 'title', 'pinned_dataset')
+    id = sgqlc.types.Field(sgqlc.types.non_null(UUID), graphql_name='id')
+    entry_count = sgqlc.types.Field(Int, graphql_name='entryCount', args=sgqlc.types.ArgDict((
+        ('most_recent_entry_inclusive', sgqlc.types.Arg(UUID, graphql_name='mostRecentEntryInclusive', default=None)),
+))
+    )
+    title = sgqlc.types.Field(String, graphql_name='title')
+    pinned_dataset = sgqlc.types.Field(UUID, graphql_name='pinnedDataset')
+
+
 class CopilotSkillArtifact(sgqlc.types.Type):
     __schema__ = schema
     __field_names__ = ('copilot_skill_artifact_id', 'copilot_id', 'copilot_skill_id', 'artifact_path', 'artifact', 'description', 'created_user_id', 'created_utc', 'last_modified_user_id', 'last_modified_utc', 'version', 'is_active', 'is_deleted')
@@ -172,17 +188,23 @@ class ExecuteSqlQueryResponse(sgqlc.types.Type):
 
 class Mutation(sgqlc.types.Type):
     __schema__ = schema
-    __field_names__ = ('update_chat_answer_payload',)
+    __field_names__ = ('update_chat_answer_payload', 'ask_chat_question')
     update_chat_answer_payload = sgqlc.types.Field(JSON, graphql_name='updateChatAnswerPayload', args=sgqlc.types.ArgDict((
         ('answer_id', sgqlc.types.Arg(sgqlc.types.non_null(UUID), graphql_name='answerId', default=None)),
         ('payload', sgqlc.types.Arg(sgqlc.types.non_null(JSON), graphql_name='payload', default=None)),
+))
+    )
+    ask_chat_question = sgqlc.types.Field(ChatEntry, graphql_name='askChatQuestion', args=sgqlc.types.ArgDict((
+        ('copilot_id', sgqlc.types.Arg(sgqlc.types.non_null(UUID), graphql_name='copilotId', default=None)),
+        ('question', sgqlc.types.Arg(sgqlc.types.non_null(String), graphql_name='question', default=None)),
+        ('thread_id', sgqlc.types.Arg(UUID, graphql_name='threadId', default=None)),
 ))
     )
 
 
 class Query(sgqlc.types.Type):
     __schema__ = schema
-    __field_names__ = ('ping', 'get_copilot_skill_artifact_by_path', 'run_copilot_skill', 'execute_sql_query', 'execute_rql_query', 'get_dataset_id', 'get_domain_object', 'get_domain_object_by_name', 'llmapi_config_for_sdk')
+    __field_names__ = ('ping', 'get_copilot_skill_artifact_by_path', 'run_copilot_skill', 'execute_sql_query', 'execute_rql_query', 'get_dataset_id', 'get_domain_object', 'get_domain_object_by_name', 'llmapi_config_for_sdk', 'chat_threads', 'chat_entries')
     ping = sgqlc.types.Field(String, graphql_name='ping')
     get_copilot_skill_artifact_by_path = sgqlc.types.Field(CopilotSkillArtifact, graphql_name='getCopilotSkillArtifactByPath', args=sgqlc.types.ArgDict((
         ('copilot_id', sgqlc.types.Arg(sgqlc.types.non_null(UUID), graphql_name='copilotId', default=None)),
@@ -223,6 +245,18 @@ class Query(sgqlc.types.Type):
     )
     llmapi_config_for_sdk = sgqlc.types.Field(LLMApiConfig, graphql_name='LLMApiConfigForSdk', args=sgqlc.types.ArgDict((
         ('model_type', sgqlc.types.Arg(sgqlc.types.non_null(String), graphql_name='modelType', default=None)),
+))
+    )
+    chat_threads = sgqlc.types.Field(sgqlc.types.list_of(ChatThread), graphql_name='chatThreads', args=sgqlc.types.ArgDict((
+        ('copilot_id', sgqlc.types.Arg(sgqlc.types.non_null(UUID), graphql_name='copilotId', default=None)),
+        ('start_date', sgqlc.types.Arg(DateTime, graphql_name='startDate', default=None)),
+        ('end_date', sgqlc.types.Arg(DateTime, graphql_name='endDate', default=None)),
+))
+    )
+    chat_entries = sgqlc.types.Field(sgqlc.types.list_of(ChatEntry), graphql_name='chatEntries', args=sgqlc.types.ArgDict((
+        ('thread_id', sgqlc.types.Arg(sgqlc.types.non_null(UUID), graphql_name='threadId', default=None)),
+        ('offset', sgqlc.types.Arg(Int, graphql_name='offset', default=None)),
+        ('limit', sgqlc.types.Arg(Int, graphql_name='limit', default=None)),
 ))
     )
 

@@ -1,5 +1,6 @@
 import os
 import logging
+from datetime import date, datetime, timedelta, timezone
 from typing import Literal, Callable, Optional
 
 import openai
@@ -10,7 +11,7 @@ from answer_rocket.auth import AuthHelper
 from answer_rocket.graphql.client import GraphQlClient
 from answer_rocket.graphql.schema import (LLMApiConfig, AzureOpenaiCompletionLLMApiConfig,
                                           AzureOpenaiEmbeddingLLMApiConfig, OpenaiCompletionLLMApiConfig,
-                                          OpenaiEmbeddingLLMApiConfig)
+                                          OpenaiEmbeddingLLMApiConfig, UUID, Int, DateTime)
 
 logger = logging.getLogger(__name__)
 
@@ -137,6 +138,99 @@ class Chat:
                 retry_sleep_time *= error_backoff_multiplier
 
         return False, str(last_error)
+
+    def ask_question(self, copilot_id: str, question: str, thread_id: str = None):
+        """
+        Calls the Max chat pipeline to answer a natural language question and receive analysis and insights
+        in response.
+        :param copilot_id: the ID of the copilot to run the question against
+        :param question: The natural language question to ask the engine.
+        :param thread_id: (optional) ID of the thread/conversation to run the question on. The question and answer will
+         be added to the bottom of the thread.
+        :return: the ChatEntry response object associate with the answer from the pipeline
+        """
+        ask_question_query_args = {
+            'copilotId': UUID(copilot_id),
+            'question': question,
+            'threadId': UUID(thread_id) if thread_id else None,
+        }
+        ask_question_query_vars = {
+            'copilot_id': Arg(non_null(UUID)),
+            'question': Arg(non_null(String)),
+            'thread_id': Arg(UUID),
+        }
+        operation = self.gql_client.mutation(variables=ask_question_query_vars)
+        ask_question_query = operation.ask_chat_question(
+            copilot_id=Variable('copilot_id'),
+            question=Variable('question'),
+            thread_id=Variable('thread_id'),
+        )
+
+        result = self.gql_client.submit(operation, ask_question_query_args)
+
+        return result.ask_chat_question
+
+    def get_threads(self, copilot_id: str, start_date: datetime, end_date: datetime):
+        """
+        Fetches all threads for a given copilot and date range.
+        :param copilot_id: the ID of the copilot to fetch threads for
+        :param start_date: the start date of the range to fetch threads for
+        :param end_date: the end date of the range to fetch threads for
+        :return: a list of ChatThread IDs
+        """
+
+        def format_date(input_date: datetime):
+            return str(input_date.isoformat()).replace(" ", "T") + "Z"
+
+        get_threads_query_args = {
+            'copilotId': UUID(copilot_id),
+            'startDate': format_date(start_date),
+            'endDate': format_date(end_date),
+        }
+        get_threads_query_vars = {
+            'copilot_id': Arg(non_null(UUID)),
+            'start_date': Arg(non_null(DateTime)),
+            'end_date': Arg(non_null(DateTime)),
+        }
+        operation = self.gql_client.query(variables=get_threads_query_vars)
+        get_threads_query = operation.chat_threads(
+            copilot_id=Variable('copilot_id'),
+            start_date=Variable('start_date'),
+            end_date=Variable('end_date'),
+        )
+
+        result = self.gql_client.submit(operation, get_threads_query_args)
+
+        return result.chat_threads
+
+    def get_entries(self, thread_id: str, offset: int = None, limit: int = None):
+        """
+        Fetches all entries for a given thread.
+        :param thread_id: the ID of the thread to fetch entries for
+        :param offset: (optional) the offset to start fetching entries from
+        :param limit: (optional) the maximum number of entries to fetch
+        :return: a list of ChatEntry objects
+        """
+        get_entries_query_args = {
+            'threadId': UUID(thread_id),
+            'offset': offset,
+            'limit': limit,
+        }
+        get_entries_query_vars = {
+            'thread_id': Arg(non_null(UUID)),
+            'offset': Arg(Int),
+            'limit': Arg(Int),
+        }
+        operation = self.gql_client.query(variables=get_entries_query_vars)
+        get_entries_query = operation.chat_entries(
+            thread_id=Variable('thread_id'),
+            offset=Variable('offset'),
+            limit=Variable('limit'),
+        )
+
+        result = self.gql_client.submit(operation, get_entries_query_args)
+
+        return result.chat_entries
 
 
 def _create_llm_config_fragments():
