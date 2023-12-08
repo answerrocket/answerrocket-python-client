@@ -11,7 +11,7 @@ schema = sgqlc.types.Schema()
 ########################################################################
 Boolean = sgqlc.types.Boolean
 
-class ChatEntry(sgqlc.types.Scalar):
+class ChatEntryScalar(sgqlc.types.Scalar):
     __schema__ = schema
 
 
@@ -194,7 +194,7 @@ class Mutation(sgqlc.types.Type):
         ('payload', sgqlc.types.Arg(sgqlc.types.non_null(JSON), graphql_name='payload', default=None)),
 ))
     )
-    ask_chat_question = sgqlc.types.Field(ChatEntry, graphql_name='askChatQuestion', args=sgqlc.types.ArgDict((
+    ask_chat_question = sgqlc.types.Field(ChatEntryScalar, graphql_name='askChatQuestion', args=sgqlc.types.ArgDict((
         ('copilot_id', sgqlc.types.Arg(sgqlc.types.non_null(UUID), graphql_name='copilotId', default=None)),
         ('question', sgqlc.types.Arg(sgqlc.types.non_null(String), graphql_name='question', default=None)),
         ('thread_id', sgqlc.types.Arg(UUID, graphql_name='threadId', default=None)),
@@ -253,7 +253,7 @@ class Query(sgqlc.types.Type):
         ('end_date', sgqlc.types.Arg(DateTime, graphql_name='endDate', default=None)),
 ))
     )
-    chat_entries = sgqlc.types.Field(sgqlc.types.list_of(ChatEntry), graphql_name='chatEntries', args=sgqlc.types.ArgDict((
+    chat_entries = sgqlc.types.Field(sgqlc.types.list_of(ChatEntryScalar), graphql_name='chatEntries', args=sgqlc.types.ArgDict((
         ('thread_id', sgqlc.types.Arg(sgqlc.types.non_null(UUID), graphql_name='threadId', default=None)),
         ('offset', sgqlc.types.Arg(Int, graphql_name='offset', default=None)),
         ('limit', sgqlc.types.Arg(Int, graphql_name='limit', default=None)),
