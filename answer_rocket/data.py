@@ -34,7 +34,7 @@ class Data:
         self._auth_helper = auth_helper
         self._gql_client = gql_client
 
-    def execute_sql_query(self, database_id: UUID, sql_query: str, row_limit: Optional[int]) -> ExecuteSqlQueryResult:
+    def execute_sql_query(self, database_id: UUID, sql_query: str, row_limit: Optional[int] = None) -> ExecuteSqlQueryResult:
         try:
             """
             database_id: the database_id of the connection to execute against.
