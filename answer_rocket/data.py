@@ -96,7 +96,7 @@ class Data:
 
             return execute_sql_query_result
 
-    def execute_rql_query(self, dataset_id: UUID, rql_query: str) -> ExecuteRqlQueryResult:
+    def execute_rql_query(self, dataset_id: UUID, rql_query: str, row_limit: Optional[int] = None) -> ExecuteRqlQueryResult:
         try:
             """
             dataset_id: the dataset_id of the dataset to execute against.
@@ -104,19 +104,22 @@ class Data:
             """
             query_args = {
                 'datasetId': dataset_id,
-                'rqlQuery': rql_query
+                'rqlQuery': rql_query,
+                'rowLimit': row_limit
             }
 
             query_vars = {
                 'dataset_id': Arg(non_null(GQL_UUID)),
-                'rql_query': Arg(non_null(String))
+                'rql_query': Arg(non_null(String)),
+                'row_limit': Arg(Int)
             }
 
             operation = self._gql_client.query(variables=query_vars)
 
             execute_rql_query = operation.execute_rql_query(
                 dataset_id=Variable('dataset_id'),
-                rql_query=Variable('rql_query')
+                rql_query=Variable('rql_query'),
+                row_limit=Variable('row_limit')
             )
 
             execute_rql_query.success()
