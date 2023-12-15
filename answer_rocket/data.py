@@ -34,23 +34,26 @@ class Data:
         self._auth_helper = auth_helper
         self._gql_client = gql_client
 
-    def execute_sql_query(self, database_id: UUID, sql_query: str, row_limit: Optional[int] = None) -> ExecuteSqlQueryResult:
+    def execute_sql_query(self, database_id: UUID, sql_query: str, row_limit: Optional[int] = None, copilot_id: Optional[UUID] = None) -> ExecuteSqlQueryResult:
         try:
             """
             database_id: the database_id of the connection to execute against.
             sql_query: the SQL query to execute.
             row_limit: the optional row limit of the query results.
+            copilot_id: the optional copilot ID.
             """
             query_args = {
                 'databaseId': database_id,
                 'sqlQuery': sql_query,
                 'rowLimit': row_limit,
+                'copilotId': copilot_id,
             }
 
             query_vars = {
                 'database_id': Arg(non_null(GQL_UUID)),
                 'sql_query': Arg(non_null(String)),
                 'row_limit': Arg(Int),
+                'copilot_id': Arg(GQL_UUID),
             }
 
             operation = self._gql_client.query(variables=query_vars)
@@ -59,6 +62,7 @@ class Data:
                 database_id=Variable('database_id'),
                 sql_query=Variable('sql_query'),
                 row_limit=Variable('row_limit'),
+                copilot_id=Variable('copilot_id'),
             )
 
             execute_sql_query.success()
@@ -96,22 +100,27 @@ class Data:
 
             return execute_sql_query_result
 
-    def execute_rql_query(self, dataset_id: UUID, rql_query: str, row_limit: Optional[int] = None) -> ExecuteRqlQueryResult:
+    def execute_rql_query(self, dataset_id: UUID, rql_query: str, row_limit: Optional[int] = None, copilot_id: Optional[UUID] = None) -> ExecuteRqlQueryResult:
         try:
             """
             dataset_id: the dataset_id of the dataset to execute against.
             rql_query: the RQL query to execute.
+            row_limit: the optional row limit of the query results.
+            copilot_id: the optional copilot ID.
+            
             """
             query_args = {
                 'datasetId': dataset_id,
                 'rqlQuery': rql_query,
-                'rowLimit': row_limit
+                'rowLimit': row_limit,
+                'copilotId': copilot_id,
             }
 
             query_vars = {
                 'dataset_id': Arg(non_null(GQL_UUID)),
                 'rql_query': Arg(non_null(String)),
-                'row_limit': Arg(Int)
+                'row_limit': Arg(Int),
+                'copilot_id': Arg(GQL_UUID),
             }
 
             operation = self._gql_client.query(variables=query_vars)
@@ -119,7 +128,8 @@ class Data:
             execute_rql_query = operation.execute_rql_query(
                 dataset_id=Variable('dataset_id'),
                 rql_query=Variable('rql_query'),
-                row_limit=Variable('row_limit')
+                row_limit=Variable('row_limit'),
+                copilot_id=Variable('copilot_id'),
             )
 
             execute_rql_query.success()
