@@ -310,6 +310,7 @@ class Data:
         domain_object.synonyms()
         domain_object.output_label_plural()
         domain_object.hide_from_user()
+        domain_object.misc_info()
 
         fact_entity_frag = Fragment(MaxFactEntity, 'MaxFactEntityFragment')
         self._add_domain_entity_fields(fact_entity_frag)

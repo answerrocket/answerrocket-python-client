@@ -52,7 +52,7 @@ class LLMApiConfig(sgqlc.types.Interface):
 
 class MaxDomainObject(sgqlc.types.Interface):
     __schema__ = schema
-    __field_names__ = ('type', 'id', 'name', 'description', 'output_label', 'synonyms', 'output_label_plural', 'hide_from_user')
+    __field_names__ = ('type', 'id', 'name', 'description', 'output_label', 'synonyms', 'output_label_plural', 'hide_from_user', 'misc_info')
     type = sgqlc.types.Field(sgqlc.types.non_null(String), graphql_name='type')
     id = sgqlc.types.Field(sgqlc.types.non_null(String), graphql_name='id')
     name = sgqlc.types.Field(sgqlc.types.non_null(String), graphql_name='name')
@@ -61,11 +61,12 @@ class MaxDomainObject(sgqlc.types.Interface):
     synonyms = sgqlc.types.Field(sgqlc.types.non_null(sgqlc.types.list_of(sgqlc.types.non_null(String))), graphql_name='synonyms')
     output_label_plural = sgqlc.types.Field(String, graphql_name='outputLabelPlural')
     hide_from_user = sgqlc.types.Field(sgqlc.types.non_null(Boolean), graphql_name='hideFromUser')
+    misc_info = sgqlc.types.Field(String, graphql_name='miscInfo')
 
 
 class MaxDomainAttribute(sgqlc.types.Interface):
     __schema__ = schema
-    __field_names__ = ('type', 'id', 'name', 'description', 'output_label', 'synonyms', 'output_label_plural', 'hide_from_user', 'display_format', 'headline_name', 'is_favorite', 'domain_entity')
+    __field_names__ = ('type', 'id', 'name', 'description', 'output_label', 'synonyms', 'output_label_plural', 'hide_from_user', 'misc_info', 'display_format', 'headline_name', 'is_favorite', 'domain_entity')
     type = sgqlc.types.Field(sgqlc.types.non_null(String), graphql_name='type')
     id = sgqlc.types.Field(sgqlc.types.non_null(String), graphql_name='id')
     name = sgqlc.types.Field(sgqlc.types.non_null(String), graphql_name='name')
@@ -74,6 +75,7 @@ class MaxDomainAttribute(sgqlc.types.Interface):
     synonyms = sgqlc.types.Field(sgqlc.types.non_null(sgqlc.types.list_of(sgqlc.types.non_null(String))), graphql_name='synonyms')
     output_label_plural = sgqlc.types.Field(String, graphql_name='outputLabelPlural')
     hide_from_user = sgqlc.types.Field(sgqlc.types.non_null(Boolean), graphql_name='hideFromUser')
+    misc_info = sgqlc.types.Field(String, graphql_name='miscInfo')
     display_format = sgqlc.types.Field(String, graphql_name='displayFormat')
     headline_name = sgqlc.types.Field(String, graphql_name='headlineName')
     is_favorite = sgqlc.types.Field(Boolean, graphql_name='isFavorite')
@@ -82,7 +84,7 @@ class MaxDomainAttribute(sgqlc.types.Interface):
 
 class MaxDimensionAttribute(sgqlc.types.Interface):
     __schema__ = schema
-    __field_names__ = ('type', 'id', 'name', 'description', 'output_label', 'synonyms', 'output_label_plural', 'hide_from_user', 'display_format', 'headline_name', 'is_favorite', 'domain_entity', 'default_filter_value', 'is_required_in_query')
+    __field_names__ = ('type', 'id', 'name', 'description', 'output_label', 'synonyms', 'output_label_plural', 'hide_from_user', 'misc_info', 'display_format', 'headline_name', 'is_favorite', 'domain_entity', 'default_filter_value', 'is_required_in_query')
     type = sgqlc.types.Field(sgqlc.types.non_null(String), graphql_name='type')
     id = sgqlc.types.Field(sgqlc.types.non_null(String), graphql_name='id')
     name = sgqlc.types.Field(sgqlc.types.non_null(String), graphql_name='name')
@@ -91,6 +93,7 @@ class MaxDimensionAttribute(sgqlc.types.Interface):
     synonyms = sgqlc.types.Field(sgqlc.types.non_null(sgqlc.types.list_of(sgqlc.types.non_null(String))), graphql_name='synonyms')
     output_label_plural = sgqlc.types.Field(String, graphql_name='outputLabelPlural')
     hide_from_user = sgqlc.types.Field(sgqlc.types.non_null(Boolean), graphql_name='hideFromUser')
+    misc_info = sgqlc.types.Field(String, graphql_name='miscInfo')
     display_format = sgqlc.types.Field(String, graphql_name='displayFormat')
     headline_name = sgqlc.types.Field(String, graphql_name='headlineName')
     is_favorite = sgqlc.types.Field(Boolean, graphql_name='isFavorite')
@@ -101,7 +104,7 @@ class MaxDimensionAttribute(sgqlc.types.Interface):
 
 class MaxDomainEntity(sgqlc.types.Interface):
     __schema__ = schema
-    __field_names__ = ('type', 'id', 'name', 'description', 'output_label', 'synonyms', 'output_label_plural', 'hide_from_user', 'db_table', 'attributes')
+    __field_names__ = ('type', 'id', 'name', 'description', 'output_label', 'synonyms', 'output_label_plural', 'hide_from_user', 'misc_info', 'db_table', 'attributes')
     type = sgqlc.types.Field(sgqlc.types.non_null(String), graphql_name='type')
     id = sgqlc.types.Field(sgqlc.types.non_null(String), graphql_name='id')
     name = sgqlc.types.Field(sgqlc.types.non_null(String), graphql_name='name')
@@ -110,6 +113,7 @@ class MaxDomainEntity(sgqlc.types.Interface):
     synonyms = sgqlc.types.Field(sgqlc.types.non_null(sgqlc.types.list_of(sgqlc.types.non_null(String))), graphql_name='synonyms')
     output_label_plural = sgqlc.types.Field(String, graphql_name='outputLabelPlural')
     hide_from_user = sgqlc.types.Field(sgqlc.types.non_null(Boolean), graphql_name='hideFromUser')
+    misc_info = sgqlc.types.Field(String, graphql_name='miscInfo')
     db_table = sgqlc.types.Field(sgqlc.types.non_null(String), graphql_name='dbTable')
     attributes = sgqlc.types.Field(sgqlc.types.non_null(sgqlc.types.list_of(MaxDomainAttribute)), graphql_name='attributes')
 
