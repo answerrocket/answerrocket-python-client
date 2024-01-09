@@ -182,6 +182,14 @@ class ExecuteSqlQueryResponse(sgqlc.types.Type):
     data = sgqlc.types.Field(JSON, graphql_name='data')
 
 
+class MaxCopilotSkillChatQuestion(sgqlc.types.Type):
+    __schema__ = schema
+    __field_names__ = ('copilot_skill_chat_question_id', 'question', 'expected_completion_response')
+    copilot_skill_chat_question_id = sgqlc.types.Field(sgqlc.types.non_null(UUID), graphql_name='copilotSkillChatQuestionId')
+    question = sgqlc.types.Field(sgqlc.types.non_null(String), graphql_name='question')
+    expected_completion_response = sgqlc.types.Field(sgqlc.types.non_null(String), graphql_name='expectedCompletionResponse')
+
+
 class Mutation(sgqlc.types.Type):
     __schema__ = schema
     __field_names__ = ('update_chat_answer_payload', 'ask_chat_question')
@@ -200,12 +208,17 @@ class Mutation(sgqlc.types.Type):
 
 class Query(sgqlc.types.Type):
     __schema__ = schema
-    __field_names__ = ('ping', 'get_copilot_skill_artifact_by_path', 'run_copilot_skill', 'execute_sql_query', 'execute_rql_query', 'get_dataset_id', 'get_domain_object', 'get_domain_object_by_name', 'llmapi_config_for_sdk', 'user_chat_threads', 'user_chat_entries')
+    __field_names__ = ('ping', 'get_copilot_skill_artifact_by_path', 'get_copilot_skill_chat_questions', 'run_copilot_skill', 'execute_sql_query', 'execute_rql_query', 'get_dataset_id', 'get_domain_object', 'get_domain_object_by_name', 'llmapi_config_for_sdk', 'user_chat_threads', 'user_chat_entries')
     ping = sgqlc.types.Field(String, graphql_name='ping')
     get_copilot_skill_artifact_by_path = sgqlc.types.Field(CopilotSkillArtifact, graphql_name='getCopilotSkillArtifactByPath', args=sgqlc.types.ArgDict((
         ('copilot_id', sgqlc.types.Arg(sgqlc.types.non_null(UUID), graphql_name='copilotId', default=None)),
         ('copilot_skill_id', sgqlc.types.Arg(sgqlc.types.non_null(UUID), graphql_name='copilotSkillId', default=None)),
         ('artifact_path', sgqlc.types.Arg(sgqlc.types.non_null(String), graphql_name='artifactPath', default=None)),
+))
+    )
+    get_copilot_skill_chat_questions = sgqlc.types.Field(sgqlc.types.non_null(sgqlc.types.list_of(sgqlc.types.non_null(MaxCopilotSkillChatQuestion))), graphql_name='getCopilotSkillChatQuestions', args=sgqlc.types.ArgDict((
+        ('copilot_id', sgqlc.types.Arg(sgqlc.types.non_null(UUID), graphql_name='copilotId', default=None)),
+        ('copilot_skill_id', sgqlc.types.Arg(sgqlc.types.non_null(UUID), graphql_name='copilotSkillId', default=None)),
 ))
     )
     run_copilot_skill = sgqlc.types.Field(CopilotSkillRunResponse, graphql_name='runCopilotSkill', args=sgqlc.types.ArgDict((
