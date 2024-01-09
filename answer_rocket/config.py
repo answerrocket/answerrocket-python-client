@@ -92,14 +92,7 @@ class Config:
 
             return max_copilot_skill_chat_question
         except Exception as e:
-            domain_object_result = DomainObjectResult()
-
-            domain_object_result.success = False
-            domain_object_result.error = e
-            domain_object_result.code = RESULT_EXCEPTION_CODE
-
-            return domain_object_result
-
+            return max_copilot_skill_chat_question
 
 
 def _complete_artifact_path(artifact_path: str) -> str:
