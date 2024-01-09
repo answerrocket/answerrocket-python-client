@@ -52,7 +52,7 @@ class LLMApiConfig(sgqlc.types.Interface):
 
 class MaxDomainObject(sgqlc.types.Interface):
     __schema__ = schema
-    __field_names__ = ('type', 'id', 'name', 'description', 'output_label', 'synonyms', 'output_label_plural', 'hide_from_user')
+    __field_names__ = ('type', 'id', 'name', 'description', 'output_label', 'synonyms', 'output_label_plural', 'hide_from_user', 'misc_info')
     type = sgqlc.types.Field(sgqlc.types.non_null(String), graphql_name='type')
     id = sgqlc.types.Field(sgqlc.types.non_null(String), graphql_name='id')
     name = sgqlc.types.Field(sgqlc.types.non_null(String), graphql_name='name')
@@ -61,11 +61,12 @@ class MaxDomainObject(sgqlc.types.Interface):
     synonyms = sgqlc.types.Field(sgqlc.types.non_null(sgqlc.types.list_of(sgqlc.types.non_null(String))), graphql_name='synonyms')
     output_label_plural = sgqlc.types.Field(String, graphql_name='outputLabelPlural')
     hide_from_user = sgqlc.types.Field(sgqlc.types.non_null(Boolean), graphql_name='hideFromUser')
+    misc_info = sgqlc.types.Field(String, graphql_name='miscInfo')
 
 
 class MaxDomainAttribute(sgqlc.types.Interface):
     __schema__ = schema
-    __field_names__ = ('type', 'id', 'name', 'description', 'output_label', 'synonyms', 'output_label_plural', 'hide_from_user', 'display_format', 'headline_name', 'is_favorite', 'domain_entity')
+    __field_names__ = ('type', 'id', 'name', 'description', 'output_label', 'synonyms', 'output_label_plural', 'hide_from_user', 'misc_info', 'display_format', 'headline_name', 'is_favorite', 'domain_entity')
     type = sgqlc.types.Field(sgqlc.types.non_null(String), graphql_name='type')
     id = sgqlc.types.Field(sgqlc.types.non_null(String), graphql_name='id')
     name = sgqlc.types.Field(sgqlc.types.non_null(String), graphql_name='name')
@@ -74,6 +75,7 @@ class MaxDomainAttribute(sgqlc.types.Interface):
     synonyms = sgqlc.types.Field(sgqlc.types.non_null(sgqlc.types.list_of(sgqlc.types.non_null(String))), graphql_name='synonyms')
     output_label_plural = sgqlc.types.Field(String, graphql_name='outputLabelPlural')
     hide_from_user = sgqlc.types.Field(sgqlc.types.non_null(Boolean), graphql_name='hideFromUser')
+    misc_info = sgqlc.types.Field(String, graphql_name='miscInfo')
     display_format = sgqlc.types.Field(String, graphql_name='displayFormat')
     headline_name = sgqlc.types.Field(String, graphql_name='headlineName')
     is_favorite = sgqlc.types.Field(Boolean, graphql_name='isFavorite')
@@ -82,7 +84,7 @@ class MaxDomainAttribute(sgqlc.types.Interface):
 
 class MaxDimensionAttribute(sgqlc.types.Interface):
     __schema__ = schema
-    __field_names__ = ('type', 'id', 'name', 'description', 'output_label', 'synonyms', 'output_label_plural', 'hide_from_user', 'display_format', 'headline_name', 'is_favorite', 'domain_entity', 'default_filter_value', 'is_required_in_query')
+    __field_names__ = ('type', 'id', 'name', 'description', 'output_label', 'synonyms', 'output_label_plural', 'hide_from_user', 'misc_info', 'display_format', 'headline_name', 'is_favorite', 'domain_entity', 'default_filter_value', 'is_required_in_query')
     type = sgqlc.types.Field(sgqlc.types.non_null(String), graphql_name='type')
     id = sgqlc.types.Field(sgqlc.types.non_null(String), graphql_name='id')
     name = sgqlc.types.Field(sgqlc.types.non_null(String), graphql_name='name')
@@ -91,6 +93,7 @@ class MaxDimensionAttribute(sgqlc.types.Interface):
     synonyms = sgqlc.types.Field(sgqlc.types.non_null(sgqlc.types.list_of(sgqlc.types.non_null(String))), graphql_name='synonyms')
     output_label_plural = sgqlc.types.Field(String, graphql_name='outputLabelPlural')
     hide_from_user = sgqlc.types.Field(sgqlc.types.non_null(Boolean), graphql_name='hideFromUser')
+    misc_info = sgqlc.types.Field(String, graphql_name='miscInfo')
     display_format = sgqlc.types.Field(String, graphql_name='displayFormat')
     headline_name = sgqlc.types.Field(String, graphql_name='headlineName')
     is_favorite = sgqlc.types.Field(Boolean, graphql_name='isFavorite')
@@ -101,7 +104,7 @@ class MaxDimensionAttribute(sgqlc.types.Interface):
 
 class MaxDomainEntity(sgqlc.types.Interface):
     __schema__ = schema
-    __field_names__ = ('type', 'id', 'name', 'description', 'output_label', 'synonyms', 'output_label_plural', 'hide_from_user', 'db_table', 'attributes')
+    __field_names__ = ('type', 'id', 'name', 'description', 'output_label', 'synonyms', 'output_label_plural', 'hide_from_user', 'misc_info', 'db_table', 'attributes')
     type = sgqlc.types.Field(sgqlc.types.non_null(String), graphql_name='type')
     id = sgqlc.types.Field(sgqlc.types.non_null(String), graphql_name='id')
     name = sgqlc.types.Field(sgqlc.types.non_null(String), graphql_name='name')
@@ -110,6 +113,7 @@ class MaxDomainEntity(sgqlc.types.Interface):
     synonyms = sgqlc.types.Field(sgqlc.types.non_null(sgqlc.types.list_of(sgqlc.types.non_null(String))), graphql_name='synonyms')
     output_label_plural = sgqlc.types.Field(String, graphql_name='outputLabelPlural')
     hide_from_user = sgqlc.types.Field(sgqlc.types.non_null(Boolean), graphql_name='hideFromUser')
+    misc_info = sgqlc.types.Field(String, graphql_name='miscInfo')
     db_table = sgqlc.types.Field(sgqlc.types.non_null(String), graphql_name='dbTable')
     attributes = sgqlc.types.Field(sgqlc.types.non_null(sgqlc.types.list_of(MaxDomainAttribute)), graphql_name='attributes')
 
@@ -182,6 +186,28 @@ class ExecuteSqlQueryResponse(sgqlc.types.Type):
     data = sgqlc.types.Field(JSON, graphql_name='data')
 
 
+class MaxCopilotSkill(sgqlc.types.Type):
+    __schema__ = schema
+    __field_names__ = ('copilot_skill_id', 'name', 'detailed_name', 'description', 'detailed_description', 'dataset_id', 'skill_chat_questions', 'misc_info', 'scheduling_only')
+    copilot_skill_id = sgqlc.types.Field(sgqlc.types.non_null(UUID), graphql_name='copilotSkillId')
+    name = sgqlc.types.Field(sgqlc.types.non_null(String), graphql_name='name')
+    detailed_name = sgqlc.types.Field(sgqlc.types.non_null(String), graphql_name='detailedName')
+    description = sgqlc.types.Field(sgqlc.types.non_null(String), graphql_name='description')
+    detailed_description = sgqlc.types.Field(String, graphql_name='detailedDescription')
+    dataset_id = sgqlc.types.Field(UUID, graphql_name='datasetId')
+    skill_chat_questions = sgqlc.types.Field(sgqlc.types.non_null(sgqlc.types.list_of('MaxCopilotSkillChatQuestion')), graphql_name='skillChatQuestions')
+    misc_info = sgqlc.types.Field(JSON, graphql_name='miscInfo')
+    scheduling_only = sgqlc.types.Field(sgqlc.types.non_null(Boolean), graphql_name='schedulingOnly')
+
+
+class MaxCopilotSkillChatQuestion(sgqlc.types.Type):
+    __schema__ = schema
+    __field_names__ = ('copilot_skill_chat_question_id', 'question', 'expected_completion_response')
+    copilot_skill_chat_question_id = sgqlc.types.Field(sgqlc.types.non_null(UUID), graphql_name='copilotSkillChatQuestionId')
+    question = sgqlc.types.Field(sgqlc.types.non_null(String), graphql_name='question')
+    expected_completion_response = sgqlc.types.Field(sgqlc.types.non_null(String), graphql_name='expectedCompletionResponse')
+
+
 class Mutation(sgqlc.types.Type):
     __schema__ = schema
     __field_names__ = ('update_chat_answer_payload', 'ask_chat_question')
@@ -200,12 +226,17 @@ class Mutation(sgqlc.types.Type):
 
 class Query(sgqlc.types.Type):
     __schema__ = schema
-    __field_names__ = ('ping', 'get_copilot_skill_artifact_by_path', 'run_copilot_skill', 'execute_sql_query', 'execute_rql_query', 'get_dataset_id', 'get_domain_object', 'get_domain_object_by_name', 'llmapi_config_for_sdk', 'user_chat_threads', 'user_chat_entries')
+    __field_names__ = ('ping', 'get_copilot_skill_artifact_by_path', 'get_copilot_skill', 'run_copilot_skill', 'execute_sql_query', 'execute_rql_query', 'get_dataset_id', 'get_domain_object', 'get_domain_object_by_name', 'llmapi_config_for_sdk', 'user_chat_threads', 'user_chat_entries')
     ping = sgqlc.types.Field(String, graphql_name='ping')
     get_copilot_skill_artifact_by_path = sgqlc.types.Field(CopilotSkillArtifact, graphql_name='getCopilotSkillArtifactByPath', args=sgqlc.types.ArgDict((
         ('copilot_id', sgqlc.types.Arg(sgqlc.types.non_null(UUID), graphql_name='copilotId', default=None)),
         ('copilot_skill_id', sgqlc.types.Arg(sgqlc.types.non_null(UUID), graphql_name='copilotSkillId', default=None)),
         ('artifact_path', sgqlc.types.Arg(sgqlc.types.non_null(String), graphql_name='artifactPath', default=None)),
+))
+    )
+    get_copilot_skill = sgqlc.types.Field(MaxCopilotSkill, graphql_name='getCopilotSkill', args=sgqlc.types.ArgDict((
+        ('copilot_id', sgqlc.types.Arg(sgqlc.types.non_null(UUID), graphql_name='copilotId', default=None)),
+        ('copilot_skill_id', sgqlc.types.Arg(sgqlc.types.non_null(UUID), graphql_name='copilotSkillId', default=None)),
 ))
     )
     run_copilot_skill = sgqlc.types.Field(CopilotSkillRunResponse, graphql_name='runCopilotSkill', args=sgqlc.types.ArgDict((
