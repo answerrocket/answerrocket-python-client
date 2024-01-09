@@ -210,10 +210,11 @@ class MaxCopilotSkillChatQuestion(sgqlc.types.Type):
 
 class MaxDataset(sgqlc.types.Type):
     __schema__ = schema
-    __field_names__ = ('dataset_id', 'name', 'domain_objects')
+    __field_names__ = ('dataset_id', 'name', 'domain_objects', 'misc_info')
     dataset_id = sgqlc.types.Field(sgqlc.types.non_null(UUID), graphql_name='datasetId')
     name = sgqlc.types.Field(sgqlc.types.non_null(String), graphql_name='name')
     domain_objects = sgqlc.types.Field(sgqlc.types.non_null(sgqlc.types.list_of(sgqlc.types.non_null(MaxDomainObject))), graphql_name='domainObjects')
+    misc_info = sgqlc.types.Field(String, graphql_name='miscInfo')
 
 
 class Mutation(sgqlc.types.Type):
