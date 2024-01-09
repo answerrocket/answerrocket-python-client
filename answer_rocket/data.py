@@ -9,7 +9,7 @@ from answer_rocket.auth import AuthHelper
 from answer_rocket.graphql.client import GraphQlClient
 from answer_rocket.graphql.schema import UUID as GQL_UUID, MaxMetricAttribute, MaxDomainObject, \
     MaxDimensionEntity, MaxFactEntity, MaxNormalAttribute, \
-    MaxPrimaryAttribute, MaxReferenceAttribute, MaxCalculatedMetric
+    MaxPrimaryAttribute, MaxReferenceAttribute, MaxCalculatedMetric, MaxDataset
 from answer_rocket.types import MaxResult, RESULT_EXCEPTION_CODE
 
 
@@ -203,6 +203,35 @@ class Data:
 
             return execute_sql_query_result
 
+    def get_dataset(self, dataset_id: UUID) -> Optional[MaxDataset]:
+        try:
+            """
+            dataset_id: the UUID of the dataset
+            """
+            query_args = {
+                'datasetId': str(dataset_id),
+            }
+
+            query_vars = {
+                'dataset_id': Arg(non_null(GQL_UUID)),
+            }
+
+            operation = self._gql_client.query(variables=query_vars)
+
+            gql_query = operation.get_dataset(
+                dataset_id=Variable('dataset_id'),
+            )
+
+            self._create_domain_object_query(gql_query.domain_objects())
+
+            result = self._gql_client.submit(operation, query_args)
+
+            dataset = result.get_dataset
+
+            return dataset
+        except Exception as e:
+            return None
+
     def get_domain_object_by_name(self, dataset_id: UUID, rql_name: str) -> DomainObjectResult:
         try:
             """
@@ -226,7 +255,11 @@ class Data:
                 rql_name=Variable('rql_name'),
             )
 
-            self._create_domain_object_query(gql_query)
+            gql_query.success()
+            gql_query.code()
+            gql_query.error()
+
+            self._create_domain_object_query(gql_query.domain_object())
 
             result = self._gql_client.submit(operation, query_args)
 
@@ -272,7 +305,11 @@ class Data:
                 domain_object_id=Variable('domain_object_id'),
             )
 
-            self._create_domain_object_query(gql_query)
+            gql_query.success()
+            gql_query.code()
+            gql_query.error()
+
+            self._create_domain_object_query(gql_query.domain_object())
 
             result = self._gql_client.submit(operation, query_args)
 
@@ -295,12 +332,7 @@ class Data:
 
             return domain_object_result
 
-    def _create_domain_object_query(self, gql_query):
-        gql_query.success()
-        gql_query.code()
-        gql_query.error()
-        domain_object = gql_query.domain_object()
-
+    def _create_domain_object_query(self, domain_object):
         # domain_object_frag = Fragment(MaxDomainObject, 'MaxDomainObjectFragment')
         # gql_query.domain_object.__fragment__(domain_object_frag)
         domain_object.type()
@@ -366,6 +398,7 @@ class Data:
 
     def _add_domain_entity_fields(self, fragment: Fragment):
         fragment.db_table()
+        fragment.attributes()
 
     def _add_domain_object_fields(self, domain_object):
         domain_object.type()
