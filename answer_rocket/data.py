@@ -222,6 +222,9 @@ class Data:
                 dataset_id=Variable('dataset_id'),
             )
 
+            gql_query.name()
+            gql_query.misc_info()
+
             self._create_domain_object_query(gql_query.domain_objects())
 
             result = self._gql_client.submit(operation, query_args)
@@ -349,6 +352,7 @@ class Data:
 
         dimension_entity_frag = Fragment(MaxDimensionEntity, 'MaxDimensionEntityFragment')
         self._add_domain_entity_fields(dimension_entity_frag)
+        dimension_entity_frag.archetype()
         domain_object.__fragment__(dimension_entity_frag)
 
         normal_attribute_frag = Fragment(MaxNormalAttribute, 'MaxNormalAttributeFragment')
