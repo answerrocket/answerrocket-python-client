@@ -421,10 +421,11 @@ class Data:
         fragment.display_format()
         fragment.headline_name()
         fragment.is_favorite()
-        fragment.domain_entity()
 
-        fragment.domain_entity().id()
-        fragment.domain_entity().name()
+        # TODO: we do we want this?
+        # fragment.domain_entity()
+        # fragment.domain_entity().id()
+        # fragment.domain_entity().name()
 
     def _add_dimension_attribute_fields(self, fragment: Fragment):
         fragment.default_filter_value()
