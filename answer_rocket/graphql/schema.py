@@ -115,7 +115,7 @@ class MaxDomainEntity(sgqlc.types.Interface):
     hide_from_user = sgqlc.types.Field(sgqlc.types.non_null(Boolean), graphql_name='hideFromUser')
     misc_info = sgqlc.types.Field(String, graphql_name='miscInfo')
     db_table = sgqlc.types.Field(sgqlc.types.non_null(String), graphql_name='dbTable')
-    attributes = sgqlc.types.Field(sgqlc.types.non_null(sgqlc.types.list_of(MaxDomainAttribute)), graphql_name='attributes')
+    attributes = sgqlc.types.Field(sgqlc.types.non_null(sgqlc.types.list_of(sgqlc.types.non_null(MaxDomainAttribute))), graphql_name='attributes')
 
 
 class ChatThread(sgqlc.types.Type):

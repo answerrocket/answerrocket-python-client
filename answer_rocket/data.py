@@ -222,6 +222,7 @@ class Data:
                 dataset_id=Variable('dataset_id'),
             )
 
+            gql_query.dataset_id()
             gql_query.name()
             gql_query.misc_info()
 
@@ -338,13 +339,8 @@ class Data:
     def _create_domain_object_query(self, domain_object):
         # domain_object_frag = Fragment(MaxDomainObject, 'MaxDomainObjectFragment')
         # gql_query.domain_object.__fragment__(domain_object_frag)
-        domain_object.type()
-        domain_object.id()
-        domain_object.description()
-        domain_object.output_label()
-        domain_object.synonyms()
-        domain_object.output_label_plural()
-        domain_object.hide_from_user()
+
+        self._add_domain_object_fields(domain_object)
 
         fact_entity_frag = Fragment(MaxFactEntity, 'MaxFactEntityFragment')
         self._add_domain_entity_fields(fact_entity_frag)
@@ -354,6 +350,22 @@ class Data:
         self._add_domain_entity_fields(dimension_entity_frag)
         dimension_entity_frag.archetype()
         domain_object.__fragment__(dimension_entity_frag)
+
+        self._add_domain_attribute_fragments(domain_object)
+
+        calc_metric_attribute_frag = Fragment(MaxCalculatedMetric, 'MaxCalculatedMetricFragment')
+        calc_metric_attribute_frag.display_format()
+        calc_metric_attribute_frag.rql()
+        calc_metric_attribute_frag.agg_method()
+        calc_metric_attribute_frag.is_positive_direction_up()
+        calc_metric_attribute_frag.can_be_averaged()
+        calc_metric_attribute_frag.is_not_additive()
+        calc_metric_attribute_frag.growth_output_format()
+        calc_metric_attribute_frag.hide_percentage_change()
+        domain_object.__fragment__(calc_metric_attribute_frag)
+
+    def _add_domain_attribute_fragments(self, domain_object):
+        self._add_domain_object_fields(domain_object)
 
         normal_attribute_frag = Fragment(MaxNormalAttribute, 'MaxNormalAttributeFragment')
         self._add_domain_attribute_fields(normal_attribute_frag)
@@ -387,22 +399,13 @@ class Data:
         metric_attribute_frag.growth_output_format()
         metric_attribute_frag.hide_percentage_change()
         domain_object.__fragment__(metric_attribute_frag)
-        
-        calc_metric_attribute_frag = Fragment(MaxCalculatedMetric, 'MaxCalculatedMetricFragment')
-        # self._add_domain_object_fields(calc_metric_attribute_frag)
-        calc_metric_attribute_frag.display_format()
-        calc_metric_attribute_frag.rql()
-        calc_metric_attribute_frag.agg_method()
-        calc_metric_attribute_frag.is_positive_direction_up()
-        calc_metric_attribute_frag.can_be_averaged()
-        calc_metric_attribute_frag.is_not_additive()
-        calc_metric_attribute_frag.growth_output_format()
-        calc_metric_attribute_frag.hide_percentage_change()
-        domain_object.__fragment__(calc_metric_attribute_frag)
 
     def _add_domain_entity_fields(self, fragment: Fragment):
         fragment.db_table()
-        fragment.attributes()
+
+        attributes = fragment.attributes()
+
+        self._add_domain_attribute_fragments(attributes)
 
     def _add_domain_object_fields(self, domain_object):
         domain_object.type()
@@ -413,11 +416,15 @@ class Data:
         domain_object.synonyms()
         domain_object.output_label_plural()
         domain_object.hide_from_user()
+
     def _add_domain_attribute_fields(self, fragment: Fragment):
         fragment.display_format()
         fragment.headline_name()
         fragment.is_favorite()
-        # fragment.domain_entity()
+        fragment.domain_entity()
+
+        fragment.domain_entity().id()
+        fragment.domain_entity().name()
 
     def _add_dimension_attribute_fields(self, fragment: Fragment):
         fragment.default_filter_value()
