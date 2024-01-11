@@ -203,23 +203,26 @@ class Data:
 
             return execute_sql_query_result
 
-    def get_dataset(self, dataset_id: UUID) -> Optional[MaxDataset]:
+    def get_dataset(self, dataset_id: UUID, copilot_id: Optional[UUID] = None) -> Optional[MaxDataset]:
         try:
             """
             dataset_id: the UUID of the dataset
             """
             query_args = {
                 'datasetId': str(dataset_id),
+                'copilotId': str(copilot_id) if copilot_id is not None else None,
             }
 
             query_vars = {
                 'dataset_id': Arg(non_null(GQL_UUID)),
+                'copilot_id': Arg(GQL_UUID),
             }
 
             operation = self._gql_client.query(variables=query_vars)
 
             gql_query = operation.get_dataset(
                 dataset_id=Variable('dataset_id'),
+                copilot_id=Variable('copilot_id'),
             )
 
             gql_query.dataset_id()
