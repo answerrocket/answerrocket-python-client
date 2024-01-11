@@ -186,9 +186,20 @@ class ExecuteSqlQueryResponse(sgqlc.types.Type):
     data = sgqlc.types.Field(JSON, graphql_name='data')
 
 
+class MaxCopilot(sgqlc.types.Type):
+    __schema__ = schema
+    __field_names__ = ('copilot_id', 'name', 'description', 'system_prompt', 'beta_yaml', 'global_python_code')
+    copilot_id = sgqlc.types.Field(sgqlc.types.non_null(UUID), graphql_name='copilotId')
+    name = sgqlc.types.Field(sgqlc.types.non_null(String), graphql_name='name')
+    description = sgqlc.types.Field(String, graphql_name='description')
+    system_prompt = sgqlc.types.Field(String, graphql_name='systemPrompt')
+    beta_yaml = sgqlc.types.Field(String, graphql_name='betaYaml')
+    global_python_code = sgqlc.types.Field(String, graphql_name='globalPythonCode')
+
+
 class MaxCopilotSkill(sgqlc.types.Type):
     __schema__ = schema
-    __field_names__ = ('copilot_skill_id', 'name', 'detailed_name', 'description', 'detailed_description', 'dataset_id', 'skill_chat_questions', 'misc_info', 'scheduling_only')
+    __field_names__ = ('copilot_skill_id', 'name', 'detailed_name', 'description', 'detailed_description', 'dataset_id', 'skill_chat_questions', 'misc_info', 'yaml_code', 'scheduling_only')
     copilot_skill_id = sgqlc.types.Field(sgqlc.types.non_null(UUID), graphql_name='copilotSkillId')
     name = sgqlc.types.Field(sgqlc.types.non_null(String), graphql_name='name')
     detailed_name = sgqlc.types.Field(sgqlc.types.non_null(String), graphql_name='detailedName')
@@ -197,6 +208,7 @@ class MaxCopilotSkill(sgqlc.types.Type):
     dataset_id = sgqlc.types.Field(UUID, graphql_name='datasetId')
     skill_chat_questions = sgqlc.types.Field(sgqlc.types.non_null(sgqlc.types.list_of('MaxCopilotSkillChatQuestion')), graphql_name='skillChatQuestions')
     misc_info = sgqlc.types.Field(JSON, graphql_name='miscInfo')
+    yaml_code = sgqlc.types.Field(String, graphql_name='yamlCode')
     scheduling_only = sgqlc.types.Field(sgqlc.types.non_null(Boolean), graphql_name='schedulingOnly')
 
 
@@ -235,12 +247,16 @@ class Mutation(sgqlc.types.Type):
 
 class Query(sgqlc.types.Type):
     __schema__ = schema
-    __field_names__ = ('ping', 'get_copilot_skill_artifact_by_path', 'get_copilot_skill', 'run_copilot_skill', 'execute_sql_query', 'execute_rql_query', 'get_dataset_id', 'get_dataset', 'get_domain_object', 'get_domain_object_by_name', 'llmapi_config_for_sdk', 'user_chat_threads', 'user_chat_entries')
+    __field_names__ = ('ping', 'get_copilot_skill_artifact_by_path', 'get_copilot_info', 'get_copilot_skill', 'run_copilot_skill', 'execute_sql_query', 'execute_rql_query', 'get_dataset_id', 'get_dataset', 'get_domain_object', 'get_domain_object_by_name', 'llmapi_config_for_sdk', 'user_chat_threads', 'user_chat_entries')
     ping = sgqlc.types.Field(String, graphql_name='ping')
     get_copilot_skill_artifact_by_path = sgqlc.types.Field(CopilotSkillArtifact, graphql_name='getCopilotSkillArtifactByPath', args=sgqlc.types.ArgDict((
         ('copilot_id', sgqlc.types.Arg(sgqlc.types.non_null(UUID), graphql_name='copilotId', default=None)),
         ('copilot_skill_id', sgqlc.types.Arg(sgqlc.types.non_null(UUID), graphql_name='copilotSkillId', default=None)),
         ('artifact_path', sgqlc.types.Arg(sgqlc.types.non_null(String), graphql_name='artifactPath', default=None)),
+))
+    )
+    get_copilot_info = sgqlc.types.Field(MaxCopilot, graphql_name='getCopilotInfo', args=sgqlc.types.ArgDict((
+        ('copilot_id', sgqlc.types.Arg(sgqlc.types.non_null(UUID), graphql_name='copilotId', default=None)),
 ))
     )
     get_copilot_skill = sgqlc.types.Field(MaxCopilotSkill, graphql_name='getCopilotSkill', args=sgqlc.types.ArgDict((
@@ -274,6 +290,7 @@ class Query(sgqlc.types.Type):
     )
     get_dataset = sgqlc.types.Field(MaxDataset, graphql_name='getDataset', args=sgqlc.types.ArgDict((
         ('dataset_id', sgqlc.types.Arg(sgqlc.types.non_null(UUID), graphql_name='datasetId', default=None)),
+        ('copilot_id', sgqlc.types.Arg(UUID, graphql_name='copilotId', default=None)),
 ))
     )
     get_domain_object = sgqlc.types.Field(DomainObjectResponse, graphql_name='getDomainObject', args=sgqlc.types.ArgDict((

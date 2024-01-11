@@ -5,7 +5,7 @@ from sgqlc.types import Variable, Arg, non_null, String
 
 from answer_rocket.auth import AuthHelper
 from answer_rocket.graphql.client import GraphQlClient
-from answer_rocket.graphql.schema import UUID as GQL_UUID, MaxCopilotSkillChatQuestion, MaxCopilotSkill
+from answer_rocket.graphql.schema import UUID as GQL_UUID, MaxCopilotSkillChatQuestion, MaxCopilotSkill, MaxCopilot
 
 # Not clear to what degree there will be distinct "local" vs "server" modes. If there end up being 0 examples of config
 # that must be grabbed from a server even while developing locally then it may make sense to have two different helpers
@@ -62,6 +62,30 @@ class Config:
         result = self._gql_client.submit(operation, artifact_query_args)
         if result.get_copilot_skill_artifact_by_path and result.get_copilot_skill_artifact_by_path.artifact:
             return result.get_copilot_skill_artifact_by_path.artifact
+
+    def get_copilot(self) -> MaxCopilot:
+        try:
+            query_args = {
+                'copilotId': self.copilot_id
+            }
+
+            query_vars = {
+                'copilot_id': Arg(non_null(GQL_UUID))
+            }
+
+            operation = self._gql_client.query(variables=query_vars)
+
+            gql_query = operation.get_copilot_info(
+                copilot_id=Variable('copilot_id')
+            )
+
+            result = self._gql_client.submit(operation, query_args)
+
+            max_copilot = result.get_copilot_info
+
+            return max_copilot
+        except Exception as e:
+            return None
 
     def get_copilot_skill(self) -> MaxCopilotSkill:
         try:
