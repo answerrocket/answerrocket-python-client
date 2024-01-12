@@ -186,6 +186,16 @@ class ExecuteSqlQueryResponse(sgqlc.types.Type):
     data = sgqlc.types.Field(JSON, graphql_name='data')
 
 
+class MaxColumn(sgqlc.types.Type):
+    __schema__ = schema
+    __field_names__ = ('name', 'jdbc_type', 'length', 'precision', 'scale')
+    name = sgqlc.types.Field(sgqlc.types.non_null(String), graphql_name='name')
+    jdbc_type = sgqlc.types.Field(String, graphql_name='jdbcType')
+    length = sgqlc.types.Field(Int, graphql_name='length')
+    precision = sgqlc.types.Field(Int, graphql_name='precision')
+    scale = sgqlc.types.Field(Int, graphql_name='scale')
+
+
 class MaxCopilot(sgqlc.types.Type):
     __schema__ = schema
     __field_names__ = ('copilot_id', 'name', 'description', 'system_prompt', 'beta_yaml', 'global_python_code')
@@ -231,12 +241,20 @@ class MaxDatabase(sgqlc.types.Type):
 
 class MaxDataset(sgqlc.types.Type):
     __schema__ = schema
-    __field_names__ = ('dataset_id', 'name', 'domain_objects', 'misc_info', 'database')
+    __field_names__ = ('dataset_id', 'name', 'domain_objects', 'misc_info', 'database', 'tables')
     dataset_id = sgqlc.types.Field(sgqlc.types.non_null(UUID), graphql_name='datasetId')
     name = sgqlc.types.Field(sgqlc.types.non_null(String), graphql_name='name')
     domain_objects = sgqlc.types.Field(sgqlc.types.non_null(sgqlc.types.list_of(sgqlc.types.non_null(MaxDomainObject))), graphql_name='domainObjects')
     misc_info = sgqlc.types.Field(String, graphql_name='miscInfo')
     database = sgqlc.types.Field(MaxDatabase, graphql_name='database')
+    tables = sgqlc.types.Field(sgqlc.types.non_null(sgqlc.types.list_of(sgqlc.types.non_null('MaxTable'))), graphql_name='tables')
+
+
+class MaxTable(sgqlc.types.Type):
+    __schema__ = schema
+    __field_names__ = ('name', 'columns')
+    name = sgqlc.types.Field(sgqlc.types.non_null(String), graphql_name='name')
+    columns = sgqlc.types.Field(sgqlc.types.non_null(sgqlc.types.list_of(sgqlc.types.non_null(MaxColumn))), graphql_name='columns')
 
 
 class Mutation(sgqlc.types.Type):

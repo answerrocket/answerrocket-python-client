@@ -235,6 +235,16 @@ class Data:
             database.dbms()
             database.schema()
 
+            tables = gql_query.tables()
+            tables.name()
+            columns = tables.columns()
+
+            columns.name()
+            columns.jdbc_type()
+            columns.length()
+            columns.precision()
+            columns.scale()
+
             self._create_domain_object_query(gql_query.domain_objects())
 
             result = self._gql_client.submit(operation, query_args)
