@@ -220,13 +220,23 @@ class MaxCopilotSkillChatQuestion(sgqlc.types.Type):
     expected_completion_response = sgqlc.types.Field(sgqlc.types.non_null(String), graphql_name='expectedCompletionResponse')
 
 
+class MaxDatabase(sgqlc.types.Type):
+    __schema__ = schema
+    __field_names__ = ('database_id', 'name', 'dbms', 'schema')
+    database_id = sgqlc.types.Field(sgqlc.types.non_null(UUID), graphql_name='databaseId')
+    name = sgqlc.types.Field(sgqlc.types.non_null(String), graphql_name='name')
+    dbms = sgqlc.types.Field(String, graphql_name='dbms')
+    schema = sgqlc.types.Field(String, graphql_name='schema')
+
+
 class MaxDataset(sgqlc.types.Type):
     __schema__ = schema
-    __field_names__ = ('dataset_id', 'name', 'domain_objects', 'misc_info')
+    __field_names__ = ('dataset_id', 'name', 'domain_objects', 'misc_info', 'database')
     dataset_id = sgqlc.types.Field(sgqlc.types.non_null(UUID), graphql_name='datasetId')
     name = sgqlc.types.Field(sgqlc.types.non_null(String), graphql_name='name')
     domain_objects = sgqlc.types.Field(sgqlc.types.non_null(sgqlc.types.list_of(sgqlc.types.non_null(MaxDomainObject))), graphql_name='domainObjects')
     misc_info = sgqlc.types.Field(String, graphql_name='miscInfo')
+    database = sgqlc.types.Field(MaxDatabase, graphql_name='database')
 
 
 class Mutation(sgqlc.types.Type):

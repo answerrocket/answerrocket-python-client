@@ -229,6 +229,12 @@ class Data:
             gql_query.name()
             gql_query.misc_info()
 
+            database = gql_query.database()
+            database.database_id()
+            database.name()
+            database.dbms()
+            database.schema()
+
             self._create_domain_object_query(gql_query.domain_objects())
 
             result = self._gql_client.submit(operation, query_args)
