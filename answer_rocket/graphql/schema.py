@@ -209,7 +209,7 @@ class MaxCopilot(sgqlc.types.Type):
 
 class MaxCopilotSkill(sgqlc.types.Type):
     __schema__ = schema
-    __field_names__ = ('copilot_skill_id', 'name', 'detailed_name', 'description', 'detailed_description', 'dataset_id', 'skill_chat_questions', 'misc_info', 'yaml_code', 'scheduling_only')
+    __field_names__ = ('copilot_skill_id', 'name', 'detailed_name', 'description', 'detailed_description', 'dataset_id', 'skill_chat_questions', 'yaml_code', 'skill_code', 'misc_info', 'scheduling_only')
     copilot_skill_id = sgqlc.types.Field(sgqlc.types.non_null(UUID), graphql_name='copilotSkillId')
     name = sgqlc.types.Field(sgqlc.types.non_null(String), graphql_name='name')
     detailed_name = sgqlc.types.Field(sgqlc.types.non_null(String), graphql_name='detailedName')
@@ -217,8 +217,9 @@ class MaxCopilotSkill(sgqlc.types.Type):
     detailed_description = sgqlc.types.Field(String, graphql_name='detailedDescription')
     dataset_id = sgqlc.types.Field(UUID, graphql_name='datasetId')
     skill_chat_questions = sgqlc.types.Field(sgqlc.types.non_null(sgqlc.types.list_of('MaxCopilotSkillChatQuestion')), graphql_name='skillChatQuestions')
+    yaml_code = sgqlc.types.Field(sgqlc.types.non_null(String), graphql_name='yamlCode')
+    skill_code = sgqlc.types.Field(sgqlc.types.non_null(String), graphql_name='skillCode')
     misc_info = sgqlc.types.Field(JSON, graphql_name='miscInfo')
-    yaml_code = sgqlc.types.Field(String, graphql_name='yamlCode')
     scheduling_only = sgqlc.types.Field(sgqlc.types.non_null(Boolean), graphql_name='schedulingOnly')
 
 
