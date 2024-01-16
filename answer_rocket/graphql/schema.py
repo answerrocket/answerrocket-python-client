@@ -78,7 +78,7 @@ class MaxDomainAttribute(sgqlc.types.Interface):
     misc_info = sgqlc.types.Field(String, graphql_name='miscInfo')
     display_format = sgqlc.types.Field(String, graphql_name='displayFormat')
     headline_name = sgqlc.types.Field(String, graphql_name='headlineName')
-    is_favorite = sgqlc.types.Field(Boolean, graphql_name='isFavorite')
+    is_favorite = sgqlc.types.Field(sgqlc.types.non_null(Boolean), graphql_name='isFavorite')
     domain_entity = sgqlc.types.Field('MaxDomainEntity', graphql_name='domainEntity')
 
 
@@ -96,7 +96,7 @@ class MaxDimensionAttribute(sgqlc.types.Interface):
     misc_info = sgqlc.types.Field(String, graphql_name='miscInfo')
     display_format = sgqlc.types.Field(String, graphql_name='displayFormat')
     headline_name = sgqlc.types.Field(String, graphql_name='headlineName')
-    is_favorite = sgqlc.types.Field(Boolean, graphql_name='isFavorite')
+    is_favorite = sgqlc.types.Field(sgqlc.types.non_null(Boolean), graphql_name='isFavorite')
     domain_entity = sgqlc.types.Field('MaxDomainEntity', graphql_name='domainEntity')
     default_filter_value = sgqlc.types.Field(String, graphql_name='defaultFilterValue')
     is_required_in_query = sgqlc.types.Field(sgqlc.types.non_null(Boolean), graphql_name='isRequiredInQuery')
@@ -376,12 +376,12 @@ class MaxCalculatedMetric(sgqlc.types.Type, MaxDomainObject):
     __field_names__ = ('display_format', 'rql', 'agg_method', 'is_positive_direction_up', 'can_be_averaged', 'is_not_additive', 'growth_output_format', 'hide_percentage_change')
     display_format = sgqlc.types.Field(String, graphql_name='displayFormat')
     rql = sgqlc.types.Field(String, graphql_name='rql')
-    agg_method = sgqlc.types.Field(DpsAggMethod, graphql_name='aggMethod')
-    is_positive_direction_up = sgqlc.types.Field(Boolean, graphql_name='isPositiveDirectionUp')
-    can_be_averaged = sgqlc.types.Field(Boolean, graphql_name='canBeAveraged')
-    is_not_additive = sgqlc.types.Field(Boolean, graphql_name='isNotAdditive')
+    agg_method = sgqlc.types.Field(sgqlc.types.non_null(DpsAggMethod), graphql_name='aggMethod')
+    is_positive_direction_up = sgqlc.types.Field(sgqlc.types.non_null(Boolean), graphql_name='isPositiveDirectionUp')
+    can_be_averaged = sgqlc.types.Field(sgqlc.types.non_null(Boolean), graphql_name='canBeAveraged')
+    is_not_additive = sgqlc.types.Field(sgqlc.types.non_null(Boolean), graphql_name='isNotAdditive')
     growth_output_format = sgqlc.types.Field(String, graphql_name='growthOutputFormat')
-    hide_percentage_change = sgqlc.types.Field(Boolean, graphql_name='hidePercentageChange')
+    hide_percentage_change = sgqlc.types.Field(sgqlc.types.non_null(Boolean), graphql_name='hidePercentageChange')
 
 
 class MaxDimensionEntity(sgqlc.types.Type, MaxDomainObject, MaxDomainEntity):
@@ -398,15 +398,16 @@ class MaxFactEntity(sgqlc.types.Type, MaxDomainObject, MaxDomainEntity):
 
 class MaxMetricAttribute(sgqlc.types.Type, MaxDomainObject, MaxDomainAttribute):
     __schema__ = schema
-    __field_names__ = ('db_metric_column', 'agg_method', 'is_row_level_filter', 'is_positive_direction_up', 'can_be_averaged', 'is_not_additive', 'growth_output_format', 'hide_percentage_change')
-    db_metric_column = sgqlc.types.Field(String, graphql_name='dbMetricColumn')
-    agg_method = sgqlc.types.Field(DpsAggMethod, graphql_name='aggMethod')
-    is_row_level_filter = sgqlc.types.Field(Boolean, graphql_name='isRowLevelFilter')
-    is_positive_direction_up = sgqlc.types.Field(Boolean, graphql_name='isPositiveDirectionUp')
-    can_be_averaged = sgqlc.types.Field(Boolean, graphql_name='canBeAveraged')
-    is_not_additive = sgqlc.types.Field(Boolean, graphql_name='isNotAdditive')
+    __field_names__ = ('db_metric_column', 'agg_method', 'is_row_level_filter', 'is_positive_direction_up', 'can_be_averaged', 'is_not_additive', 'growth_output_format', 'hide_percentage_change', 'sql_agg_expression')
+    db_metric_column = sgqlc.types.Field(sgqlc.types.non_null(String), graphql_name='dbMetricColumn')
+    agg_method = sgqlc.types.Field(sgqlc.types.non_null(DpsAggMethod), graphql_name='aggMethod')
+    is_row_level_filter = sgqlc.types.Field(sgqlc.types.non_null(Boolean), graphql_name='isRowLevelFilter')
+    is_positive_direction_up = sgqlc.types.Field(sgqlc.types.non_null(Boolean), graphql_name='isPositiveDirectionUp')
+    can_be_averaged = sgqlc.types.Field(sgqlc.types.non_null(Boolean), graphql_name='canBeAveraged')
+    is_not_additive = sgqlc.types.Field(sgqlc.types.non_null(Boolean), graphql_name='isNotAdditive')
     growth_output_format = sgqlc.types.Field(String, graphql_name='growthOutputFormat')
-    hide_percentage_change = sgqlc.types.Field(Boolean, graphql_name='hidePercentageChange')
+    hide_percentage_change = sgqlc.types.Field(sgqlc.types.non_null(Boolean), graphql_name='hidePercentageChange')
+    sql_agg_expression = sgqlc.types.Field(String, graphql_name='sqlAggExpression')
 
 
 class MaxNormalAttribute(sgqlc.types.Type, MaxDomainObject, MaxDomainAttribute, MaxDimensionAttribute):
