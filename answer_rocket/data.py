@@ -417,6 +417,7 @@ class Data:
         metric_attribute_frag.is_not_additive()
         metric_attribute_frag.growth_output_format()
         metric_attribute_frag.hide_percentage_change()
+        metric_attribute_frag.sql_agg_expression()
         domain_object.__fragment__(metric_attribute_frag)
 
     def _add_domain_entity_fields(self, fragment: Fragment):
