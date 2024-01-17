@@ -22,11 +22,18 @@ class AuthHelper(abc.ABC):
 class ExternalAuthHelper(AuthHelper):
 	url: str
 	token: str
+	tenant: str
+	user: str
 
 	def headers(self) -> dict:
-		return {
+		headers = {
 			'Authorization': f'Bearer {self.token}'
 		}
+		if self.user:
+			headers['Max-User'] = self.user
+		if self.tenant:
+			headers['Max-Tenant'] = self.tenant
+		return headers
 	
 
 @dataclass
@@ -48,10 +55,10 @@ class InternalAuthHelper(AuthHelper):
 def init_auth_helper(url: Optional[str], token: Optional[str]) -> AuthHelper:
 	token = token or os.getenv('AR_TOKEN')
 	url = url or os.getenv('AR_URL')
+	tenant = os.getenv('AR_TENANT_ID')
+	user = os.getenv('AR_USER_ID')
 	if not url:
 		raise AnswerRocketClientError('No AnswerRocket url provided')
 	if token:
-		return ExternalAuthHelper(url=url, token=token)
-	tenant = os.getenv('AR_TENANT_ID')
-	user = os.getenv('AR_USER_ID')
+		return ExternalAuthHelper(url=url, token=token, user=user, tenant=tenant)
 	return InternalAuthHelper(url=url, tenant=tenant, user=user)
