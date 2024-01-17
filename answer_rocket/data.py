@@ -228,6 +228,7 @@ class Data:
             gql_query.dataset_id()
             gql_query.name()
             gql_query.misc_info()
+            gql_query.dimension_value_distribution_map()
 
             database = gql_query.database()
             database.database_id()
