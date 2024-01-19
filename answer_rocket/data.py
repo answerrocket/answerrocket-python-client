@@ -9,7 +9,7 @@ from answer_rocket.auth import AuthHelper
 from answer_rocket.graphql.client import GraphQlClient
 from answer_rocket.graphql.schema import UUID as GQL_UUID, MaxMetricAttribute, MaxDomainObject, \
     MaxDimensionEntity, MaxFactEntity, MaxNormalAttribute, \
-    MaxPrimaryAttribute, MaxReferenceAttribute, MaxCalculatedMetric, MaxDataset
+    MaxPrimaryAttribute, MaxReferenceAttribute, MaxCalculatedMetric, MaxDataset, MaxCalculatedAttribute
 from answer_rocket.types import MaxResult, RESULT_EXCEPTION_CODE
 
 
@@ -407,6 +407,12 @@ class Data:
         reference_attribute_frag.db_foreign_key_columns()
         reference_attribute_frag.referenced_dimension_entity_id()
         domain_object.__fragment__(reference_attribute_frag)
+
+        calculated_attribute_frag = Fragment(MaxCalculatedAttribute, 'MaxCalculatedAttributeFragment')
+        self._add_domain_attribute_fields(calculated_attribute_frag)
+        self._add_dimension_attribute_fields(calculated_attribute_frag)
+        calculated_attribute_frag.rql()
+        domain_object.__fragment__(calculated_attribute_frag)
 
         metric_attribute_frag = Fragment(MaxMetricAttribute, 'MaxMetricAttributeFragment')
         self._add_domain_attribute_fields(metric_attribute_frag)
