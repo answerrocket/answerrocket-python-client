@@ -116,6 +116,39 @@ class Config:
         except Exception as e:
             return None
 
+    def create_copilot_skill_chat_question(self, question: str, expected_completion_response: str) -> MaxMutationResponse:
+        try:
+            mutation_args = {
+                'copilotId': self.copilot_id,
+                'copilotSkillId': self.copilot_skill_id,
+                'question': question,
+                'expectedCompletionResponse': expected_completion_response,
+            }
+
+            mutation_vars = {
+                'copilot_id': Arg(non_null(GQL_UUID)),
+                'copilot_skill_id': Arg(non_null(GQL_UUID)),
+                'question': Arg(non_null(String)),
+                'expected_completion_response': Arg(non_null(String)),
+            }
+
+            operation = self._gql_client.mutation(variables=mutation_vars)
+
+            operation.create_max_copilot_skill_chat_question(
+                copilot_id=Variable('copilot_id'),
+                copilot_skill_id=Variable('copilot_skill_id'),
+                question=Variable('question'),
+                expected_completion_response=Variable('expected_completion_response'),
+            )
+
+            result = self._gql_client.submit(operation, mutation_args)
+
+            max_mutation_response = result.create_max_copilot_skill_chat_question
+
+            return max_mutation_response
+        except Exception as e:
+            return None
+
     def update_copilot_skill_chat_question(self, copilot_skill_chat_question_id: UUID,
                                            question: str, expected_completion_response: str) -> MaxMutationResponse:
         try:
@@ -153,40 +186,6 @@ class Config:
         except Exception as e:
             return None
 
-    def create_copilot_skill_chat_question(self, question: str, expected_completion_response: str) -> MaxMutationResponse:
-        try:
-            mutation_args = {
-                'copilotId': self.copilot_id,
-                'copilotSkillId': self.copilot_skill_id,
-                'question': question,
-                'expectedCompletionResponse': expected_completion_response,
-            }
-
-            mutation_vars = {
-                'copilot_id': Arg(non_null(GQL_UUID)),
-                'copilot_skill_id': Arg(non_null(GQL_UUID)),
-                'question': Arg(non_null(String)),
-                'expected_completion_response': Arg(non_null(String)),
-            }
-
-            operation = self._gql_client.mutation(variables=mutation_vars)
-
-            operation.create_max_copilot_skill_chat_question(
-                copilot_id=Variable('copilot_id'),
-                copilot_skill_id=Variable('copilot_skill_id'),
-                question=Variable('question'),
-                expected_completion_response=Variable('expected_completion_response'),
-            )
-
-            result = self._gql_client.submit(operation, mutation_args)
-
-            max_mutation_response = result.create_max_copilot_skill_chat_question
-
-            return max_mutation_response
-        except Exception as e:
-            return None
-
-
     def delete_copilot_skill_chat_question(self, copilot_skill_chat_question_id: UUID) -> MaxMutationResponse:
         try:
             mutation_args = {
@@ -216,7 +215,6 @@ class Config:
             return max_mutation_response
         except Exception as e:
             return None
-
 
 def _complete_artifact_path(artifact_path: str) -> str:
     """
