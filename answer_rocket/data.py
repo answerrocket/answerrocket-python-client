@@ -376,6 +376,7 @@ class Data:
         calc_metric_attribute_frag = Fragment(MaxCalculatedMetric, 'MaxCalculatedMetricFragment')
         calc_metric_attribute_frag.display_format()
         calc_metric_attribute_frag.rql()
+        calc_metric_attribute_frag.sql()
         calc_metric_attribute_frag.agg_method()
         calc_metric_attribute_frag.is_positive_direction_up()
         calc_metric_attribute_frag.can_be_averaged()
@@ -412,6 +413,7 @@ class Data:
         self._add_domain_attribute_fields(calculated_attribute_frag)
         self._add_dimension_attribute_fields(calculated_attribute_frag)
         calculated_attribute_frag.rql()
+        calculated_attribute_frag.sql()
         domain_object.__fragment__(calculated_attribute_frag)
 
         metric_attribute_frag = Fragment(MaxMetricAttribute, 'MaxMetricAttributeFragment')
