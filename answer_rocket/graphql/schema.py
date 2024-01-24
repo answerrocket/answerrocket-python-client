@@ -412,15 +412,17 @@ class AzureOpenaiEmbeddingLLMApiConfig(sgqlc.types.Type, LLMApiConfig):
 
 class MaxCalculatedAttribute(sgqlc.types.Type, MaxDomainObject, MaxDomainAttribute, MaxDimensionAttribute):
     __schema__ = schema
-    __field_names__ = ('rql',)
+    __field_names__ = ('rql', 'sql')
     rql = sgqlc.types.Field(String, graphql_name='rql')
+    sql = sgqlc.types.Field(String, graphql_name='sql')
 
 
 class MaxCalculatedMetric(sgqlc.types.Type, MaxDomainObject):
     __schema__ = schema
-    __field_names__ = ('display_format', 'rql', 'agg_method', 'is_positive_direction_up', 'can_be_averaged', 'is_not_additive', 'growth_output_format', 'hide_percentage_change')
+    __field_names__ = ('display_format', 'rql', 'sql', 'agg_method', 'is_positive_direction_up', 'can_be_averaged', 'is_not_additive', 'growth_output_format', 'hide_percentage_change')
     display_format = sgqlc.types.Field(String, graphql_name='displayFormat')
     rql = sgqlc.types.Field(String, graphql_name='rql')
+    sql = sgqlc.types.Field(String, graphql_name='sql')
     agg_method = sgqlc.types.Field(sgqlc.types.non_null(DpsAggMethod), graphql_name='aggMethod')
     is_positive_direction_up = sgqlc.types.Field(sgqlc.types.non_null(Boolean), graphql_name='isPositiveDirectionUp')
     can_be_averaged = sgqlc.types.Field(sgqlc.types.non_null(Boolean), graphql_name='canBeAveraged')
