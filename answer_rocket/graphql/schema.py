@@ -26,6 +26,16 @@ class JSON(sgqlc.types.Scalar):
     __schema__ = schema
 
 
+class MetricType(sgqlc.types.Enum):
+    __schema__ = schema
+    __choices__ = ('BASIC', 'RATIO', 'SHARE')
+
+
+class SimplifiedDataType(sgqlc.types.Enum):
+    __schema__ = schema
+    __choices__ = ('BOOLEAN', 'DATE', 'NUMBER', 'STRING')
+
+
 String = sgqlc.types.String
 
 class UUID(sgqlc.types.Scalar):
@@ -66,7 +76,7 @@ class MaxDomainObject(sgqlc.types.Interface):
 
 class MaxDomainAttribute(sgqlc.types.Interface):
     __schema__ = schema
-    __field_names__ = ('type', 'id', 'name', 'description', 'output_label', 'synonyms', 'output_label_plural', 'hide_from_user', 'misc_info', 'display_format', 'headline_name', 'is_favorite', 'domain_entity')
+    __field_names__ = ('type', 'id', 'name', 'description', 'output_label', 'synonyms', 'output_label_plural', 'hide_from_user', 'misc_info', 'display_format', 'headline_name', 'is_favorite', 'simplified_data_type', 'domain_entity')
     type = sgqlc.types.Field(sgqlc.types.non_null(String), graphql_name='type')
     id = sgqlc.types.Field(sgqlc.types.non_null(String), graphql_name='id')
     name = sgqlc.types.Field(sgqlc.types.non_null(String), graphql_name='name')
@@ -79,12 +89,13 @@ class MaxDomainAttribute(sgqlc.types.Interface):
     display_format = sgqlc.types.Field(String, graphql_name='displayFormat')
     headline_name = sgqlc.types.Field(String, graphql_name='headlineName')
     is_favorite = sgqlc.types.Field(sgqlc.types.non_null(Boolean), graphql_name='isFavorite')
+    simplified_data_type = sgqlc.types.Field(SimplifiedDataType, graphql_name='simplifiedDataType')
     domain_entity = sgqlc.types.Field('MaxDomainEntity', graphql_name='domainEntity')
 
 
 class MaxDimensionAttribute(sgqlc.types.Interface):
     __schema__ = schema
-    __field_names__ = ('type', 'id', 'name', 'description', 'output_label', 'synonyms', 'output_label_plural', 'hide_from_user', 'misc_info', 'display_format', 'headline_name', 'is_favorite', 'domain_entity', 'default_filter_value', 'is_required_in_query')
+    __field_names__ = ('type', 'id', 'name', 'description', 'output_label', 'synonyms', 'output_label_plural', 'hide_from_user', 'misc_info', 'display_format', 'headline_name', 'is_favorite', 'simplified_data_type', 'domain_entity', 'default_filter_value', 'is_required_in_query')
     type = sgqlc.types.Field(sgqlc.types.non_null(String), graphql_name='type')
     id = sgqlc.types.Field(sgqlc.types.non_null(String), graphql_name='id')
     name = sgqlc.types.Field(sgqlc.types.non_null(String), graphql_name='name')
@@ -97,6 +108,7 @@ class MaxDimensionAttribute(sgqlc.types.Interface):
     display_format = sgqlc.types.Field(String, graphql_name='displayFormat')
     headline_name = sgqlc.types.Field(String, graphql_name='headlineName')
     is_favorite = sgqlc.types.Field(sgqlc.types.non_null(Boolean), graphql_name='isFavorite')
+    simplified_data_type = sgqlc.types.Field(SimplifiedDataType, graphql_name='simplifiedDataType')
     domain_entity = sgqlc.types.Field('MaxDomainEntity', graphql_name='domainEntity')
     default_filter_value = sgqlc.types.Field(String, graphql_name='defaultFilterValue')
     is_required_in_query = sgqlc.types.Field(sgqlc.types.non_null(Boolean), graphql_name='isRequiredInQuery')
@@ -419,7 +431,7 @@ class MaxCalculatedAttribute(sgqlc.types.Type, MaxDomainObject, MaxDomainAttribu
 
 class MaxCalculatedMetric(sgqlc.types.Type, MaxDomainObject):
     __schema__ = schema
-    __field_names__ = ('display_format', 'rql', 'sql', 'agg_method', 'is_positive_direction_up', 'can_be_averaged', 'is_not_additive', 'growth_output_format', 'hide_percentage_change')
+    __field_names__ = ('display_format', 'rql', 'sql', 'agg_method', 'is_positive_direction_up', 'can_be_averaged', 'is_not_additive', 'growth_output_format', 'hide_percentage_change', 'simplified_data_type', 'metric_type')
     display_format = sgqlc.types.Field(String, graphql_name='displayFormat')
     rql = sgqlc.types.Field(String, graphql_name='rql')
     sql = sgqlc.types.Field(String, graphql_name='sql')
@@ -429,6 +441,8 @@ class MaxCalculatedMetric(sgqlc.types.Type, MaxDomainObject):
     is_not_additive = sgqlc.types.Field(sgqlc.types.non_null(Boolean), graphql_name='isNotAdditive')
     growth_output_format = sgqlc.types.Field(String, graphql_name='growthOutputFormat')
     hide_percentage_change = sgqlc.types.Field(sgqlc.types.non_null(Boolean), graphql_name='hidePercentageChange')
+    simplified_data_type = sgqlc.types.Field(SimplifiedDataType, graphql_name='simplifiedDataType')
+    metric_type = sgqlc.types.Field(MetricType, graphql_name='metricType')
 
 
 class MaxDimensionEntity(sgqlc.types.Type, MaxDomainObject, MaxDomainEntity):
@@ -445,7 +459,7 @@ class MaxFactEntity(sgqlc.types.Type, MaxDomainObject, MaxDomainEntity):
 
 class MaxMetricAttribute(sgqlc.types.Type, MaxDomainObject, MaxDomainAttribute):
     __schema__ = schema
-    __field_names__ = ('db_metric_column', 'agg_method', 'is_row_level_filter', 'is_positive_direction_up', 'can_be_averaged', 'is_not_additive', 'growth_output_format', 'hide_percentage_change', 'sql_agg_expression')
+    __field_names__ = ('db_metric_column', 'agg_method', 'is_row_level_filter', 'is_positive_direction_up', 'can_be_averaged', 'is_not_additive', 'growth_output_format', 'hide_percentage_change', 'sql_agg_expression', 'metric_type')
     db_metric_column = sgqlc.types.Field(sgqlc.types.non_null(String), graphql_name='dbMetricColumn')
     agg_method = sgqlc.types.Field(sgqlc.types.non_null(DpsAggMethod), graphql_name='aggMethod')
     is_row_level_filter = sgqlc.types.Field(sgqlc.types.non_null(Boolean), graphql_name='isRowLevelFilter')
@@ -455,6 +469,7 @@ class MaxMetricAttribute(sgqlc.types.Type, MaxDomainObject, MaxDomainAttribute):
     growth_output_format = sgqlc.types.Field(String, graphql_name='growthOutputFormat')
     hide_percentage_change = sgqlc.types.Field(sgqlc.types.non_null(Boolean), graphql_name='hidePercentageChange')
     sql_agg_expression = sgqlc.types.Field(String, graphql_name='sqlAggExpression')
+    metric_type = sgqlc.types.Field(MetricType, graphql_name='metricType')
 
 
 class MaxNormalAttribute(sgqlc.types.Type, MaxDomainObject, MaxDomainAttribute, MaxDimensionAttribute):

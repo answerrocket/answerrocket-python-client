@@ -383,6 +383,8 @@ class Data:
         calc_metric_attribute_frag.is_not_additive()
         calc_metric_attribute_frag.growth_output_format()
         calc_metric_attribute_frag.hide_percentage_change()
+        calc_metric_attribute_frag.simplified_data_type()
+        calc_metric_attribute_frag.metric_type()
         domain_object.__fragment__(calc_metric_attribute_frag)
 
     def _add_domain_attribute_fragments(self, domain_object):
@@ -427,6 +429,7 @@ class Data:
         metric_attribute_frag.growth_output_format()
         metric_attribute_frag.hide_percentage_change()
         metric_attribute_frag.sql_agg_expression()
+        metric_attribute_frag.metric_type()
         domain_object.__fragment__(metric_attribute_frag)
 
     def _add_domain_entity_fields(self, fragment: Fragment):
@@ -450,6 +453,7 @@ class Data:
         fragment.display_format()
         fragment.headline_name()
         fragment.is_favorite()
+        fragment.simplified_data_type()
 
         # TODO: we do we want this?
         # fragment.domain_entity()
