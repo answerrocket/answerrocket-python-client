@@ -463,3 +463,4 @@ class Data:
     def _add_dimension_attribute_fields(self, fragment: Fragment):
         fragment.default_filter_value()
         fragment.is_required_in_query()
+        fragment.dimension_value_mapping_list()

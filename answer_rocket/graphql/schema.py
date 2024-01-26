@@ -95,7 +95,7 @@ class MaxDomainAttribute(sgqlc.types.Interface):
 
 class MaxDimensionAttribute(sgqlc.types.Interface):
     __schema__ = schema
-    __field_names__ = ('type', 'id', 'name', 'description', 'output_label', 'synonyms', 'output_label_plural', 'hide_from_user', 'misc_info', 'display_format', 'headline_name', 'is_favorite', 'simplified_data_type', 'domain_entity', 'default_filter_value', 'is_required_in_query')
+    __field_names__ = ('type', 'id', 'name', 'description', 'output_label', 'synonyms', 'output_label_plural', 'hide_from_user', 'misc_info', 'display_format', 'headline_name', 'is_favorite', 'simplified_data_type', 'domain_entity', 'dimension_value_mapping_list', 'default_filter_value', 'is_required_in_query')
     type = sgqlc.types.Field(sgqlc.types.non_null(String), graphql_name='type')
     id = sgqlc.types.Field(sgqlc.types.non_null(String), graphql_name='id')
     name = sgqlc.types.Field(sgqlc.types.non_null(String), graphql_name='name')
@@ -110,6 +110,7 @@ class MaxDimensionAttribute(sgqlc.types.Interface):
     is_favorite = sgqlc.types.Field(sgqlc.types.non_null(Boolean), graphql_name='isFavorite')
     simplified_data_type = sgqlc.types.Field(SimplifiedDataType, graphql_name='simplifiedDataType')
     domain_entity = sgqlc.types.Field('MaxDomainEntity', graphql_name='domainEntity')
+    dimension_value_mapping_list = sgqlc.types.Field(sgqlc.types.non_null(sgqlc.types.list_of(sgqlc.types.non_null('DimensionValueMapping'))), graphql_name='dimensionValueMappingList')
     default_filter_value = sgqlc.types.Field(String, graphql_name='defaultFilterValue')
     is_required_in_query = sgqlc.types.Field(sgqlc.types.non_null(Boolean), graphql_name='isRequiredInQuery')
 
@@ -176,6 +177,13 @@ class CreateMaxCopilotSkillChatQuestionResponse(sgqlc.types.Type):
     success = sgqlc.types.Field(sgqlc.types.non_null(Boolean), graphql_name='success')
     code = sgqlc.types.Field(String, graphql_name='code')
     error = sgqlc.types.Field(String, graphql_name='error')
+
+
+class DimensionValueMapping(sgqlc.types.Type):
+    __schema__ = schema
+    __field_names__ = ('value', 'mapped_values')
+    value = sgqlc.types.Field(sgqlc.types.non_null(String), graphql_name='value')
+    mapped_values = sgqlc.types.Field(sgqlc.types.non_null(sgqlc.types.list_of(sgqlc.types.non_null(String))), graphql_name='mappedValues')
 
 
 class DomainObjectResponse(sgqlc.types.Type):
