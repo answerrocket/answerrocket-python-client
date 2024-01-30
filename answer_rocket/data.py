@@ -415,7 +415,6 @@ class Data:
         self._add_domain_attribute_fields(calculated_attribute_frag)
         self._add_dimension_attribute_fields(calculated_attribute_frag)
         calculated_attribute_frag.rql()
-        calculated_attribute_frag.sql()
         domain_object.__fragment__(calculated_attribute_frag)
 
         metric_attribute_frag = Fragment(MaxMetricAttribute, 'MaxMetricAttributeFragment')
@@ -454,6 +453,7 @@ class Data:
         fragment.headline_name()
         fragment.is_favorite()
         fragment.simplified_data_type()
+        fragment.sql()
 
         # TODO: we do we want this?
         # fragment.domain_entity()
