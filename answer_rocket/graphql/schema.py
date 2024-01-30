@@ -76,7 +76,7 @@ class MaxDomainObject(sgqlc.types.Interface):
 
 class MaxDomainAttribute(sgqlc.types.Interface):
     __schema__ = schema
-    __field_names__ = ('type', 'id', 'name', 'description', 'output_label', 'synonyms', 'output_label_plural', 'hide_from_user', 'misc_info', 'display_format', 'headline_name', 'is_favorite', 'simplified_data_type', 'domain_entity')
+    __field_names__ = ('type', 'id', 'name', 'description', 'output_label', 'synonyms', 'output_label_plural', 'hide_from_user', 'misc_info', 'display_format', 'headline_name', 'is_favorite', 'simplified_data_type', 'sql', 'domain_entity')
     type = sgqlc.types.Field(sgqlc.types.non_null(String), graphql_name='type')
     id = sgqlc.types.Field(sgqlc.types.non_null(String), graphql_name='id')
     name = sgqlc.types.Field(sgqlc.types.non_null(String), graphql_name='name')
@@ -90,12 +90,13 @@ class MaxDomainAttribute(sgqlc.types.Interface):
     headline_name = sgqlc.types.Field(String, graphql_name='headlineName')
     is_favorite = sgqlc.types.Field(sgqlc.types.non_null(Boolean), graphql_name='isFavorite')
     simplified_data_type = sgqlc.types.Field(SimplifiedDataType, graphql_name='simplifiedDataType')
+    sql = sgqlc.types.Field(String, graphql_name='sql')
     domain_entity = sgqlc.types.Field('MaxDomainEntity', graphql_name='domainEntity')
 
 
 class MaxDimensionAttribute(sgqlc.types.Interface):
     __schema__ = schema
-    __field_names__ = ('type', 'id', 'name', 'description', 'output_label', 'synonyms', 'output_label_plural', 'hide_from_user', 'misc_info', 'display_format', 'headline_name', 'is_favorite', 'simplified_data_type', 'domain_entity', 'dimension_value_mapping_list', 'default_filter_value', 'is_required_in_query')
+    __field_names__ = ('type', 'id', 'name', 'description', 'output_label', 'synonyms', 'output_label_plural', 'hide_from_user', 'misc_info', 'display_format', 'headline_name', 'is_favorite', 'simplified_data_type', 'sql', 'domain_entity', 'dimension_value_mapping_list', 'default_filter_value', 'is_required_in_query')
     type = sgqlc.types.Field(sgqlc.types.non_null(String), graphql_name='type')
     id = sgqlc.types.Field(sgqlc.types.non_null(String), graphql_name='id')
     name = sgqlc.types.Field(sgqlc.types.non_null(String), graphql_name='name')
@@ -109,6 +110,7 @@ class MaxDimensionAttribute(sgqlc.types.Interface):
     headline_name = sgqlc.types.Field(String, graphql_name='headlineName')
     is_favorite = sgqlc.types.Field(sgqlc.types.non_null(Boolean), graphql_name='isFavorite')
     simplified_data_type = sgqlc.types.Field(SimplifiedDataType, graphql_name='simplifiedDataType')
+    sql = sgqlc.types.Field(String, graphql_name='sql')
     domain_entity = sgqlc.types.Field('MaxDomainEntity', graphql_name='domainEntity')
     dimension_value_mapping_list = sgqlc.types.Field(sgqlc.types.non_null(sgqlc.types.list_of(sgqlc.types.non_null('DimensionValueMapping'))), graphql_name='dimensionValueMappingList')
     default_filter_value = sgqlc.types.Field(String, graphql_name='defaultFilterValue')
@@ -432,9 +434,8 @@ class AzureOpenaiEmbeddingLLMApiConfig(sgqlc.types.Type, LLMApiConfig):
 
 class MaxCalculatedAttribute(sgqlc.types.Type, MaxDomainObject, MaxDomainAttribute, MaxDimensionAttribute):
     __schema__ = schema
-    __field_names__ = ('rql', 'sql')
+    __field_names__ = ('rql',)
     rql = sgqlc.types.Field(String, graphql_name='rql')
-    sql = sgqlc.types.Field(String, graphql_name='sql')
 
 
 class MaxCalculatedMetric(sgqlc.types.Type, MaxDomainObject):
