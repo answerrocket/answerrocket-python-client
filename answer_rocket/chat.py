@@ -73,10 +73,10 @@ class Chat:
 
         # Fall back to completion for old cases where model_type could be a different value such as GPT_4, etc.
         # This is for backwards compatibility... hopefully this block does not need to be used much in the future
-        if model_type not in ['COMPLETION', 'EMBEDDING']:
+        if model_type == 'Embedding':
+            model_type: ModelType = 'EMBEDDING'
+        elif model_type not in ['COMPLETION', 'EMBEDDING']:
             model_type: ModelType = 'COMPLETION'
-        elif model_type == 'Embedding':
-            model_type = 'EMBEDDING'
 
         llm_api_config = self._get_llm_config(model_type=model_type)
         mapped_api_args = _map_llm_api_config_parameters(llm_api_config=llm_api_config, model_type=model_type)
