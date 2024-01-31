@@ -15,7 +15,7 @@ from answer_rocket.graphql.schema import (LLMApiConfig, AzureOpenaiCompletionLLM
 
 logger = logging.getLogger(__name__)
 
-ModelType = Literal['GPT3_5', 'GPT4', 'Embedding']
+ModelType = Literal['COMPLETION', 'EMBEDDING']
 ApiType = Literal['AZURE', 'OPENAI']
 
 LLMConfigType = LLMApiConfig | AzureOpenaiEmbeddingLLMApiConfig | AzureOpenaiCompletionLLMApiConfig | \
@@ -54,11 +54,11 @@ class Chat:
         except Exception as e:
             logger.error("failed to get LLM config", exc_info=True)
 
-    def completion(self, model_type: ModelType = 'GPT3_5', stream_callback: Optional[Callable] = None, **kwargs):
+    def completion(self, model_type: ModelType = 'COMPLETION', stream_callback: Optional[Callable] = None, **kwargs):
         """
         Wrapper for the OpenAI chat completion API. This will attempt to retry requests.
         See here for documentation on the wrapped call: https://platform.openai.com/docs/api-reference/chat/create
-        :param model_type: LLM model type to use. One of GPT3_5, GPT4, Embedding
+        :param model_type: LLM model type to use. One of COMPLETION, EMBEDDING
         :param stream_callback: if provided, a function that will be called with the stream response each time one is
             received
 
@@ -70,6 +70,14 @@ class Chat:
 
         :return: success indicator (true/false), and a result which is an error string if success is false, or the assistant's reply object if success is true
         """
+
+        # Fall back to completion for old cases where model_type could be a different value such as GPT_4, etc.
+        # This is for backwards compatibility... hopefully this block does not need to be used much in the future
+        if model_type not in ['COMPLETION', 'EMBEDDING']:
+            model_type: ModelType = 'COMPLETION'
+        elif model_type == 'Embedding':
+            model_type = 'EMBEDDING'
+
         llm_api_config = self._get_llm_config(model_type=model_type)
         mapped_api_args = _map_llm_api_config_parameters(llm_api_config=llm_api_config, model_type=model_type)
 
@@ -256,7 +264,7 @@ def _create_llm_config_fragments():
     ]
 
 
-def _map_llm_api_config_parameters(llm_api_config: LLMConfigType, model_type: ModelType = 'GPT3_5'):
+def _map_llm_api_config_parameters(llm_api_config: LLMConfigType, model_type: ModelType = 'COMPLETION'):
     """
     Maps the LLM Api config to the parameters for openai calls.
     """
@@ -268,7 +276,6 @@ def _map_llm_api_config_parameters(llm_api_config: LLMConfigType, model_type: Mo
         kwargs.update({
             "engine": llm_api_config.model_name,
             "api_base": llm_api_config.api_base_url,
-            "api_version": llm_api_config.api_version,
             "api_type": llm_api_config.api_type,
         })
     elif llm_api_config.api_type == 'OPENAI':
@@ -279,14 +286,14 @@ def _map_llm_api_config_parameters(llm_api_config: LLMConfigType, model_type: Mo
     else:
         raise Exception("Invalid LLM config: Unknown api_type")
 
-    if model_type == 'GPT3_5' or model_type == 'GPT4':
+    if model_type == 'COMPLETION':
         kwargs.update({
             "max_tokens": llm_api_config.max_tokens_content_generation,
             "temperature": llm_api_config.temperature,
             "top_p": llm_api_config.top_p,
             "frequency_penalty": llm_api_config.frequency_penalty,
             "presence_penalty": llm_api_config.presence_penalty,
-            "stop": llm_api_config.stop_sequence,
+            "stop": "** DONE **",
         })
 
     return kwargs
