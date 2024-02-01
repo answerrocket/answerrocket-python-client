@@ -276,6 +276,7 @@ def _map_llm_api_config_parameters(llm_api_config: LLMConfigType, model_type: Mo
         kwargs.update({
             "engine": llm_api_config.model_name,
             "api_base": llm_api_config.api_base_url,
+            "api_version": llm_api_config.api_version,
             "api_type": llm_api_config.api_type,
         })
     elif llm_api_config.api_type == 'OPENAI':
