@@ -412,9 +412,10 @@ class Query(sgqlc.types.Type):
 
 class AzureOpenaiCompletionLLMApiConfig(sgqlc.types.Type, LLMApiConfig):
     __schema__ = schema
-    __field_names__ = ('api_base_url', 'api_version', 'max_tokens_content_generation', 'temperature', 'top_p', 'presence_penalty', 'frequency_penalty')
+    __field_names__ = ('api_base_url', 'api_version', 'openai_model_name', 'max_tokens_content_generation', 'temperature', 'top_p', 'presence_penalty', 'frequency_penalty')
     api_base_url = sgqlc.types.Field(sgqlc.types.non_null(String), graphql_name='apiBaseUrl')
     api_version = sgqlc.types.Field(sgqlc.types.non_null(String), graphql_name='apiVersion')
+    openai_model_name = sgqlc.types.Field(sgqlc.types.non_null(String), graphql_name='openaiModelName')
     max_tokens_content_generation = sgqlc.types.Field(sgqlc.types.non_null(Int), graphql_name='maxTokensContentGeneration')
     temperature = sgqlc.types.Field(sgqlc.types.non_null(Float), graphql_name='temperature')
     top_p = sgqlc.types.Field(sgqlc.types.non_null(Float), graphql_name='topP')
