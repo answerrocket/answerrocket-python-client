@@ -272,7 +272,7 @@ class MaxDatabase(sgqlc.types.Type):
 
 class MaxDataset(sgqlc.types.Type):
     __schema__ = schema
-    __field_names__ = ('dataset_id', 'name', 'domain_objects', 'misc_info', 'database', 'tables', 'dimension_value_distribution_map')
+    __field_names__ = ('dataset_id', 'name', 'domain_objects', 'misc_info', 'database', 'tables', 'dimension_value_distribution_map', 'date_range_boundary_attribute_id')
     dataset_id = sgqlc.types.Field(sgqlc.types.non_null(UUID), graphql_name='datasetId')
     name = sgqlc.types.Field(sgqlc.types.non_null(String), graphql_name='name')
     domain_objects = sgqlc.types.Field(sgqlc.types.non_null(sgqlc.types.list_of(sgqlc.types.non_null(MaxDomainObject))), graphql_name='domainObjects')
@@ -280,6 +280,7 @@ class MaxDataset(sgqlc.types.Type):
     database = sgqlc.types.Field(MaxDatabase, graphql_name='database')
     tables = sgqlc.types.Field(sgqlc.types.non_null(sgqlc.types.list_of(sgqlc.types.non_null('MaxTable'))), graphql_name='tables')
     dimension_value_distribution_map = sgqlc.types.Field(JSON, graphql_name='dimensionValueDistributionMap')
+    date_range_boundary_attribute_id = sgqlc.types.Field(String, graphql_name='dateRangeBoundaryAttributeId')
 
 
 class MaxMutationResponse(sgqlc.types.Type):
