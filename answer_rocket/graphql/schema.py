@@ -272,7 +272,7 @@ class MaxDatabase(sgqlc.types.Type):
 
 class MaxDataset(sgqlc.types.Type):
     __schema__ = schema
-    __field_names__ = ('dataset_id', 'name', 'domain_objects', 'misc_info', 'database', 'tables', 'dimension_value_distribution_map', 'date_range_boundary_attribute_id')
+    __field_names__ = ('dataset_id', 'name', 'domain_objects', 'misc_info', 'database', 'tables', 'dimension_value_distribution_map', 'date_range_boundary_attribute_id', 'dimension_hierarchies')
     dataset_id = sgqlc.types.Field(sgqlc.types.non_null(UUID), graphql_name='datasetId')
     name = sgqlc.types.Field(sgqlc.types.non_null(String), graphql_name='name')
     domain_objects = sgqlc.types.Field(sgqlc.types.non_null(sgqlc.types.list_of(sgqlc.types.non_null(MaxDomainObject))), graphql_name='domainObjects')
@@ -281,6 +281,17 @@ class MaxDataset(sgqlc.types.Type):
     tables = sgqlc.types.Field(sgqlc.types.non_null(sgqlc.types.list_of(sgqlc.types.non_null('MaxTable'))), graphql_name='tables')
     dimension_value_distribution_map = sgqlc.types.Field(JSON, graphql_name='dimensionValueDistributionMap')
     date_range_boundary_attribute_id = sgqlc.types.Field(String, graphql_name='dateRangeBoundaryAttributeId')
+    dimension_hierarchies = sgqlc.types.Field(sgqlc.types.non_null(sgqlc.types.list_of('MaxDimensionHierarchyNode')), graphql_name='dimensionHierarchies')
+
+
+class MaxDimensionHierarchyNode(sgqlc.types.Type):
+    __schema__ = schema
+    __field_names__ = ('dimension_hierarchy_node_id', 'dimension_attribute_id', 'description', 'exclude_from_market_size', 'children')
+    dimension_hierarchy_node_id = sgqlc.types.Field(sgqlc.types.non_null(UUID), graphql_name='dimensionHierarchyNodeId')
+    dimension_attribute_id = sgqlc.types.Field(sgqlc.types.non_null(String), graphql_name='dimensionAttributeId')
+    description = sgqlc.types.Field(String, graphql_name='description')
+    exclude_from_market_size = sgqlc.types.Field(sgqlc.types.non_null(Boolean), graphql_name='excludeFromMarketSize')
+    children = sgqlc.types.Field(sgqlc.types.non_null(sgqlc.types.list_of(sgqlc.types.non_null('MaxDimensionHierarchyNode'))), graphql_name='children')
 
 
 class MaxMutationResponse(sgqlc.types.Type):
