@@ -230,6 +230,7 @@ class Data:
             gql_query.misc_info()
             gql_query.dimension_value_distribution_map()
             gql_query.date_range_boundary_attribute_id()
+            gql_query.dimension_hierarchies()
 
             database = gql_query.database()
             database.database_id()
