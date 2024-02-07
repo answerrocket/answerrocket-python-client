@@ -272,7 +272,7 @@ class MaxDatabase(sgqlc.types.Type):
 
 class MaxDataset(sgqlc.types.Type):
     __schema__ = schema
-    __field_names__ = ('dataset_id', 'name', 'domain_objects', 'misc_info', 'database', 'tables', 'dimension_value_distribution_map', 'date_range_boundary_attribute_id', 'dimension_hierarchies')
+    __field_names__ = ('dataset_id', 'name', 'domain_objects', 'misc_info', 'database', 'tables', 'dimension_value_distribution_map', 'date_range_boundary_attribute_id', 'dimension_hierarchies', 'domain_attribute_statistics')
     dataset_id = sgqlc.types.Field(sgqlc.types.non_null(UUID), graphql_name='datasetId')
     name = sgqlc.types.Field(sgqlc.types.non_null(String), graphql_name='name')
     domain_objects = sgqlc.types.Field(sgqlc.types.non_null(sgqlc.types.list_of(sgqlc.types.non_null(MaxDomainObject))), graphql_name='domainObjects')
@@ -282,6 +282,7 @@ class MaxDataset(sgqlc.types.Type):
     dimension_value_distribution_map = sgqlc.types.Field(JSON, graphql_name='dimensionValueDistributionMap')
     date_range_boundary_attribute_id = sgqlc.types.Field(String, graphql_name='dateRangeBoundaryAttributeId')
     dimension_hierarchies = sgqlc.types.Field(sgqlc.types.non_null(sgqlc.types.list_of('MaxDimensionHierarchyNode')), graphql_name='dimensionHierarchies')
+    domain_attribute_statistics = sgqlc.types.Field(JSON, graphql_name='domainAttributeStatistics')
 
 
 class MaxDimensionHierarchyNode(sgqlc.types.Type):
@@ -292,6 +293,15 @@ class MaxDimensionHierarchyNode(sgqlc.types.Type):
     description = sgqlc.types.Field(String, graphql_name='description')
     exclude_from_market_size = sgqlc.types.Field(sgqlc.types.non_null(Boolean), graphql_name='excludeFromMarketSize')
     children = sgqlc.types.Field(sgqlc.types.non_null(sgqlc.types.list_of(sgqlc.types.non_null('MaxDimensionHierarchyNode'))), graphql_name='children')
+
+
+class MaxDomainAttributeStatisticInfo(sgqlc.types.Type):
+    __schema__ = schema
+    __field_names__ = ('null_count', 'min_value', 'max_value', 'distinct_count')
+    null_count = sgqlc.types.Field(Int, graphql_name='nullCount')
+    min_value = sgqlc.types.Field(String, graphql_name='minValue')
+    max_value = sgqlc.types.Field(String, graphql_name='maxValue')
+    distinct_count = sgqlc.types.Field(Int, graphql_name='distinctCount')
 
 
 class MaxMutationResponse(sgqlc.types.Type):
