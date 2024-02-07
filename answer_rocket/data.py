@@ -1,3 +1,4 @@
+import os
 from typing import Optional
 from uuid import UUID
 
@@ -33,6 +34,8 @@ class Data:
     def __init__(self, auth_helper: AuthHelper, gql_client: GraphQlClient) -> None:
         self._auth_helper = auth_helper
         self._gql_client = gql_client
+        self.copilot_id = os.getenv('AR_COPILOT_ID')
+        self.copilot_skill_id = os.getenv('AR_COPILOT_SKILL_ID')
 
     def execute_sql_query(self, database_id: UUID, sql_query: str, row_limit: Optional[int] = None, copilot_id: Optional[UUID] = None) -> ExecuteSqlQueryResult:
         try:
@@ -46,7 +49,7 @@ class Data:
                 'databaseId': database_id,
                 'sqlQuery': sql_query,
                 'rowLimit': row_limit,
-                'copilotId': copilot_id,
+                'copilotId': copilot_id or self.copilot_id,
             }
 
             query_vars = {
@@ -113,7 +116,7 @@ class Data:
                 'datasetId': dataset_id,
                 'rqlQuery': rql_query,
                 'rowLimit': row_limit,
-                'copilotId': copilot_id,
+                'copilotId': copilot_id or self.copilot_id,
             }
 
             query_vars = {
