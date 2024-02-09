@@ -240,6 +240,7 @@ class Data:
             gql_query.dimension_value_distribution_map()
             gql_query.date_range_boundary_attribute_id()
             gql_query.dimension_hierarchies()
+            gql_query.metric_hierarchies()
             gql_query.domain_attribute_statistics()
 
             database = gql_query.database()
