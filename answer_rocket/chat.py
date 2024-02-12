@@ -4,7 +4,7 @@ from datetime import date, datetime, timedelta, timezone
 from typing import Literal, Callable, Optional
 
 import openai
-from sgqlc.types import Variable, non_null, String, Arg
+from sgqlc.types import Variable, non_null, String, Arg, Boolean
 from sgqlc.operation import Fragment
 
 from answer_rocket.auth import AuthHelper
@@ -147,7 +147,7 @@ class Chat:
 
         return False, str(last_error)
 
-    def ask_question(self, copilot_id: str, question: str, thread_id: str = None):
+    def ask_question(self, copilot_id: str, question: str, thread_id: str = None, skip_report_cache: bool = False):
         """
         Calls the Max chat pipeline to answer a natural language question and receive analysis and insights
         in response.
@@ -155,23 +155,27 @@ class Chat:
         :param question: The natural language question to ask the engine.
         :param thread_id: (optional) ID of the thread/conversation to run the question on. The question and answer will
          be added to the bottom of the thread.
+        :param skip_report_cache: Should the report cache be skipped for this question?
         :return: the ChatEntry response object associate with the answer from the pipeline
         """
         ask_question_query_args = {
             'copilotId': UUID(copilot_id),
             'question': question,
             'threadId': UUID(thread_id) if thread_id else None,
+            'skipReportCache': skip_report_cache,
         }
         ask_question_query_vars = {
             'copilot_id': Arg(non_null(UUID)),
             'question': Arg(non_null(String)),
             'thread_id': Arg(UUID),
+            'skip_report_cache': Arg(Boolean),
         }
         operation = self.gql_client.mutation(variables=ask_question_query_vars)
         ask_question_query = operation.ask_chat_question(
             copilot_id=Variable('copilot_id'),
             question=Variable('question'),
             thread_id=Variable('thread_id'),
+            skip_report_cache=Variable('skip_report_cache'),
         )
 
         result = self.gql_client.submit(operation, ask_question_query_args)
