@@ -446,6 +446,7 @@ class Data:
 
     def _add_domain_entity_fields(self, fragment: Fragment):
         fragment.db_table()
+        fragment.derived_table_sql()
 
         attributes = fragment.attributes()
 
