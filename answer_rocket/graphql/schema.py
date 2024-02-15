@@ -118,7 +118,7 @@ class MaxDimensionAttribute(sgqlc.types.Interface):
 
 class MaxDomainEntity(sgqlc.types.Interface):
     __schema__ = schema
-    __field_names__ = ('type', 'id', 'name', 'description', 'output_label', 'synonyms', 'output_label_plural', 'hide_from_user', 'misc_info', 'db_table', 'attributes')
+    __field_names__ = ('type', 'id', 'name', 'description', 'output_label', 'synonyms', 'output_label_plural', 'hide_from_user', 'misc_info', 'db_table', 'derived_table_sql', 'attributes')
     type = sgqlc.types.Field(sgqlc.types.non_null(String), graphql_name='type')
     id = sgqlc.types.Field(sgqlc.types.non_null(String), graphql_name='id')
     name = sgqlc.types.Field(sgqlc.types.non_null(String), graphql_name='name')
@@ -129,6 +129,7 @@ class MaxDomainEntity(sgqlc.types.Interface):
     hide_from_user = sgqlc.types.Field(sgqlc.types.non_null(Boolean), graphql_name='hideFromUser')
     misc_info = sgqlc.types.Field(String, graphql_name='miscInfo')
     db_table = sgqlc.types.Field(sgqlc.types.non_null(String), graphql_name='dbTable')
+    derived_table_sql = sgqlc.types.Field(String, graphql_name='derivedTableSql')
     attributes = sgqlc.types.Field(sgqlc.types.non_null(sgqlc.types.list_of(sgqlc.types.non_null(MaxDomainAttribute))), graphql_name='attributes')
 
 
