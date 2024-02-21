@@ -278,9 +278,10 @@ class MaxDatabase(sgqlc.types.Type):
 
 class MaxDataset(sgqlc.types.Type):
     __schema__ = schema
-    __field_names__ = ('dataset_id', 'name', 'domain_objects', 'misc_info', 'database', 'tables', 'dimension_value_distribution_map', 'date_range_boundary_attribute_id', 'dimension_hierarchies', 'metric_hierarchies', 'domain_attribute_statistics')
+    __field_names__ = ('dataset_id', 'name', 'description', 'domain_objects', 'misc_info', 'database', 'tables', 'dimension_value_distribution_map', 'date_range_boundary_attribute_id', 'dimension_hierarchies', 'metric_hierarchies', 'domain_attribute_statistics', 'default_performance_metric_id')
     dataset_id = sgqlc.types.Field(sgqlc.types.non_null(UUID), graphql_name='datasetId')
     name = sgqlc.types.Field(sgqlc.types.non_null(String), graphql_name='name')
+    description = sgqlc.types.Field(String, graphql_name='description')
     domain_objects = sgqlc.types.Field(sgqlc.types.non_null(sgqlc.types.list_of(sgqlc.types.non_null(MaxDomainObject))), graphql_name='domainObjects')
     misc_info = sgqlc.types.Field(String, graphql_name='miscInfo')
     database = sgqlc.types.Field(MaxDatabase, graphql_name='database')
@@ -290,6 +291,7 @@ class MaxDataset(sgqlc.types.Type):
     dimension_hierarchies = sgqlc.types.Field(sgqlc.types.non_null(sgqlc.types.list_of('MaxDimensionHierarchyNode')), graphql_name='dimensionHierarchies')
     metric_hierarchies = sgqlc.types.Field(sgqlc.types.non_null(sgqlc.types.list_of('MaxMetricHierarchyNode')), graphql_name='metricHierarchies')
     domain_attribute_statistics = sgqlc.types.Field(JSON, graphql_name='domainAttributeStatistics')
+    default_performance_metric_id = sgqlc.types.Field(String, graphql_name='defaultPerformanceMetricId')
 
 
 class MaxDimensionHierarchyNode(sgqlc.types.Type):

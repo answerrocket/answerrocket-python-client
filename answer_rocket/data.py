@@ -219,7 +219,7 @@ class Data:
             """
             query_args = {
                 'datasetId': str(dataset_id),
-                'copilotId': str(copilot_id) if copilot_id is not None else None,
+                'copilotId': str(copilot_id or self.copilot_id),
             }
 
             query_vars = {
@@ -236,12 +236,14 @@ class Data:
 
             gql_query.dataset_id()
             gql_query.name()
+            gql_query.description()
             gql_query.misc_info()
             gql_query.dimension_value_distribution_map()
             gql_query.date_range_boundary_attribute_id()
             gql_query.dimension_hierarchies()
             gql_query.metric_hierarchies()
             gql_query.domain_attribute_statistics()
+            gql_query.default_performance_metric_id()
 
             database = gql_query.database()
             database.database_id()
