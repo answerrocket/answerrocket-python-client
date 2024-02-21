@@ -243,6 +243,7 @@ class Data:
             gql_query.dimension_hierarchies()
             gql_query.metric_hierarchies()
             gql_query.domain_attribute_statistics()
+            gql_query.default_performance_metric_id()
 
             database = gql_query.database()
             database.database_id()
