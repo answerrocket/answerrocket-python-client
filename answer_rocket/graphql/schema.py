@@ -11,6 +11,11 @@ schema = sgqlc.types.Schema()
 ########################################################################
 Boolean = sgqlc.types.Boolean
 
+class ChatDryRunType(sgqlc.types.Enum):
+    __schema__ = schema
+    __choices__ = ('SKIP_SKILL_EXEC', 'SKIP_SKILL_NLG')
+
+
 DateTime = sgqlc.types.datetime.DateTime
 
 class DpsAggMethod(sgqlc.types.Enum):
@@ -363,6 +368,7 @@ class Mutation(sgqlc.types.Type):
         ('question', sgqlc.types.Arg(sgqlc.types.non_null(String), graphql_name='question', default=None)),
         ('thread_id', sgqlc.types.Arg(UUID, graphql_name='threadId', default=None)),
         ('skip_report_cache', sgqlc.types.Arg(Boolean, graphql_name='skipReportCache', default=None)),
+        ('dry_run_type', sgqlc.types.Arg(ChatDryRunType, graphql_name='dryRunType', default=None)),
 ))
     )
 

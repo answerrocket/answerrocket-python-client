@@ -1,6 +1,6 @@
 import os
 import logging
-from datetime import date, datetime, timedelta, timezone
+from datetime import datetime
 from typing import Literal, Callable, Optional
 
 import openai
@@ -11,7 +11,7 @@ from answer_rocket.auth import AuthHelper
 from answer_rocket.graphql.client import GraphQlClient
 from answer_rocket.graphql.schema import (LLMApiConfig, AzureOpenaiCompletionLLMApiConfig,
                                           AzureOpenaiEmbeddingLLMApiConfig, OpenaiCompletionLLMApiConfig,
-                                          OpenaiEmbeddingLLMApiConfig, UUID, Int, DateTime)
+                                          OpenaiEmbeddingLLMApiConfig, UUID, Int, DateTime, ChatDryRunType)
 
 logger = logging.getLogger(__name__)
 
@@ -147,7 +147,8 @@ class Chat:
 
         return False, str(last_error)
 
-    def ask_question(self, copilot_id: str, question: str, thread_id: str = None, skip_report_cache: bool = False):
+
+    def ask_question(self, copilot_id: str, question: str, thread_id: str = None, skip_report_cache: bool = False, dry_run_type: str = None):
         """
         Calls the Max chat pipeline to answer a natural language question and receive analysis and insights
         in response.
@@ -163,12 +164,14 @@ class Chat:
             'question': question,
             'threadId': UUID(thread_id) if thread_id else None,
             'skipReportCache': skip_report_cache,
+            'dryRunType': ChatDryRunType(dry_run_type) if dry_run_type else None
         }
         ask_question_query_vars = {
             'copilot_id': Arg(non_null(UUID)),
             'question': Arg(non_null(String)),
             'thread_id': Arg(UUID),
             'skip_report_cache': Arg(Boolean),
+            'dry_run_type': Arg(ChatDryRunType)
         }
         operation = self.gql_client.mutation(variables=ask_question_query_vars)
         ask_question_query = operation.ask_chat_question(
@@ -176,6 +179,7 @@ class Chat:
             question=Variable('question'),
             thread_id=Variable('thread_id'),
             skip_report_cache=Variable('skip_report_cache'),
+            dry_run_type=Variable('dry_run_type')
         )
 
         result = self.gql_client.submit(operation, ask_question_query_args)
