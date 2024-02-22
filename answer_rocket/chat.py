@@ -157,6 +157,7 @@ class Chat:
         :param thread_id: (optional) ID of the thread/conversation to run the question on. The question and answer will
          be added to the bottom of the thread.
         :param skip_report_cache: Should the report cache be skipped for this question?
+        :param dry_run_type: If provided, run a dry run at the specified level: 'SKIP_SKILL_EXEC', 'SKIP_SKILL_NLG'
         :return: the ChatEntry response object associate with the answer from the pipeline
         """
         ask_question_query_args = {

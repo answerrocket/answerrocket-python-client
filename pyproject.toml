@@ -1,6 +1,6 @@
 [project]
 name = "answerrocket-client"
-version = "0.1.36.0"
+version = "0.1.37.0"
 description = "Python client for interacting with AnswerRocket's skill API"
 readme = "readme.md"
 requires-python = ">=3.10.7"
