@@ -219,7 +219,7 @@ class Data:
             """
             query_args = {
                 'datasetId': str(dataset_id),
-                'copilotId': str(copilot_id or self.copilot_id),
+                'copilotId': str(copilot_id) if copilot_id else str(self.copilot_id) if self.copilot_id else None
             }
 
             query_vars = {
