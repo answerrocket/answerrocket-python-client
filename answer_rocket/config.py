@@ -7,7 +7,8 @@ from sgqlc.types import Variable, Arg, non_null, String
 from answer_rocket.auth import AuthHelper
 from answer_rocket.graphql.client import GraphQlClient
 from answer_rocket.graphql.schema import UUID as GQL_UUID, MaxCopilotSkillChatQuestion, MaxCopilotSkill, MaxCopilot, \
-    MaxMutationResponse, CreateMaxCopilotSkillChatQuestionResponse, MaxCopilotQuestionInput
+    MaxMutationResponse, CreateMaxCopilotSkillChatQuestionResponse, MaxCopilotQuestionInput, \
+    MaxCreateCopilotQuestionResponse
 
 # Not clear to what degree there will be distinct "local" vs "server" modes. If there end up being 0 examples of config
 # that must be grabbed from a server even while developing locally then it may make sense to have two different helpers
@@ -216,18 +217,21 @@ class Config:
         except Exception as e:
             return None
 
-    def create_copilot_question(self, nl='') -> MaxMutationResponse:
+    def create_copilot_question(self, nl: str, skill_id: UUID = None, hint: str = None, parameters = None) -> MaxCreateCopilotQuestionResponse:
         try:
             mutation_args = {
                 'copilotId': self.copilot_id,
                 'copilotQuestion': {
-                    'nl': nl
+                    'nl': nl,
+                    'skillId': skill_id,
+                    'hint': hint,
+                    'parameters': parameters
                 }
             }
 
             mutation_vars = {
                 'copilot_id': Arg(non_null(GQL_UUID)),
-                'copilot_question': Arg(non_null(MaxCopilotQuestionInput))
+                'copilot_question': Arg(non_null(MaxCopilotQuestionInput)),
             }
 
             operation = self._gql_client.mutation(variables=mutation_vars)
@@ -245,13 +249,16 @@ class Config:
         except Exception as e:
             return None
 
-    def update_copilot_question(self, copilot_question_id: str, nl='') -> MaxMutationResponse:
+    def update_copilot_question(self, copilot_question_id: UUID, nl: str = None, skill_id: UUID = None, hint: str = None, parameters = None) -> MaxMutationResponse:
         try:
             mutation_args = {
                 'copilotId': self.copilot_id,
-                'copilotQuestionId': copilot_question_id,
+                'copilotQuestionId': str(copilot_question_id),
                 'copilotQuestion': {
-                    'nl': nl
+                    'nl': nl,
+                    'skillId': skill_id,
+                    'hint': hint,
+                    'parameters': parameters
                 }
             }
 

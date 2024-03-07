@@ -55,7 +55,7 @@ class MaxCopilotQuestionInput(sgqlc.types.Input):
     __schema__ = schema
     __field_names__ = ('skill_id', 'nl', 'hint', 'parameters')
     skill_id = sgqlc.types.Field(UUID, graphql_name='skillId')
-    nl = sgqlc.types.Field(sgqlc.types.non_null(String), graphql_name='nl')
+    nl = sgqlc.types.Field(String, graphql_name='nl')
     hint = sgqlc.types.Field(String, graphql_name='hint')
     parameters = sgqlc.types.Field(JSON, graphql_name='parameters')
 
@@ -294,6 +294,15 @@ class MaxCopilotSkillChatQuestion(sgqlc.types.Type):
     expected_completion_response = sgqlc.types.Field(sgqlc.types.non_null(String), graphql_name='expectedCompletionResponse')
 
 
+class MaxCreateCopilotQuestionResponse(sgqlc.types.Type):
+    __schema__ = schema
+    __field_names__ = ('copilot_question_id', 'success', 'code', 'errors')
+    copilot_question_id = sgqlc.types.Field(UUID, graphql_name='copilotQuestionId')
+    success = sgqlc.types.Field(sgqlc.types.non_null(Boolean), graphql_name='success')
+    code = sgqlc.types.Field(String, graphql_name='code')
+    errors = sgqlc.types.Field(sgqlc.types.non_null(sgqlc.types.list_of(sgqlc.types.non_null(String))), graphql_name='errors')
+
+
 class MaxDatabase(sgqlc.types.Type):
     __schema__ = schema
     __field_names__ = ('database_id', 'name', 'dbms', 'schema')
@@ -389,7 +398,7 @@ class Mutation(sgqlc.types.Type):
         ('copilot_skill_chat_question_id', sgqlc.types.Arg(sgqlc.types.non_null(UUID), graphql_name='copilotSkillChatQuestionId', default=None)),
 ))
     )
-    create_max_copilot_question = sgqlc.types.Field(sgqlc.types.non_null(MaxMutationResponse), graphql_name='createMaxCopilotQuestion', args=sgqlc.types.ArgDict((
+    create_max_copilot_question = sgqlc.types.Field(sgqlc.types.non_null(MaxCreateCopilotQuestionResponse), graphql_name='createMaxCopilotQuestion', args=sgqlc.types.ArgDict((
         ('copilot_id', sgqlc.types.Arg(sgqlc.types.non_null(UUID), graphql_name='copilotId', default=None)),
         ('copilot_question', sgqlc.types.Arg(sgqlc.types.non_null(MaxCopilotQuestionInput), graphql_name='copilotQuestion', default=None)),
 ))
