@@ -7,7 +7,7 @@ from sgqlc.types import Variable, Arg, non_null, String
 from answer_rocket.auth import AuthHelper
 from answer_rocket.graphql.client import GraphQlClient
 from answer_rocket.graphql.schema import UUID as GQL_UUID, MaxCopilotSkillChatQuestion, MaxCopilotSkill, MaxCopilot, \
-    MaxMutationResponse, CreateMaxCopilotSkillChatQuestionResponse
+    MaxMutationResponse, CreateMaxCopilotSkillChatQuestionResponse, MaxCopilotQuestionInput
 
 # Not clear to what degree there will be distinct "local" vs "server" modes. If there end up being 0 examples of config
 # that must be grabbed from a server even while developing locally then it may make sense to have two different helpers
@@ -215,6 +215,95 @@ class Config:
             return max_mutation_response
         except Exception as e:
             return None
+
+    def create_copilot_question(self, nl='') -> MaxMutationResponse:
+        try:
+            mutation_args = {
+                'copilotId': self.copilot_id,
+                'copilotQuestion': {
+                    'nl': nl
+                }
+            }
+
+            mutation_vars = {
+                'copilot_id': Arg(non_null(GQL_UUID)),
+                'copilot_question': Arg(non_null(MaxCopilotQuestionInput))
+            }
+
+            operation = self._gql_client.mutation(variables=mutation_vars)
+
+            operation.create_max_copilot_question(
+                copilot_id=Variable('copilot_id'),
+                copilot_question=Variable('copilot_question')
+            )
+
+            result = self._gql_client.submit(operation, mutation_args)
+
+            max_mutation_response = result.create_max_copilot_question
+
+            return max_mutation_response
+        except Exception as e:
+            return None
+
+    def update_copilot_question(self, copilot_question_id: str, nl='') -> MaxMutationResponse:
+        try:
+            mutation_args = {
+                'copilotId': self.copilot_id,
+                'copilotQuestionId': copilot_question_id,
+                'copilotQuestion': {
+                    'nl': nl
+                }
+            }
+
+            mutation_vars = {
+                'copilot_id': Arg(non_null(GQL_UUID)),
+                'copilot_question_id': Arg(non_null(GQL_UUID)),
+                'copilot_question': Arg(non_null(MaxCopilotQuestionInput))
+            }
+
+            operation = self._gql_client.mutation(variables=mutation_vars)
+
+            operation.update_max_copilot_question(
+                copilot_id=Variable('copilot_id'),
+                copilot_question_id=Variable('copilot_question_id'),
+                copilot_question=Variable('copilot_question')
+            )
+
+            result = self._gql_client.submit(operation, mutation_args)
+
+            max_mutation_response = result.update_max_copilot_question
+
+            return max_mutation_response
+        except Exception as e:
+            return None
+
+    def delete_copilot_chat_question(self, copilot_question_id: UUID) -> MaxMutationResponse:
+        try:
+            mutation_args = {
+                'copilotId': self.copilot_id,
+                'copilotQuestionId': str(copilot_question_id)
+            }
+
+            mutation_vars = {
+                'copilot_id': Arg(non_null(GQL_UUID)),
+                'copilot_question_id': Arg(non_null(GQL_UUID))
+            }
+
+            operation = self._gql_client.mutation(variables=mutation_vars)
+
+            operation.delete_max_copilot_question(
+                copilot_id=Variable('copilot_id'),
+                copilot_question_id=Variable('copilot_question_id')
+            )
+
+            result = self._gql_client.submit(operation, mutation_args)
+
+            max_mutation_response = result.delete_max_copilot_question
+
+            return max_mutation_response
+        except Exception as e:
+            return None
+
 
 def _complete_artifact_path(artifact_path: str) -> str:
     """
