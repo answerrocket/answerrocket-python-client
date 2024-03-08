@@ -51,6 +51,15 @@ class UUID(sgqlc.types.Scalar):
 ########################################################################
 # Input Objects
 ########################################################################
+class MaxCopilotQuestionInput(sgqlc.types.Input):
+    __schema__ = schema
+    __field_names__ = ('skill_id', 'nl', 'hint', 'parameters')
+    skill_id = sgqlc.types.Field(UUID, graphql_name='skillId')
+    nl = sgqlc.types.Field(String, graphql_name='nl')
+    hint = sgqlc.types.Field(String, graphql_name='hint')
+    parameters = sgqlc.types.Field(JSON, graphql_name='parameters')
+
+
 
 ########################################################################
 # Output Objects and Interfaces
@@ -234,13 +243,31 @@ class MaxColumn(sgqlc.types.Type):
 
 class MaxCopilot(sgqlc.types.Type):
     __schema__ = schema
-    __field_names__ = ('copilot_id', 'name', 'description', 'system_prompt', 'beta_yaml', 'global_python_code')
+    __field_names__ = ('copilot_id', 'name', 'description', 'system_prompt', 'beta_yaml', 'global_python_code', 'copilot_questions')
     copilot_id = sgqlc.types.Field(sgqlc.types.non_null(UUID), graphql_name='copilotId')
     name = sgqlc.types.Field(sgqlc.types.non_null(String), graphql_name='name')
     description = sgqlc.types.Field(String, graphql_name='description')
     system_prompt = sgqlc.types.Field(String, graphql_name='systemPrompt')
     beta_yaml = sgqlc.types.Field(String, graphql_name='betaYaml')
     global_python_code = sgqlc.types.Field(String, graphql_name='globalPythonCode')
+    copilot_questions = sgqlc.types.Field(sgqlc.types.non_null(sgqlc.types.list_of(sgqlc.types.non_null('MaxCopilotQuestion'))), graphql_name='copilotQuestions')
+
+
+class MaxCopilotQuestion(sgqlc.types.Type):
+    __schema__ = schema
+    __field_names__ = ('copilot_question_id', 'nl', 'skill_id', 'parameters', 'is_starter', 'hint', 'created_user_id', 'created_utc', 'last_modified_user_id', 'last_modified_utc', 'version', 'is_deleted')
+    copilot_question_id = sgqlc.types.Field(sgqlc.types.non_null(UUID), graphql_name='copilotQuestionId')
+    nl = sgqlc.types.Field(sgqlc.types.non_null(String), graphql_name='nl')
+    skill_id = sgqlc.types.Field(UUID, graphql_name='skillId')
+    parameters = sgqlc.types.Field(JSON, graphql_name='parameters')
+    is_starter = sgqlc.types.Field(sgqlc.types.non_null(Boolean), graphql_name='isStarter')
+    hint = sgqlc.types.Field(String, graphql_name='hint')
+    created_user_id = sgqlc.types.Field(sgqlc.types.non_null(UUID), graphql_name='createdUserId')
+    created_utc = sgqlc.types.Field(sgqlc.types.non_null(DateTime), graphql_name='createdUtc')
+    last_modified_user_id = sgqlc.types.Field(sgqlc.types.non_null(UUID), graphql_name='lastModifiedUserId')
+    last_modified_utc = sgqlc.types.Field(sgqlc.types.non_null(DateTime), graphql_name='lastModifiedUtc')
+    version = sgqlc.types.Field(sgqlc.types.non_null(UUID), graphql_name='version')
+    is_deleted = sgqlc.types.Field(sgqlc.types.non_null(Boolean), graphql_name='isDeleted')
 
 
 class MaxCopilotSkill(sgqlc.types.Type):
@@ -265,6 +292,15 @@ class MaxCopilotSkillChatQuestion(sgqlc.types.Type):
     copilot_skill_chat_question_id = sgqlc.types.Field(sgqlc.types.non_null(UUID), graphql_name='copilotSkillChatQuestionId')
     question = sgqlc.types.Field(sgqlc.types.non_null(String), graphql_name='question')
     expected_completion_response = sgqlc.types.Field(sgqlc.types.non_null(String), graphql_name='expectedCompletionResponse')
+
+
+class MaxCreateCopilotQuestionResponse(sgqlc.types.Type):
+    __schema__ = schema
+    __field_names__ = ('copilot_question_id', 'success', 'code', 'errors')
+    copilot_question_id = sgqlc.types.Field(UUID, graphql_name='copilotQuestionId')
+    success = sgqlc.types.Field(sgqlc.types.non_null(Boolean), graphql_name='success')
+    code = sgqlc.types.Field(String, graphql_name='code')
+    errors = sgqlc.types.Field(sgqlc.types.non_null(sgqlc.types.list_of(sgqlc.types.non_null(String))), graphql_name='errors')
 
 
 class MaxDatabase(sgqlc.types.Type):
@@ -340,7 +376,7 @@ class MaxTable(sgqlc.types.Type):
 
 class Mutation(sgqlc.types.Type):
     __schema__ = schema
-    __field_names__ = ('create_max_copilot_skill_chat_question', 'update_max_copilot_skill_chat_question', 'delete_max_copilot_skill_chat_question', 'update_chat_answer_payload', 'ask_chat_question')
+    __field_names__ = ('create_max_copilot_skill_chat_question', 'update_max_copilot_skill_chat_question', 'delete_max_copilot_skill_chat_question', 'create_max_copilot_question', 'update_max_copilot_question', 'delete_max_copilot_question', 'update_chat_answer_payload', 'ask_chat_question')
     create_max_copilot_skill_chat_question = sgqlc.types.Field(sgqlc.types.non_null(CreateMaxCopilotSkillChatQuestionResponse), graphql_name='createMaxCopilotSkillChatQuestion', args=sgqlc.types.ArgDict((
         ('copilot_id', sgqlc.types.Arg(sgqlc.types.non_null(UUID), graphql_name='copilotId', default=None)),
         ('copilot_skill_id', sgqlc.types.Arg(sgqlc.types.non_null(UUID), graphql_name='copilotSkillId', default=None)),
@@ -360,6 +396,22 @@ class Mutation(sgqlc.types.Type):
         ('copilot_id', sgqlc.types.Arg(sgqlc.types.non_null(UUID), graphql_name='copilotId', default=None)),
         ('copilot_skill_id', sgqlc.types.Arg(sgqlc.types.non_null(UUID), graphql_name='copilotSkillId', default=None)),
         ('copilot_skill_chat_question_id', sgqlc.types.Arg(sgqlc.types.non_null(UUID), graphql_name='copilotSkillChatQuestionId', default=None)),
+))
+    )
+    create_max_copilot_question = sgqlc.types.Field(sgqlc.types.non_null(MaxCreateCopilotQuestionResponse), graphql_name='createMaxCopilotQuestion', args=sgqlc.types.ArgDict((
+        ('copilot_id', sgqlc.types.Arg(sgqlc.types.non_null(UUID), graphql_name='copilotId', default=None)),
+        ('copilot_question', sgqlc.types.Arg(sgqlc.types.non_null(MaxCopilotQuestionInput), graphql_name='copilotQuestion', default=None)),
+))
+    )
+    update_max_copilot_question = sgqlc.types.Field(sgqlc.types.non_null(MaxMutationResponse), graphql_name='updateMaxCopilotQuestion', args=sgqlc.types.ArgDict((
+        ('copilot_id', sgqlc.types.Arg(sgqlc.types.non_null(UUID), graphql_name='copilotId', default=None)),
+        ('copilot_question_id', sgqlc.types.Arg(sgqlc.types.non_null(UUID), graphql_name='copilotQuestionId', default=None)),
+        ('copilot_question', sgqlc.types.Arg(sgqlc.types.non_null(MaxCopilotQuestionInput), graphql_name='copilotQuestion', default=None)),
+))
+    )
+    delete_max_copilot_question = sgqlc.types.Field(sgqlc.types.non_null(MaxMutationResponse), graphql_name='deleteMaxCopilotQuestion', args=sgqlc.types.ArgDict((
+        ('copilot_id', sgqlc.types.Arg(sgqlc.types.non_null(UUID), graphql_name='copilotId', default=None)),
+        ('copilot_question_id', sgqlc.types.Arg(sgqlc.types.non_null(UUID), graphql_name='copilotQuestionId', default=None)),
 ))
     )
     update_chat_answer_payload = sgqlc.types.Field(JSON, graphql_name='updateChatAnswerPayload', args=sgqlc.types.ArgDict((
