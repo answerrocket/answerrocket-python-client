@@ -213,11 +213,18 @@ class DomainObjectResponse(sgqlc.types.Type):
 
 class EvaluateChatQuestionResponse(sgqlc.types.Type):
     __schema__ = schema
-    __field_names__ = ('success', 'eval_result', 'explanation', 'correct_function')
+    __field_names__ = ('success', 'eval_results')
     success = sgqlc.types.Field(sgqlc.types.non_null(Boolean), graphql_name='success')
-    eval_result = sgqlc.types.Field(sgqlc.types.non_null(Boolean), graphql_name='evalResult')
+    eval_results = sgqlc.types.Field(sgqlc.types.list_of('EvaluateChatQuestionResult'), graphql_name='evalResults')
+
+
+class EvaluateChatQuestionResult(sgqlc.types.Type):
+    __schema__ = schema
+    __field_names__ = ('eval_type', 'pass_', 'explanation', 'correct_function')
+    eval_type = sgqlc.types.Field(sgqlc.types.non_null(String), graphql_name='evalType')
+    pass_ = sgqlc.types.Field(sgqlc.types.non_null(Boolean), graphql_name='pass')
     explanation = sgqlc.types.Field(sgqlc.types.non_null(String), graphql_name='explanation')
-    correct_function = sgqlc.types.Field(sgqlc.types.non_null(String), graphql_name='correctFunction')
+    correct_function = sgqlc.types.Field(String, graphql_name='correctFunction')
 
 
 class ExecuteRqlQueryResponse(sgqlc.types.Type):
