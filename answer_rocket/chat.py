@@ -250,6 +250,28 @@ class Chat:
         result = self.gql_client.submit(operation, get_entries_query_args)
 
         return result.user_chat_entries
+    
+    def evaluate_entry(self, entry_id: str):
+        """
+        Runs and fetches the evaluation for a given entry.
+        :param entry_id: the ID of the entry to fetch evaluation for
+        :return: a ChatEntryEvaluation object
+        """
+        evaluate_entry_mutation_args = {
+            'entryId': UUID(entry_id),
+        }
+        evaluate_entry_mutation_vars = {
+            'entry_id': Arg(non_null(UUID)),
+        }
+        operation = self.gql_client.mutation(variables=evaluate_entry_mutation_vars)
+        evaluate_entry_query = operation.evaluate_chat_question(
+            entry_id=Variable('entry_id'),
+        )
+
+        result = self.gql_client.submit(operation, evaluate_entry_mutation_args)
+
+        return result.evaluate_chat_question
+
 
 
 def _create_llm_config_fragments():
