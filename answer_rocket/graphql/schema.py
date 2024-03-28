@@ -215,7 +215,7 @@ class EvaluateChatQuestionResponse(sgqlc.types.Type):
     __schema__ = schema
     __field_names__ = ('success', 'eval_results')
     success = sgqlc.types.Field(sgqlc.types.non_null(Boolean), graphql_name='success')
-    eval_results = sgqlc.types.Field(sgqlc.types.list_of('EvaluateChatQuestionResult'), graphql_name='evalResults')
+    eval_results = sgqlc.types.Field(sgqlc.types.non_null(sgqlc.types.list_of(sgqlc.types.non_null('EvaluateChatQuestionResult'))), graphql_name='evalResults')
 
 
 class EvaluateChatQuestionResult(sgqlc.types.Type):
@@ -445,6 +445,7 @@ class Mutation(sgqlc.types.Type):
     )
     evaluate_chat_question = sgqlc.types.Field(sgqlc.types.non_null(EvaluateChatQuestionResponse), graphql_name='evaluateChatQuestion', args=sgqlc.types.ArgDict((
         ('entry_id', sgqlc.types.Arg(sgqlc.types.non_null(UUID), graphql_name='entryId', default=None)),
+        ('evals', sgqlc.types.Arg(sgqlc.types.non_null(sgqlc.types.list_of(sgqlc.types.non_null(String))), graphql_name='evals', default=None)),
 ))
     )
 
