@@ -4,7 +4,7 @@ from datetime import datetime
 from typing import Literal, Callable, Optional
 
 import openai
-from sgqlc.types import Variable, non_null, String, Arg, Boolean
+from sgqlc.types import Variable, non_null, String, Arg, Boolean, list_of
 from sgqlc.operation import Fragment
 
 from answer_rocket.auth import AuthHelper
@@ -250,6 +250,32 @@ class Chat:
         result = self.gql_client.submit(operation, get_entries_query_args)
 
         return result.user_chat_entries
+    
+    def evaluate_entry(self, entry_id: str, evals: list[str]):
+        """
+        Runs and fetches the inputted evaluations for a given entry.
+        :param entry_id: the ID of the entry to fetch evaluation for
+        :param evals: a list of strings containing the evaluations to run on the entry
+        :return: a ChatEntryEvaluation object
+        """
+        evaluate_entry_mutation_args = {
+            'entryId': UUID(entry_id),
+            'evals': evals,
+        }
+        evaluate_entry_mutation_vars = {
+            'entry_id': Arg(non_null(UUID)),
+            'evals': Arg(non_null(list_of(non_null(String)))),
+        }
+        operation = self.gql_client.mutation(variables=evaluate_entry_mutation_vars)
+        evaluate_entry_query = operation.evaluate_chat_question(
+            entry_id=Variable('entry_id'),
+            evals=Variable('evals'),
+        )
+
+        result = self.gql_client.submit(operation, evaluate_entry_mutation_args)
+
+        return result.evaluate_chat_question
+
 
 
 def _create_llm_config_fragments():

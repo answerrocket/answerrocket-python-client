@@ -211,6 +211,22 @@ class DomainObjectResponse(sgqlc.types.Type):
     domain_object = sgqlc.types.Field(MaxDomainObject, graphql_name='domainObject')
 
 
+class EvaluateChatQuestionResponse(sgqlc.types.Type):
+    __schema__ = schema
+    __field_names__ = ('success', 'eval_results')
+    success = sgqlc.types.Field(sgqlc.types.non_null(Boolean), graphql_name='success')
+    eval_results = sgqlc.types.Field(sgqlc.types.non_null(sgqlc.types.list_of(sgqlc.types.non_null('EvaluateChatQuestionResult'))), graphql_name='evalResults')
+
+
+class EvaluateChatQuestionResult(sgqlc.types.Type):
+    __schema__ = schema
+    __field_names__ = ('eval_type', 'pass_', 'explanation', 'correct_function')
+    eval_type = sgqlc.types.Field(sgqlc.types.non_null(String), graphql_name='evalType')
+    pass_ = sgqlc.types.Field(sgqlc.types.non_null(Boolean), graphql_name='pass')
+    explanation = sgqlc.types.Field(sgqlc.types.non_null(String), graphql_name='explanation')
+    correct_function = sgqlc.types.Field(String, graphql_name='correctFunction')
+
+
 class ExecuteRqlQueryResponse(sgqlc.types.Type):
     __schema__ = schema
     __field_names__ = ('success', 'code', 'error', 'process_rql_script_response', 'sql', 'data')
@@ -376,7 +392,7 @@ class MaxTable(sgqlc.types.Type):
 
 class Mutation(sgqlc.types.Type):
     __schema__ = schema
-    __field_names__ = ('create_max_copilot_skill_chat_question', 'update_max_copilot_skill_chat_question', 'delete_max_copilot_skill_chat_question', 'create_max_copilot_question', 'update_max_copilot_question', 'delete_max_copilot_question', 'update_chat_answer_payload', 'ask_chat_question')
+    __field_names__ = ('create_max_copilot_skill_chat_question', 'update_max_copilot_skill_chat_question', 'delete_max_copilot_skill_chat_question', 'create_max_copilot_question', 'update_max_copilot_question', 'delete_max_copilot_question', 'update_chat_answer_payload', 'ask_chat_question', 'evaluate_chat_question')
     create_max_copilot_skill_chat_question = sgqlc.types.Field(sgqlc.types.non_null(CreateMaxCopilotSkillChatQuestionResponse), graphql_name='createMaxCopilotSkillChatQuestion', args=sgqlc.types.ArgDict((
         ('copilot_id', sgqlc.types.Arg(sgqlc.types.non_null(UUID), graphql_name='copilotId', default=None)),
         ('copilot_skill_id', sgqlc.types.Arg(sgqlc.types.non_null(UUID), graphql_name='copilotSkillId', default=None)),
@@ -425,6 +441,11 @@ class Mutation(sgqlc.types.Type):
         ('thread_id', sgqlc.types.Arg(UUID, graphql_name='threadId', default=None)),
         ('skip_report_cache', sgqlc.types.Arg(Boolean, graphql_name='skipReportCache', default=None)),
         ('dry_run_type', sgqlc.types.Arg(ChatDryRunType, graphql_name='dryRunType', default=None)),
+))
+    )
+    evaluate_chat_question = sgqlc.types.Field(sgqlc.types.non_null(EvaluateChatQuestionResponse), graphql_name='evaluateChatQuestion', args=sgqlc.types.ArgDict((
+        ('entry_id', sgqlc.types.Arg(sgqlc.types.non_null(UUID), graphql_name='entryId', default=None)),
+        ('evals', sgqlc.types.Arg(sgqlc.types.non_null(sgqlc.types.list_of(sgqlc.types.non_null(String))), graphql_name='evals', default=None)),
 ))
     )
 
