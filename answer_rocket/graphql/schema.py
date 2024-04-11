@@ -186,6 +186,15 @@ class CopilotSkillRunResponse(sgqlc.types.Type):
     data = sgqlc.types.Field(JSON, graphql_name='data')
 
 
+class CostInfo(sgqlc.types.Type):
+    __schema__ = schema
+    __field_names__ = ('completion_tokens', 'prompt_tokens', 'total_tokens', 'cost_estimate_usd')
+    completion_tokens = sgqlc.types.Field(sgqlc.types.non_null(Int), graphql_name='completionTokens')
+    prompt_tokens = sgqlc.types.Field(sgqlc.types.non_null(Int), graphql_name='promptTokens')
+    total_tokens = sgqlc.types.Field(sgqlc.types.non_null(Int), graphql_name='totalTokens')
+    cost_estimate_usd = sgqlc.types.Field(sgqlc.types.non_null(Float), graphql_name='costEstimateUsd')
+
+
 class CreateMaxCopilotSkillChatQuestionResponse(sgqlc.types.Type):
     __schema__ = schema
     __field_names__ = ('copilot_skill_chat_question_id', 'success', 'code', 'error')
@@ -220,11 +229,13 @@ class EvaluateChatQuestionResponse(sgqlc.types.Type):
 
 class EvaluateChatQuestionResult(sgqlc.types.Type):
     __schema__ = schema
-    __field_names__ = ('eval_type', 'pass_', 'explanation', 'correct_function')
+    __field_names__ = ('eval_type', 'pass_', 'explanation', 'correct_function', 'is_loading', 'cost')
     eval_type = sgqlc.types.Field(sgqlc.types.non_null(String), graphql_name='evalType')
-    pass_ = sgqlc.types.Field(sgqlc.types.non_null(Boolean), graphql_name='pass')
-    explanation = sgqlc.types.Field(sgqlc.types.non_null(String), graphql_name='explanation')
+    pass_ = sgqlc.types.Field(Boolean, graphql_name='pass')
+    explanation = sgqlc.types.Field(String, graphql_name='explanation')
     correct_function = sgqlc.types.Field(String, graphql_name='correctFunction')
+    is_loading = sgqlc.types.Field(Boolean, graphql_name='isLoading')
+    cost = sgqlc.types.Field(CostInfo, graphql_name='cost')
 
 
 class ExecuteRqlQueryResponse(sgqlc.types.Type):
@@ -330,7 +341,7 @@ class MaxDatabase(sgqlc.types.Type):
 
 class MaxDataset(sgqlc.types.Type):
     __schema__ = schema
-    __field_names__ = ('dataset_id', 'name', 'description', 'domain_objects', 'misc_info', 'database', 'tables', 'dimension_value_distribution_map', 'date_range_boundary_attribute_id', 'dimension_hierarchies', 'metric_hierarchies', 'domain_attribute_statistics', 'default_performance_metric_id', 'dataset_min_date', 'dataset_max_date')
+    __field_names__ = ('dataset_id', 'name', 'description', 'domain_objects', 'misc_info', 'database', 'tables', 'dimension_value_distribution_map', 'date_range_boundary_attribute_id', 'dimension_hierarchies', 'metric_hierarchies', 'domain_attribute_statistics', 'default_performance_metric_id', 'dataset_min_date', 'dataset_max_date', 'query_row_limit')
     dataset_id = sgqlc.types.Field(sgqlc.types.non_null(UUID), graphql_name='datasetId')
     name = sgqlc.types.Field(sgqlc.types.non_null(String), graphql_name='name')
     description = sgqlc.types.Field(String, graphql_name='description')
@@ -346,6 +357,7 @@ class MaxDataset(sgqlc.types.Type):
     default_performance_metric_id = sgqlc.types.Field(String, graphql_name='defaultPerformanceMetricId')
     dataset_min_date = sgqlc.types.Field(DateTime, graphql_name='datasetMinDate')
     dataset_max_date = sgqlc.types.Field(DateTime, graphql_name='datasetMaxDate')
+    query_row_limit = sgqlc.types.Field(Int, graphql_name='queryRowLimit')
 
 
 class MaxDimensionHierarchyNode(sgqlc.types.Type):
