@@ -246,6 +246,7 @@ class Data:
             gql_query.default_performance_metric_id()
             gql_query.dataset_min_date()
             gql_query.dataset_max_date()
+            gql_query.query_row_limit()
 
             database = gql_query.database()
             database.database_id()
