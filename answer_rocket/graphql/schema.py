@@ -147,6 +147,29 @@ class MaxDomainEntity(sgqlc.types.Interface):
     attributes = sgqlc.types.Field(sgqlc.types.non_null(sgqlc.types.list_of(sgqlc.types.non_null(MaxDomainAttribute))), graphql_name='attributes')
 
 
+class ChatEntry(sgqlc.types.Type):
+    __schema__ = schema
+    __field_names__ = ('id', 'thread_id', 'answer')
+    id = sgqlc.types.Field(sgqlc.types.non_null(UUID), graphql_name='id')
+    thread_id = sgqlc.types.Field(UUID, graphql_name='threadId')
+    answer = sgqlc.types.Field('ChatResult', graphql_name='answer')
+
+
+class ChatResult(sgqlc.types.Type):
+    __schema__ = schema
+    __field_names__ = ('answer_id', 'answered_at', 'copilot_skill_id', 'has_finished', 'is_new_thread', 'message', 'query', 'report_results', 'thread_id', 'user_id')
+    answer_id = sgqlc.types.Field(UUID, graphql_name='answerId')
+    answered_at = sgqlc.types.Field(DateTime, graphql_name='answeredAt')
+    copilot_skill_id = sgqlc.types.Field(UUID, graphql_name='copilotSkillId')
+    has_finished = sgqlc.types.Field(Boolean, graphql_name='hasFinished')
+    is_new_thread = sgqlc.types.Field(Boolean, graphql_name='isNewThread')
+    message = sgqlc.types.Field(String, graphql_name='message')
+    query = sgqlc.types.Field(String, graphql_name='query')
+    report_results = sgqlc.types.Field(sgqlc.types.list_of(sgqlc.types.non_null('ReportResult')), graphql_name='reportResults')
+    thread_id = sgqlc.types.Field(UUID, graphql_name='threadId')
+    user_id = sgqlc.types.Field(UUID, graphql_name='userId')
+
+
 class ChatThread(sgqlc.types.Type):
     __schema__ = schema
     __field_names__ = ('id', 'entry_count', 'title', 'pinned_dataset')
@@ -157,6 +180,14 @@ class ChatThread(sgqlc.types.Type):
     )
     title = sgqlc.types.Field(String, graphql_name='title')
     pinned_dataset = sgqlc.types.Field(UUID, graphql_name='pinnedDataset')
+
+
+class ContentBlock(sgqlc.types.Type):
+    __schema__ = schema
+    __field_names__ = ('id', 'title', 'payload')
+    id = sgqlc.types.Field(sgqlc.types.non_null(UUID), graphql_name='id')
+    title = sgqlc.types.Field(String, graphql_name='title')
+    payload = sgqlc.types.Field(String, graphql_name='payload')
 
 
 class CopilotSkillArtifact(sgqlc.types.Type):
@@ -188,11 +219,12 @@ class CopilotSkillRunResponse(sgqlc.types.Type):
 
 class CostInfo(sgqlc.types.Type):
     __schema__ = schema
-    __field_names__ = ('completion_tokens', 'prompt_tokens', 'total_tokens', 'cost_estimate_usd')
+    __field_names__ = ('completion_tokens', 'prompt_tokens', 'total_tokens', 'cost_estimate_usd', 'model')
     completion_tokens = sgqlc.types.Field(sgqlc.types.non_null(Int), graphql_name='completionTokens')
     prompt_tokens = sgqlc.types.Field(sgqlc.types.non_null(Int), graphql_name='promptTokens')
     total_tokens = sgqlc.types.Field(sgqlc.types.non_null(Int), graphql_name='totalTokens')
     cost_estimate_usd = sgqlc.types.Field(sgqlc.types.non_null(Float), graphql_name='costEstimateUsd')
+    model = sgqlc.types.Field(String, graphql_name='model')
 
 
 class CreateMaxCopilotSkillChatQuestionResponse(sgqlc.types.Type):
@@ -202,6 +234,13 @@ class CreateMaxCopilotSkillChatQuestionResponse(sgqlc.types.Type):
     success = sgqlc.types.Field(sgqlc.types.non_null(Boolean), graphql_name='success')
     code = sgqlc.types.Field(String, graphql_name='code')
     error = sgqlc.types.Field(String, graphql_name='error')
+
+
+class DiagnosticKVPair(sgqlc.types.Type):
+    __schema__ = schema
+    __field_names__ = ('key', 'value')
+    key = sgqlc.types.Field(sgqlc.types.non_null(String), graphql_name='key')
+    value = sgqlc.types.Field(sgqlc.types.non_null(String), graphql_name='value')
 
 
 class DimensionValueMapping(sgqlc.types.Type):
@@ -447,7 +486,7 @@ class Mutation(sgqlc.types.Type):
         ('payload', sgqlc.types.Arg(sgqlc.types.non_null(JSON), graphql_name='payload', default=None)),
 ))
     )
-    ask_chat_question = sgqlc.types.Field(JSON, graphql_name='askChatQuestion', args=sgqlc.types.ArgDict((
+    ask_chat_question = sgqlc.types.Field(ChatEntry, graphql_name='askChatQuestion', args=sgqlc.types.ArgDict((
         ('copilot_id', sgqlc.types.Arg(sgqlc.types.non_null(UUID), graphql_name='copilotId', default=None)),
         ('question', sgqlc.types.Arg(sgqlc.types.non_null(String), graphql_name='question', default=None)),
         ('thread_id', sgqlc.types.Arg(UUID, graphql_name='threadId', default=None)),
@@ -538,6 +577,27 @@ class Query(sgqlc.types.Type):
         ('limit', sgqlc.types.Arg(Int, graphql_name='limit', default=None)),
 ))
     )
+
+
+class ReportParamsAndValues(sgqlc.types.Type):
+    __schema__ = schema
+    __field_names__ = ('key', 'values', 'label', 'type', 'color')
+    key = sgqlc.types.Field(sgqlc.types.non_null(String), graphql_name='key')
+    values = sgqlc.types.Field(sgqlc.types.non_null(sgqlc.types.list_of(sgqlc.types.non_null(String))), graphql_name='values')
+    label = sgqlc.types.Field(String, graphql_name='label')
+    type = sgqlc.types.Field(String, graphql_name='type')
+    color = sgqlc.types.Field(String, graphql_name='color')
+
+
+class ReportResult(sgqlc.types.Type):
+    __schema__ = schema
+    __field_names__ = ('id', 'title', 'report_name', 'run_id', 'parameters', 'content_blocks')
+    id = sgqlc.types.Field(UUID, graphql_name='id')
+    title = sgqlc.types.Field(String, graphql_name='title')
+    report_name = sgqlc.types.Field(sgqlc.types.non_null(String), graphql_name='reportName')
+    run_id = sgqlc.types.Field(sgqlc.types.non_null(UUID), graphql_name='runId')
+    parameters = sgqlc.types.Field(sgqlc.types.list_of(sgqlc.types.non_null(ReportParamsAndValues)), graphql_name='parameters')
+    content_blocks = sgqlc.types.Field(sgqlc.types.non_null(sgqlc.types.list_of(sgqlc.types.non_null(ContentBlock))), graphql_name='contentBlocks')
 
 
 class AzureOpenaiCompletionLLMApiConfig(sgqlc.types.Type, LLMApiConfig):

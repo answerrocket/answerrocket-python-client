@@ -11,3 +11,4 @@ setup-pip-tools:
 # pass the id of the tenant you have running when you invoke the target: make generate-gql-schema tenant=yourtenant
 generate-gql-schema:
 	bash gql-schema-gen.sh $(tenant)
+	bash gql-operation-gen.sh $(tenant)

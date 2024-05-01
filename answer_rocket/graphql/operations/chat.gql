@@ -1,0 +1,46 @@
+
+mutation AskChatQuestion(
+    $copilotId: UUID!
+    $question: String!
+    $threadId: UUID
+    $skipReportCache: Boolean
+    $dryRunType: ChatDryRunType
+) {
+    askChatQuestion(
+        copilotId: $copilotId,
+        question: $question,
+        threadId: $threadId
+        skipReportCache: $skipReportCache
+        dryRunType: $dryRunType
+    ) {
+        id
+        threadId
+        answer {
+            answerId
+            answeredAt
+            copilotSkillId
+            hasFinished
+            isNewThread
+            message
+            query
+            reportResults {
+                id
+                title
+                reportName
+                runId
+                parameters {
+                    key
+                    values
+                    label
+                }
+                contentBlocks {
+                    id
+                    title
+                    payload
+                }
+            }
+            threadId
+            userId
+        }
+    }
+}
