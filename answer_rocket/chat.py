@@ -12,6 +12,8 @@ from answer_rocket.graphql.client import GraphQlClient
 from answer_rocket.graphql.schema import (LLMApiConfig, AzureOpenaiCompletionLLMApiConfig,
                                           AzureOpenaiEmbeddingLLMApiConfig, OpenaiCompletionLLMApiConfig,
                                           OpenaiEmbeddingLLMApiConfig, UUID, Int, DateTime, ChatDryRunType)
+from answer_rocket.graphql.sdk_operations import Operations
+
 
 logger = logging.getLogger(__name__)
 
@@ -167,23 +169,9 @@ class Chat:
             'skipReportCache': skip_report_cache,
             'dryRunType': ChatDryRunType(dry_run_type) if dry_run_type else None
         }
-        ask_question_query_vars = {
-            'copilot_id': Arg(non_null(UUID)),
-            'question': Arg(non_null(String)),
-            'thread_id': Arg(UUID),
-            'skip_report_cache': Arg(Boolean),
-            'dry_run_type': Arg(ChatDryRunType)
-        }
-        operation = self.gql_client.mutation(variables=ask_question_query_vars)
-        ask_question_query = operation.ask_chat_question(
-            copilot_id=Variable('copilot_id'),
-            question=Variable('question'),
-            thread_id=Variable('thread_id'),
-            skip_report_cache=Variable('skip_report_cache'),
-            dry_run_type=Variable('dry_run_type')
-        )
 
-        result = self.gql_client.submit(operation, ask_question_query_args)
+        op = Operations.mutation.ask_chat_question
+        result = self.gql_client.submit(op, ask_question_query_args)
 
         return result.ask_chat_question
 

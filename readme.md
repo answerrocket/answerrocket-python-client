@@ -1,5 +1,5 @@
 # AnswerRocket Skill API Client
-This is a client library for interacting with an AnswerRocket instance.  Its purpose is to enable the development of skills (custom AnswerRocket extensions) without the need for AnswerRocket to be running locally.
+This is a client library for interacting with an AnswerRocket instance.
 
 ## Installation
 
