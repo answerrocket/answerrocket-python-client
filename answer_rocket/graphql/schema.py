@@ -157,7 +157,7 @@ class ChatEntry(sgqlc.types.Type):
 
 class ChatResult(sgqlc.types.Type):
     __schema__ = schema
-    __field_names__ = ('answer_id', 'answered_at', 'copilot_skill_id', 'has_finished', 'error', 'is_new_thread', 'message', 'query', 'report_results', 'thread_id', 'user_id')
+    __field_names__ = ('answer_id', 'answered_at', 'copilot_skill_id', 'has_finished', 'error', 'is_new_thread', 'message', 'report_results', 'thread_id', 'user_id')
     answer_id = sgqlc.types.Field(UUID, graphql_name='answerId')
     answered_at = sgqlc.types.Field(DateTime, graphql_name='answeredAt')
     copilot_skill_id = sgqlc.types.Field(UUID, graphql_name='copilotSkillId')
@@ -165,7 +165,6 @@ class ChatResult(sgqlc.types.Type):
     error = sgqlc.types.Field(String, graphql_name='error')
     is_new_thread = sgqlc.types.Field(Boolean, graphql_name='isNewThread')
     message = sgqlc.types.Field(String, graphql_name='message')
-    query = sgqlc.types.Field(String, graphql_name='query')
     report_results = sgqlc.types.Field(sgqlc.types.list_of(sgqlc.types.non_null('ReportResult')), graphql_name='reportResults')
     thread_id = sgqlc.types.Field(UUID, graphql_name='threadId')
     user_id = sgqlc.types.Field(UUID, graphql_name='userId')
