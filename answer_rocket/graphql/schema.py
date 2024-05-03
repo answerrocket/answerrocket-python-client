@@ -157,11 +157,12 @@ class ChatEntry(sgqlc.types.Type):
 
 class ChatResult(sgqlc.types.Type):
     __schema__ = schema
-    __field_names__ = ('answer_id', 'answered_at', 'copilot_skill_id', 'has_finished', 'is_new_thread', 'message', 'query', 'report_results', 'thread_id', 'user_id')
+    __field_names__ = ('answer_id', 'answered_at', 'copilot_skill_id', 'has_finished', 'error', 'is_new_thread', 'message', 'query', 'report_results', 'thread_id', 'user_id')
     answer_id = sgqlc.types.Field(UUID, graphql_name='answerId')
     answered_at = sgqlc.types.Field(DateTime, graphql_name='answeredAt')
     copilot_skill_id = sgqlc.types.Field(UUID, graphql_name='copilotSkillId')
     has_finished = sgqlc.types.Field(Boolean, graphql_name='hasFinished')
+    error = sgqlc.types.Field(String, graphql_name='error')
     is_new_thread = sgqlc.types.Field(Boolean, graphql_name='isNewThread')
     message = sgqlc.types.Field(String, graphql_name='message')
     query = sgqlc.types.Field(String, graphql_name='query')
@@ -234,13 +235,6 @@ class CreateMaxCopilotSkillChatQuestionResponse(sgqlc.types.Type):
     success = sgqlc.types.Field(sgqlc.types.non_null(Boolean), graphql_name='success')
     code = sgqlc.types.Field(String, graphql_name='code')
     error = sgqlc.types.Field(String, graphql_name='error')
-
-
-class DiagnosticKVPair(sgqlc.types.Type):
-    __schema__ = schema
-    __field_names__ = ('key', 'value')
-    key = sgqlc.types.Field(sgqlc.types.non_null(String), graphql_name='key')
-    value = sgqlc.types.Field(sgqlc.types.non_null(String), graphql_name='value')
 
 
 class DimensionValueMapping(sgqlc.types.Type):
