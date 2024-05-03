@@ -20,9 +20,9 @@ mutation AskChatQuestion(
             answeredAt
             copilotSkillId
             hasFinished
+            error
             isNewThread
             message
-            query
             reportResults {
                 id
                 title
