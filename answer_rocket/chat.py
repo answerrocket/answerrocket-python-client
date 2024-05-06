@@ -149,7 +149,6 @@ class Chat:
 
         return False, str(last_error)
 
-
     def ask_question(self, copilot_id: str, question: str, thread_id: str = None, skip_report_cache: bool = False, dry_run_type: str = None):
         """
         Calls the Max chat pipeline to answer a natural language question and receive analysis and insights
@@ -264,6 +263,56 @@ class Chat:
 
         return result.evaluate_chat_question
 
+    def get_chat_entry(self, entry_id: str):
+        get_chat_entry_args = {
+            'id': UUID(entry_id),
+        }
+
+        op = Operations.query.chat_entry
+        result = self.gql_client.submit(op, get_chat_entry_args)
+        return result.chat_entry
+
+    def get_chat_thread(self, thread_id: str):
+        get_chat_thread_args = {
+            'id': UUID(thread_id),
+        }
+
+        op = Operations.query.chat_thread
+        result = self.gql_client.submit(op, get_chat_thread_args)
+        return result.chat_thread
+
+    def create_new_thread(self, copilot_id: str):
+        create_chat_thread_args = {
+            'copilotId': copilot_id,
+        }
+
+        op = Operations.mutation.create_chat_thread
+        result = self.gql_client.submit(op, create_chat_thread_args)
+        return result.create_chat_thread
+
+    def queue_chat_question(self, question: str, thread_id: str, skip_cache: bool = False):
+        queue_chat_question_args = {
+            'question': question,
+            'skipCache': skip_cache,
+            'threadId': thread_id
+        }
+
+        op = Operations.mutation.queue_chat_question
+
+        result = self.gql_client.submit(op, queue_chat_question_args)
+
+        return result.queue_chat_question
+
+    def cancel_chat_question(self, entry_id: str):
+        cancel_chat_question_args = {
+            'entryId': entry_id,
+        }
+
+        op = Operations.mutation.cancel_chat_question
+
+        result = self.gql_client.submit(op, cancel_chat_question_args)
+
+        return result.cancel_chat_question
 
 
 def _create_llm_config_fragments():

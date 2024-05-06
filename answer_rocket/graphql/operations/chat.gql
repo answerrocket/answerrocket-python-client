@@ -16,31 +16,90 @@ mutation AskChatQuestion(
         id
         threadId
         answer {
-            answerId
-            answeredAt
-            copilotSkillId
-            hasFinished
-            error
-            isNewThread
-            message
-            reportResults {
-                id
-                title
-                reportName
-                runId
-                parameters {
-                    key
-                    values
-                    label
-                }
-                contentBlocks {
-                    id
-                    title
-                    payload
-                }
-            }
-            threadId
-            userId
+            ...ChatResultFragment
         }
+    }
+}
+
+mutation QueueChatQuestion(
+    $threadId: UUID!
+    $question: String!
+    $skipCache: Boolean
+) {
+    queueChatQuestion(
+        threadId: $threadId,
+        question: $question,
+        skipCache: $skipCache,
+    ) {
+        threadId
+        id
+    }
+}
+
+fragment ChatResultFragment on MaxChatResult {
+    answerId
+    answeredAt
+    copilotSkillId
+    hasFinished
+    error
+    isNewThread
+    message
+    reportResults {
+        id
+        title
+        reportName
+        runId
+        parameters {
+            key
+            values
+            label
+        }
+        contentBlocks {
+            id
+            title
+            payload
+        }
+    }
+    threadId
+    userId
+}
+
+mutation CancelChatQuestion(
+    $entryId: UUID!
+) {
+    cancelChatQuestion(entryId: $entryId) {
+        threadId
+        id
+    }
+}
+
+query ChatEntry(
+    $id: UUID!
+) {
+    chatEntry(id: $id) {
+        id
+        threadId
+        answer {
+            ...ChatResultFragment
+        }
+    }
+}
+
+query ChatThread($id: UUID!) {
+    chatThread(id: $id) {
+        id
+        entryCount
+        title
+        copilotId
+        entries {
+            ...ChatResultFragment
+        }
+    }
+}
+
+mutation CreateChatThread($copilotId: UUID!) {
+    createChatThread(copilotId: $copilotId) {
+        id
+        copilotId
     }
 }
