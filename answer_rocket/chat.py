@@ -11,7 +11,8 @@ from answer_rocket.auth import AuthHelper
 from answer_rocket.graphql.client import GraphQlClient
 from answer_rocket.graphql.schema import (LLMApiConfig, AzureOpenaiCompletionLLMApiConfig,
                                           AzureOpenaiEmbeddingLLMApiConfig, OpenaiCompletionLLMApiConfig,
-                                          OpenaiEmbeddingLLMApiConfig, UUID, Int, DateTime, ChatDryRunType)
+                                          OpenaiEmbeddingLLMApiConfig, UUID, Int, DateTime, ChatDryRunType,
+                                          MaxChatEntry, MaxChatThread)
 from answer_rocket.graphql.sdk_operations import Operations
 
 
@@ -263,7 +264,7 @@ class Chat:
 
         return result.evaluate_chat_question
 
-    def get_chat_entry(self, entry_id: str):
+    def get_chat_entry(self, entry_id: str) -> MaxChatEntry:
         get_chat_entry_args = {
             'id': UUID(entry_id),
         }
@@ -272,7 +273,7 @@ class Chat:
         result = self.gql_client.submit(op, get_chat_entry_args)
         return result.chat_entry
 
-    def get_chat_thread(self, thread_id: str):
+    def get_chat_thread(self, thread_id: str) -> MaxChatThread:
         get_chat_thread_args = {
             'id': UUID(thread_id),
         }
@@ -281,7 +282,7 @@ class Chat:
         result = self.gql_client.submit(op, get_chat_thread_args)
         return result.chat_thread
 
-    def create_new_thread(self, copilot_id: str):
+    def create_new_thread(self, copilot_id: str) -> MaxChatThread:
         create_chat_thread_args = {
             'copilotId': copilot_id,
         }
@@ -290,7 +291,15 @@ class Chat:
         result = self.gql_client.submit(op, create_chat_thread_args)
         return result.create_chat_thread
 
-    def queue_chat_question(self, question: str, thread_id: str, skip_cache: bool = False):
+    def queue_chat_question(self, question: str, thread_id: str, skip_cache: bool = False) -> MaxChatEntry:
+        """
+        This queues up a question for processing. Unlike ask_question, this will not wait for the processing to
+        complete. It will immediately return a shell entry with an id you can use to query for the results.
+        :param question: the text of the user's question
+        :param thread_id: id of the thread the question is being sent to.
+        :param skip_cache: Set to true to force a fresh run of the question, ignoring any existing skill result caches.
+        :return:
+        """
         queue_chat_question_args = {
             'question': question,
             'skipCache': skip_cache,
@@ -303,7 +312,12 @@ class Chat:
 
         return result.queue_chat_question
 
-    def cancel_chat_question(self, entry_id: str):
+    def cancel_chat_question(self, entry_id: str) -> MaxChatEntry:
+        """
+        This deletes the entry from its thread and attempts to abandon the question's processing if it is still ongoing.
+        :param entry_id: the id of the chat entry
+        :return: the deleted entry
+        """
         cancel_chat_question_args = {
             'entryId': entry_id,
         }
