@@ -249,10 +249,18 @@ class ExecuteSqlQueryResponse(sgqlc.types.Type):
 
 class MaxChatEntry(sgqlc.types.Type):
     __schema__ = schema
-    __field_names__ = ('id', 'thread_id', 'answer')
+    __field_names__ = ('id', 'thread_id', 'question', 'answer')
     id = sgqlc.types.Field(sgqlc.types.non_null(UUID), graphql_name='id')
     thread_id = sgqlc.types.Field(UUID, graphql_name='threadId')
+    question = sgqlc.types.Field('MaxChatQuestion', graphql_name='question')
     answer = sgqlc.types.Field('MaxChatResult', graphql_name='answer')
+
+
+class MaxChatQuestion(sgqlc.types.Type):
+    __schema__ = schema
+    __field_names__ = ('asked_at', 'nl')
+    asked_at = sgqlc.types.Field(DateTime, graphql_name='askedAt')
+    nl = sgqlc.types.Field(String, graphql_name='nl')
 
 
 class MaxChatResult(sgqlc.types.Type):
@@ -272,11 +280,10 @@ class MaxChatResult(sgqlc.types.Type):
 
 class MaxChatThread(sgqlc.types.Type):
     __schema__ = schema
-    __field_names__ = ('id', 'entry_count', 'title', 'pinned_dataset', 'copilot_id', 'entries')
+    __field_names__ = ('id', 'entry_count', 'title', 'copilot_id', 'entries')
     id = sgqlc.types.Field(sgqlc.types.non_null(UUID), graphql_name='id')
     entry_count = sgqlc.types.Field(Int, graphql_name='entryCount')
     title = sgqlc.types.Field(String, graphql_name='title')
-    pinned_dataset = sgqlc.types.Field(UUID, graphql_name='pinnedDataset')
     copilot_id = sgqlc.types.Field(sgqlc.types.non_null(UUID), graphql_name='copilotId')
     entries = sgqlc.types.Field(sgqlc.types.list_of(MaxChatEntry), graphql_name='entries')
 
@@ -438,11 +445,9 @@ class MaxReportParamsAndValues(sgqlc.types.Type):
 
 class MaxReportResult(sgqlc.types.Type):
     __schema__ = schema
-    __field_names__ = ('id', 'title', 'report_name', 'run_id', 'parameters', 'content_blocks')
-    id = sgqlc.types.Field(UUID, graphql_name='id')
+    __field_names__ = ('title', 'report_name', 'parameters', 'content_blocks')
     title = sgqlc.types.Field(String, graphql_name='title')
     report_name = sgqlc.types.Field(sgqlc.types.non_null(String), graphql_name='reportName')
-    run_id = sgqlc.types.Field(sgqlc.types.non_null(UUID), graphql_name='runId')
     parameters = sgqlc.types.Field(sgqlc.types.list_of(sgqlc.types.non_null(MaxReportParamsAndValues)), graphql_name='parameters')
     content_blocks = sgqlc.types.Field(sgqlc.types.non_null(sgqlc.types.list_of(sgqlc.types.non_null(MaxContentBlock))), graphql_name='contentBlocks')
 
