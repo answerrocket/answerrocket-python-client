@@ -298,14 +298,6 @@ class MaxColumn(sgqlc.types.Type):
     scale = sgqlc.types.Field(Int, graphql_name='scale')
 
 
-class MaxContentBlock(sgqlc.types.Type):
-    __schema__ = schema
-    __field_names__ = ('id', 'title', 'payload')
-    id = sgqlc.types.Field(sgqlc.types.non_null(UUID), graphql_name='id')
-    title = sgqlc.types.Field(String, graphql_name='title')
-    payload = sgqlc.types.Field(String, graphql_name='payload')
-
-
 class MaxCopilot(sgqlc.types.Type):
     __schema__ = schema
     __field_names__ = ('copilot_id', 'name', 'description', 'system_prompt', 'beta_yaml', 'global_python_code', 'copilot_questions')
@@ -435,21 +427,20 @@ class MaxMutationResponse(sgqlc.types.Type):
 
 class MaxReportParamsAndValues(sgqlc.types.Type):
     __schema__ = schema
-    __field_names__ = ('key', 'values', 'label', 'type', 'color')
+    __field_names__ = ('key', 'values', 'label', 'color')
     key = sgqlc.types.Field(sgqlc.types.non_null(String), graphql_name='key')
     values = sgqlc.types.Field(sgqlc.types.non_null(sgqlc.types.list_of(sgqlc.types.non_null(String))), graphql_name='values')
     label = sgqlc.types.Field(String, graphql_name='label')
-    type = sgqlc.types.Field(String, graphql_name='type')
     color = sgqlc.types.Field(String, graphql_name='color')
 
 
 class MaxReportResult(sgqlc.types.Type):
     __schema__ = schema
-    __field_names__ = ('title', 'report_name', 'parameters', 'content_blocks')
+    __field_names__ = ('title', 'report_name', 'parameters', 'custom_payload')
     title = sgqlc.types.Field(String, graphql_name='title')
     report_name = sgqlc.types.Field(sgqlc.types.non_null(String), graphql_name='reportName')
     parameters = sgqlc.types.Field(sgqlc.types.list_of(sgqlc.types.non_null(MaxReportParamsAndValues)), graphql_name='parameters')
-    content_blocks = sgqlc.types.Field(sgqlc.types.non_null(sgqlc.types.list_of(sgqlc.types.non_null(MaxContentBlock))), graphql_name='contentBlocks')
+    custom_payload = sgqlc.types.Field(JSON, graphql_name='customPayload')
 
 
 class MaxTable(sgqlc.types.Type):
