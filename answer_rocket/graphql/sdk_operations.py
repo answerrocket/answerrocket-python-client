@@ -24,10 +24,7 @@ def fragment_chat_result_fragment():
     _frag_report_results_parameters.key()
     _frag_report_results_parameters.values()
     _frag_report_results_parameters.label()
-    _frag_report_results_content_blocks = _frag_report_results.content_blocks()
-    _frag_report_results_content_blocks.id()
-    _frag_report_results_content_blocks.title()
-    _frag_report_results_content_blocks.payload()
+    _frag_report_results.custom_payload()
     _frag.thread_id()
     _frag.user_id()
     return _frag
