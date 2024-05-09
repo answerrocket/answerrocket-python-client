@@ -1,10 +1,9 @@
 [project]
 name = "answerrocket-client"
-version = "0.2.0"
 description = "Python client for interacting with AnswerRocket's skill API"
 readme = "readme.md"
 requires-python = ">=3.10.7"
-
+dynamic = ["version"]
 dependencies = [
     "sgqlc",
     "openai",
@@ -18,3 +17,6 @@ test = ["pytest"]
 [build-system]
 requires = ["setuptools"]
 build-backend = "setuptools.build_meta"
+
+[tool.setuptools.dynamic]
+version = { attr = "answer_rocket.__version__" }
