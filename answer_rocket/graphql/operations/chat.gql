@@ -86,7 +86,11 @@ query ChatThread($id: UUID!) {
         title
         copilotId
         entries {
-            ...ChatResultFragment
+            id
+            threadId
+            answer {
+                ...ChatResultFragment
+            }
         }
     }
 }

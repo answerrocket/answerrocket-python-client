@@ -93,7 +93,10 @@ def query_chat_thread():
     _op_chat_thread.title()
     _op_chat_thread.copilot_id()
     _op_chat_thread_entries = _op_chat_thread.entries()
-    _op_chat_thread_entries.__fragment__(fragment_chat_result_fragment())
+    _op_chat_thread_entries.id()
+    _op_chat_thread_entries.thread_id()
+    _op_chat_thread_entries_answer = _op_chat_thread_entries.answer()
+    _op_chat_thread_entries_answer.__fragment__(fragment_chat_result_fragment())
     return _op
 
 
