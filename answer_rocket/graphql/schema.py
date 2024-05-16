@@ -329,7 +329,7 @@ class MaxCopilotQuestion(sgqlc.types.Type):
 
 class MaxCopilotSkill(sgqlc.types.Type):
     __schema__ = schema
-    __field_names__ = ('copilot_skill_id', 'name', 'detailed_name', 'description', 'detailed_description', 'dataset_id', 'skill_chat_questions', 'yaml_code', 'skill_code', 'misc_info', 'scheduling_only')
+    __field_names__ = ('copilot_skill_id', 'name', 'detailed_name', 'description', 'detailed_description', 'dataset_id', 'skill_chat_questions', 'yaml_code', 'skill_code', 'misc_info', 'scheduling_only', 'copilot_skill_nodes')
     copilot_skill_id = sgqlc.types.Field(sgqlc.types.non_null(UUID), graphql_name='copilotSkillId')
     name = sgqlc.types.Field(sgqlc.types.non_null(String), graphql_name='name')
     detailed_name = sgqlc.types.Field(sgqlc.types.non_null(String), graphql_name='detailedName')
@@ -341,6 +341,7 @@ class MaxCopilotSkill(sgqlc.types.Type):
     skill_code = sgqlc.types.Field(sgqlc.types.non_null(String), graphql_name='skillCode')
     misc_info = sgqlc.types.Field(JSON, graphql_name='miscInfo')
     scheduling_only = sgqlc.types.Field(sgqlc.types.non_null(Boolean), graphql_name='schedulingOnly')
+    copilot_skill_nodes = sgqlc.types.Field(sgqlc.types.non_null(sgqlc.types.list_of(sgqlc.types.non_null('MaxCopilotSkillNode'))), graphql_name='copilotSkillNodes')
 
 
 class MaxCopilotSkillChatQuestion(sgqlc.types.Type):
@@ -349,6 +350,24 @@ class MaxCopilotSkillChatQuestion(sgqlc.types.Type):
     copilot_skill_chat_question_id = sgqlc.types.Field(sgqlc.types.non_null(UUID), graphql_name='copilotSkillChatQuestionId')
     question = sgqlc.types.Field(sgqlc.types.non_null(String), graphql_name='question')
     expected_completion_response = sgqlc.types.Field(sgqlc.types.non_null(String), graphql_name='expectedCompletionResponse')
+
+
+class MaxCopilotSkillNode(sgqlc.types.Type):
+    __schema__ = schema
+    __field_names__ = ('copilot_skill_node_id', 'skill_component_id', 'name', 'description', 'user_data', 'node_connections')
+    copilot_skill_node_id = sgqlc.types.Field(sgqlc.types.non_null(UUID), graphql_name='copilotSkillNodeId')
+    skill_component_id = sgqlc.types.Field(sgqlc.types.non_null(UUID), graphql_name='skillComponentId')
+    name = sgqlc.types.Field(sgqlc.types.non_null(String), graphql_name='name')
+    description = sgqlc.types.Field(String, graphql_name='description')
+    user_data = sgqlc.types.Field(JSON, graphql_name='userData')
+    node_connections = sgqlc.types.Field(sgqlc.types.non_null(sgqlc.types.list_of(sgqlc.types.non_null('MaxCopilotSkillNodeConnection'))), graphql_name='nodeConnections')
+
+
+class MaxCopilotSkillNodeConnection(sgqlc.types.Type):
+    __schema__ = schema
+    __field_names__ = ('source_node_id', 'output_property')
+    source_node_id = sgqlc.types.Field(sgqlc.types.non_null(UUID), graphql_name='sourceNodeId')
+    output_property = sgqlc.types.Field(sgqlc.types.non_null(String), graphql_name='outputProperty')
 
 
 class MaxCreateCopilotQuestionResponse(sgqlc.types.Type):
@@ -443,6 +462,43 @@ class MaxReportResult(sgqlc.types.Type):
     custom_payload = sgqlc.types.Field(JSON, graphql_name='customPayload')
 
 
+class MaxSkillComponent(sgqlc.types.Type):
+    __schema__ = schema
+    __field_names__ = ('skill_component_id', 'node_type', 'organization', 'name', 'description', 'input_properties', 'output_properties', 'component_data')
+    skill_component_id = sgqlc.types.Field(sgqlc.types.non_null(UUID), graphql_name='skillComponentId')
+    node_type = sgqlc.types.Field(sgqlc.types.non_null(String), graphql_name='nodeType')
+    organization = sgqlc.types.Field(sgqlc.types.non_null(String), graphql_name='organization')
+    name = sgqlc.types.Field(sgqlc.types.non_null(String), graphql_name='name')
+    description = sgqlc.types.Field(String, graphql_name='description')
+    input_properties = sgqlc.types.Field(sgqlc.types.non_null(sgqlc.types.list_of(sgqlc.types.non_null('MaxSkillComponentInputProperty'))), graphql_name='inputProperties')
+    output_properties = sgqlc.types.Field(sgqlc.types.non_null(sgqlc.types.list_of(sgqlc.types.non_null('MaxSkillComponentOutputProperty'))), graphql_name='outputProperties')
+    component_data = sgqlc.types.Field(sgqlc.types.non_null(JSON), graphql_name='componentData')
+
+
+class MaxSkillComponentInputProperty(sgqlc.types.Type):
+    __schema__ = schema
+    __field_names__ = ('name', 'label', 'description', 'type', 'is_required', 'is_list', 'can_wire_from_output')
+    name = sgqlc.types.Field(sgqlc.types.non_null(String), graphql_name='name')
+    label = sgqlc.types.Field(sgqlc.types.non_null(String), graphql_name='label')
+    description = sgqlc.types.Field(String, graphql_name='description')
+    type = sgqlc.types.Field(sgqlc.types.non_null(String), graphql_name='type')
+    is_required = sgqlc.types.Field(sgqlc.types.non_null(Boolean), graphql_name='isRequired')
+    is_list = sgqlc.types.Field(sgqlc.types.non_null(Boolean), graphql_name='isList')
+    can_wire_from_output = sgqlc.types.Field(sgqlc.types.non_null(Boolean), graphql_name='canWireFromOutput')
+
+
+class MaxSkillComponentOutputProperty(sgqlc.types.Type):
+    __schema__ = schema
+    __field_names__ = ('name', 'label', 'description', 'type', 'is_required', 'is_list', 'can_wire_to_input')
+    name = sgqlc.types.Field(sgqlc.types.non_null(String), graphql_name='name')
+    label = sgqlc.types.Field(sgqlc.types.non_null(String), graphql_name='label')
+    description = sgqlc.types.Field(String, graphql_name='description')
+    type = sgqlc.types.Field(sgqlc.types.non_null(String), graphql_name='type')
+    is_required = sgqlc.types.Field(sgqlc.types.non_null(Boolean), graphql_name='isRequired')
+    is_list = sgqlc.types.Field(sgqlc.types.non_null(Boolean), graphql_name='isList')
+    can_wire_to_input = sgqlc.types.Field(sgqlc.types.non_null(Boolean), graphql_name='canWireToInput')
+
+
 class MaxTable(sgqlc.types.Type):
     __schema__ = schema
     __field_names__ = ('name', 'columns')
@@ -534,7 +590,7 @@ class Mutation(sgqlc.types.Type):
 
 class Query(sgqlc.types.Type):
     __schema__ = schema
-    __field_names__ = ('ping', 'current_user', 'get_copilot_skill_artifact_by_path', 'get_copilot_info', 'get_copilot_skill', 'run_copilot_skill', 'execute_sql_query', 'execute_rql_query', 'get_dataset_id', 'get_dataset', 'get_domain_object', 'get_domain_object_by_name', 'llmapi_config_for_sdk', 'user_chat_threads', 'user_chat_entries', 'chat_thread', 'chat_entry')
+    __field_names__ = ('ping', 'current_user', 'get_copilot_skill_artifact_by_path', 'get_copilot_info', 'get_copilot_skill', 'run_copilot_skill', 'get_skill_components', 'execute_sql_query', 'execute_rql_query', 'get_dataset_id', 'get_dataset', 'get_domain_object', 'get_domain_object_by_name', 'llmapi_config_for_sdk', 'user_chat_threads', 'user_chat_entries', 'chat_thread', 'chat_entry')
     ping = sgqlc.types.Field(String, graphql_name='ping')
     current_user = sgqlc.types.Field(MaxUser, graphql_name='currentUser')
     get_copilot_skill_artifact_by_path = sgqlc.types.Field(CopilotSkillArtifact, graphql_name='getCopilotSkillArtifactByPath', args=sgqlc.types.ArgDict((
@@ -558,6 +614,7 @@ class Query(sgqlc.types.Type):
         ('parameters', sgqlc.types.Arg(JSON, graphql_name='parameters', default=None)),
 ))
     )
+    get_skill_components = sgqlc.types.Field(sgqlc.types.non_null(sgqlc.types.list_of(sgqlc.types.non_null(MaxSkillComponent))), graphql_name='getSkillComponents')
     execute_sql_query = sgqlc.types.Field(ExecuteSqlQueryResponse, graphql_name='executeSqlQuery', args=sgqlc.types.ArgDict((
         ('database_id', sgqlc.types.Arg(sgqlc.types.non_null(UUID), graphql_name='databaseId', default=None)),
         ('sql_query', sgqlc.types.Arg(sgqlc.types.non_null(String), graphql_name='sqlQuery', default=None)),
