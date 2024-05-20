@@ -1,16 +1,17 @@
 import os
-from typing import Optional
+from typing import Optional, List
 from uuid import UUID
 
 import pandas as pd
 from sgqlc.operation import Fragment
-from sgqlc.types import Variable, Arg, non_null, String, Int
+from sgqlc.types import Variable, Arg, non_null, String, Int, list_of
 
 from answer_rocket.auth import AuthHelper
 from answer_rocket.graphql.client import GraphQlClient
 from answer_rocket.graphql.schema import UUID as GQL_UUID, MaxMetricAttribute, MaxDomainObject, \
     MaxDimensionEntity, MaxFactEntity, MaxNormalAttribute, \
-    MaxPrimaryAttribute, MaxReferenceAttribute, MaxCalculatedMetric, MaxDataset, MaxCalculatedAttribute
+    MaxPrimaryAttribute, MaxReferenceAttribute, MaxCalculatedMetric, MaxDataset, MaxCalculatedAttribute, \
+    MaxMutationResponse
 from answer_rocket.types import MaxResult, RESULT_EXCEPTION_CODE
 
 
@@ -483,3 +484,36 @@ class Data:
         fragment.default_filter_value()
         fragment.is_required_in_query()
         fragment.dimension_value_mapping_list()
+
+    def reload_dataset(self, dataset_id: Optional[UUID] = None, database_id: Optional[UUID] = None, table_names: Optional[List[str]] = None) -> MaxMutationResponse:
+        try:
+            """
+            dataset_id: the UUID of the dataset
+            """
+            mutation_args = {
+                'datasetId': str(dataset_id) if dataset_id is not None else None,
+                'databaseId': str(database_id) if database_id is not None else None,
+                'tableNames': table_names
+            }
+
+            mutation_vars = {
+                'dataset_id': Arg(GQL_UUID),
+                'database_id': Arg(GQL_UUID),
+                'table_names': Arg(list_of(non_null(String))),
+            }
+
+            operation = self._gql_client.mutation(variables=mutation_vars)
+
+            operation.reload_dataset(
+                dataset_id=Variable('dataset_id'),
+                database_id=Variable('database_id'),
+                table_names=Variable('table_names'),
+            )
+
+            result = self._gql_client.submit(operation, mutation_args)
+
+            mutation_response = result.reload_dataset
+
+            return mutation_response
+        except Exception as e:
+            return None
