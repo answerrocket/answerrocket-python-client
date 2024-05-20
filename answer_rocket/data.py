@@ -490,19 +490,19 @@ class Data:
             """
             dataset_id: the UUID of the dataset
             """
-            query_args = {
+            mutation_args = {
                 'datasetId': str(dataset_id) if dataset_id is not None else None,
                 'databaseId': str(database_id) if database_id is not None else None,
                 'tableNames': table_names
             }
 
-            query_vars = {
+            mutation_vars = {
                 'dataset_id': Arg(GQL_UUID),
                 'database_id': Arg(GQL_UUID),
                 'table_names': Arg(list_of(non_null(String))),
             }
 
-            operation = self._gql_client.mutation(variables=query_vars)
+            operation = self._gql_client.mutation(variables=mutation_vars)
 
             operation.reload_dataset(
                 dataset_id=Variable('dataset_id'),
@@ -510,7 +510,7 @@ class Data:
                 table_names=Variable('table_names'),
             )
 
-            result = self._gql_client.submit(operation, query_args)
+            result = self._gql_client.submit(operation, mutation_args)
 
             mutation_response = result.reload_dataset
 
