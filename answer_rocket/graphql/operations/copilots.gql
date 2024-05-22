@@ -1,0 +1,32 @@
+query GetCopilotSkill($copilotId: UUID!, $copilotSkillId: UUID!) {
+    getCopilotSkill(copilotId: $copilotId, copilotSkillId: $copilotSkillId) {
+        copilotSkillId
+        name
+        copilotSkillType
+        detailedName
+        description
+        detailedDescription
+        datasetId
+        skillChatQuestions {
+            copilotSkillChatQuestionId
+            question
+            expectedCompletionResponse
+        }
+        yamlCode
+        skillCode
+        miscInfo
+        schedulingOnly
+        copilotSkillNodes {
+            copilotSkillNodeId
+            skillComponentId
+            name
+            description
+            userData
+            nodeConnections {
+                inputProperty
+                sourceNodeId
+                outputProperty
+            }
+        }
+    }
+}
