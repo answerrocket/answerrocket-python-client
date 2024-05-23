@@ -300,7 +300,7 @@ class MaxColumn(sgqlc.types.Type):
 
 class MaxCopilot(sgqlc.types.Type):
     __schema__ = schema
-    __field_names__ = ('copilot_id', 'name', 'description', 'system_prompt', 'beta_yaml', 'global_python_code', 'copilot_questions')
+    __field_names__ = ('copilot_id', 'name', 'description', 'system_prompt', 'beta_yaml', 'global_python_code', 'copilot_questions', 'connection_datasets')
     copilot_id = sgqlc.types.Field(sgqlc.types.non_null(UUID), graphql_name='copilotId')
     name = sgqlc.types.Field(sgqlc.types.non_null(String), graphql_name='name')
     description = sgqlc.types.Field(String, graphql_name='description')
@@ -308,6 +308,14 @@ class MaxCopilot(sgqlc.types.Type):
     beta_yaml = sgqlc.types.Field(String, graphql_name='betaYaml')
     global_python_code = sgqlc.types.Field(String, graphql_name='globalPythonCode')
     copilot_questions = sgqlc.types.Field(sgqlc.types.non_null(sgqlc.types.list_of(sgqlc.types.non_null('MaxCopilotQuestion'))), graphql_name='copilotQuestions')
+    connection_datasets = sgqlc.types.Field(sgqlc.types.non_null(sgqlc.types.list_of(sgqlc.types.non_null('MaxCopilotConnectionDataset'))), graphql_name='connectionDatasets')
+
+
+class MaxCopilotConnectionDataset(sgqlc.types.Type):
+    __schema__ = schema
+    __field_names__ = ('dataset_id', 'name')
+    dataset_id = sgqlc.types.Field(sgqlc.types.non_null(UUID), graphql_name='datasetId')
+    name = sgqlc.types.Field(sgqlc.types.non_null(String), graphql_name='name')
 
 
 class MaxCopilotQuestion(sgqlc.types.Type):
