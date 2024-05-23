@@ -102,8 +102,6 @@ class Config:
 
             result = self._gql_client.submit(op, query_args)
 
-            print(op)
-
             return result.get_copilot_skill
         except Exception as e:
             return None
