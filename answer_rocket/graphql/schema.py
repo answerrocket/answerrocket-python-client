@@ -374,7 +374,8 @@ class MaxCopilotSkillNode(sgqlc.types.Type):
 
 class MaxCopilotSkillNodeConnection(sgqlc.types.Type):
     __schema__ = schema
-    __field_names__ = ('source_node_id', 'output_property')
+    __field_names__ = ('input_property', 'source_node_id', 'output_property')
+    input_property = sgqlc.types.Field(sgqlc.types.non_null(String), graphql_name='inputProperty')
     source_node_id = sgqlc.types.Field(sgqlc.types.non_null(UUID), graphql_name='sourceNodeId')
     output_property = sgqlc.types.Field(sgqlc.types.non_null(String), graphql_name='outputProperty')
 
