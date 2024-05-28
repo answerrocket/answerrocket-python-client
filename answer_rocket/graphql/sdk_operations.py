@@ -100,9 +100,41 @@ def query_chat_thread():
     return _op
 
 
+def query_get_copilot_skill():
+    _op = sgqlc.operation.Operation(_schema_root.query_type, name='GetCopilotSkill', variables=dict(copilotId=sgqlc.types.Arg(sgqlc.types.non_null(_schema.UUID)), copilotSkillId=sgqlc.types.Arg(sgqlc.types.non_null(_schema.UUID))))
+    _op_get_copilot_skill = _op.get_copilot_skill(copilot_id=sgqlc.types.Variable('copilotId'), copilot_skill_id=sgqlc.types.Variable('copilotSkillId'))
+    _op_get_copilot_skill.copilot_skill_id()
+    _op_get_copilot_skill.name()
+    _op_get_copilot_skill.copilot_skill_type()
+    _op_get_copilot_skill.detailed_name()
+    _op_get_copilot_skill.description()
+    _op_get_copilot_skill.detailed_description()
+    _op_get_copilot_skill.dataset_id()
+    _op_get_copilot_skill_skill_chat_questions = _op_get_copilot_skill.skill_chat_questions()
+    _op_get_copilot_skill_skill_chat_questions.copilot_skill_chat_question_id()
+    _op_get_copilot_skill_skill_chat_questions.question()
+    _op_get_copilot_skill_skill_chat_questions.expected_completion_response()
+    _op_get_copilot_skill.yaml_code()
+    _op_get_copilot_skill.skill_code()
+    _op_get_copilot_skill.misc_info()
+    _op_get_copilot_skill.scheduling_only()
+    _op_get_copilot_skill_copilot_skill_nodes = _op_get_copilot_skill.copilot_skill_nodes()
+    _op_get_copilot_skill_copilot_skill_nodes.copilot_skill_node_id()
+    _op_get_copilot_skill_copilot_skill_nodes.skill_component_id()
+    _op_get_copilot_skill_copilot_skill_nodes.name()
+    _op_get_copilot_skill_copilot_skill_nodes.description()
+    _op_get_copilot_skill_copilot_skill_nodes.user_data()
+    _op_get_copilot_skill_copilot_skill_nodes_node_connections = _op_get_copilot_skill_copilot_skill_nodes.node_connections()
+    _op_get_copilot_skill_copilot_skill_nodes_node_connections.input_property()
+    _op_get_copilot_skill_copilot_skill_nodes_node_connections.source_node_id()
+    _op_get_copilot_skill_copilot_skill_nodes_node_connections.output_property()
+    return _op
+
+
 class Query:
     chat_entry = query_chat_entry()
     chat_thread = query_chat_thread()
+    get_copilot_skill = query_get_copilot_skill()
 
 
 class Operations:

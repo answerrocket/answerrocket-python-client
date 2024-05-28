@@ -2,6 +2,7 @@ import os
 from typing import Optional
 from uuid import UUID
 
+from answer_rocket.graphql.sdk_operations import Operations
 from sgqlc.types import Variable, Arg, non_null, String
 
 from answer_rocket.auth import AuthHelper
@@ -97,23 +98,11 @@ class Config:
                 'copilotSkillId': self.copilot_skill_id,
             }
 
-            query_vars = {
-                'copilot_id': Arg(non_null(GQL_UUID)),
-                'copilot_skill_id': Arg(non_null(GQL_UUID)),
-            }
+            op = Operations.query.get_copilot_skill
 
-            operation = self._gql_client.query(variables=query_vars)
+            result = self._gql_client.submit(op, query_args)
 
-            gql_query = operation.get_copilot_skill(
-                copilot_id=Variable('copilot_id'),
-                copilot_skill_id=Variable('copilot_skill_id'),
-            )
-
-            result = self._gql_client.submit(operation, query_args)
-
-            max_copilot_skill = result.get_copilot_skill
-
-            return max_copilot_skill
+            return result.get_copilot_skill
         except Exception as e:
             return None
 
