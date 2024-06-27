@@ -12,7 +12,7 @@ from answer_rocket.graphql.client import GraphQlClient
 from answer_rocket.graphql.schema import (LLMApiConfig, AzureOpenaiCompletionLLMApiConfig,
                                           AzureOpenaiEmbeddingLLMApiConfig, OpenaiCompletionLLMApiConfig,
                                           OpenaiEmbeddingLLMApiConfig, UUID, Int, DateTime, ChatDryRunType,
-                                          MaxChatEntry, MaxChatThread)
+                                          MaxChatEntry, MaxChatThread, SharedThread)
 from answer_rocket.graphql.sdk_operations import Operations
 
 
@@ -264,7 +264,7 @@ class Chat:
 
         return result.evaluate_chat_question
 
-    def share_chat_thread(self, original_thread_id: str):
+    def share_chat_thread(self, original_thread_id: str) -> SharedThread:
         mutation_args = {
             'originalThreadId': original_thread_id
         }
