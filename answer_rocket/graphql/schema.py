@@ -180,7 +180,7 @@ class CostInfo(sgqlc.types.Type):
     completion_tokens = sgqlc.types.Field(sgqlc.types.non_null(Int), graphql_name='completionTokens')
     prompt_tokens = sgqlc.types.Field(sgqlc.types.non_null(Int), graphql_name='promptTokens')
     total_tokens = sgqlc.types.Field(sgqlc.types.non_null(Int), graphql_name='totalTokens')
-    cost_estimate_usd = sgqlc.types.Field(sgqlc.types.non_null(Float), graphql_name='costEstimateUsd')
+    cost_estimate_usd = sgqlc.types.Field(Float, graphql_name='costEstimateUsd')
     model = sgqlc.types.Field(String, graphql_name='model')
 
 
@@ -526,7 +526,7 @@ class MaxUser(sgqlc.types.Type):
 
 class Mutation(sgqlc.types.Type):
     __schema__ = schema
-    __field_names__ = ('create_max_copilot_skill_chat_question', 'update_max_copilot_skill_chat_question', 'delete_max_copilot_skill_chat_question', 'create_max_copilot_question', 'update_max_copilot_question', 'delete_max_copilot_question', 'reload_dataset', 'update_chat_answer_payload', 'ask_chat_question', 'evaluate_chat_question', 'queue_chat_question', 'cancel_chat_question', 'create_chat_thread')
+    __field_names__ = ('create_max_copilot_skill_chat_question', 'update_max_copilot_skill_chat_question', 'delete_max_copilot_skill_chat_question', 'create_max_copilot_question', 'update_max_copilot_question', 'delete_max_copilot_question', 'reload_dataset', 'update_chat_answer_payload', 'ask_chat_question', 'evaluate_chat_question', 'queue_chat_question', 'cancel_chat_question', 'create_chat_thread', 'share_thread')
     create_max_copilot_skill_chat_question = sgqlc.types.Field(sgqlc.types.non_null(CreateMaxCopilotSkillChatQuestionResponse), graphql_name='createMaxCopilotSkillChatQuestion', args=sgqlc.types.ArgDict((
         ('copilot_id', sgqlc.types.Arg(sgqlc.types.non_null(UUID), graphql_name='copilotId', default=None)),
         ('copilot_skill_id', sgqlc.types.Arg(sgqlc.types.non_null(UUID), graphql_name='copilotSkillId', default=None)),
@@ -600,6 +600,10 @@ class Mutation(sgqlc.types.Type):
     )
     create_chat_thread = sgqlc.types.Field(MaxChatThread, graphql_name='createChatThread', args=sgqlc.types.ArgDict((
         ('copilot_id', sgqlc.types.Arg(sgqlc.types.non_null(UUID), graphql_name='copilotId', default=None)),
+))
+    )
+    share_thread = sgqlc.types.Field(sgqlc.types.non_null('SharedThread'), graphql_name='shareThread', args=sgqlc.types.ArgDict((
+        ('original_thread_id', sgqlc.types.Arg(UUID, graphql_name='originalThreadId', default=None)),
 ))
     )
 
@@ -692,17 +696,34 @@ class Query(sgqlc.types.Type):
     )
 
 
+class SharedThread(sgqlc.types.Type):
+    __schema__ = schema
+    __field_names__ = ('id', 'user_id', 'original_thread_id', 'copilot_id', 'shared_by', 'last_updated_utc', 'created_utc', 'is_deleted', 'link_to_shared_thread')
+    id = sgqlc.types.Field(sgqlc.types.non_null(UUID), graphql_name='id')
+    user_id = sgqlc.types.Field(sgqlc.types.non_null(UUID), graphql_name='userId')
+    original_thread_id = sgqlc.types.Field(sgqlc.types.non_null(UUID), graphql_name='originalThreadId')
+    copilot_id = sgqlc.types.Field(sgqlc.types.non_null(UUID), graphql_name='copilotId')
+    shared_by = sgqlc.types.Field(String, graphql_name='sharedBy')
+    last_updated_utc = sgqlc.types.Field(sgqlc.types.non_null(DateTime), graphql_name='lastUpdatedUTC')
+    created_utc = sgqlc.types.Field(sgqlc.types.non_null(DateTime), graphql_name='createdUTC')
+    is_deleted = sgqlc.types.Field(sgqlc.types.non_null(Boolean), graphql_name='isDeleted')
+    link_to_shared_thread = sgqlc.types.Field(sgqlc.types.non_null(String), graphql_name='linkToSharedThread')
+
+
 class AzureOpenaiCompletionLLMApiConfig(sgqlc.types.Type, LLMApiConfig):
     __schema__ = schema
-    __field_names__ = ('api_base_url', 'api_version', 'openai_model_name', 'max_tokens_content_generation', 'temperature', 'top_p', 'presence_penalty', 'frequency_penalty')
+    __field_names__ = ('api_base_url', 'api_version', 'openai_model_name', 'max_tokens_input', 'max_tokens_content_generation', 'temperature', 'top_p', 'presence_penalty', 'frequency_penalty', 'cost_per_model_input_unit', 'cost_per_model_output_unit')
     api_base_url = sgqlc.types.Field(sgqlc.types.non_null(String), graphql_name='apiBaseUrl')
     api_version = sgqlc.types.Field(sgqlc.types.non_null(String), graphql_name='apiVersion')
     openai_model_name = sgqlc.types.Field(sgqlc.types.non_null(String), graphql_name='openaiModelName')
-    max_tokens_content_generation = sgqlc.types.Field(sgqlc.types.non_null(Int), graphql_name='maxTokensContentGeneration')
+    max_tokens_input = sgqlc.types.Field(Int, graphql_name='maxTokensInput')
+    max_tokens_content_generation = sgqlc.types.Field(Int, graphql_name='maxTokensContentGeneration')
     temperature = sgqlc.types.Field(sgqlc.types.non_null(Float), graphql_name='temperature')
     top_p = sgqlc.types.Field(sgqlc.types.non_null(Float), graphql_name='topP')
     presence_penalty = sgqlc.types.Field(sgqlc.types.non_null(Float), graphql_name='presencePenalty')
     frequency_penalty = sgqlc.types.Field(sgqlc.types.non_null(Float), graphql_name='frequencyPenalty')
+    cost_per_model_input_unit = sgqlc.types.Field(Float, graphql_name='costPerModelInputUnit')
+    cost_per_model_output_unit = sgqlc.types.Field(Float, graphql_name='costPerModelOutputUnit')
 
 
 class AzureOpenaiEmbeddingLLMApiConfig(sgqlc.types.Type, LLMApiConfig):
@@ -784,13 +805,15 @@ class MaxReferenceAttribute(sgqlc.types.Type, MaxDomainObject, MaxDomainAttribut
 
 class OpenaiCompletionLLMApiConfig(sgqlc.types.Type, LLMApiConfig):
     __schema__ = schema
-    __field_names__ = ('organization', 'max_tokens_content_generation', 'temperature', 'top_p', 'presence_penalty', 'frequency_penalty')
+    __field_names__ = ('organization', 'max_tokens_content_generation', 'temperature', 'top_p', 'presence_penalty', 'frequency_penalty', 'cost_per_model_input_unit', 'cost_per_model_output_unit')
     organization = sgqlc.types.Field(sgqlc.types.non_null(String), graphql_name='organization')
-    max_tokens_content_generation = sgqlc.types.Field(sgqlc.types.non_null(Int), graphql_name='maxTokensContentGeneration')
+    max_tokens_content_generation = sgqlc.types.Field(Int, graphql_name='maxTokensContentGeneration')
     temperature = sgqlc.types.Field(sgqlc.types.non_null(Float), graphql_name='temperature')
     top_p = sgqlc.types.Field(sgqlc.types.non_null(Float), graphql_name='topP')
     presence_penalty = sgqlc.types.Field(sgqlc.types.non_null(Float), graphql_name='presencePenalty')
     frequency_penalty = sgqlc.types.Field(sgqlc.types.non_null(Float), graphql_name='frequencyPenalty')
+    cost_per_model_input_unit = sgqlc.types.Field(Float, graphql_name='costPerModelInputUnit')
+    cost_per_model_output_unit = sgqlc.types.Field(Float, graphql_name='costPerModelOutputUnit')
 
 
 class OpenaiEmbeddingLLMApiConfig(sgqlc.types.Type, LLMApiConfig):
