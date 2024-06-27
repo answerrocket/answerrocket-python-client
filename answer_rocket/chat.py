@@ -264,6 +264,24 @@ class Chat:
 
         return result.evaluate_chat_question
 
+    def share_chat_thread(self, original_thread_id: str):
+        mutation_args = {
+            'originalThreadId': original_thread_id
+        }
+
+        mutation_vars = {
+            'original_thread_id': Arg(non_null(UUID))
+        }
+
+        operation = self.gql_client.mutation(variables=mutation_vars)
+
+        operation.share_thread(
+            original_thread_id=Variable('original_thread_id')
+        )
+        result = self.gql_client.submit(operation, mutation_args)
+
+        return result.share_thread
+
     def get_chat_entry(self, entry_id: str) -> MaxChatEntry:
         get_chat_entry_args = {
             'id': UUID(entry_id),
