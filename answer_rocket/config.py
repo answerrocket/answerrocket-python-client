@@ -9,7 +9,7 @@ from answer_rocket.auth import AuthHelper
 from answer_rocket.graphql.client import GraphQlClient
 from answer_rocket.graphql.schema import UUID as GQL_UUID, MaxCopilotSkillChatQuestion, MaxCopilotSkill, MaxCopilot, \
     MaxMutationResponse, CreateMaxCopilotSkillChatQuestionResponse, MaxCopilotQuestionInput, \
-    MaxCreateCopilotQuestionResponse, MaxUser, MaxSkillComponent
+    MaxCreateCopilotQuestionResponse, MaxUser, MaxSkillComponent, MaxLLmPrompt
 
 # Not clear to what degree there will be distinct "local" vs "server" modes. If there end up being 0 examples of config
 # that must be grabbed from a server even while developing locally then it may make sense to have two different helpers
@@ -341,6 +341,19 @@ class Config:
         except Exception as e:
             return None
 
+    def get_prompt(self, llm_prompt_id: UUID) -> MaxLLmPrompt:
+        try:
+            query_args = {
+                'llmPromptId': str(llm_prompt_id),
+            }
+
+            op = Operations.query.get_max_llm_prompt
+
+            result = self._gql_client.submit(op, query_args)
+
+            return result.get_max_llm_prompt
+        except Exception as e:
+            return None
 
 def _complete_artifact_path(artifact_path: str) -> str:
     """

@@ -1,0 +1,6 @@
+query GetMaxLlmPrompt($llmPromptId: UUID!) {
+    getMaxLlmPrompt(llmPromptId: $llmPromptId) {
+        llmPromptId
+        name
+    }
+}
