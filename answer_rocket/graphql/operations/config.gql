@@ -2,11 +2,12 @@ query GetMaxLlmPrompt(
     $llmPromptId: UUID!,
     $templateVariables: JSON,
     $kShotCount: Int,
-    $kShotThreshold: Int,
+    $kShotThreshold: Float,
     $kShotMatch: String
 ) {
     getMaxLlmPrompt(llmPromptId: $llmPromptId, templateVariables: $templateVariables, kShotCount: $kShotCount, kShotThreshold: $kShotThreshold, kShotMatch: $kShotMatch) {
         llmPromptId
         name
+        promptResponse
     }
 }

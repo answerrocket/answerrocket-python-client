@@ -439,9 +439,10 @@ class MaxDomainAttributeStatisticInfo(sgqlc.types.Type):
 
 class MaxLLmPrompt(sgqlc.types.Type):
     __schema__ = schema
-    __field_names__ = ('llm_prompt_id', 'name')
+    __field_names__ = ('llm_prompt_id', 'name', 'prompt_response')
     llm_prompt_id = sgqlc.types.Field(sgqlc.types.non_null(UUID), graphql_name='llmPromptId')
     name = sgqlc.types.Field(sgqlc.types.non_null(String), graphql_name='name')
+    prompt_response = sgqlc.types.Field(JSON, graphql_name='promptResponse')
 
 
 class MaxMetricHierarchyNode(sgqlc.types.Type):
@@ -685,7 +686,7 @@ class Query(sgqlc.types.Type):
         ('llm_prompt_id', sgqlc.types.Arg(sgqlc.types.non_null(UUID), graphql_name='llmPromptId', default=None)),
         ('template_variables', sgqlc.types.Arg(JSON, graphql_name='templateVariables', default=None)),
         ('k_shot_count', sgqlc.types.Arg(Int, graphql_name='kShotCount', default=None)),
-        ('k_shot_threshold', sgqlc.types.Arg(Int, graphql_name='kShotThreshold', default=None)),
+        ('k_shot_threshold', sgqlc.types.Arg(Float, graphql_name='kShotThreshold', default=None)),
         ('k_shot_match', sgqlc.types.Arg(String, graphql_name='kShotMatch', default=None)),
 ))
     )

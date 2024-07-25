@@ -346,7 +346,7 @@ class Config:
             llm_prompt_id: UUID,
             template_vars: Dict[str, Any],
             k_shot_count: int,
-            k_shot_threshold: int,
+            k_shot_threshold: float,
             k_shot_match: str
         ) -> MaxLLmPrompt:
         try:
