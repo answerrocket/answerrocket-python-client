@@ -8,6 +8,8 @@ query GetMaxLlmPrompt(
     getMaxLlmPrompt(llmPromptId: $llmPromptId, templateVariables: $templateVariables, kShotCount: $kShotCount, kShotThreshold: $kShotThreshold, kShotMatch: $kShotMatch) {
         llmPromptId
         name
+        llmPromptTemplateId
+        templateValue
         promptResponse
     }
 }

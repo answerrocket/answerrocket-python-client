@@ -105,6 +105,8 @@ def query_get_max_llm_prompt():
     _op_get_max_llm_prompt = _op.get_max_llm_prompt(llm_prompt_id=sgqlc.types.Variable('llmPromptId'), template_variables=sgqlc.types.Variable('templateVariables'), k_shot_count=sgqlc.types.Variable('kShotCount'), k_shot_threshold=sgqlc.types.Variable('kShotThreshold'), k_shot_match=sgqlc.types.Variable('kShotMatch'))
     _op_get_max_llm_prompt.llm_prompt_id()
     _op_get_max_llm_prompt.name()
+    _op_get_max_llm_prompt.llm_prompt_template_id()
+    _op_get_max_llm_prompt.template_value()
     _op_get_max_llm_prompt.prompt_response()
     return _op
 

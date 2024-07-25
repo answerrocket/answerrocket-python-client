@@ -439,9 +439,11 @@ class MaxDomainAttributeStatisticInfo(sgqlc.types.Type):
 
 class MaxLLmPrompt(sgqlc.types.Type):
     __schema__ = schema
-    __field_names__ = ('llm_prompt_id', 'name', 'prompt_response')
+    __field_names__ = ('llm_prompt_id', 'name', 'llm_prompt_template_id', 'template_value', 'prompt_response')
     llm_prompt_id = sgqlc.types.Field(sgqlc.types.non_null(UUID), graphql_name='llmPromptId')
     name = sgqlc.types.Field(sgqlc.types.non_null(String), graphql_name='name')
+    llm_prompt_template_id = sgqlc.types.Field(UUID, graphql_name='llmPromptTemplateId')
+    template_value = sgqlc.types.Field(String, graphql_name='templateValue')
     prompt_response = sgqlc.types.Field(JSON, graphql_name='promptResponse')
 
 
