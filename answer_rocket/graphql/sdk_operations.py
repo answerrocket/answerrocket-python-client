@@ -101,8 +101,8 @@ def query_chat_thread():
 
 
 def query_get_max_llm_prompt():
-    _op = sgqlc.operation.Operation(_schema_root.query_type, name='GetMaxLlmPrompt', variables=dict(llmPromptId=sgqlc.types.Arg(sgqlc.types.non_null(_schema.UUID))))
-    _op_get_max_llm_prompt = _op.get_max_llm_prompt(llm_prompt_id=sgqlc.types.Variable('llmPromptId'))
+    _op = sgqlc.operation.Operation(_schema_root.query_type, name='GetMaxLlmPrompt', variables=dict(llmPromptId=sgqlc.types.Arg(sgqlc.types.non_null(_schema.UUID)), templateVariables=sgqlc.types.Arg(_schema.JSON), kShotCount=sgqlc.types.Arg(_schema.Int), kShotThreshold=sgqlc.types.Arg(_schema.Int), kShotMatch=sgqlc.types.Arg(_schema.String)))
+    _op_get_max_llm_prompt = _op.get_max_llm_prompt(llm_prompt_id=sgqlc.types.Variable('llmPromptId'), template_variables=sgqlc.types.Variable('templateVariables'), k_shot_count=sgqlc.types.Variable('kShotCount'), k_shot_threshold=sgqlc.types.Variable('kShotThreshold'), k_shot_match=sgqlc.types.Variable('kShotMatch'))
     _op_get_max_llm_prompt.llm_prompt_id()
     _op_get_max_llm_prompt.name()
     return _op

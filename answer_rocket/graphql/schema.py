@@ -683,6 +683,10 @@ class Query(sgqlc.types.Type):
     )
     get_max_llm_prompt = sgqlc.types.Field(MaxLLmPrompt, graphql_name='getMaxLlmPrompt', args=sgqlc.types.ArgDict((
         ('llm_prompt_id', sgqlc.types.Arg(sgqlc.types.non_null(UUID), graphql_name='llmPromptId', default=None)),
+        ('template_variables', sgqlc.types.Arg(JSON, graphql_name='templateVariables', default=None)),
+        ('k_shot_count', sgqlc.types.Arg(Int, graphql_name='kShotCount', default=None)),
+        ('k_shot_threshold', sgqlc.types.Arg(Int, graphql_name='kShotThreshold', default=None)),
+        ('k_shot_match', sgqlc.types.Arg(String, graphql_name='kShotMatch', default=None)),
 ))
     )
     user_chat_threads = sgqlc.types.Field(sgqlc.types.list_of(JSON), graphql_name='userChatThreads', args=sgqlc.types.ArgDict((

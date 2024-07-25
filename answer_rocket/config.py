@@ -1,5 +1,5 @@
 import os
-from typing import Optional
+from typing import Optional, Dict, Any
 from uuid import UUID
 
 from answer_rocket.graphql.sdk_operations import Operations
@@ -341,10 +341,21 @@ class Config:
         except Exception as e:
             return None
 
-    def get_prompt(self, llm_prompt_id: UUID) -> MaxLLmPrompt:
+    def get_prompt(
+            self,
+            llm_prompt_id: UUID,
+            template_vars: Dict[str, Any],
+            k_shot_count: int,
+            k_shot_threshold: int,
+            k_shot_match: str
+        ) -> MaxLLmPrompt:
         try:
             query_args = {
                 'llmPromptId': str(llm_prompt_id),
+                'templateVariables': template_vars,
+                'kShotCount': k_shot_count,
+                'kShotThreshold': k_shot_threshold,
+                'kShotMatch': k_shot_match,
             }
 
             op = Operations.query.get_max_llm_prompt
