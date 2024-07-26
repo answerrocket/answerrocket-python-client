@@ -12,7 +12,7 @@ from answer_rocket.graphql.client import GraphQlClient
 from answer_rocket.graphql.schema import (LLMApiConfig, AzureOpenaiCompletionLLMApiConfig,
                                           AzureOpenaiEmbeddingLLMApiConfig, OpenaiCompletionLLMApiConfig,
                                           OpenaiEmbeddingLLMApiConfig, UUID, Int, DateTime, ChatDryRunType,
-                                          MaxChatEntry, MaxChatThread, SharedThread)
+                                          MaxChatEntry, MaxChatThread, SharedThread, ModelOverride)
 from answer_rocket.graphql.sdk_operations import Operations
 
 
@@ -150,7 +150,7 @@ class Chat:
 
         return False, str(last_error)
 
-    def ask_question(self, copilot_id: str, question: str, thread_id: str = None, skip_report_cache: bool = False, dry_run_type: str = None):
+    def ask_question(self, copilot_id: str, question: str, thread_id: str = None, skip_report_cache: bool = False, dry_run_type: str = None, model_overrides: dict = None):
         """
         Calls the Max chat pipeline to answer a natural language question and receive analysis and insights
         in response.
@@ -162,12 +162,18 @@ class Chat:
         :param dry_run_type: If provided, run a dry run at the specified level: 'SKIP_SKILL_EXEC', 'SKIP_SKILL_NLG'
         :return: the ChatEntry response object associate with the answer from the pipeline
         """
+        override_list = []
+        if model_overrides:
+            for key in model_overrides:
+                override_list.append({"modelType": key, "modelName": model_overrides[key]})
+
         ask_question_query_args = {
             'copilotId': UUID(copilot_id),
             'question': question,
             'threadId': UUID(thread_id) if thread_id else None,
             'skipReportCache': skip_report_cache,
-            'dryRunType': ChatDryRunType(dry_run_type) if dry_run_type else None
+            'dryRunType': ChatDryRunType(dry_run_type) if dry_run_type else None,
+            'modelOverrides': override_list if override_list else None
         }
 
         op = Operations.mutation.ask_chat_question

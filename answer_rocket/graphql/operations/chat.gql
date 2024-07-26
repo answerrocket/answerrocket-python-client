@@ -1,103 +1,100 @@
-
 mutation AskChatQuestion(
-    $copilotId: UUID!
-    $question: String!
-    $threadId: UUID
-    $skipReportCache: Boolean
-    $dryRunType: ChatDryRunType
+  $copilotId: UUID!
+  $question: String!
+  $threadId: UUID
+  $skipReportCache: Boolean
+  $dryRunType: ChatDryRunType
+  $modelOverrides: [ModelOverride]
 ) {
-    askChatQuestion(
-        copilotId: $copilotId,
-        question: $question,
-        threadId: $threadId
-        skipReportCache: $skipReportCache
-        dryRunType: $dryRunType
-    ) {
-        id
-        threadId
-        answer {
-            ...ChatResultFragment
-        }
+  askChatQuestion(
+    copilotId: $copilotId
+    question: $question
+    threadId: $threadId
+    skipReportCache: $skipReportCache
+    dryRunType: $dryRunType
+    modelOverrides: $modelOverrides
+  ) {
+    id
+    threadId
+    answer {
+      ...ChatResultFragment
     }
+  }
 }
 
 mutation QueueChatQuestion(
-    $threadId: UUID!
-    $question: String!
-    $skipCache: Boolean
+  $threadId: UUID!
+  $question: String!
+  $skipCache: Boolean
 ) {
-    queueChatQuestion(
-        threadId: $threadId,
-        question: $question,
-        skipCache: $skipCache,
-    ) {
-        threadId
-        id
-    }
+  queueChatQuestion(
+    threadId: $threadId
+    question: $question
+    skipCache: $skipCache
+  ) {
+    threadId
+    id
+  }
 }
 
 fragment ChatResultFragment on MaxChatResult {
-    answerId
-    answeredAt
-    copilotSkillId
-    hasFinished
-    error
-    isNewThread
-    message
-    reportResults {
-        title
-        reportName
-        parameters {
-            key
-            values
-            label
-        }
-        customPayload
+  answerId
+  answeredAt
+  copilotSkillId
+  hasFinished
+  error
+  isNewThread
+  message
+  reportResults {
+    title
+    reportName
+    parameters {
+      key
+      values
+      label
     }
+    customPayload
+  }
+  threadId
+  userId
+}
+
+mutation CancelChatQuestion($entryId: UUID!) {
+  cancelChatQuestion(entryId: $entryId) {
     threadId
-    userId
+    id
+  }
 }
 
-mutation CancelChatQuestion(
-    $entryId: UUID!
-) {
-    cancelChatQuestion(entryId: $entryId) {
-        threadId
-        id
+query ChatEntry($id: UUID!) {
+  chatEntry(id: $id) {
+    id
+    threadId
+    answer {
+      ...ChatResultFragment
     }
-}
-
-query ChatEntry(
-    $id: UUID!
-) {
-    chatEntry(id: $id) {
-        id
-        threadId
-        answer {
-            ...ChatResultFragment
-        }
-    }
+  }
 }
 
 query ChatThread($id: UUID!) {
-    chatThread(id: $id) {
-        id
-        entryCount
-        title
-        copilotId
-        entries {
-            id
-            threadId
-            answer {
-                ...ChatResultFragment
-            }
-        }
+  chatThread(id: $id) {
+    id
+    entryCount
+    title
+    copilotId
+    entries {
+      id
+      threadId
+      answer {
+        ...ChatResultFragment
+      }
     }
+  }
 }
 
 mutation CreateChatThread($copilotId: UUID!) {
-    createChatThread(copilotId: $copilotId) {
-        id
-        copilotId
-    }
+  createChatThread(copilotId: $copilotId) {
+    id
+    copilotId
+  }
 }
