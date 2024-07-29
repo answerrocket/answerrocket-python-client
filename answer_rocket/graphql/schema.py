@@ -36,6 +36,11 @@ class MetricType(sgqlc.types.Enum):
     __choices__ = ('BASIC', 'RATIO', 'SHARE')
 
 
+class ModelTypes(sgqlc.types.Enum):
+    __schema__ = schema
+    __choices__ = ('CHAT', 'EMBEDDINGS', 'NARRATIVE')
+
+
 class SimplifiedDataType(sgqlc.types.Enum):
     __schema__ = schema
     __choices__ = ('BOOLEAN', 'DATE', 'NUMBER', 'STRING')
@@ -58,6 +63,13 @@ class MaxCopilotQuestionInput(sgqlc.types.Input):
     nl = sgqlc.types.Field(String, graphql_name='nl')
     hint = sgqlc.types.Field(String, graphql_name='hint')
     parameters = sgqlc.types.Field(JSON, graphql_name='parameters')
+
+
+class ModelOverride(sgqlc.types.Input):
+    __schema__ = schema
+    __field_names__ = ('model_type', 'model_name')
+    model_type = sgqlc.types.Field(sgqlc.types.non_null(ModelTypes), graphql_name='modelType')
+    model_name = sgqlc.types.Field(sgqlc.types.non_null(String), graphql_name='modelName')
 
 
 
@@ -581,6 +593,7 @@ class Mutation(sgqlc.types.Type):
         ('thread_id', sgqlc.types.Arg(UUID, graphql_name='threadId', default=None)),
         ('skip_report_cache', sgqlc.types.Arg(Boolean, graphql_name='skipReportCache', default=None)),
         ('dry_run_type', sgqlc.types.Arg(ChatDryRunType, graphql_name='dryRunType', default=None)),
+        ('model_overrides', sgqlc.types.Arg(sgqlc.types.list_of(ModelOverride), graphql_name='modelOverrides', default=None)),
 ))
     )
     evaluate_chat_question = sgqlc.types.Field(sgqlc.types.non_null(EvaluateChatQuestionResponse), graphql_name='evaluateChatQuestion', args=sgqlc.types.ArgDict((
@@ -592,6 +605,7 @@ class Mutation(sgqlc.types.Type):
         ('thread_id', sgqlc.types.Arg(sgqlc.types.non_null(UUID), graphql_name='threadId', default=None)),
         ('question', sgqlc.types.Arg(sgqlc.types.non_null(String), graphql_name='question', default=None)),
         ('skip_cache', sgqlc.types.Arg(Boolean, graphql_name='skipCache', default=None)),
+        ('model_overrides', sgqlc.types.Arg(sgqlc.types.list_of(ModelOverride), graphql_name='modelOverrides', default=None)),
 ))
     )
     cancel_chat_question = sgqlc.types.Field(MaxChatEntry, graphql_name='cancelChatQuestion', args=sgqlc.types.ArgDict((
