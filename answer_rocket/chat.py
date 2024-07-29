@@ -315,7 +315,7 @@ class Chat:
         result = self.gql_client.submit(op, create_chat_thread_args)
         return result.create_chat_thread
 
-    def queue_chat_question(self, question: str, thread_id: str, skip_cache: bool = False) -> MaxChatEntry:
+    def queue_chat_question(self, question: str, thread_id: str, skip_cache: bool = False, model_overrides: dict = None) -> MaxChatEntry:
         """
         This queues up a question for processing. Unlike ask_question, this will not wait for the processing to
         complete. It will immediately return a shell entry with an id you can use to query for the results.
@@ -324,10 +324,17 @@ class Chat:
         :param skip_cache: Set to true to force a fresh run of the question, ignoring any existing skill result caches.
         :return:
         """
+
+        override_list = []
+        if model_overrides:
+            for key in model_overrides:
+                override_list.append({"modelType": key, "modelName": model_overrides[key]})
+
         queue_chat_question_args = {
             'question': question,
             'skipCache': skip_cache,
-            'threadId': thread_id
+            'threadId': thread_id,
+            'modelOverrides': override_list if override_list else None
         }
 
         op = Operations.mutation.queue_chat_question

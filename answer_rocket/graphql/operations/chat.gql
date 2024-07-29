@@ -26,11 +26,13 @@ mutation QueueChatQuestion(
   $threadId: UUID!
   $question: String!
   $skipCache: Boolean
+  $modelOverrides: [ModelOverride]
 ) {
   queueChatQuestion(
     threadId: $threadId
     question: $question
     skipCache: $skipCache
+    modelOverrides: $modelOverrides
   ) {
     threadId
     id
