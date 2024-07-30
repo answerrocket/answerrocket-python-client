@@ -345,17 +345,13 @@ class Config:
             self,
             llm_prompt_id: UUID,
             template_vars: Dict[str, Any],
-            k_shot_count: int,
-            k_shot_threshold: float,
-            k_shot_match: str
+            k_shot_match: str,
         ) -> MaxLLmPrompt:
         try:
             query_args = {
                 'llmPromptId': str(llm_prompt_id),
                 'templateVariables': template_vars,
-                'kShotCount': k_shot_count,
-                'kShotThreshold': k_shot_threshold,
-                'kShotMatch': k_shot_match,
+                'kShotMatch': k_shot_match
             }
 
             op = Operations.query.get_max_llm_prompt
