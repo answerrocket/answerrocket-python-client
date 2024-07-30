@@ -106,7 +106,6 @@ def query_get_max_llm_prompt():
     _op_get_max_llm_prompt.llm_prompt_id()
     _op_get_max_llm_prompt.name()
     _op_get_max_llm_prompt.llm_prompt_template_id()
-    _op_get_max_llm_prompt.template_value()
     _op_get_max_llm_prompt.prompt_response()
     return _op
 

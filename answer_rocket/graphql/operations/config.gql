@@ -7,7 +7,6 @@ query GetMaxLlmPrompt(
         llmPromptId
         name
         llmPromptTemplateId
-        templateValue
         promptResponse
     }
 }
