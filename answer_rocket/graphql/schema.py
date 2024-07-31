@@ -56,6 +56,13 @@ class UUID(sgqlc.types.Scalar):
 ########################################################################
 # Input Objects
 ########################################################################
+class FunctionCallMessageInput(sgqlc.types.Input):
+    __schema__ = schema
+    __field_names__ = ('name', 'arguments')
+    name = sgqlc.types.Field(sgqlc.types.non_null(String), graphql_name='name')
+    arguments = sgqlc.types.Field(sgqlc.types.non_null(String), graphql_name='arguments')
+
+
 class MaxCopilotQuestionInput(sgqlc.types.Input):
     __schema__ = schema
     __field_names__ = ('skill_id', 'nl', 'hint', 'parameters')
@@ -63,6 +70,15 @@ class MaxCopilotQuestionInput(sgqlc.types.Input):
     nl = sgqlc.types.Field(String, graphql_name='nl')
     hint = sgqlc.types.Field(String, graphql_name='hint')
     parameters = sgqlc.types.Field(JSON, graphql_name='parameters')
+
+
+class MessageHistoryInput(sgqlc.types.Input):
+    __schema__ = schema
+    __field_names__ = ('role', 'content', 'name', 'function_call')
+    role = sgqlc.types.Field(sgqlc.types.non_null(String), graphql_name='role')
+    content = sgqlc.types.Field(sgqlc.types.non_null(String), graphql_name='content')
+    name = sgqlc.types.Field(String, graphql_name='name')
+    function_call = sgqlc.types.Field(FunctionCallMessageInput, graphql_name='functionCall')
 
 
 class ModelOverride(sgqlc.types.Input):
@@ -449,6 +465,15 @@ class MaxDomainAttributeStatisticInfo(sgqlc.types.Type):
     distinct_count = sgqlc.types.Field(Int, graphql_name='distinctCount')
 
 
+class MaxLLmPrompt(sgqlc.types.Type):
+    __schema__ = schema
+    __field_names__ = ('llm_prompt_id', 'name', 'llm_prompt_template_id', 'prompt_response')
+    llm_prompt_id = sgqlc.types.Field(sgqlc.types.non_null(UUID), graphql_name='llmPromptId')
+    name = sgqlc.types.Field(sgqlc.types.non_null(String), graphql_name='name')
+    llm_prompt_template_id = sgqlc.types.Field(UUID, graphql_name='llmPromptTemplateId')
+    prompt_response = sgqlc.types.Field(JSON, graphql_name='promptResponse')
+
+
 class MaxMetricHierarchyNode(sgqlc.types.Type):
     __schema__ = schema
     __field_names__ = ('metric_hierarchy_node_id', 'metric_id', 'description', 'children')
@@ -594,6 +619,7 @@ class Mutation(sgqlc.types.Type):
         ('skip_report_cache', sgqlc.types.Arg(Boolean, graphql_name='skipReportCache', default=None)),
         ('dry_run_type', sgqlc.types.Arg(ChatDryRunType, graphql_name='dryRunType', default=None)),
         ('model_overrides', sgqlc.types.Arg(sgqlc.types.list_of(ModelOverride), graphql_name='modelOverrides', default=None)),
+        ('history', sgqlc.types.Arg(sgqlc.types.list_of(sgqlc.types.non_null(MessageHistoryInput)), graphql_name='history', default=None)),
 ))
     )
     evaluate_chat_question = sgqlc.types.Field(sgqlc.types.non_null(EvaluateChatQuestionResponse), graphql_name='evaluateChatQuestion', args=sgqlc.types.ArgDict((
@@ -624,7 +650,7 @@ class Mutation(sgqlc.types.Type):
 
 class Query(sgqlc.types.Type):
     __schema__ = schema
-    __field_names__ = ('ping', 'current_user', 'get_copilot_skill_artifact_by_path', 'get_copilot_info', 'get_copilot_skill', 'run_copilot_skill', 'get_skill_components', 'execute_sql_query', 'execute_rql_query', 'get_dataset_id', 'get_dataset', 'get_domain_object', 'get_domain_object_by_name', 'llmapi_config_for_sdk', 'user_chat_threads', 'user_chat_entries', 'chat_thread', 'chat_entry')
+    __field_names__ = ('ping', 'current_user', 'get_copilot_skill_artifact_by_path', 'get_copilot_info', 'get_copilot_skill', 'run_copilot_skill', 'get_skill_components', 'execute_sql_query', 'execute_rql_query', 'get_dataset_id', 'get_dataset', 'get_domain_object', 'get_domain_object_by_name', 'llmapi_config_for_sdk', 'get_max_llm_prompt', 'user_chat_threads', 'user_chat_entries', 'chat_thread', 'chat_entry')
     ping = sgqlc.types.Field(String, graphql_name='ping')
     current_user = sgqlc.types.Field(MaxUser, graphql_name='currentUser')
     get_copilot_skill_artifact_by_path = sgqlc.types.Field(CopilotSkillArtifact, graphql_name='getCopilotSkillArtifactByPath', args=sgqlc.types.ArgDict((
@@ -686,6 +712,12 @@ class Query(sgqlc.types.Type):
     )
     llmapi_config_for_sdk = sgqlc.types.Field(LLMApiConfig, graphql_name='LLMApiConfigForSdk', args=sgqlc.types.ArgDict((
         ('model_type', sgqlc.types.Arg(sgqlc.types.non_null(String), graphql_name='modelType', default=None)),
+))
+    )
+    get_max_llm_prompt = sgqlc.types.Field(MaxLLmPrompt, graphql_name='getMaxLlmPrompt', args=sgqlc.types.ArgDict((
+        ('llm_prompt_id', sgqlc.types.Arg(sgqlc.types.non_null(UUID), graphql_name='llmPromptId', default=None)),
+        ('template_variables', sgqlc.types.Arg(JSON, graphql_name='templateVariables', default=None)),
+        ('k_shot_match', sgqlc.types.Arg(String, graphql_name='kShotMatch', default=None)),
 ))
     )
     user_chat_threads = sgqlc.types.Field(sgqlc.types.list_of(JSON), graphql_name='userChatThreads', args=sgqlc.types.ArgDict((
