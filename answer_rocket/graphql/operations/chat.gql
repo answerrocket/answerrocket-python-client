@@ -5,6 +5,7 @@ mutation AskChatQuestion(
   $skipReportCache: Boolean
   $dryRunType: ChatDryRunType
   $modelOverrides: [ModelOverride]
+  $indicatedSkills: [String]
 ) {
   askChatQuestion(
     copilotId: $copilotId
@@ -13,6 +14,7 @@ mutation AskChatQuestion(
     skipReportCache: $skipReportCache
     dryRunType: $dryRunType
     modelOverrides: $modelOverrides
+    indicatedSkills: $indicatedSkills
   ) {
     id
     threadId
@@ -27,12 +29,14 @@ mutation QueueChatQuestion(
   $question: String!
   $skipCache: Boolean
   $modelOverrides: [ModelOverride]
+  $indicatedSkills: [String]
 ) {
   queueChatQuestion(
     threadId: $threadId
     question: $question
     skipCache: $skipCache
     modelOverrides: $modelOverrides
+    indicatedSkills: $indicatedSkills
   ) {
     threadId
     id
