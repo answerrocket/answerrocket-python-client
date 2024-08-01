@@ -6,7 +6,6 @@ query GetMaxLlmPrompt(
     getMaxLlmPrompt(llmPromptId: $llmPromptId, templateVariables: $templateVariables, kShotMatch: $kShotMatch) {
         llmPromptId
         name
-        llmPromptTemplateId
         promptResponse
     }
 }
