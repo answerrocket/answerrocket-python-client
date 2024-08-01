@@ -619,6 +619,7 @@ class Mutation(sgqlc.types.Type):
         ('skip_report_cache', sgqlc.types.Arg(Boolean, graphql_name='skipReportCache', default=None)),
         ('dry_run_type', sgqlc.types.Arg(ChatDryRunType, graphql_name='dryRunType', default=None)),
         ('model_overrides', sgqlc.types.Arg(sgqlc.types.list_of(ModelOverride), graphql_name='modelOverrides', default=None)),
+        ('indicated_skills', sgqlc.types.Arg(sgqlc.types.list_of(String), graphql_name='indicatedSkills', default=None)),
         ('history', sgqlc.types.Arg(sgqlc.types.list_of(sgqlc.types.non_null(MessageHistoryInput)), graphql_name='history', default=None)),
 ))
     )
@@ -633,6 +634,7 @@ class Mutation(sgqlc.types.Type):
         ('skip_cache', sgqlc.types.Arg(Boolean, graphql_name='skipCache', default=None)),
         ('model_overrides', sgqlc.types.Arg(sgqlc.types.list_of(ModelOverride), graphql_name='modelOverrides', default=None)),
         ('indicated_skills', sgqlc.types.Arg(sgqlc.types.list_of(String), graphql_name='indicatedSkills', default=None)),
+        ('history', sgqlc.types.Arg(sgqlc.types.list_of(sgqlc.types.non_null(MessageHistoryInput)), graphql_name='history', default=None)),
 ))
     )
     cancel_chat_question = sgqlc.types.Field(MaxChatEntry, graphql_name='cancelChatQuestion', args=sgqlc.types.ArgDict((
