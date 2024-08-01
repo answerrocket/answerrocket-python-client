@@ -100,6 +100,15 @@ def query_chat_thread():
     return _op
 
 
+def query_get_max_llm_prompt():
+    _op = sgqlc.operation.Operation(_schema_root.query_type, name='GetMaxLlmPrompt', variables=dict(llmPromptId=sgqlc.types.Arg(sgqlc.types.non_null(_schema.UUID)), templateVariables=sgqlc.types.Arg(_schema.JSON), kShotMatch=sgqlc.types.Arg(_schema.String)))
+    _op_get_max_llm_prompt = _op.get_max_llm_prompt(llm_prompt_id=sgqlc.types.Variable('llmPromptId'), template_variables=sgqlc.types.Variable('templateVariables'), k_shot_match=sgqlc.types.Variable('kShotMatch'))
+    _op_get_max_llm_prompt.llm_prompt_id()
+    _op_get_max_llm_prompt.name()
+    _op_get_max_llm_prompt.prompt_response()
+    return _op
+
+
 def query_get_copilot_skill():
     _op = sgqlc.operation.Operation(_schema_root.query_type, name='GetCopilotSkill', variables=dict(copilotId=sgqlc.types.Arg(sgqlc.types.non_null(_schema.UUID)), copilotSkillId=sgqlc.types.Arg(sgqlc.types.non_null(_schema.UUID))))
     _op_get_copilot_skill = _op.get_copilot_skill(copilot_id=sgqlc.types.Variable('copilotId'), copilot_skill_id=sgqlc.types.Variable('copilotSkillId'))
@@ -135,6 +144,7 @@ class Query:
     chat_entry = query_chat_entry()
     chat_thread = query_chat_thread()
     get_copilot_skill = query_get_copilot_skill()
+    get_max_llm_prompt = query_get_max_llm_prompt()
 
 
 class Operations:
