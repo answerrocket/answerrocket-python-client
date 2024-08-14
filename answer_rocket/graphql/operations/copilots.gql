@@ -1,5 +1,5 @@
-query GetCopilotSkill($copilotId: UUID!, $copilotSkillId: UUID!) {
-    getCopilotSkill(copilotId: $copilotId, copilotSkillId: $copilotSkillId) {
+query GetCopilotSkill($copilotId: UUID!, $copilotSkillId: UUID!, $usePublishedVersion: Boolean) {
+    getCopilotSkill(copilotId: $copilotId, copilotSkillId: $copilotSkillId, usePublishedVersion: $usePublishedVersion) {
         copilotSkillId
         name
         copilotSkillType
