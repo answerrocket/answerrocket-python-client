@@ -428,7 +428,7 @@ class MaxDatabase(sgqlc.types.Type):
 
 class MaxDataset(sgqlc.types.Type):
     __schema__ = schema
-    __field_names__ = ('dataset_id', 'name', 'description', 'domain_objects', 'misc_info', 'database', 'tables', 'dimension_value_distribution_map', 'date_range_boundary_attribute_id', 'dimension_hierarchies', 'metric_hierarchies', 'domain_attribute_statistics', 'default_performance_metric_id', 'dataset_min_date', 'dataset_max_date', 'query_row_limit')
+    __field_names__ = ('dataset_id', 'name', 'description', 'domain_objects', 'misc_info', 'database', 'tables', 'dimension_value_distribution_map', 'date_range_boundary_attribute_id', 'dimension_hierarchies', 'metric_hierarchies', 'domain_attribute_statistics', 'default_performance_metric_id', 'dataset_min_date', 'dataset_max_date', 'query_row_limit', 'use_database_casing')
     dataset_id = sgqlc.types.Field(sgqlc.types.non_null(UUID), graphql_name='datasetId')
     name = sgqlc.types.Field(sgqlc.types.non_null(String), graphql_name='name')
     description = sgqlc.types.Field(String, graphql_name='description')
@@ -445,6 +445,7 @@ class MaxDataset(sgqlc.types.Type):
     dataset_min_date = sgqlc.types.Field(DateTime, graphql_name='datasetMinDate')
     dataset_max_date = sgqlc.types.Field(DateTime, graphql_name='datasetMaxDate')
     query_row_limit = sgqlc.types.Field(Int, graphql_name='queryRowLimit')
+    use_database_casing = sgqlc.types.Field(sgqlc.types.non_null(Boolean), graphql_name='useDatabaseCasing')
 
 
 class MaxDimensionHierarchyNode(sgqlc.types.Type):
