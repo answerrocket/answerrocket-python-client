@@ -248,6 +248,7 @@ class Data:
             gql_query.dataset_min_date()
             gql_query.dataset_max_date()
             gql_query.query_row_limit()
+            gql_query.use_database_casing()
 
             database = gql_query.database()
             database.database_id()
