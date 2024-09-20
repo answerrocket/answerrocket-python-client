@@ -175,6 +175,14 @@ class MaxDomainEntity(sgqlc.types.Interface):
     attributes = sgqlc.types.Field(sgqlc.types.non_null(sgqlc.types.list_of(sgqlc.types.non_null(MaxDomainAttribute))), graphql_name='attributes')
 
 
+class ChatFeedback(sgqlc.types.Type):
+    __schema__ = schema
+    __field_names__ = ('type', 'feedback', 'user_id')
+    type = sgqlc.types.Field(String, graphql_name='type')
+    feedback = sgqlc.types.Field(JSON, graphql_name='feedback')
+    user_id = sgqlc.types.Field(UUID, graphql_name='userId')
+
+
 class CopilotSkillArtifact(sgqlc.types.Type):
     __schema__ = schema
     __field_names__ = ('copilot_skill_artifact_id', 'copilot_id', 'copilot_skill_id', 'artifact_path', 'artifact', 'description', 'created_user_id', 'created_utc', 'last_modified_user_id', 'last_modified_utc', 'version', 'is_active', 'is_deleted')
@@ -277,11 +285,12 @@ class ExecuteSqlQueryResponse(sgqlc.types.Type):
 
 class MaxChatEntry(sgqlc.types.Type):
     __schema__ = schema
-    __field_names__ = ('id', 'thread_id', 'question', 'answer')
+    __field_names__ = ('id', 'thread_id', 'question', 'answer', 'feedback')
     id = sgqlc.types.Field(sgqlc.types.non_null(UUID), graphql_name='id')
     thread_id = sgqlc.types.Field(UUID, graphql_name='threadId')
     question = sgqlc.types.Field('MaxChatQuestion', graphql_name='question')
     answer = sgqlc.types.Field('MaxChatResult', graphql_name='answer')
+    feedback = sgqlc.types.Field(ChatFeedback, graphql_name='feedback')
 
 
 class MaxChatQuestion(sgqlc.types.Type):
