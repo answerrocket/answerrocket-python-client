@@ -285,12 +285,13 @@ class ExecuteSqlQueryResponse(sgqlc.types.Type):
 
 class MaxChatEntry(sgqlc.types.Type):
     __schema__ = schema
-    __field_names__ = ('id', 'thread_id', 'question', 'answer', 'feedback')
+    __field_names__ = ('id', 'thread_id', 'question', 'answer', 'feedback', 'user')
     id = sgqlc.types.Field(sgqlc.types.non_null(UUID), graphql_name='id')
     thread_id = sgqlc.types.Field(UUID, graphql_name='threadId')
     question = sgqlc.types.Field('MaxChatQuestion', graphql_name='question')
     answer = sgqlc.types.Field('MaxChatResult', graphql_name='answer')
     feedback = sgqlc.types.Field(ChatFeedback, graphql_name='feedback')
+    user = sgqlc.types.Field('MaxChatUser', graphql_name='user')
 
 
 class MaxChatQuestion(sgqlc.types.Type):
@@ -323,6 +324,15 @@ class MaxChatThread(sgqlc.types.Type):
     title = sgqlc.types.Field(String, graphql_name='title')
     copilot_id = sgqlc.types.Field(sgqlc.types.non_null(UUID), graphql_name='copilotId')
     entries = sgqlc.types.Field(sgqlc.types.list_of(MaxChatEntry), graphql_name='entries')
+
+
+class MaxChatUser(sgqlc.types.Type):
+    __schema__ = schema
+    __field_names__ = ('id', 'given_name', 'family_name', 'email_address')
+    id = sgqlc.types.Field(sgqlc.types.non_null(UUID), graphql_name='id')
+    given_name = sgqlc.types.Field(sgqlc.types.non_null(String), graphql_name='givenName')
+    family_name = sgqlc.types.Field(String, graphql_name='familyName')
+    email_address = sgqlc.types.Field(String, graphql_name='emailAddress')
 
 
 class MaxColumn(sgqlc.types.Type):

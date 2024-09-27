@@ -83,6 +83,7 @@ def query_chat_entry():
     _op_chat_entry_answer = _op_chat_entry.answer()
     _op_chat_entry_answer.__fragment__(fragment_chat_result_fragment())
     _op_chat_entry.feedback()
+    _op_chat_entry.user()
     return _op
 
 
