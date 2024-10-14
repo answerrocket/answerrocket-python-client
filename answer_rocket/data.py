@@ -11,7 +11,7 @@ from answer_rocket.graphql.client import GraphQlClient
 from answer_rocket.graphql.schema import UUID as GQL_UUID, MaxMetricAttribute, MaxDomainObject, \
     MaxDimensionEntity, MaxFactEntity, MaxNormalAttribute, \
     MaxPrimaryAttribute, MaxReferenceAttribute, MaxCalculatedMetric, MaxDataset, MaxCalculatedAttribute, \
-    MaxMutationResponse
+    MaxMutationResponse, DateTime
 from answer_rocket.types import MaxResult, RESULT_EXCEPTION_CODE
 
 
@@ -518,3 +518,30 @@ class Data:
             return mutation_response
         except Exception as e:
             return None
+
+    def update_dataset_date_range(self, dataset_id: UUID, min_date: str, max_date: str):
+        mutation_args = {
+            'datasetId': dataset_id,
+            'datasetMinDate': min_date,
+            'datasetMaxDate': max_date,
+        }
+
+        mutation_vars = {
+            'dataset_id': Arg(non_null(GQL_UUID)),
+            'dataset_min_date': Arg(non_null(DateTime)),
+            'dataset_max_date': Arg(non_null(DateTime)),
+        }
+
+        operation = self._gql_client.mutation(variables=mutation_vars)
+
+        operation.update_dataset_date_range(
+            dataset_id=Variable('dataset_id'),
+            dataset_min_date=Variable('dataset_min_date'),
+            dataset_max_date=Variable('dataset_max_date'),
+        )
+
+        result = self._gql_client.submit(operation, mutation_args)
+
+        mutation_response = result.update_dataset_date_range
+
+        return mutation_response
