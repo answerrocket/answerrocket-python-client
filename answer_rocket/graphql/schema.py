@@ -328,11 +328,12 @@ class MaxChatThread(sgqlc.types.Type):
 
 class MaxChatUser(sgqlc.types.Type):
     __schema__ = schema
-    __field_names__ = ('id', 'given_name', 'family_name', 'email_address')
+    __field_names__ = ('id', 'given_name', 'family_name', 'email_address', 'groups')
     id = sgqlc.types.Field(sgqlc.types.non_null(UUID), graphql_name='id')
     given_name = sgqlc.types.Field(sgqlc.types.non_null(String), graphql_name='givenName')
     family_name = sgqlc.types.Field(String, graphql_name='familyName')
     email_address = sgqlc.types.Field(String, graphql_name='emailAddress')
+    groups = sgqlc.types.Field(sgqlc.types.list_of(String), graphql_name='groups')
 
 
 class MaxColumn(sgqlc.types.Type):
@@ -678,7 +679,7 @@ class Mutation(sgqlc.types.Type):
 
 class Query(sgqlc.types.Type):
     __schema__ = schema
-    __field_names__ = ('ping', 'current_user', 'get_copilot_skill_artifact_by_path', 'get_copilot_info', 'get_copilot_skill', 'run_copilot_skill', 'get_skill_components', 'execute_sql_query', 'execute_rql_query', 'get_dataset_id', 'get_dataset', 'get_domain_object', 'get_domain_object_by_name', 'llmapi_config_for_sdk', 'get_max_llm_prompt', 'user_chat_threads', 'user_chat_entries', 'chat_thread', 'chat_entry')
+    __field_names__ = ('ping', 'current_user', 'get_copilot_skill_artifact_by_path', 'get_copilot_info', 'get_copilot_skill', 'run_copilot_skill', 'get_skill_components', 'execute_sql_query', 'execute_rql_query', 'get_dataset_id', 'get_dataset', 'get_domain_object', 'get_domain_object_by_name', 'llmapi_config_for_sdk', 'get_max_llm_prompt', 'user_chat_threads', 'user_chat_entries', 'chat_thread', 'chat_entry', 'user')
     ping = sgqlc.types.Field(String, graphql_name='ping')
     current_user = sgqlc.types.Field(MaxUser, graphql_name='currentUser')
     get_copilot_skill_artifact_by_path = sgqlc.types.Field(CopilotSkillArtifact, graphql_name='getCopilotSkillArtifactByPath', args=sgqlc.types.ArgDict((
@@ -768,6 +769,10 @@ class Query(sgqlc.types.Type):
 ))
     )
     chat_entry = sgqlc.types.Field(MaxChatEntry, graphql_name='chatEntry', args=sgqlc.types.ArgDict((
+        ('id', sgqlc.types.Arg(sgqlc.types.non_null(UUID), graphql_name='id', default=None)),
+))
+    )
+    user = sgqlc.types.Field(MaxChatUser, graphql_name='user', args=sgqlc.types.ArgDict((
         ('id', sgqlc.types.Arg(sgqlc.types.non_null(UUID), graphql_name='id', default=None)),
 ))
     )
