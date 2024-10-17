@@ -9,7 +9,7 @@ from answer_rocket.auth import AuthHelper
 from answer_rocket.graphql.client import GraphQlClient
 from answer_rocket.graphql.schema import UUID as GQL_UUID, MaxCopilotSkillChatQuestion, MaxCopilotSkill, MaxCopilot, \
     MaxMutationResponse, CreateMaxCopilotSkillChatQuestionResponse, MaxCopilotQuestionInput, \
-    MaxCreateCopilotQuestionResponse, MaxUser, MaxSkillComponent, MaxLLmPrompt
+    MaxCreateCopilotQuestionResponse, MaxUser, MaxSkillComponent, MaxLLmPrompt, Boolean
 
 # Not clear to what degree there will be distinct "local" vs "server" modes. If there end up being 0 examples of config
 # that must be grabbed from a server even while developing locally then it may make sense to have two different helpers
@@ -75,13 +75,15 @@ class Config:
             }
 
             query_vars = {
-                'copilot_id': Arg(non_null(GQL_UUID))
+                'copilot_id': Arg(non_null(GQL_UUID)),
+                'use_published_version': Arg(non_null(Boolean))
             }
 
             operation = self._gql_client.query(variables=query_vars)
 
             gql_query = operation.get_copilot_info(
-                copilot_id=Variable('copilot_id')
+                copilot_id=Variable('copilot_id'),
+                use_published_version=Variable('use_published_version')
             )
 
             result = self._gql_client.submit(operation, query_args)
