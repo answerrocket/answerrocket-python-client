@@ -12,7 +12,7 @@ from answer_rocket.graphql.client import GraphQlClient
 from answer_rocket.graphql.schema import (LLMApiConfig, AzureOpenaiCompletionLLMApiConfig,
                                           AzureOpenaiEmbeddingLLMApiConfig, OpenaiCompletionLLMApiConfig,
                                           OpenaiEmbeddingLLMApiConfig, UUID, Int, DateTime, ChatDryRunType,
-                                          MaxChatEntry, MaxChatThread, SharedThread, JSON)
+                                          MaxChatEntry, MaxChatThread, SharedThread, JSON, MaxChatUser)
 from answer_rocket.graphql.sdk_operations import Operations
 
 logger = logging.getLogger(__name__)
@@ -367,6 +367,28 @@ class Chat:
         result = self.gql_client.submit(op, cancel_chat_question_args)
 
         return result.cancel_chat_question
+
+    def get_user(self, user_id: str) -> MaxChatUser:
+        """
+        This fetches a user by their ID.
+        :param user_id: the id of the user
+        :return: A MaxChatUser object
+        """
+
+        get_user_query_args = {
+            'id': UUID(user_id)
+        }
+        get_user_query_vars = {
+            'id': Arg(non_null(UUID))
+        }
+        operation = self.gql_client.query(variables=get_user_query_vars)
+        get_users_query = operation.user(
+            id=Variable('id')
+        )
+
+        result = self.gql_client.submit(operation, get_user_query_args)
+
+        return result.user
 
     def get_all_chat_entries(self, offset=0, limit=100, filters=None):
         """
