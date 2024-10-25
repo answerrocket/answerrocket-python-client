@@ -1,11 +1,12 @@
-import json
 import os
 import uuid
 from typing import Any, List
 
 import sgqlc
+from sgqlc.types import Arg
 from sgqlc.types import Arg, Variable
 from typing_extensions import TypedDict
+
 from answer_rocket.auth import AuthHelper
 from answer_rocket.graphql.client import GraphQlClient
 from answer_rocket.graphql.schema import JSON, UUID as GQL_UUID, UUID
@@ -46,6 +47,10 @@ class ContentBlock(TypedDict):
     """
     Whether or not the block can be collapsed by the user
     """
+    type: str | None
+    """
+    The type of content the block displays. See ExploreChat.kt -> ContentBlockType for possible values.
+    """
 
 
 class ChatReportOutput(TypedDict, total=False):
@@ -60,6 +65,7 @@ class ChatReportOutput(TypedDict, total=False):
     suggestions: List[str]
     interpretation_notes: List[str]
     final_message: str
+    title: str
     info: Any | None
     """
     Any additional information the skill wants to include, typically to be used for debugging
@@ -106,7 +112,7 @@ class OutputBuilder:
             self._gql_client.submit(operation, query_args)
 
     def add_block(self, title: str = None, loading_status: ChatLoadingInfo = None, xml: str = None,
-                  is_collapsible: bool = True) -> str:
+                  is_collapsible: bool = True, content_type: str = "VISUAL") -> str:
         """
         Adds a new content block to the report output. The newly added blocks becomes the default block for
         future updates until a new block is added.
@@ -117,7 +123,7 @@ class OutputBuilder:
         :param is_collapsible: Whether the block can be collapsed by the user
         """
         new_block = ContentBlock(id=str(uuid.uuid4()), title=title, loading_info=loading_status, payload=xml,
-                                 is_collapsible=is_collapsible)
+                                 is_collapsible=is_collapsible, type=content_type)
         self.current_output["content_blocks"].append(new_block)
         self._update_answer()
         return new_block['id']
@@ -141,7 +147,7 @@ class OutputBuilder:
             if loading_info:
                 b['loading_info'] = loading_info
             if xml:
-                b['payload'] = xml
+                b['payload'] = "BLEG"
             if is_collapsible is not None:
                 b['is_collapsible'] = is_collapsible
             return b

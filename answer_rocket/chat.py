@@ -1,20 +1,19 @@
-import os
 import logging
+import os
 from datetime import datetime
 from typing import Literal, Callable, Optional
 
 import openai
-from sgqlc.types import Variable, non_null, String, Arg, Boolean, list_of
 from sgqlc.operation import Fragment
+from sgqlc.types import Variable, non_null, String, Arg, list_of
 
 from answer_rocket.auth import AuthHelper
 from answer_rocket.graphql.client import GraphQlClient
 from answer_rocket.graphql.schema import (LLMApiConfig, AzureOpenaiCompletionLLMApiConfig,
                                           AzureOpenaiEmbeddingLLMApiConfig, OpenaiCompletionLLMApiConfig,
                                           OpenaiEmbeddingLLMApiConfig, UUID, Int, DateTime, ChatDryRunType,
-                                          MaxChatEntry, MaxChatUser, MaxChatThread, SharedThread, ModelOverride)
+                                          MaxChatEntry, MaxChatThread, SharedThread, JSON)
 from answer_rocket.graphql.sdk_operations import Operations
-
 
 logger = logging.getLogger(__name__)
 
@@ -368,30 +367,120 @@ class Chat:
         result = self.gql_client.submit(op, cancel_chat_question_args)
 
         return result.cancel_chat_question
-    
-    def get_user(self, user_id: str) -> MaxChatUser:
-        """
-        This fetches a user by their ID.
-        :param user_id: the id of the user
-        :return: A MaxChatUser object
-        """
 
-        get_user_query_args = {
-            'id': UUID(user_id)
+    def get_all_chat_entries(self, offset=0, limit=100, filters=None):
+        """
+        Fetches all chat entries with optional filters.
+        :param offset: the offset to start fetching entries from. Default is 0.
+        :param limit: the maximum number of entries to fetch. Default is 100.
+        :param filters: a dictionary of filters to apply to the query. Supports all filtering available in the query browser.
+
+        Example Filter after a date:
+
+        {
+            "askedDate": {
+              "dateFrom": "2024-10-25 00:00:00",
+              "dateTo": None,
+              "filterType": "date",
+              "type": "askedAfter"
+            }
         }
-        get_user_query_vars = {
-            'id': Arg(non_null(UUID))
+
+        Other available fields:
+
+        {
+            "askedDate": {
+              "dateFrom": "2024-10-25 00:00:00",
+              "dateTo": "2025-10-26 00:00:00",
+              "filterType": "date",
+              "type": "askedBetween"
+            },
+            "questionType": {
+              "values": [
+                "Test Runs",
+                "User Written"
+              ],
+              "filterType": "set"
+            },
+            "username": {
+              "values": ["someusername"],
+              "filterType": "set"
+            },
+            "lastName": {
+              "values": ["somelastname"],
+              "filterType": "set"
+            },
+            "firstName": {
+              "values": ["somefirstname"],
+              "filterType": "set"
+            },
+            "copilot": {
+              "values": [
+                "My Copilot"
+              ],
+              "filterType": "set"
+            },
+            "copilotSkillName": {
+              "values": [
+                "Dimension Breakout",
+                "globals test",
+                "Document Explorer",
+                "Trend Analysis"
+              ],
+              "filterType": "set"
+            },
+            "type": {
+              "values": [
+                "Positive"
+              ],
+              "filterType": "set"
+            },
+            "feedbackReviewed": {
+              "values": [
+                "Seen"
+              ],
+              "filterType": "set"
+            },
+            "adminFeedback": {
+              "values": [
+                "Negative"
+              ],
+              "filterType": "set"
+            },
+            "status": {
+              "values": [
+                "error",
+                "completed",
+                "canceled",
+                "processing"
+              ],
+              "filterType": "set"
+            }
+          }
+
+
+        :return: a list of ChatEntry objects
+        """
+        get_all_chat_entries_query_args = {
+            'offset': offset,
+            'limit': limit,
+            'filters': filters,
         }
-        operation = self.gql_client.query(variables=get_user_query_vars)
-        get_users_query = operation.user(
-            id=Variable('id')
+        get_all_chat_entries_query_vars = {
+            'offset': Arg(Int),
+            'limit': Arg(Int),
+            'filters': Arg(JSON),
+        }
+        operation = self.gql_client.query(variables=get_all_chat_entries_query_vars)
+        get_all_chat_entries_query = operation.all_chat_entries(
+            offset=Variable('offset'),
+            limit=Variable('limit'),
+            filters=Variable('filters'),
         )
 
-        result = self.gql_client.submit(operation, get_user_query_args)
+        result = self.gql_client.submit(operation, get_all_chat_entries_query_args)
 
-        return result.user
-    
-
+        return result.all_chat_entries
 
 def _create_llm_config_fragments():
     azure_completion_fragment = Fragment(AzureOpenaiCompletionLLMApiConfig, 'AzureCompletionFragment')
