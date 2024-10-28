@@ -1,4 +1,3 @@
-import json
 import os
 import uuid
 from typing import Any, List
@@ -6,6 +5,7 @@ from typing import Any, List
 import sgqlc
 from sgqlc.types import Arg, Variable
 from typing_extensions import TypedDict
+
 from answer_rocket.auth import AuthHelper
 from answer_rocket.graphql.client import GraphQlClient
 from answer_rocket.graphql.schema import JSON, UUID as GQL_UUID, UUID
