@@ -303,7 +303,7 @@ class MaxChatQuestion(sgqlc.types.Type):
 
 class MaxChatResult(sgqlc.types.Type):
     __schema__ = schema
-    __field_names__ = ('answer_id', 'answered_at', 'copilot_skill_id', 'has_finished', 'error', 'is_new_thread', 'message', 'report_results', 'thread_id', 'user_id')
+    __field_names__ = ('answer_id', 'answered_at', 'copilot_skill_id', 'has_finished', 'error', 'is_new_thread', 'message', 'report_results', 'thread_id', 'user_id', 'general_diagnostics', 'chat_pipeline_profile')
     answer_id = sgqlc.types.Field(UUID, graphql_name='answerId')
     answered_at = sgqlc.types.Field(DateTime, graphql_name='answeredAt')
     copilot_skill_id = sgqlc.types.Field(UUID, graphql_name='copilotSkillId')
@@ -314,6 +314,8 @@ class MaxChatResult(sgqlc.types.Type):
     report_results = sgqlc.types.Field(sgqlc.types.list_of(sgqlc.types.non_null('MaxReportResult')), graphql_name='reportResults')
     thread_id = sgqlc.types.Field(UUID, graphql_name='threadId')
     user_id = sgqlc.types.Field(UUID, graphql_name='userId')
+    general_diagnostics = sgqlc.types.Field(JSON, graphql_name='generalDiagnostics')
+    chat_pipeline_profile = sgqlc.types.Field(JSON, graphql_name='chatPipelineProfile')
 
 
 class MaxChatThread(sgqlc.types.Type):
@@ -344,6 +346,14 @@ class MaxColumn(sgqlc.types.Type):
     length = sgqlc.types.Field(Int, graphql_name='length')
     precision = sgqlc.types.Field(Int, graphql_name='precision')
     scale = sgqlc.types.Field(Int, graphql_name='scale')
+
+
+class MaxContentBlock(sgqlc.types.Type):
+    __schema__ = schema
+    __field_names__ = ('title', 'payload', 'type')
+    title = sgqlc.types.Field(String, graphql_name='title')
+    payload = sgqlc.types.Field(String, graphql_name='payload')
+    type = sgqlc.types.Field(String, graphql_name='type')
 
 
 class MaxCopilot(sgqlc.types.Type):
@@ -522,11 +532,12 @@ class MaxReportParamsAndValues(sgqlc.types.Type):
 
 class MaxReportResult(sgqlc.types.Type):
     __schema__ = schema
-    __field_names__ = ('title', 'report_name', 'parameters', 'custom_payload')
+    __field_names__ = ('title', 'report_name', 'parameters', 'custom_payload', 'content_blocks')
     title = sgqlc.types.Field(String, graphql_name='title')
     report_name = sgqlc.types.Field(sgqlc.types.non_null(String), graphql_name='reportName')
     parameters = sgqlc.types.Field(sgqlc.types.list_of(sgqlc.types.non_null(MaxReportParamsAndValues)), graphql_name='parameters')
     custom_payload = sgqlc.types.Field(JSON, graphql_name='customPayload')
+    content_blocks = sgqlc.types.Field(sgqlc.types.list_of(sgqlc.types.non_null(MaxContentBlock)), graphql_name='contentBlocks')
 
 
 class MaxSkillComponent(sgqlc.types.Type):
