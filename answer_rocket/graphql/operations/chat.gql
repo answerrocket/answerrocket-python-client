@@ -20,9 +20,7 @@ mutation AskChatQuestion(
   ) {
     id
     threadId
-    answer {
-      ...ChatResultFragment
-    }
+    answer
   }
 }
 
@@ -80,9 +78,7 @@ query ChatEntry($id: UUID!) {
   chatEntry(id: $id) {
     id
     threadId
-    answer {
-      ...ChatResultFragment
-    }
+    answer
     feedback
     user
   }

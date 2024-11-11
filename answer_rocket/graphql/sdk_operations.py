@@ -39,8 +39,7 @@ def mutation_ask_chat_question():
     _op_ask_chat_question = _op.ask_chat_question(copilot_id=sgqlc.types.Variable('copilotId'), question=sgqlc.types.Variable('question'), thread_id=sgqlc.types.Variable('threadId'), skip_report_cache=sgqlc.types.Variable('skipReportCache'), dry_run_type=sgqlc.types.Variable('dryRunType'), model_overrides=sgqlc.types.Variable('modelOverrides'), indicated_skills=sgqlc.types.Variable('indicatedSkills'), history=sgqlc.types.Variable('history'))
     _op_ask_chat_question.id()
     _op_ask_chat_question.thread_id()
-    _op_ask_chat_question_answer = _op_ask_chat_question.answer()
-    _op_ask_chat_question_answer.__fragment__(fragment_chat_result_fragment())
+    _op_ask_chat_question.answer()
     return _op
 
 
@@ -80,8 +79,7 @@ def query_chat_entry():
     _op_chat_entry = _op.chat_entry(id=sgqlc.types.Variable('id'))
     _op_chat_entry.id()
     _op_chat_entry.thread_id()
-    _op_chat_entry_answer = _op_chat_entry.answer()
-    _op_chat_entry_answer.__fragment__(fragment_chat_result_fragment())
+    _op_chat_entry.answer()
     _op_chat_entry.feedback()
     _op_chat_entry.user()
     return _op
