@@ -20,7 +20,9 @@ mutation AskChatQuestion(
   ) {
     id
     threadId
-    answer
+    answer {
+      ...ChatResultFragment
+    }
   }
 }
 
@@ -47,6 +49,9 @@ mutation QueueChatQuestion(
 
 fragment ChatResultFragment on MaxChatResult {
   answerId
+  threadId
+  chatPipelineProfile
+  generalDiagnostics
   answeredAt
   copilotSkillId
   hasFinished
@@ -78,7 +83,9 @@ query ChatEntry($id: UUID!) {
   chatEntry(id: $id) {
     id
     threadId
-    answer
+    answer {
+      ...ChatResultFragment
+    }
     feedback
     user
   }
