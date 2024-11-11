@@ -49,6 +49,9 @@ mutation QueueChatQuestion(
 
 fragment ChatResultFragment on MaxChatResult {
   answerId
+  threadId
+  chatPipelineProfile
+  generalDiagnostics
   answeredAt
   copilotSkillId
   hasFinished
