@@ -113,3 +113,11 @@ mutation CreateChatThread($copilotId: UUID!) {
     copilotId
   }
 }
+
+mutation AddFeedback(
+  $entryId: UUID!
+  $feedbackType: FeedbackType!
+  $message: String
+) {
+  addFeedback(entryId: $entryId, feedbackType: $feedbackType, message: $message)
+}
