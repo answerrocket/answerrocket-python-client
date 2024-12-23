@@ -71,7 +71,14 @@ def mutation_create_chat_thread():
     return _op
 
 
+def mutation_add_feedback():
+    _op = sgqlc.operation.Operation(_schema_root.mutation_type, name='AddFeedback', variables=dict(entryId=sgqlc.types.Arg(sgqlc.types.non_null(_schema.UUID)), feedbackType=sgqlc.types.Arg(sgqlc.types.non_null(_schema.FeedbackType)), message=sgqlc.types.Arg(_schema.String)))
+    _op.add_feedback(entry_id=sgqlc.types.Variable('entryId'), feedback_type=sgqlc.types.Variable('feedbackType'), message=sgqlc.types.Variable('message'))
+    return _op
+
+
 class Mutation:
+    add_feedback = mutation_add_feedback()
     ask_chat_question = mutation_ask_chat_question()
     cancel_chat_question = mutation_cancel_chat_question()
     create_chat_thread = mutation_create_chat_thread()

@@ -19,7 +19,7 @@ logger = logging.getLogger(__name__)
 
 ModelType = Literal['COMPLETION', 'EMBEDDING']
 ApiType = Literal['AZURE', 'OPENAI']
-
+FeedbackType = Literal['CHAT_POSITIVE', 'CHAT_NEGATIVE']
 LLMConfigType = LLMApiConfig | AzureOpenaiEmbeddingLLMApiConfig | AzureOpenaiCompletionLLMApiConfig | \
                 OpenaiCompletionLLMApiConfig | OpenaiEmbeddingLLMApiConfig
 
@@ -184,6 +184,25 @@ class Chat:
         result = self.gql_client.submit(op, ask_question_query_args)
 
         return result.ask_chat_question
+    
+    def add_feedback(self, entry_id: str, feedback_type: FeedbackType, feedback_text: str) -> bool:
+        """
+        This adds feedback to a chat entry.
+        :param entry_id: the id of the chat entry
+        :param feedback_type: 
+        :param feedback_text: the text of the feedback
+        :return: True if the feedback was added successfully, False otherwise
+        """
+
+        add_feedback_mutation_args = {
+            'entryId': UUID(entry_id),
+            'feedbackType': feedback_type,
+            'message': feedback_text
+        }
+        op = Operations.mutation.add_feedback
+        result = self.gql_client.submit(op, add_feedback_mutation_args)
+
+        return result.add_feedback
 
     def get_threads(self, copilot_id: str, start_date: datetime = None, end_date: datetime = None):
         """
