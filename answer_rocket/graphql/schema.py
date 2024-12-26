@@ -23,6 +23,11 @@ class DpsAggMethod(sgqlc.types.Enum):
     __choices__ = ('AVG', 'COUNT', 'CUSTOM', 'MAX', 'MIN', 'NONE', 'SUM')
 
 
+class FeedbackType(sgqlc.types.Enum):
+    __schema__ = schema
+    __choices__ = ('CHAT_NEGATIVE', 'CHAT_POSITIVE')
+
+
 Float = sgqlc.types.Float
 
 Int = sgqlc.types.Int
@@ -594,7 +599,7 @@ class MaxUser(sgqlc.types.Type):
 
 class Mutation(sgqlc.types.Type):
     __schema__ = schema
-    __field_names__ = ('create_max_copilot_skill_chat_question', 'update_max_copilot_skill_chat_question', 'delete_max_copilot_skill_chat_question', 'create_max_copilot_question', 'update_max_copilot_question', 'delete_max_copilot_question', 'reload_dataset', 'update_dataset_date_range', 'update_chat_answer_payload', 'ask_chat_question', 'evaluate_chat_question', 'queue_chat_question', 'cancel_chat_question', 'create_chat_thread', 'share_thread')
+    __field_names__ = ('create_max_copilot_skill_chat_question', 'update_max_copilot_skill_chat_question', 'delete_max_copilot_skill_chat_question', 'create_max_copilot_question', 'update_max_copilot_question', 'delete_max_copilot_question', 'reload_dataset', 'update_dataset_date_range', 'update_chat_answer_payload', 'ask_chat_question', 'evaluate_chat_question', 'queue_chat_question', 'cancel_chat_question', 'create_chat_thread', 'add_feedback', 'share_thread')
     create_max_copilot_skill_chat_question = sgqlc.types.Field(sgqlc.types.non_null(CreateMaxCopilotSkillChatQuestionResponse), graphql_name='createMaxCopilotSkillChatQuestion', args=sgqlc.types.ArgDict((
         ('copilot_id', sgqlc.types.Arg(sgqlc.types.non_null(UUID), graphql_name='copilotId', default=None)),
         ('copilot_skill_id', sgqlc.types.Arg(sgqlc.types.non_null(UUID), graphql_name='copilotSkillId', default=None)),
@@ -657,6 +662,7 @@ class Mutation(sgqlc.types.Type):
         ('dry_run_type', sgqlc.types.Arg(ChatDryRunType, graphql_name='dryRunType', default=None)),
         ('model_overrides', sgqlc.types.Arg(sgqlc.types.list_of(ModelOverride), graphql_name='modelOverrides', default=None)),
         ('indicated_skills', sgqlc.types.Arg(sgqlc.types.list_of(String), graphql_name='indicatedSkills', default=None)),
+        ('load_all_skills', sgqlc.types.Arg(Boolean, graphql_name='loadAllSkills', default=None)),
         ('history', sgqlc.types.Arg(sgqlc.types.list_of(sgqlc.types.non_null(MessageHistoryInput)), graphql_name='history', default=None)),
 ))
     )
@@ -671,6 +677,7 @@ class Mutation(sgqlc.types.Type):
         ('skip_cache', sgqlc.types.Arg(Boolean, graphql_name='skipCache', default=None)),
         ('model_overrides', sgqlc.types.Arg(sgqlc.types.list_of(ModelOverride), graphql_name='modelOverrides', default=None)),
         ('indicated_skills', sgqlc.types.Arg(sgqlc.types.list_of(String), graphql_name='indicatedSkills', default=None)),
+        ('load_all_skills', sgqlc.types.Arg(Boolean, graphql_name='loadAllSkills', default=None)),
         ('history', sgqlc.types.Arg(sgqlc.types.list_of(sgqlc.types.non_null(MessageHistoryInput)), graphql_name='history', default=None)),
 ))
     )
@@ -680,6 +687,12 @@ class Mutation(sgqlc.types.Type):
     )
     create_chat_thread = sgqlc.types.Field(MaxChatThread, graphql_name='createChatThread', args=sgqlc.types.ArgDict((
         ('copilot_id', sgqlc.types.Arg(sgqlc.types.non_null(UUID), graphql_name='copilotId', default=None)),
+))
+    )
+    add_feedback = sgqlc.types.Field(Boolean, graphql_name='addFeedback', args=sgqlc.types.ArgDict((
+        ('entry_id', sgqlc.types.Arg(sgqlc.types.non_null(UUID), graphql_name='entryId', default=None)),
+        ('feedback_type', sgqlc.types.Arg(sgqlc.types.non_null(FeedbackType), graphql_name='feedbackType', default=None)),
+        ('message', sgqlc.types.Arg(String, graphql_name='message', default=None)),
 ))
     )
     share_thread = sgqlc.types.Field(sgqlc.types.non_null('SharedThread'), graphql_name='shareThread', args=sgqlc.types.ArgDict((
