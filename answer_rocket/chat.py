@@ -185,11 +185,11 @@ class Chat:
 
         return result.ask_chat_question
     
-    def add_feedback(self, entry_id: str, feedback_type: FeedbackType, feedback_text: str) -> bool:
+    def add_feedback(self, entry_id: str, feedback_type: FeedbackType, feedback_text: str = None) -> bool:
         """
         This adds feedback to a chat entry.
         :param entry_id: the id of the chat entry
-        :param feedback_type: 
+        :param feedback_type: the type of feedback to add
         :param feedback_text: the text of the feedback
         :return: True if the feedback was added successfully, False otherwise
         """
