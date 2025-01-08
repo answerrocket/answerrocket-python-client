@@ -308,7 +308,7 @@ class MaxChatQuestion(sgqlc.types.Type):
 
 class MaxChatResult(sgqlc.types.Type):
     __schema__ = schema
-    __field_names__ = ('answer_id', 'answered_at', 'copilot_skill_id', 'has_finished', 'error', 'is_new_thread', 'message', 'report_results', 'thread_id', 'user_id', 'general_diagnostics', 'chat_pipeline_profile')
+    __field_names__ = ('answer_id', 'answered_at', 'copilot_skill_id', 'has_finished', 'error', 'is_new_thread', 'message', 'report_results', 'thread_id', 'user_id', 'general_diagnostics', 'chat_pipeline_profile', 'messages_after_token_limit')
     answer_id = sgqlc.types.Field(UUID, graphql_name='answerId')
     answered_at = sgqlc.types.Field(DateTime, graphql_name='answeredAt')
     copilot_skill_id = sgqlc.types.Field(UUID, graphql_name='copilotSkillId')
@@ -321,6 +321,7 @@ class MaxChatResult(sgqlc.types.Type):
     user_id = sgqlc.types.Field(UUID, graphql_name='userId')
     general_diagnostics = sgqlc.types.Field(JSON, graphql_name='generalDiagnostics')
     chat_pipeline_profile = sgqlc.types.Field(JSON, graphql_name='chatPipelineProfile')
+    messages_after_token_limit = sgqlc.types.Field(Int, graphql_name='messagesAfterTokenLimit')
 
 
 class MaxChatThread(sgqlc.types.Type):
