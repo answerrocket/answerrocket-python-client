@@ -107,6 +107,22 @@ query ChatThread($id: UUID!) {
   }
 }
 
+query AllChatEntries($offset: Int, $limit: Int, $filters: JSON) {
+  allChatEntries(offset: $offset, limit: $limit, filters: $filters) {
+    id
+    threadId
+    question {
+        askedAt
+        nl
+    }
+    answer {
+      ...ChatResultFragment
+    }
+    feedback
+    user
+  }
+}
+
 mutation CreateChatThread($copilotId: UUID!) {
   createChatThread(copilotId: $copilotId) {
     id

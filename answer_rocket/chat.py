@@ -12,7 +12,7 @@ from answer_rocket.graphql.client import GraphQlClient
 from answer_rocket.graphql.schema import (LLMApiConfig, AzureOpenaiCompletionLLMApiConfig,
                                           AzureOpenaiEmbeddingLLMApiConfig, OpenaiCompletionLLMApiConfig,
                                           OpenaiEmbeddingLLMApiConfig, UUID, Int, DateTime, ChatDryRunType,
-                                          MaxChatEntry, MaxChatThread, SharedThread, JSON, MaxChatUser)
+                                          MaxChatEntry, MaxChatThread, SharedThread, MaxChatUser)
 from answer_rocket.graphql.sdk_operations import Operations
 
 logger = logging.getLogger(__name__)
@@ -409,7 +409,7 @@ class Chat:
 
         return result.user
 
-    def get_all_chat_entries(self, offset=0, limit=100, filters=None):
+    def get_all_chat_entries(self, offset=0, limit=100, filters=None) -> list[MaxChatEntry]:
         """
         Fetches all chat entries with optional filters.
         :param offset: the offset to start fetching entries from. Default is 0.
@@ -507,17 +507,8 @@ class Chat:
             'limit': limit,
             'filters': filters,
         }
-        get_all_chat_entries_query_vars = {
-            'offset': Arg(Int),
-            'limit': Arg(Int),
-            'filters': Arg(JSON),
-        }
-        operation = self.gql_client.query(variables=get_all_chat_entries_query_vars)
-        get_all_chat_entries_query = operation.all_chat_entries(
-            offset=Variable('offset'),
-            limit=Variable('limit'),
-            filters=Variable('filters'),
-        )
+
+        operation = Operations.query.all_chat_entries
 
         result = self.gql_client.submit(operation, get_all_chat_entries_query_args)
 
