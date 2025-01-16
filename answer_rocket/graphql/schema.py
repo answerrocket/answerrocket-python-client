@@ -356,7 +356,8 @@ class MaxColumn(sgqlc.types.Type):
 
 class MaxContentBlock(sgqlc.types.Type):
     __schema__ = schema
-    __field_names__ = ('title', 'payload', 'type')
+    __field_names__ = ('id', 'title', 'payload', 'type')
+    id = sgqlc.types.Field(sgqlc.types.non_null(UUID), graphql_name='id')
     title = sgqlc.types.Field(String, graphql_name='title')
     payload = sgqlc.types.Field(String, graphql_name='payload')
     type = sgqlc.types.Field(String, graphql_name='type')
