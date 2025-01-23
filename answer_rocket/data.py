@@ -394,6 +394,7 @@ class Data:
         self._add_domain_attribute_fragments(domain_object)
 
         calc_metric_attribute_frag = Fragment(MaxCalculatedMetric, 'MaxCalculatedMetricFragment')
+        self._add_domain_object_fields(calc_metric_attribute_frag)
         calc_metric_attribute_frag.display_format()
         calc_metric_attribute_frag.rql()
         calc_metric_attribute_frag.sql()
