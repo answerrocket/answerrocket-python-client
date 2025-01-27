@@ -83,7 +83,10 @@ query ChatEntry($id: UUID!) {
   chatEntry(id: $id) {
     id
     threadId
-    question
+    question {
+      askedAt
+      nl
+    }
     answer {
       ...ChatResultFragment
     }
@@ -113,8 +116,8 @@ query AllChatEntries($offset: Int, $limit: Int, $filters: JSON) {
     id
     threadId
     question {
-        askedAt
-        nl
+      askedAt
+      nl
     }
     answer {
       ...ChatResultFragment
