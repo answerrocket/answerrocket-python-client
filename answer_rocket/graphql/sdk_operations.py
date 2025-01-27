@@ -112,6 +112,21 @@ def query_chat_thread():
     return _op
 
 
+def query_all_chat_entries():
+    _op = sgqlc.operation.Operation(_schema_root.query_type, name='AllChatEntries', variables=dict(offset=sgqlc.types.Arg(_schema.Int), limit=sgqlc.types.Arg(_schema.Int), filters=sgqlc.types.Arg(_schema.JSON)))
+    _op_all_chat_entries = _op.all_chat_entries(offset=sgqlc.types.Variable('offset'), limit=sgqlc.types.Variable('limit'), filters=sgqlc.types.Variable('filters'))
+    _op_all_chat_entries.id()
+    _op_all_chat_entries.thread_id()
+    _op_all_chat_entries_question = _op_all_chat_entries.question()
+    _op_all_chat_entries_question.asked_at()
+    _op_all_chat_entries_question.nl()
+    _op_all_chat_entries_answer = _op_all_chat_entries.answer()
+    _op_all_chat_entries_answer.__fragment__(fragment_chat_result_fragment())
+    _op_all_chat_entries.feedback()
+    _op_all_chat_entries.user()
+    return _op
+
+
 def query_get_max_llm_prompt():
     _op = sgqlc.operation.Operation(_schema_root.query_type, name='GetMaxLlmPrompt', variables=dict(llmPromptId=sgqlc.types.Arg(sgqlc.types.non_null(_schema.UUID)), templateVariables=sgqlc.types.Arg(_schema.JSON), kShotMatch=sgqlc.types.Arg(_schema.String)))
     _op_get_max_llm_prompt = _op.get_max_llm_prompt(llm_prompt_id=sgqlc.types.Variable('llmPromptId'), template_variables=sgqlc.types.Variable('templateVariables'), k_shot_match=sgqlc.types.Variable('kShotMatch'))
@@ -153,6 +168,7 @@ def query_get_copilot_skill():
 
 
 class Query:
+    all_chat_entries = query_all_chat_entries()
     chat_entry = query_chat_entry()
     chat_thread = query_chat_thread()
     get_copilot_skill = query_get_copilot_skill()
