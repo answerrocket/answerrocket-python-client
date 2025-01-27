@@ -83,6 +83,7 @@ query ChatEntry($id: UUID!) {
   chatEntry(id: $id) {
     id
     threadId
+    question
     answer {
       ...ChatResultFragment
     }
