@@ -1,17 +1,19 @@
 from sgqlc.operation import Operation
 from sgqlc.endpoint.http import HTTPEndpoint
 
-from answer_rocket.auth import AuthHelper
+from answer_rocket.auth import AuthHelper, init_auth_helper
+from answer_rocket.client_config import ClientConfig
 
 from answer_rocket.graphql.schema import Query, Mutation
 
 
 class GraphQlClient:
 
-    def __init__(self, auth_helper: AuthHelper):
+    def __init__(self, config: ClientConfig):
+        self._auth_helper = init_auth_helper(config)
         self._endpoint = HTTPEndpoint(
-            url=auth_helper.url + "/api/sdk/graphql",
-            base_headers=auth_helper.headers())
+            url=self._auth_helper.config.url + "/api/sdk/graphql",
+            base_headers=self._auth_helper.headers())
         
     def submit(self, operation, variables=None):
         raw_response = self._endpoint(operation, variables)

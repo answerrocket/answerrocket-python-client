@@ -1,17 +1,17 @@
 import abc
-import os
 from dataclasses import dataclass
-from typing import Optional
 
+from answer_rocket.client_config import ClientConfig
 from answer_rocket.error import AnswerRocketClientError
 
 
+@dataclass
 class AuthHelper(abc.ABC):
 	"""
 	Helper for producing the appropriate headers to auth with an AnswerRocket server.
 	Creating one is handled by the client automatically.
 	"""
-	url: str
+	config: ClientConfig
 
 	@abc.abstractmethod
 	def headers(self) -> dict:
@@ -20,45 +20,34 @@ class AuthHelper(abc.ABC):
 
 @dataclass
 class ExternalAuthHelper(AuthHelper):
-	url: str
-	token: str
-	tenant: str
-	user: str
 
 	def headers(self) -> dict:
 		headers = {
-			'Authorization': f'Bearer {self.token}'
+			'Authorization': f'Bearer {self.config.token}'
 		}
-		if self.user:
-			headers['Max-User'] = self.user
-		if self.tenant:
-			headers['Max-Tenant'] = self.tenant
+		if self.config.user_id:
+			headers['Max-User'] = self.config.user_id
+		if self.config.tenant:
+			headers['Max-Tenant'] = self.config.tenant
 		return headers
 	
 
 @dataclass
 class InternalAuthHelper(AuthHelper):
-	url: str
-	tenant: str
-	user: str | None
 
 	def headers(self) -> dict:
 		headers = {
-			'Max-Tenant': self.tenant,
+			'Max-Tenant': self.config.tenant,
 			'Authorization': 'Max-Internal',
 		}
-		if self.user:
-			headers['Max-User'] = self.user
+		if self.config.user_id:
+			headers['Max-User'] = self.config.user_id
 		return headers
 	
 
-def init_auth_helper(url: Optional[str], token: Optional[str]) -> AuthHelper:
-	token = token or os.getenv('AR_TOKEN')
-	url = url or os.getenv('AR_URL')
-	tenant = os.getenv('AR_TENANT_ID')
-	user = os.getenv('AR_USER_ID')
-	if not url:
+def init_auth_helper(config: ClientConfig) -> AuthHelper:
+	if not config.url:
 		raise AnswerRocketClientError('No AnswerRocket url provided')
-	if token:
-		return ExternalAuthHelper(url=url, token=token, user=user, tenant=tenant)
-	return InternalAuthHelper(url=url, tenant=tenant, user=user)
+	if config.token:
+		return ExternalAuthHelper(config)
+	return InternalAuthHelper(config)

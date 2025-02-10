@@ -7,6 +7,7 @@ from sgqlc.types import Arg, Variable
 from typing_extensions import TypedDict
 
 from answer_rocket.auth import AuthHelper
+from answer_rocket.client_config import ClientConfig
 from answer_rocket.graphql.client import GraphQlClient
 from answer_rocket.graphql.schema import JSON, UUID as GQL_UUID, UUID
 
@@ -66,16 +67,12 @@ class ChatReportOutput(TypedDict, total=False):
     """
 
 
-# If this code is execution on a real AR instance, is will be able to access resources where the answers are stored
-IS_LIVE_RUN = os.getenv("AR_IS_RUNNING_ON_FLEET")
-
-
 class OutputBuilder:
 
-    def __init__(self, auth_helper: AuthHelper, gql_client: GraphQlClient):
-        self._auth_helper = auth_helper
+    def __init__(self, config: ClientConfig, gql_client: GraphQlClient):
         self._gql_client = gql_client
-        self.answer_id = os.getenv('AR_ANSWER_ID')
+        self._config = config
+        self.answer_id = self._config.answer_id
         self.current_output = ChatReportOutput(
             payload=None,
             content_blocks=[],
@@ -86,7 +83,7 @@ class OutputBuilder:
         )
 
     def _update_answer(self):
-        if self.answer_id and IS_LIVE_RUN:
+        if self.answer_id and self._config.is_live_run:
             query_args = {
                 'answerId': self.answer_id,
                 'payload': self.current_output

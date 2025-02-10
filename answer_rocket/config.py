@@ -2,19 +2,14 @@ import os
 from typing import Optional, Dict, Any
 from uuid import UUID
 
+from answer_rocket.client_config import ClientConfig
 from answer_rocket.graphql.sdk_operations import Operations
 from sgqlc.types import Variable, Arg, non_null, String
 
-from answer_rocket.auth import AuthHelper
 from answer_rocket.graphql.client import GraphQlClient
-from answer_rocket.graphql.schema import UUID as GQL_UUID, MaxCopilotSkillChatQuestion, MaxCopilotSkill, MaxCopilot, \
+from answer_rocket.graphql.schema import UUID as GQL_UUID, MaxCopilotSkill, MaxCopilot, \
     MaxMutationResponse, CreateMaxCopilotSkillChatQuestionResponse, MaxCopilotQuestionInput, \
     MaxCreateCopilotQuestionResponse, MaxUser, MaxSkillComponent, MaxLLmPrompt, Boolean
-
-# Not clear to what degree there will be distinct "local" vs "server" modes. If there end up being 0 examples of config
-# that must be grabbed from a server even while developing locally then it may make sense to have two different helpers
-# rather than checking this variable in every single method.
-USE_SERVER_CONFIG = os.getenv('AR_USE_SERVER_CONFIG')
 
 
 class Config:
@@ -22,25 +17,25 @@ class Config:
     Helper for accessing config, whether local or fetched from the configured server.
     """
 
-    def __init__(self, auth_helper: AuthHelper, gql_client: GraphQlClient) -> None:
-        self._auth_helper = auth_helper
+    def __init__(self, config: ClientConfig, gql_client: GraphQlClient) -> None:
         self._gql_client = gql_client
-        self.copilot_id = os.getenv('AR_COPILOT_ID')
-        self.copilot_skill_id = os.getenv('AR_COPILOT_SKILL_ID')
+        self._config = config
+        self.copilot_id = self._config.copilot_id
+        self.copilot_skill_id = self._config.copilot_skill_id
 
     def get_artifact(self, artifact_path: str) -> str:
         """
         artifact path: this is the filepath to your artifact relative to the root of your project.
         Server-side overrides are keyed on this path and will be fetched first when running inside AnswerRocket
         """
-        if USE_SERVER_CONFIG:
+        if self._config.is_live_run:
             server_artifact = self._get_artifact_from_server(artifact_path)
             if server_artifact:
                 return server_artifact
 
         # it is possible this could be put inside an else block if the above call were changed to get either the
         # override or the base artifact if one does not exist
-        with open(_complete_artifact_path(artifact_path)) as artifact_file:
+        with open(_complete_artifact_path(artifact_path, self._config.resource_base_path)) as artifact_file:
             return artifact_file.read()
 
     def _get_artifact_from_server(self, artifact_path: str) -> Optional[dict]:
@@ -366,11 +361,12 @@ class Config:
         except Exception as e:
             return None
 
-def _complete_artifact_path(artifact_path: str) -> str:
+
+def _complete_artifact_path(artifact_path: str, resource_base_path=None) -> str:
     """
     adjust the path according to the runtime env if needed.
     a noop when running locally, and possibly something we can remove entirely in the future
     """
-    if os.getenv('AR_SKILL_RESOURCE_BASE_PATH'):
-        return os.path.join(os.getenv('AR_SKILL_RESOURCE_BASE_PATH'), artifact_path)
+    if resource_base_path:
+        return os.path.join(resource_base_path, artifact_path)
     return artifact_path
