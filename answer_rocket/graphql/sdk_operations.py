@@ -90,6 +90,9 @@ def query_chat_entry():
     _op_chat_entry = _op.chat_entry(id=sgqlc.types.Variable('id'))
     _op_chat_entry.id()
     _op_chat_entry.thread_id()
+    _op_chat_entry_question = _op_chat_entry.question()
+    _op_chat_entry_question.asked_at()
+    _op_chat_entry_question.nl()
     _op_chat_entry_answer = _op_chat_entry.answer()
     _op_chat_entry_answer.__fragment__(fragment_chat_result_fragment())
     _op_chat_entry.feedback()
@@ -109,6 +112,21 @@ def query_chat_thread():
     _op_chat_thread_entries.thread_id()
     _op_chat_thread_entries_answer = _op_chat_thread_entries.answer()
     _op_chat_thread_entries_answer.__fragment__(fragment_chat_result_fragment())
+    return _op
+
+
+def query_all_chat_entries():
+    _op = sgqlc.operation.Operation(_schema_root.query_type, name='AllChatEntries', variables=dict(offset=sgqlc.types.Arg(_schema.Int), limit=sgqlc.types.Arg(_schema.Int), filters=sgqlc.types.Arg(_schema.JSON)))
+    _op_all_chat_entries = _op.all_chat_entries(offset=sgqlc.types.Variable('offset'), limit=sgqlc.types.Variable('limit'), filters=sgqlc.types.Variable('filters'))
+    _op_all_chat_entries.id()
+    _op_all_chat_entries.thread_id()
+    _op_all_chat_entries_question = _op_all_chat_entries.question()
+    _op_all_chat_entries_question.asked_at()
+    _op_all_chat_entries_question.nl()
+    _op_all_chat_entries_answer = _op_all_chat_entries.answer()
+    _op_all_chat_entries_answer.__fragment__(fragment_chat_result_fragment())
+    _op_all_chat_entries.feedback()
+    _op_all_chat_entries.user()
     return _op
 
 
@@ -153,6 +171,7 @@ def query_get_copilot_skill():
 
 
 class Query:
+    all_chat_entries = query_all_chat_entries()
     chat_entry = query_chat_entry()
     chat_thread = query_chat_thread()
     get_copilot_skill = query_get_copilot_skill()
