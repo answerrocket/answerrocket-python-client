@@ -1,5 +1,4 @@
 from sgqlc.types import Arg, non_null, Variable
-from answer_rocket.auth import AuthHelper
 from answer_rocket.client_config import ClientConfig
 from answer_rocket.graphql.client import GraphQlClient
 from answer_rocket.graphql.schema import JSON, String, UUID

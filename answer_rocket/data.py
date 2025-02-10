@@ -6,7 +6,6 @@ import pandas as pd
 from sgqlc.operation import Fragment
 from sgqlc.types import Variable, Arg, non_null, String, Int, list_of
 
-from answer_rocket.auth import AuthHelper
 from answer_rocket.client_config import ClientConfig
 from answer_rocket.graphql.client import GraphQlClient
 from answer_rocket.graphql.schema import UUID as GQL_UUID, MaxMetricAttribute, MaxDomainObject, \
