@@ -7,6 +7,7 @@ from sgqlc.operation import Fragment
 from sgqlc.types import Variable, Arg, non_null, String, Int, list_of
 
 from answer_rocket.auth import AuthHelper
+from answer_rocket.client_config import ClientConfig
 from answer_rocket.graphql.client import GraphQlClient
 from answer_rocket.graphql.schema import UUID as GQL_UUID, MaxMetricAttribute, MaxDomainObject, \
     MaxDimensionEntity, MaxFactEntity, MaxNormalAttribute, \
@@ -32,11 +33,11 @@ class Data:
     Helper for accessing data from the server.
     """
 
-    def __init__(self, auth_helper: AuthHelper, gql_client: GraphQlClient) -> None:
-        self._auth_helper = auth_helper
+    def __init__(self, config: ClientConfig, gql_client: GraphQlClient) -> None:
         self._gql_client = gql_client
-        self.copilot_id = os.getenv('AR_COPILOT_ID')
-        self.copilot_skill_id = os.getenv('AR_COPILOT_SKILL_ID')
+        self._config = config
+        self.copilot_id = self._config.copilot_id
+        self.copilot_skill_id = self._config.copilot_skill_id
 
     def execute_sql_query(self, database_id: UUID, sql_query: str, row_limit: Optional[int] = None, copilot_id: Optional[UUID] = None, copilot_skill_id: Optional[UUID] = None) -> ExecuteSqlQueryResult:
         try:

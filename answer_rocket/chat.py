@@ -3,12 +3,9 @@ from datetime import datetime
 from typing import Literal
 from sgqlc.types import Variable, non_null, String, Arg, list_of
 
-from answer_rocket.auth import AuthHelper
 from answer_rocket.graphql.client import GraphQlClient
-from answer_rocket.graphql.schema import (LLMApiConfig, AzureOpenaiCompletionLLMApiConfig,
-                                          AzureOpenaiEmbeddingLLMApiConfig, OpenaiCompletionLLMApiConfig,
-                                          OpenaiEmbeddingLLMApiConfig, UUID, Int, DateTime, ChatDryRunType,
-                                          MaxChatEntry, MaxChatThread, SharedThread, MaxChatUser)
+from answer_rocket.graphql.schema import (UUID, Int, DateTime, ChatDryRunType, MaxChatEntry, MaxChatThread,
+                                          SharedThread, MaxChatUser)
 from answer_rocket.graphql.sdk_operations import Operations
 
 logger = logging.getLogger(__name__)
@@ -17,8 +14,7 @@ FeedbackType = Literal['CHAT_POSITIVE', 'CHAT_NEGATIVE']
 
 
 class Chat:
-    def __init__(self, auth_helper: AuthHelper, gql_client: GraphQlClient):
-        self.auth_helper = auth_helper
+    def __init__(self, gql_client: GraphQlClient):
         self.gql_client = gql_client
 
     def ask_question(self, copilot_id: str, question: str, thread_id: str = None, skip_report_cache: bool = False, dry_run_type: str = None, model_overrides: dict = None, indicated_skills: list[str] = None, history: list[dict] = None):
