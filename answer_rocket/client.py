@@ -1,8 +1,5 @@
-import dataclasses
-import os
 from typing import Optional
 
-from answer_rocket.auth import AuthHelper, init_auth_helper
 from answer_rocket.client_config import load_client_config
 from answer_rocket.config import Config
 from answer_rocket.data import Data
