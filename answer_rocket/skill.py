@@ -1,5 +1,6 @@
 from sgqlc.types import Arg, non_null, Variable
 from answer_rocket.auth import AuthHelper
+from answer_rocket.client_config import ClientConfig
 from answer_rocket.graphql.client import GraphQlClient
 from answer_rocket.graphql.schema import JSON, String, UUID
 from answer_rocket.output import ChatReportOutput
@@ -16,8 +17,8 @@ class Skill:
     Provides tools to interact with copilot skills directly.
     """
 
-    def __init__(self, auth_helper: AuthHelper, gql_client: GraphQlClient):
-        self._auth_helper = auth_helper
+    def __init__(self, config: ClientConfig, gql_client: GraphQlClient):
+        self._config = config
         self._gql_client = gql_client
 
     def run(self, copilot_id: str, skill_name: str, parameters: dict | None = None) -> RunSkillResult:
