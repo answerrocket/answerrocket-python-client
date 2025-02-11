@@ -11,7 +11,8 @@ class ClientConfig:
         token: an auth token
         tenant: the tenant id, provided automatically
         is_live_run: set when the client is used in a skill run (as opposed to someone running it locally)
-        answer_id: the answer_id that any answer-updating calls will use
+        answer_id: the skill run answer_id that any answer-updating calls will use
+        entry_answer_id: the answer_id for the chat entry being created
         user_id: provided automatically or implicitly via the auth token
         copilot_id: the copilot the skill is running within
         copilot_skill_id: the id of the skill in the environment
@@ -22,6 +23,7 @@ class ClientConfig:
     tenant: str | None
     is_live_run: bool
     answer_id: str | None
+    entry_answer_id: str | None
     user_id: str | None
     copilot_id: str | None
     copilot_skill_id: str | None
@@ -34,6 +36,7 @@ def load_client_config(url=None, token=None):
     tenant = os.getenv('AR_TENANT_ID')
     user_id = os.getenv('AR_USER_ID')
     answer_id = os.getenv('AR_ANSWER_ID')
+    entry_answer_id = os.getenv('AR_ENTRY_ANSWER_ID')
     copilot_id = os.getenv('AR_COPILOT_ID')
     copilot_skill_id = os.getenv('AR_COPILOT_SKILL_ID')
     is_live_run = os.getenv('AR_IS_RUNNING_ON_FLEET') or False
@@ -45,6 +48,7 @@ def load_client_config(url=None, token=None):
         user_id=user_id,
         is_live_run=is_live_run,
         answer_id=answer_id,
+        entry_answer_id=entry_answer_id,
         copilot_id=copilot_id,
         copilot_skill_id=copilot_skill_id,
         resource_base_path=resource_base_path

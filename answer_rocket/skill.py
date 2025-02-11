@@ -2,6 +2,7 @@ from sgqlc.types import Arg, non_null, Variable
 from answer_rocket.client_config import ClientConfig
 from answer_rocket.graphql.client import GraphQlClient
 from answer_rocket.graphql.schema import JSON, String, UUID
+from answer_rocket.graphql.sdk_operations import Operations
 from answer_rocket.output import ChatReportOutput
 from answer_rocket.graphql.schema import UUID as GQL_UUID
 from answer_rocket.types import MaxResult, RESULT_EXCEPTION_CODE
@@ -77,3 +78,12 @@ class Skill:
             final_result.code = RESULT_EXCEPTION_CODE
 
         return final_result
+
+    def update_loading_message(self, message: str):
+        if self._config.entry_answer_id:
+            args = {
+                'answerId': self._config.entry_answer_id,
+                'message': message,
+            }
+            op = Operations.mutation.update_loading_message
+            self._gql_client.submit(op, args)
