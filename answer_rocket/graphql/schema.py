@@ -602,7 +602,7 @@ class MaxUser(sgqlc.types.Type):
 
 class Mutation(sgqlc.types.Type):
     __schema__ = schema
-    __field_names__ = ('create_max_copilot_skill_chat_question', 'update_max_copilot_skill_chat_question', 'delete_max_copilot_skill_chat_question', 'create_max_copilot_question', 'update_max_copilot_question', 'delete_max_copilot_question', 'reload_dataset', 'update_dataset_date_range', 'update_chat_answer_payload', 'ask_chat_question', 'evaluate_chat_question', 'queue_chat_question', 'cancel_chat_question', 'create_chat_thread', 'add_feedback', 'share_thread')
+    __field_names__ = ('create_max_copilot_skill_chat_question', 'update_max_copilot_skill_chat_question', 'delete_max_copilot_skill_chat_question', 'create_max_copilot_question', 'update_max_copilot_question', 'delete_max_copilot_question', 'reload_dataset', 'update_dataset_date_range', 'update_chat_answer_payload', 'ask_chat_question', 'evaluate_chat_question', 'queue_chat_question', 'cancel_chat_question', 'create_chat_thread', 'add_feedback', 'share_thread', 'update_loading_message')
     create_max_copilot_skill_chat_question = sgqlc.types.Field(sgqlc.types.non_null(CreateMaxCopilotSkillChatQuestionResponse), graphql_name='createMaxCopilotSkillChatQuestion', args=sgqlc.types.ArgDict((
         ('copilot_id', sgqlc.types.Arg(sgqlc.types.non_null(UUID), graphql_name='copilotId', default=None)),
         ('copilot_skill_id', sgqlc.types.Arg(sgqlc.types.non_null(UUID), graphql_name='copilotSkillId', default=None)),
@@ -700,6 +700,11 @@ class Mutation(sgqlc.types.Type):
     )
     share_thread = sgqlc.types.Field(sgqlc.types.non_null('SharedThread'), graphql_name='shareThread', args=sgqlc.types.ArgDict((
         ('original_thread_id', sgqlc.types.Arg(UUID, graphql_name='originalThreadId', default=None)),
+))
+    )
+    update_loading_message = sgqlc.types.Field(UUID, graphql_name='updateLoadingMessage', args=sgqlc.types.ArgDict((
+        ('answer_id', sgqlc.types.Arg(sgqlc.types.non_null(UUID), graphql_name='answerId', default=None)),
+        ('message', sgqlc.types.Arg(sgqlc.types.non_null(String), graphql_name='message', default=None)),
 ))
     )
 

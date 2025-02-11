@@ -77,12 +77,19 @@ def mutation_add_feedback():
     return _op
 
 
+def mutation_update_loading_message():
+    _op = sgqlc.operation.Operation(_schema_root.mutation_type, name='UpdateLoadingMessage', variables=dict(answerId=sgqlc.types.Arg(sgqlc.types.non_null(_schema.UUID)), message=sgqlc.types.Arg(sgqlc.types.non_null(_schema.String))))
+    _op.update_loading_message(answer_id=sgqlc.types.Variable('answerId'), message=sgqlc.types.Variable('message'))
+    return _op
+
+
 class Mutation:
     add_feedback = mutation_add_feedback()
     ask_chat_question = mutation_ask_chat_question()
     cancel_chat_question = mutation_cancel_chat_question()
     create_chat_thread = mutation_create_chat_thread()
     queue_chat_question = mutation_queue_chat_question()
+    update_loading_message = mutation_update_loading_message()
 
 
 def query_chat_entry():

@@ -1,0 +1,3 @@
+mutation UpdateLoadingMessage($answerId: UUID!, $message: String!) {
+    updateLoadingMessage(answerId: $answerId, message: $message)
+}
