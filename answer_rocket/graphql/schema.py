@@ -36,6 +36,10 @@ class JSON(sgqlc.types.Scalar):
     __schema__ = schema
 
 
+class LlmResponse(sgqlc.types.Scalar):
+    __schema__ = schema
+
+
 class MetricType(sgqlc.types.Enum):
     __schema__ = schema
     __choices__ = ('BASIC', 'RATIO', 'SHARE')
@@ -66,6 +70,20 @@ class FunctionCallMessageInput(sgqlc.types.Input):
     __field_names__ = ('name', 'arguments')
     name = sgqlc.types.Field(sgqlc.types.non_null(String), graphql_name='name')
     arguments = sgqlc.types.Field(sgqlc.types.non_null(String), graphql_name='arguments')
+
+
+class LlmChatMessage(sgqlc.types.Input):
+    __schema__ = schema
+    __field_names__ = ('role', 'content')
+    role = sgqlc.types.Field(String, graphql_name='role')
+    content = sgqlc.types.Field(String, graphql_name='content')
+
+
+class LlmModelSelection(sgqlc.types.Input):
+    __schema__ = schema
+    __field_names__ = ('assistant_id', 'model_override')
+    assistant_id = sgqlc.types.Field(UUID, graphql_name='assistantId')
+    model_override = sgqlc.types.Field(String, graphql_name='modelOverride')
 
 
 class MaxCopilotQuestionInput(sgqlc.types.Input):
@@ -711,7 +729,7 @@ class Mutation(sgqlc.types.Type):
 
 class Query(sgqlc.types.Type):
     __schema__ = schema
-    __field_names__ = ('ping', 'current_user', 'get_copilot_skill_artifact_by_path', 'get_copilot_info', 'get_copilot_skill', 'run_copilot_skill', 'get_skill_components', 'execute_sql_query', 'execute_rql_query', 'get_dataset_id', 'get_dataset', 'get_domain_object', 'get_domain_object_by_name', 'llmapi_config_for_sdk', 'get_max_llm_prompt', 'user_chat_threads', 'user_chat_entries', 'chat_thread', 'chat_entry', 'user', 'all_chat_entries')
+    __field_names__ = ('ping', 'current_user', 'get_copilot_skill_artifact_by_path', 'get_copilot_info', 'get_copilot_skill', 'run_copilot_skill', 'get_skill_components', 'execute_sql_query', 'execute_rql_query', 'get_dataset_id', 'get_dataset', 'get_domain_object', 'get_domain_object_by_name', 'llmapi_config_for_sdk', 'get_max_llm_prompt', 'user_chat_threads', 'user_chat_entries', 'chat_thread', 'chat_entry', 'user', 'all_chat_entries', 'chat_completion', 'narrative_completion')
     ping = sgqlc.types.Field(String, graphql_name='ping')
     current_user = sgqlc.types.Field(MaxUser, graphql_name='currentUser')
     get_copilot_skill_artifact_by_path = sgqlc.types.Field(CopilotSkillArtifact, graphql_name='getCopilotSkillArtifactByPath', args=sgqlc.types.ArgDict((
@@ -812,6 +830,16 @@ class Query(sgqlc.types.Type):
         ('offset', sgqlc.types.Arg(Int, graphql_name='offset', default=None)),
         ('limit', sgqlc.types.Arg(Int, graphql_name='limit', default=None)),
         ('filters', sgqlc.types.Arg(JSON, graphql_name='filters', default=None)),
+))
+    )
+    chat_completion = sgqlc.types.Field(LlmResponse, graphql_name='chatCompletion', args=sgqlc.types.ArgDict((
+        ('messages', sgqlc.types.Arg(sgqlc.types.non_null(sgqlc.types.list_of(sgqlc.types.non_null(LlmChatMessage))), graphql_name='messages', default=None)),
+        ('model_selection', sgqlc.types.Arg(LlmModelSelection, graphql_name='modelSelection', default=None)),
+))
+    )
+    narrative_completion = sgqlc.types.Field(LlmResponse, graphql_name='narrativeCompletion', args=sgqlc.types.ArgDict((
+        ('prompt', sgqlc.types.Arg(sgqlc.types.non_null(String), graphql_name='prompt', default=None)),
+        ('model_selection', sgqlc.types.Arg(LlmModelSelection, graphql_name='modelSelection', default=None)),
 ))
     )
 
