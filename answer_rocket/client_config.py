@@ -30,10 +30,10 @@ class ClientConfig:
     resource_base_path: str | None
 
 
-def load_client_config(url=None, token=None):
+def load_client_config(url=None, token=None, tenant: str = None):
     token = token or os.getenv('AR_TOKEN')
     url = url or os.getenv('AR_URL')
-    tenant = os.getenv('AR_TENANT_ID')
+    effective_tenant = tenant if tenant else os.getenv('AR_TENANT_ID')
     user_id = os.getenv('AR_USER_ID')
     answer_id = os.getenv('AR_ANSWER_ID')
     entry_answer_id = os.getenv('AR_ENTRY_ANSWER_ID')
@@ -44,7 +44,7 @@ def load_client_config(url=None, token=None):
     return ClientConfig(
         url=url,
         token=token,
-        tenant=tenant,
+        tenant=effective_tenant,
         user_id=user_id,
         is_live_run=is_live_run,
         answer_id=answer_id,
