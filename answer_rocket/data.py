@@ -1,5 +1,5 @@
 import os
-from typing import Optional, List
+from typing import Optional, List, Dict
 from uuid import UUID
 
 import pandas as pd
@@ -11,7 +11,7 @@ from answer_rocket.graphql.client import GraphQlClient
 from answer_rocket.graphql.schema import UUID as GQL_UUID, MaxMetricAttribute, MaxDomainObject, \
     MaxDimensionEntity, MaxFactEntity, MaxNormalAttribute, \
     MaxPrimaryAttribute, MaxReferenceAttribute, MaxCalculatedMetric, MaxDataset, MaxCalculatedAttribute, \
-    MaxMutationResponse, DateTime
+    MaxMutationResponse, DateTime, MaxPreQueryNode, RunMaxSqlGenResponse, JSON
 from answer_rocket.types import MaxResult, RESULT_EXCEPTION_CODE
 
 
@@ -375,6 +375,48 @@ class Data:
             domain_object_result.code = RESULT_EXCEPTION_CODE
 
             return domain_object_result
+
+    def run_max_sql_gen(self, dataset_id: UUID, pre_query_object: Dict[str, any], copilot_id: Optional[UUID] = None) -> Optional[RunMaxSqlGenResponse]:
+        try:
+            """
+            dataset_id: the UUID of the dataset
+            pre_query_object: the pre-query object that describes the query
+            copilot_id: optional UUID of the copilot
+            """
+
+            query_args = {
+                'datasetId': str(dataset_id),
+                'preQueryObject': pre_query_object,
+                'copilotId': str(copilot_id) if copilot_id else str(self.copilot_id) if self.copilot_id else None
+            }
+
+            query_vars = {
+                'dataset_id': Arg(non_null(GQL_UUID)),
+                'pre_query_object': Arg(non_null(JSON)),
+                'copilot_id': Arg(GQL_UUID),
+            }
+
+            operation = self._gql_client.query(variables=query_vars)
+
+            gql_query = operation.run_max_sql_gen(
+                dataset_id=Variable('dataset_id'),
+                pre_query_object=Variable('pre_query_object'),
+                copilot_id=Variable('copilot_id'),
+            )
+
+            gql_query.success()
+            gql_query.code()
+            gql_query.error()
+            gql_query.sql()
+            gql_query.data()
+
+            result = self._gql_client.submit(operation, query_args)
+
+            run_max_sql_gen_response = result.run_max_sql_gen
+
+            return run_max_sql_gen_response
+        except Exception as e:
+            return None
 
     def _create_domain_object_query(self, domain_object):
         # domain_object_frag = Fragment(MaxDomainObject, 'MaxDomainObjectFragment')
