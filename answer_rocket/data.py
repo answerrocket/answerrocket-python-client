@@ -1,4 +1,3 @@
-import os
 from typing import Optional, List, Dict
 from uuid import UUID
 
@@ -8,10 +7,10 @@ from sgqlc.types import Variable, Arg, non_null, String, Int, list_of
 
 from answer_rocket.client_config import ClientConfig
 from answer_rocket.graphql.client import GraphQlClient
-from answer_rocket.graphql.schema import UUID as GQL_UUID, MaxMetricAttribute, MaxDomainObject, \
-    MaxDimensionEntity, MaxFactEntity, MaxNormalAttribute, \
+from answer_rocket.graphql.schema import UUID as GQL_UUID, MaxMetricAttribute, MaxDimensionEntity, MaxFactEntity, \
+    MaxNormalAttribute, \
     MaxPrimaryAttribute, MaxReferenceAttribute, MaxCalculatedMetric, MaxDataset, MaxCalculatedAttribute, \
-    MaxMutationResponse, DateTime, MaxPreQueryNode, RunMaxSqlGenResponse, JSON
+    MaxMutationResponse, DateTime, RunMaxSqlGenResponse, JSON, RunSqlAiResponse
 from answer_rocket.types import MaxResult, RESULT_EXCEPTION_CODE
 
 
@@ -415,6 +414,50 @@ class Data:
             run_max_sql_gen_response = result.run_max_sql_gen
 
             return run_max_sql_gen_response
+        except Exception as e:
+            return None
+
+    def run_sql_ai(self, dataset_id: UUID, question: str, copilot_id: Optional[UUID] = None) -> Optional[RunSqlAiResponse]:
+        try:
+            """
+            dataset_id: the UUID of the dataset
+            question: the NL question
+            copilot_id: optional UUID of the copilot
+            """
+
+            query_args = {
+                'datasetId': str(dataset_id),
+                'question': question,
+                'copilotId': str(copilot_id) if copilot_id else str(self.copilot_id) if self.copilot_id else None
+            }
+
+            query_vars = {
+                'dataset_id': Arg(non_null(GQL_UUID)),
+                'question': Arg(non_null(String)),
+                'copilot_id': Arg(GQL_UUID),
+            }
+
+            operation = self._gql_client.query(variables=query_vars)
+
+            gql_query = operation.run_sql_ai(
+                dataset_id=Variable('dataset_id'),
+                question=Variable('question'),
+                copilot_id=Variable('copilot_id'),
+            )
+
+            gql_query.success()
+            gql_query.code()
+            gql_query.error()
+            gql_query.system_prompt()
+            gql_query.sql_ai_graph()
+            gql_query.sql()
+            gql_query.data()
+
+            result = self._gql_client.submit(operation, query_args)
+
+            run_sql_ai_response = result.run_sql_ai
+
+            return run_sql_ai_response
         except Exception as e:
             return None
 

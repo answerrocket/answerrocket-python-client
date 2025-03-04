@@ -40,11 +40,6 @@ class LlmResponse(sgqlc.types.Scalar):
     __schema__ = schema
 
 
-class MaxPreQueryOperator(sgqlc.types.Enum):
-    __schema__ = schema
-    __choices__ = ('BETWEEN', 'ENDS_WITH', 'EQUALS', 'GREATER_THAN', 'GREATER_THAN_EQUALS', 'IN', 'LESS_THAN', 'LESS_THAN_EQUALS', 'LIKE', 'NOT_BETWEEN', 'NOT_ENDS_WITH', 'NOT_EQUALS', 'NOT_IN', 'NOT_LIKE', 'NOT_NULL', 'NOT_STARTS_WITH', 'NULL', 'STARTS_WITH')
-
-
 class MetricType(sgqlc.types.Enum):
     __schema__ = schema
     __choices__ = ('BASIC', 'RATIO', 'SHARE')
@@ -552,71 +547,6 @@ class MaxMutationResponse(sgqlc.types.Type):
     error = sgqlc.types.Field(String, graphql_name='error')
 
 
-class MaxPreQueryDimension(sgqlc.types.Type):
-    __schema__ = schema
-    __field_names__ = ('name', 'alias', 'sql')
-    name = sgqlc.types.Field(String, graphql_name='name')
-    alias = sgqlc.types.Field(String, graphql_name='alias')
-    sql = sgqlc.types.Field(String, graphql_name='sql')
-
-
-class MaxPreQueryDimensionFilter(sgqlc.types.Type):
-    __schema__ = schema
-    __field_names__ = ('domain_object_name', 'op', 'val')
-    domain_object_name = sgqlc.types.Field(sgqlc.types.non_null(String), graphql_name='domainObjectName')
-    op = sgqlc.types.Field(sgqlc.types.non_null(MaxPreQueryOperator), graphql_name='op')
-    val = sgqlc.types.Field(String, graphql_name='val')
-
-
-class MaxPreQueryFilter(sgqlc.types.Type):
-    __schema__ = schema
-    __field_names__ = ('domain_object_name', 'op', 'val')
-    domain_object_name = sgqlc.types.Field(sgqlc.types.non_null(String), graphql_name='domainObjectName')
-    op = sgqlc.types.Field(sgqlc.types.non_null(MaxPreQueryOperator), graphql_name='op')
-    val = sgqlc.types.Field(String, graphql_name='val')
-
-
-class MaxPreQueryMetric(sgqlc.types.Type):
-    __schema__ = schema
-    __field_names__ = ('name', 'alias', 'sql')
-    name = sgqlc.types.Field(String, graphql_name='name')
-    alias = sgqlc.types.Field(String, graphql_name='alias')
-    sql = sgqlc.types.Field(String, graphql_name='sql')
-
-
-class MaxPreQueryMetricFilter(sgqlc.types.Type):
-    __schema__ = schema
-    __field_names__ = ('domain_object_name', 'op', 'val', 'is_row_level')
-    domain_object_name = sgqlc.types.Field(sgqlc.types.non_null(String), graphql_name='domainObjectName')
-    op = sgqlc.types.Field(sgqlc.types.non_null(MaxPreQueryOperator), graphql_name='op')
-    val = sgqlc.types.Field(String, graphql_name='val')
-    is_row_level = sgqlc.types.Field(sgqlc.types.non_null(Boolean), graphql_name='isRowLevel')
-
-
-class MaxPreQueryNode(sgqlc.types.Type):
-    __schema__ = schema
-    __field_names__ = ('name', 'child_nodes', 'qualifier_nodes', 'metrics', 'dimensions', 'dimension_filters', 'metric_filters', 'sorts', 'limit', 'dimension_filter_or_blocks')
-    name = sgqlc.types.Field(sgqlc.types.non_null(String), graphql_name='name')
-    child_nodes = sgqlc.types.Field(sgqlc.types.non_null(sgqlc.types.list_of(sgqlc.types.non_null('MaxPreQueryNode'))), graphql_name='childNodes')
-    qualifier_nodes = sgqlc.types.Field(sgqlc.types.non_null(sgqlc.types.list_of(sgqlc.types.non_null('MaxPreQueryNode'))), graphql_name='qualifierNodes')
-    metrics = sgqlc.types.Field(sgqlc.types.non_null(sgqlc.types.list_of(sgqlc.types.non_null(MaxPreQueryMetric))), graphql_name='metrics')
-    dimensions = sgqlc.types.Field(sgqlc.types.non_null(sgqlc.types.list_of(sgqlc.types.non_null(MaxPreQueryDimension))), graphql_name='dimensions')
-    dimension_filters = sgqlc.types.Field(sgqlc.types.non_null(sgqlc.types.list_of(sgqlc.types.non_null(MaxPreQueryDimensionFilter))), graphql_name='dimensionFilters')
-    metric_filters = sgqlc.types.Field(sgqlc.types.non_null(sgqlc.types.list_of(sgqlc.types.non_null(MaxPreQueryMetricFilter))), graphql_name='metricFilters')
-    sorts = sgqlc.types.Field(sgqlc.types.non_null(sgqlc.types.list_of(sgqlc.types.non_null('MaxPreQuerySort'))), graphql_name='sorts')
-    limit = sgqlc.types.Field(Int, graphql_name='limit')
-    dimension_filter_or_blocks = sgqlc.types.Field(sgqlc.types.non_null(sgqlc.types.list_of(sgqlc.types.non_null(sgqlc.types.list_of(sgqlc.types.non_null(MaxPreQueryFilter))))), graphql_name='dimensionFilterOrBlocks')
-
-
-class MaxPreQuerySort(sgqlc.types.Type):
-    __schema__ = schema
-    __field_names__ = ('domain_object_name', 'sql', 'is_descending', 'select_alias')
-    domain_object_name = sgqlc.types.Field(String, graphql_name='domainObjectName')
-    sql = sgqlc.types.Field(String, graphql_name='sql')
-    is_descending = sgqlc.types.Field(sgqlc.types.non_null(Boolean), graphql_name='isDescending')
-    select_alias = sgqlc.types.Field(String, graphql_name='selectAlias')
-
-
 class MaxReportParamsAndValues(sgqlc.types.Type):
     __schema__ = schema
     __field_names__ = ('key', 'values', 'label', 'color')
@@ -799,7 +729,7 @@ class Mutation(sgqlc.types.Type):
 
 class Query(sgqlc.types.Type):
     __schema__ = schema
-    __field_names__ = ('ping', 'current_user', 'get_copilot_skill_artifact_by_path', 'get_copilot_info', 'get_copilot_skill', 'run_copilot_skill', 'get_skill_components', 'execute_sql_query', 'execute_rql_query', 'get_dataset_id', 'get_dataset', 'get_domain_object', 'get_domain_object_by_name', 'run_max_sql_gen', 'llmapi_config_for_sdk', 'get_max_llm_prompt', 'user_chat_threads', 'user_chat_entries', 'chat_thread', 'chat_entry', 'user', 'all_chat_entries', 'chat_completion', 'narrative_completion')
+    __field_names__ = ('ping', 'current_user', 'get_copilot_skill_artifact_by_path', 'get_copilot_info', 'get_copilot_skill', 'run_copilot_skill', 'get_skill_components', 'execute_sql_query', 'execute_rql_query', 'get_dataset_id', 'get_dataset', 'get_domain_object', 'get_domain_object_by_name', 'run_max_sql_gen', 'run_sql_ai', 'llmapi_config_for_sdk', 'get_max_llm_prompt', 'user_chat_threads', 'user_chat_entries', 'chat_thread', 'chat_entry', 'user', 'all_chat_entries', 'chat_completion', 'narrative_completion')
     ping = sgqlc.types.Field(String, graphql_name='ping')
     current_user = sgqlc.types.Field(MaxUser, graphql_name='currentUser')
     get_copilot_skill_artifact_by_path = sgqlc.types.Field(CopilotSkillArtifact, graphql_name='getCopilotSkillArtifactByPath', args=sgqlc.types.ArgDict((
@@ -868,6 +798,12 @@ class Query(sgqlc.types.Type):
         ('copilot_id', sgqlc.types.Arg(UUID, graphql_name='copilotId', default=None)),
 ))
     )
+    run_sql_ai = sgqlc.types.Field('RunSqlAiResponse', graphql_name='runSqlAi', args=sgqlc.types.ArgDict((
+        ('dataset_id', sgqlc.types.Arg(sgqlc.types.non_null(UUID), graphql_name='datasetId', default=None)),
+        ('question', sgqlc.types.Arg(sgqlc.types.non_null(String), graphql_name='question', default=None)),
+        ('copilot_id', sgqlc.types.Arg(UUID, graphql_name='copilotId', default=None)),
+))
+    )
     llmapi_config_for_sdk = sgqlc.types.Field(LLMApiConfig, graphql_name='LLMApiConfigForSdk', args=sgqlc.types.ArgDict((
         ('model_type', sgqlc.types.Arg(sgqlc.types.non_null(String), graphql_name='modelType', default=None)),
 ))
@@ -926,6 +862,18 @@ class RunMaxSqlGenResponse(sgqlc.types.Type):
     success = sgqlc.types.Field(sgqlc.types.non_null(Boolean), graphql_name='success')
     code = sgqlc.types.Field(String, graphql_name='code')
     error = sgqlc.types.Field(String, graphql_name='error')
+    sql = sgqlc.types.Field(String, graphql_name='sql')
+    data = sgqlc.types.Field(JSON, graphql_name='data')
+
+
+class RunSqlAiResponse(sgqlc.types.Type):
+    __schema__ = schema
+    __field_names__ = ('success', 'code', 'error', 'system_prompt', 'sql_ai_graph', 'sql', 'data')
+    success = sgqlc.types.Field(sgqlc.types.non_null(Boolean), graphql_name='success')
+    code = sgqlc.types.Field(String, graphql_name='code')
+    error = sgqlc.types.Field(String, graphql_name='error')
+    system_prompt = sgqlc.types.Field(String, graphql_name='systemPrompt')
+    sql_ai_graph = sgqlc.types.Field(JSON, graphql_name='sqlAiGraph')
     sql = sgqlc.types.Field(String, graphql_name='sql')
     data = sgqlc.types.Field(JSON, graphql_name='data')
 
