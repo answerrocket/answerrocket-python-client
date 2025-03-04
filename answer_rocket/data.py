@@ -410,6 +410,7 @@ class Data:
             gql_query.code()
             gql_query.error()
             gql_query.sql()
+            gql_query.row_limit()
             gql_query.data()
 
             result = self._gql_client.submit(operation, query_args)

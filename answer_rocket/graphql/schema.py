@@ -858,11 +858,12 @@ class Query(sgqlc.types.Type):
 
 class RunMaxSqlGenResponse(sgqlc.types.Type):
     __schema__ = schema
-    __field_names__ = ('success', 'code', 'error', 'sql', 'data')
+    __field_names__ = ('success', 'code', 'error', 'sql', 'row_limit', 'data')
     success = sgqlc.types.Field(sgqlc.types.non_null(Boolean), graphql_name='success')
     code = sgqlc.types.Field(String, graphql_name='code')
     error = sgqlc.types.Field(String, graphql_name='error')
     sql = sgqlc.types.Field(String, graphql_name='sql')
+    row_limit = sgqlc.types.Field(Int, graphql_name='rowLimit')
     data = sgqlc.types.Field(JSON, graphql_name='data')
 
 
