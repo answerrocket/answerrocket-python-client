@@ -12,12 +12,12 @@ from answer_rocket.llm import Llm
 
 class AnswerRocketClient:
 
-	def __init__(self, url: Optional[str] = None, token: Optional[str] = None):
+	def __init__(self, url: Optional[str] = None, token: Optional[str] = None, tenant: str = None):
 		"""
 		url: the url of your AnswerRocket instance. You may also set the AR_URL env var instead.
 		token: a valid sdk token. You may also set the AR_TOKEN env var instead to keep it out of your code.
 		"""
-		self._client_config = load_client_config(url, token)
+		self._client_config = load_client_config(url, token, tenant)
 		self._gql_client: GraphQlClient = GraphQlClient(self._client_config)
 		self.config = Config(self._client_config, self._gql_client)
 		self.chat = Chat(self._gql_client)
