@@ -1,3 +1,4 @@
+from dataclasses import dataclass
 from typing import Optional, List, Dict
 from uuid import UUID
 
@@ -13,16 +14,17 @@ from answer_rocket.graphql.schema import UUID as GQL_UUID, MaxMetricAttribute, M
     MaxMutationResponse, DateTime, RunMaxSqlGenResponse, JSON, RunSqlAiResponse
 from answer_rocket.types import MaxResult, RESULT_EXCEPTION_CODE
 
-
+@dataclass
 class ExecuteSqlQueryResult(MaxResult):
     df = None
+    data = None
 
-
+@dataclass
 class ExecuteRqlQueryResult(MaxResult):
     df = None
     rql_script_response = None
 
-
+@dataclass
 class DomainObjectResult(MaxResult):
     domain_object = None
 
@@ -95,6 +97,7 @@ class Data:
                 df = pd.DataFrame(rows, columns=columns)
 
                 execute_sql_query_result.df = df
+                execute_sql_query_result.data = data
 
             return execute_sql_query_result
         except Exception as e:
