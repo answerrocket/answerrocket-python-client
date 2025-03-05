@@ -729,7 +729,7 @@ class Mutation(sgqlc.types.Type):
 
 class Query(sgqlc.types.Type):
     __schema__ = schema
-    __field_names__ = ('ping', 'current_user', 'get_copilot_skill_artifact_by_path', 'get_copilot_info', 'get_copilot_skill', 'run_copilot_skill', 'get_skill_components', 'execute_sql_query', 'execute_rql_query', 'get_dataset_id', 'get_dataset', 'get_domain_object', 'get_domain_object_by_name', 'llmapi_config_for_sdk', 'get_max_llm_prompt', 'user_chat_threads', 'user_chat_entries', 'chat_thread', 'chat_entry', 'user', 'all_chat_entries', 'chat_completion', 'narrative_completion')
+    __field_names__ = ('ping', 'current_user', 'get_copilot_skill_artifact_by_path', 'get_copilot_info', 'get_copilot_skill', 'run_copilot_skill', 'get_skill_components', 'execute_sql_query', 'execute_rql_query', 'get_dataset_id', 'get_dataset', 'get_domain_object', 'get_domain_object_by_name', 'run_max_sql_gen', 'run_sql_ai', 'llmapi_config_for_sdk', 'get_max_llm_prompt', 'user_chat_threads', 'user_chat_entries', 'chat_thread', 'chat_entry', 'user', 'all_chat_entries', 'chat_completion', 'narrative_completion')
     ping = sgqlc.types.Field(String, graphql_name='ping')
     current_user = sgqlc.types.Field(MaxUser, graphql_name='currentUser')
     get_copilot_skill_artifact_by_path = sgqlc.types.Field(CopilotSkillArtifact, graphql_name='getCopilotSkillArtifactByPath', args=sgqlc.types.ArgDict((
@@ -792,6 +792,18 @@ class Query(sgqlc.types.Type):
         ('rql_name', sgqlc.types.Arg(sgqlc.types.non_null(String), graphql_name='rqlName', default=None)),
 ))
     )
+    run_max_sql_gen = sgqlc.types.Field('RunMaxSqlGenResponse', graphql_name='runMaxSqlGen', args=sgqlc.types.ArgDict((
+        ('dataset_id', sgqlc.types.Arg(sgqlc.types.non_null(UUID), graphql_name='datasetId', default=None)),
+        ('pre_query_object', sgqlc.types.Arg(JSON, graphql_name='preQueryObject', default=None)),
+        ('copilot_id', sgqlc.types.Arg(UUID, graphql_name='copilotId', default=None)),
+))
+    )
+    run_sql_ai = sgqlc.types.Field('RunSqlAiResponse', graphql_name='runSqlAi', args=sgqlc.types.ArgDict((
+        ('dataset_id', sgqlc.types.Arg(sgqlc.types.non_null(UUID), graphql_name='datasetId', default=None)),
+        ('question', sgqlc.types.Arg(sgqlc.types.non_null(String), graphql_name='question', default=None)),
+        ('copilot_id', sgqlc.types.Arg(UUID, graphql_name='copilotId', default=None)),
+))
+    )
     llmapi_config_for_sdk = sgqlc.types.Field(LLMApiConfig, graphql_name='LLMApiConfigForSdk', args=sgqlc.types.ArgDict((
         ('model_type', sgqlc.types.Arg(sgqlc.types.non_null(String), graphql_name='modelType', default=None)),
 ))
@@ -842,6 +854,29 @@ class Query(sgqlc.types.Type):
         ('model_selection', sgqlc.types.Arg(LlmModelSelection, graphql_name='modelSelection', default=None)),
 ))
     )
+
+
+class RunMaxSqlGenResponse(sgqlc.types.Type):
+    __schema__ = schema
+    __field_names__ = ('success', 'code', 'error', 'sql', 'row_limit', 'data')
+    success = sgqlc.types.Field(sgqlc.types.non_null(Boolean), graphql_name='success')
+    code = sgqlc.types.Field(String, graphql_name='code')
+    error = sgqlc.types.Field(String, graphql_name='error')
+    sql = sgqlc.types.Field(String, graphql_name='sql')
+    row_limit = sgqlc.types.Field(Int, graphql_name='rowLimit')
+    data = sgqlc.types.Field(JSON, graphql_name='data')
+
+
+class RunSqlAiResponse(sgqlc.types.Type):
+    __schema__ = schema
+    __field_names__ = ('success', 'code', 'error', 'system_prompt', 'sql_ai_graph', 'sql', 'data')
+    success = sgqlc.types.Field(sgqlc.types.non_null(Boolean), graphql_name='success')
+    code = sgqlc.types.Field(String, graphql_name='code')
+    error = sgqlc.types.Field(String, graphql_name='error')
+    system_prompt = sgqlc.types.Field(String, graphql_name='systemPrompt')
+    sql_ai_graph = sgqlc.types.Field(JSON, graphql_name='sqlAiGraph')
+    sql = sgqlc.types.Field(String, graphql_name='sql')
+    data = sgqlc.types.Field(JSON, graphql_name='data')
 
 
 class SharedThread(sgqlc.types.Type):
