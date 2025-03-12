@@ -487,6 +487,7 @@ class Data:
         calc_metric_attribute_frag.display_format()
         calc_metric_attribute_frag.rql()
         calc_metric_attribute_frag.sql()
+        calc_metric_attribute_frag.sql_agg_expression()
         calc_metric_attribute_frag.agg_method()
         calc_metric_attribute_frag.is_positive_direction_up()
         calc_metric_attribute_frag.can_be_averaged()

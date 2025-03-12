@@ -1,3 +1,5 @@
+from dataclasses import dataclass
+
 from sgqlc.types import Arg, non_null, Variable
 from answer_rocket.client_config import ClientConfig
 from answer_rocket.graphql.client import GraphQlClient
@@ -8,6 +10,7 @@ from answer_rocket.graphql.schema import UUID as GQL_UUID
 from answer_rocket.types import MaxResult, RESULT_EXCEPTION_CODE
 
 
+@dataclass
 class RunSkillResult(MaxResult):
     data: ChatReportOutput
 
