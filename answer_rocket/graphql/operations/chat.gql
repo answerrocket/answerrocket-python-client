@@ -141,3 +141,11 @@ mutation AddFeedback(
 ) {
   addFeedback(entryId: $entryId, feedbackType: $feedbackType, message: $message)
 }
+
+query SkillMemory($entryId: UUID!) {
+  skillMemory(entryId: $entryId)
+}
+
+mutation SetSkillMemory($entryId: UUID!, $skillMemoryPayload: JSON!) {
+  setSkillMemory(entryId: $entryId, skillMemoryPayload: $skillMemoryPayload)
+}

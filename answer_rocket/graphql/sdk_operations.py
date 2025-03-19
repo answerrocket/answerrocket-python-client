@@ -77,6 +77,12 @@ def mutation_add_feedback():
     return _op
 
 
+def mutation_set_skill_memory():
+    _op = sgqlc.operation.Operation(_schema_root.mutation_type, name='SetSkillMemory', variables=dict(entryId=sgqlc.types.Arg(sgqlc.types.non_null(_schema.UUID)), skillMemoryPayload=sgqlc.types.Arg(sgqlc.types.non_null(_schema.JSON))))
+    _op.set_skill_memory(entry_id=sgqlc.types.Variable('entryId'), skill_memory_payload=sgqlc.types.Variable('skillMemoryPayload'))
+    return _op
+
+
 def mutation_update_loading_message():
     _op = sgqlc.operation.Operation(_schema_root.mutation_type, name='UpdateLoadingMessage', variables=dict(answerId=sgqlc.types.Arg(sgqlc.types.non_null(_schema.UUID)), message=sgqlc.types.Arg(sgqlc.types.non_null(_schema.String))))
     _op.update_loading_message(answer_id=sgqlc.types.Variable('answerId'), message=sgqlc.types.Variable('message'))
@@ -89,6 +95,7 @@ class Mutation:
     cancel_chat_question = mutation_cancel_chat_question()
     create_chat_thread = mutation_create_chat_thread()
     queue_chat_question = mutation_queue_chat_question()
+    set_skill_memory = mutation_set_skill_memory()
     update_loading_message = mutation_update_loading_message()
 
 
@@ -134,6 +141,12 @@ def query_all_chat_entries():
     _op_all_chat_entries_answer.__fragment__(fragment_chat_result_fragment())
     _op_all_chat_entries.feedback()
     _op_all_chat_entries.user()
+    return _op
+
+
+def query_skill_memory():
+    _op = sgqlc.operation.Operation(_schema_root.query_type, name='SkillMemory', variables=dict(entryId=sgqlc.types.Arg(sgqlc.types.non_null(_schema.UUID))))
+    _op.skill_memory(entry_id=sgqlc.types.Variable('entryId'))
     return _op
 
 
@@ -197,6 +210,7 @@ class Query:
     get_copilot_skill = query_get_copilot_skill()
     get_max_llm_prompt = query_get_max_llm_prompt()
     narrative_completion = query_narrative_completion()
+    skill_memory = query_skill_memory()
 
 
 class Operations:

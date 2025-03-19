@@ -5,7 +5,7 @@ from sgqlc.types import Variable, non_null, String, Arg, list_of
 
 from answer_rocket.graphql.client import GraphQlClient
 from answer_rocket.graphql.schema import (UUID, Int, DateTime, ChatDryRunType, MaxChatEntry, MaxChatThread,
-                                          SharedThread, MaxChatUser)
+                                          SharedThread, MaxChatUser, JSON)
 from answer_rocket.graphql.sdk_operations import Operations
 
 logger = logging.getLogger(__name__)
@@ -381,3 +381,32 @@ class Chat:
         result = self.gql_client.submit(operation, get_all_chat_entries_query_args)
 
         return result.all_chat_entries
+    
+    def get_skill_memory_payload(self, chat_entry_id: str) -> JSON:
+        """
+        Fetches the skill memory payload for a given chat entry.
+        :param chat_entry_id: the id of the chat entry
+        :return: the skill memory payload for the given chat entry
+        """
+        skill_memory_args = {
+            'entryId': UUID(chat_entry_id),
+        }
+        op = Operations.query.skill_memory
+        result = self.gql_client.submit(op, skill_memory_args)
+        return result.skill_memory
+
+    def set_skill_memory_payload(self, chat_entry_id: str, skill_memory_payload: JSON) -> bool:
+        """
+        Sets the skill memory payload for a given chat entry.
+        :param chat_entry_id: the id of the chat entry
+        :param skill_memory_payload: the skill memory payload to set
+        :return: True if the skill memory payload was set successfully, False otherwise
+        """
+        set_skill_memory_args = {
+            'entryId': UUID(chat_entry_id),
+            'skillMemoryPayload': skill_memory_payload,
+        }
+        op = Operations.mutation.set_skill_memory
+        result = self.gql_client.submit(op, set_skill_memory_args)
+        return result.set_skill_memory
+

@@ -28,6 +28,8 @@ class ClientConfig:
     copilot_id: str | None
     copilot_skill_id: str | None
     resource_base_path: str | None
+    thread_id: str | None
+    chat_entry_id: str | None
 
 
 def load_client_config(url=None, token=None, tenant: str = None):
@@ -41,6 +43,8 @@ def load_client_config(url=None, token=None, tenant: str = None):
     copilot_skill_id = os.getenv('AR_COPILOT_SKILL_ID')
     is_live_run = os.getenv('AR_IS_RUNNING_ON_FLEET') or False
     resource_base_path = os.getenv('AR_SKILL_RESOURCE_BASE_PATH')
+    thread_id = os.getenv('AR_THREAD_ID')
+    chat_entry_id = os.getenv('AR_CHAT_ENTRY_ID')
     return ClientConfig(
         url=url,
         token=token,
@@ -51,6 +55,8 @@ def load_client_config(url=None, token=None, tenant: str = None):
         entry_answer_id=entry_answer_id,
         copilot_id=copilot_id,
         copilot_skill_id=copilot_skill_id,
-        resource_base_path=resource_base_path
+        resource_base_path=resource_base_path,
+        thread_id=thread_id,
+        chat_entry_id=chat_entry_id
     )
 
