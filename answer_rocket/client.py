@@ -20,7 +20,7 @@ class AnswerRocketClient:
 		self._client_config = load_client_config(url, token, tenant)
 		self._gql_client: GraphQlClient = GraphQlClient(self._client_config)
 		self.config = Config(self._client_config, self._gql_client)
-		self.chat = Chat(self._gql_client)
+		self.chat = Chat(self._gql_client, self._client_config)
 		self.data = Data(self._client_config, self._gql_client)
 		self.output = OutputBuilder(self._client_config, self._gql_client)
 		self.skill = Skill(self._client_config, self._gql_client)
