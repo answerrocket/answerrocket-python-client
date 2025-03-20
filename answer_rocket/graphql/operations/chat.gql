@@ -70,6 +70,7 @@ fragment ChatResultFragment on MaxChatResult {
   }
   threadId
   userId
+  skillMemoryPayload
 }
 
 mutation CancelChatQuestion($entryId: UUID!) {

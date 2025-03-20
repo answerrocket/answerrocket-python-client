@@ -30,6 +30,7 @@ def fragment_chat_result_fragment():
     _frag_report_results.custom_payload()
     _frag.thread_id()
     _frag.user_id()
+    _frag.skill_memory_payload()
     return _frag
 
 
