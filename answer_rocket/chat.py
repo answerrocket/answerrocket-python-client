@@ -7,6 +7,7 @@ from answer_rocket.graphql.client import GraphQlClient
 from answer_rocket.graphql.schema import (UUID, Int, DateTime, ChatDryRunType, MaxChatEntry, MaxChatThread,
                                           SharedThread, MaxChatUser)
 from answer_rocket.graphql.sdk_operations import Operations
+from answer_rocket.client_config import ClientConfig
 
 logger = logging.getLogger(__name__)
 
@@ -14,8 +15,9 @@ FeedbackType = Literal['CHAT_POSITIVE', 'CHAT_NEGATIVE']
 
 
 class Chat:
-    def __init__(self, gql_client: GraphQlClient):
+    def __init__(self, gql_client: GraphQlClient, config: ClientConfig):
         self.gql_client = gql_client
+        self._config = config
 
     def ask_question(self, copilot_id: str, question: str, thread_id: str = None, skip_report_cache: bool = False, dry_run_type: str = None, model_overrides: dict = None, indicated_skills: list[str] = None, history: list[dict] = None):
         """
@@ -381,3 +383,36 @@ class Chat:
         result = self.gql_client.submit(operation, get_all_chat_entries_query_args)
 
         return result.all_chat_entries
+    
+    def get_skill_memory_payload(self, chat_entry_id: str) -> dict:
+        """
+        Fetches the skill memory payload for a given chat entry.
+        :param chat_entry_id: the id of the chat entry
+        :return: the skill memory payload for the given chat entry
+        """
+        skill_memory_args = {
+            'entryId': UUID(chat_entry_id),
+        }
+        op = Operations.query.skill_memory
+        result = self.gql_client.submit(op, skill_memory_args)
+        return result.skill_memory
+
+    def set_skill_memory_payload(self, skill_memory_payload: dict, chat_entry_id: str = None) -> bool:
+        """
+        Sets the skill memory payload for a given chat entry.
+        :param chat_entry_id: the id of the chat entry
+        :param skill_memory_payload: the skill memory payload to set -- must be JSON serializable
+        :return: True if the skill memory payload was set successfully, False otherwise
+        """
+
+        if chat_entry_id is None:
+            chat_entry_id = self._config.chat_entry_id
+
+        set_skill_memory_args = {
+            'entryId': UUID(chat_entry_id),
+            'skillMemoryPayload': skill_memory_payload,
+        }
+        op = Operations.mutation.set_skill_memory
+        result = self.gql_client.submit(op, set_skill_memory_args)
+        return result.set_skill_memory
+
