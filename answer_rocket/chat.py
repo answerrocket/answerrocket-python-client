@@ -407,6 +407,9 @@ class Chat:
 
         if chat_entry_id is None:
             chat_entry_id = self._config.chat_entry_id
+            if chat_entry_id is None: 
+               print("No chat entry id provided, no config chat entry id found, aborting.")
+               return False
 
         set_skill_memory_args = {
             'entryId': UUID(chat_entry_id),

@@ -309,13 +309,14 @@ class ExecuteSqlQueryResponse(sgqlc.types.Type):
 
 class MaxChatEntry(sgqlc.types.Type):
     __schema__ = schema
-    __field_names__ = ('id', 'thread_id', 'question', 'answer', 'feedback', 'user')
+    __field_names__ = ('id', 'thread_id', 'question', 'answer', 'feedback', 'user', 'skill_memory_payload')
     id = sgqlc.types.Field(sgqlc.types.non_null(UUID), graphql_name='id')
     thread_id = sgqlc.types.Field(UUID, graphql_name='threadId')
     question = sgqlc.types.Field('MaxChatQuestion', graphql_name='question')
     answer = sgqlc.types.Field('MaxChatResult', graphql_name='answer')
     feedback = sgqlc.types.Field(ChatFeedback, graphql_name='feedback')
     user = sgqlc.types.Field('MaxChatUser', graphql_name='user')
+    skill_memory_payload = sgqlc.types.Field(JSON, graphql_name='skillMemoryPayload')
 
 
 class MaxChatQuestion(sgqlc.types.Type):
@@ -327,7 +328,7 @@ class MaxChatQuestion(sgqlc.types.Type):
 
 class MaxChatResult(sgqlc.types.Type):
     __schema__ = schema
-    __field_names__ = ('answer_id', 'answered_at', 'copilot_skill_id', 'has_finished', 'error', 'is_new_thread', 'message', 'report_results', 'thread_id', 'user_id', 'general_diagnostics', 'chat_pipeline_profile', 'messages_after_token_limit', 'skill_memory_payload')
+    __field_names__ = ('answer_id', 'answered_at', 'copilot_skill_id', 'has_finished', 'error', 'is_new_thread', 'message', 'report_results', 'thread_id', 'user_id', 'general_diagnostics', 'chat_pipeline_profile', 'messages_after_token_limit')
     answer_id = sgqlc.types.Field(UUID, graphql_name='answerId')
     answered_at = sgqlc.types.Field(DateTime, graphql_name='answeredAt')
     copilot_skill_id = sgqlc.types.Field(UUID, graphql_name='copilotSkillId')
@@ -341,7 +342,6 @@ class MaxChatResult(sgqlc.types.Type):
     general_diagnostics = sgqlc.types.Field(JSON, graphql_name='generalDiagnostics')
     chat_pipeline_profile = sgqlc.types.Field(JSON, graphql_name='chatPipelineProfile')
     messages_after_token_limit = sgqlc.types.Field(Int, graphql_name='messagesAfterTokenLimit')
-    skill_memory_payload = sgqlc.types.Field(JSON, graphql_name='skillMemoryPayload')
 
 
 class MaxChatThread(sgqlc.types.Type):

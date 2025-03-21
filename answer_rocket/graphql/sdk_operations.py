@@ -30,7 +30,6 @@ def fragment_chat_result_fragment():
     _frag_report_results.custom_payload()
     _frag.thread_id()
     _frag.user_id()
-    _frag.skill_memory_payload()
     return _frag
 
 
@@ -112,6 +111,7 @@ def query_chat_entry():
     _op_chat_entry_answer.__fragment__(fragment_chat_result_fragment())
     _op_chat_entry.feedback()
     _op_chat_entry.user()
+    _op_chat_entry.skill_memory_payload()
     return _op
 
 
@@ -127,6 +127,7 @@ def query_chat_thread():
     _op_chat_thread_entries.thread_id()
     _op_chat_thread_entries_answer = _op_chat_thread_entries.answer()
     _op_chat_thread_entries_answer.__fragment__(fragment_chat_result_fragment())
+    _op_chat_thread_entries.skill_memory_payload()
     return _op
 
 
