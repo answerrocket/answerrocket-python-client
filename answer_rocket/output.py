@@ -116,7 +116,22 @@ class OutputBuilder:
                                  is_collapsible=is_collapsible)
         self.current_output["content_blocks"].append(new_block)
         self._update_answer()
+
         return new_block['id']
+
+    def remove_block(self, block_id: UUID = None) -> bool:
+        """
+        Removes the specified content block from the report output. If no block_id is provided, the last block to be
+        added will be removed.
+        param block_id: The id of the block to remove, if none is provided the last block to be added will be removed
+        """
+        for b in self.current_output["content_blocks"]:
+            if b['id'] == block_id:
+                self.current_output["content_blocks"].remove(b)
+                self._update_answer()
+                return True
+        return False
+
 
     def update_block(self, block_id: UUID = None, title: str = None, loading_info: ChatLoadingInfo = None,
                      xml: str = None, is_collapsible: bool = None) -> ContentBlock:
