@@ -234,6 +234,23 @@ class CopilotSkillRunResponse(sgqlc.types.Type):
     data = sgqlc.types.Field(JSON, graphql_name='data')
 
 
+class CopilotTopic(sgqlc.types.Type):
+    __schema__ = schema
+    __field_names__ = ('copilot_topic_id', 'name', 'description', 'research_outline', 'presentation_outline', 'created_user_id', 'created_user_name', 'created_utc', 'last_modified_user_id', 'last_modified_user_name', 'last_modified_utc', 'is_active')
+    copilot_topic_id = sgqlc.types.Field(sgqlc.types.non_null(UUID), graphql_name='copilotTopicId')
+    name = sgqlc.types.Field(sgqlc.types.non_null(String), graphql_name='name')
+    description = sgqlc.types.Field(String, graphql_name='description')
+    research_outline = sgqlc.types.Field(String, graphql_name='researchOutline')
+    presentation_outline = sgqlc.types.Field(String, graphql_name='presentationOutline')
+    created_user_id = sgqlc.types.Field(sgqlc.types.non_null(UUID), graphql_name='createdUserId')
+    created_user_name = sgqlc.types.Field(String, graphql_name='createdUserName')
+    created_utc = sgqlc.types.Field(sgqlc.types.non_null(DateTime), graphql_name='createdUtc')
+    last_modified_user_id = sgqlc.types.Field(sgqlc.types.non_null(UUID), graphql_name='lastModifiedUserId')
+    last_modified_user_name = sgqlc.types.Field(String, graphql_name='lastModifiedUserName')
+    last_modified_utc = sgqlc.types.Field(sgqlc.types.non_null(DateTime), graphql_name='lastModifiedUtc')
+    is_active = sgqlc.types.Field(sgqlc.types.non_null(Boolean), graphql_name='isActive')
+
+
 class CostInfo(sgqlc.types.Type):
     __schema__ = schema
     __field_names__ = ('completion_tokens', 'prompt_tokens', 'total_tokens', 'cost_estimate_usd', 'model')
@@ -385,7 +402,7 @@ class MaxContentBlock(sgqlc.types.Type):
 
 class MaxCopilot(sgqlc.types.Type):
     __schema__ = schema
-    __field_names__ = ('copilot_id', 'name', 'description', 'system_prompt', 'beta_yaml', 'global_python_code', 'copilot_questions', 'connection_datasets')
+    __field_names__ = ('copilot_id', 'name', 'description', 'system_prompt', 'beta_yaml', 'global_python_code', 'copilot_questions', 'connection_datasets', 'copilot_skill_ids', 'copilot_topics')
     copilot_id = sgqlc.types.Field(sgqlc.types.non_null(UUID), graphql_name='copilotId')
     name = sgqlc.types.Field(sgqlc.types.non_null(String), graphql_name='name')
     description = sgqlc.types.Field(String, graphql_name='description')
@@ -394,6 +411,8 @@ class MaxCopilot(sgqlc.types.Type):
     global_python_code = sgqlc.types.Field(String, graphql_name='globalPythonCode')
     copilot_questions = sgqlc.types.Field(sgqlc.types.non_null(sgqlc.types.list_of(sgqlc.types.non_null('MaxCopilotQuestion'))), graphql_name='copilotQuestions')
     connection_datasets = sgqlc.types.Field(sgqlc.types.non_null(sgqlc.types.list_of(sgqlc.types.non_null('MaxCopilotConnectionDataset'))), graphql_name='connectionDatasets')
+    copilot_skill_ids = sgqlc.types.Field(sgqlc.types.non_null(sgqlc.types.list_of(sgqlc.types.non_null(UUID))), graphql_name='copilotSkillIds')
+    copilot_topics = sgqlc.types.Field(sgqlc.types.non_null(sgqlc.types.list_of(sgqlc.types.non_null(CopilotTopic))), graphql_name='copilotTopics')
 
 
 class MaxCopilotConnectionDataset(sgqlc.types.Type):

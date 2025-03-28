@@ -62,10 +62,10 @@ class Config:
         if result.get_copilot_skill_artifact_by_path and result.get_copilot_skill_artifact_by_path.artifact:
             return result.get_copilot_skill_artifact_by_path.artifact
 
-    def get_copilot(self, use_published_version: bool = True) -> MaxCopilot:
+    def get_copilot(self, use_published_version: bool = True, copilot_id: str = None) -> MaxCopilot:
         try:
             query_args = {
-                'copilotId': self.copilot_id,
+                'copilotId': copilot_id or self.copilot_id,
                 'usePublishedVersion': use_published_version
             }
 
@@ -87,13 +87,14 @@ class Config:
 
             return max_copilot
         except Exception as e:
+            print(e)
             return None
 
-    def get_copilot_skill(self, use_published_version: bool = True) -> MaxCopilotSkill:
+    def get_copilot_skill(self, use_published_version: bool = True, copilot_id: str = None, copilot_skill_id: str = None) -> MaxCopilotSkill:
         try:
             query_args = {
-                'copilotId': self.copilot_id,
-                'copilotSkillId': self.copilot_skill_id,
+                'copilotId': copilot_id or self.copilot_id,
+                'copilotSkillId': copilot_skill_id or self.copilot_skill_id,
                 'usePublishedVersion': use_published_version
             }
 
