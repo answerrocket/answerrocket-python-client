@@ -402,7 +402,7 @@ class MaxContentBlock(sgqlc.types.Type):
 
 class MaxCopilot(sgqlc.types.Type):
     __schema__ = schema
-    __field_names__ = ('copilot_id', 'name', 'description', 'system_prompt', 'beta_yaml', 'global_python_code', 'copilot_questions', 'connection_datasets', 'copilot_skill_ids', 'copilot_topics')
+    __field_names__ = ('copilot_id', 'name', 'description', 'system_prompt', 'beta_yaml', 'global_python_code', 'copilot_questions', 'connection_datasets', 'copilot_skill_ids', 'copilot_topics', 'chat_model_config_id', 'narrative_model_config_id', 'sql_model_config_id', 'evaluation_model_config_id')
     copilot_id = sgqlc.types.Field(sgqlc.types.non_null(UUID), graphql_name='copilotId')
     name = sgqlc.types.Field(sgqlc.types.non_null(String), graphql_name='name')
     description = sgqlc.types.Field(String, graphql_name='description')
@@ -413,6 +413,10 @@ class MaxCopilot(sgqlc.types.Type):
     connection_datasets = sgqlc.types.Field(sgqlc.types.non_null(sgqlc.types.list_of(sgqlc.types.non_null('MaxCopilotConnectionDataset'))), graphql_name='connectionDatasets')
     copilot_skill_ids = sgqlc.types.Field(sgqlc.types.non_null(sgqlc.types.list_of(sgqlc.types.non_null(UUID))), graphql_name='copilotSkillIds')
     copilot_topics = sgqlc.types.Field(sgqlc.types.non_null(sgqlc.types.list_of(sgqlc.types.non_null(CopilotTopic))), graphql_name='copilotTopics')
+    chat_model_config_id = sgqlc.types.Field(UUID, graphql_name='chatModelConfigId')
+    narrative_model_config_id = sgqlc.types.Field(UUID, graphql_name='narrativeModelConfigId')
+    sql_model_config_id = sgqlc.types.Field(UUID, graphql_name='sqlModelConfigId')
+    evaluation_model_config_id = sgqlc.types.Field(UUID, graphql_name='evaluationModelConfigId')
 
 
 class MaxCopilotConnectionDataset(sgqlc.types.Type):
@@ -826,7 +830,7 @@ class Query(sgqlc.types.Type):
     run_sql_ai = sgqlc.types.Field('RunSqlAiResponse', graphql_name='runSqlAi', args=sgqlc.types.ArgDict((
         ('dataset_id', sgqlc.types.Arg(sgqlc.types.non_null(UUID), graphql_name='datasetId', default=None)),
         ('question', sgqlc.types.Arg(sgqlc.types.non_null(String), graphql_name='question', default=None)),
-        ('copilot_id', sgqlc.types.Arg(UUID, graphql_name='copilotId', default=None)),
+        ('model_override', sgqlc.types.Arg(String, graphql_name='modelOverride', default=None)),
 ))
     )
     llmapi_config_for_sdk = sgqlc.types.Field(LLMApiConfig, graphql_name='LLMApiConfigForSdk', args=sgqlc.types.ArgDict((
@@ -898,14 +902,15 @@ class RunMaxSqlGenResponse(sgqlc.types.Type):
 
 class RunSqlAiResponse(sgqlc.types.Type):
     __schema__ = schema
-    __field_names__ = ('success', 'code', 'error', 'system_prompt', 'sql_ai_graph', 'sql', 'data')
+    __field_names__ = ('success', 'code', 'error', 'sql', 'data', 'rendered_prompt', 'title', 'explanation')
     success = sgqlc.types.Field(sgqlc.types.non_null(Boolean), graphql_name='success')
     code = sgqlc.types.Field(String, graphql_name='code')
     error = sgqlc.types.Field(String, graphql_name='error')
-    system_prompt = sgqlc.types.Field(String, graphql_name='systemPrompt')
-    sql_ai_graph = sgqlc.types.Field(JSON, graphql_name='sqlAiGraph')
     sql = sgqlc.types.Field(String, graphql_name='sql')
     data = sgqlc.types.Field(JSON, graphql_name='data')
+    rendered_prompt = sgqlc.types.Field(String, graphql_name='renderedPrompt')
+    title = sgqlc.types.Field(String, graphql_name='title')
+    explanation = sgqlc.types.Field(String, graphql_name='explanation')
 
 
 class SharedThread(sgqlc.types.Type):
