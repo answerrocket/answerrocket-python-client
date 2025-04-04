@@ -421,23 +421,25 @@ class Data:
         except Exception as e:
             return None
 
-    def run_sql_ai(self, dataset_id: UUID, question: str, copilot_id: Optional[UUID] = None) -> Optional[RunSqlAiResponse]:
+    def run_sql_ai(self, dataset_id: UUID, question: str, model_override: Optional[str] = None, copilot_id: Optional[UUID] = None) -> Optional[RunSqlAiResponse]:
         try:
             """
             dataset_id: the UUID of the dataset
             question: the NL question
-            copilot_id: optional UUID of the copilot
+            model_override: optional model override (name or id)
             """
 
             query_args = {
                 'datasetId': str(dataset_id),
                 'question': question,
+                'modelOverride': model_override,
                 'copilotId': str(copilot_id) if copilot_id else str(self.copilot_id) if self.copilot_id else None
             }
 
             query_vars = {
                 'dataset_id': Arg(non_null(GQL_UUID)),
                 'question': Arg(non_null(String)),
+                'model_override': Arg(String),
                 'copilot_id': Arg(GQL_UUID),
             }
 
@@ -446,14 +448,16 @@ class Data:
             gql_query = operation.run_sql_ai(
                 dataset_id=Variable('dataset_id'),
                 question=Variable('question'),
+                model_override=Variable('model_override'),
                 copilot_id=Variable('copilot_id'),
             )
 
             gql_query.success()
             gql_query.code()
             gql_query.error()
-            gql_query.system_prompt()
-            gql_query.sql_ai_graph()
+            gql_query.rendered_prompt()
+            gql_query.explanation()
+            gql_query.title()
             gql_query.sql()
             gql_query.data()
 

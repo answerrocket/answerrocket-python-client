@@ -1,11 +1,24 @@
 mutation UpdateLoadingMessage($answerId: UUID!, $message: String!) {
-    updateLoadingMessage(answerId: $answerId, message: $message)
+  updateLoadingMessage(answerId: $answerId, message: $message)
 }
 
-query ChatCompletion($messages: [LlmChatMessage!]!, $modelSelection: LlmModelSelection) {
-    chatCompletion(messages: $messages, modelSelection: $modelSelection)
+query ChatCompletion(
+  $messages: [LlmChatMessage!]!
+  $modelSelection: LlmModelSelection
+) {
+  chatCompletion(messages: $messages, modelSelection: $modelSelection)
 }
 
-query NarrativeCompletion($prompt: String!, $modelSelection: LlmModelSelection) {
-    narrativeCompletion(prompt: $prompt, modelSelection: $modelSelection)
+query NarrativeCompletion(
+  $prompt: String!
+  $modelSelection: LlmModelSelection
+) {
+  narrativeCompletion(prompt: $prompt, modelSelection: $modelSelection)
+}
+
+query SqlCompletion(
+  $messages: [LlmChatMessage!]!
+  $modelSelection: LlmModelSelection
+) {
+  sqlCompletion(messages: $messages, modelSelection: $modelSelection)
 }
