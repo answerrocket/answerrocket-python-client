@@ -56,3 +56,21 @@ class Llm:
         }
         gql_response = self.gql_client.submit(op, args)
         return gql_response.narrative_completion
+    
+    def sql_completion(self, messages: list[LlmChatMessage], model_override: str | None = None):
+        """
+        Call an LLM API's sql completion endpoint with the provided messages.
+        :param messages: a list of dictionaries describing each message in the chat, { "role": str, "content": str }
+        :param model_override: a model name or id to use instead of a configured default
+        :return: the raw response from the model api
+        """
+        op = Operations.query.sql_completion
+        args = {
+            'messages': messages,
+            'modelSelection': {
+                'assistantId': self.config.copilot_id,
+                'modelOverride': model_override
+            }
+        }
+        gql_response = self.gql_client.submit(op, args)
+        return gql_response.sql_completion

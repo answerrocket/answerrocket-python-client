@@ -204,6 +204,12 @@ def query_narrative_completion():
     return _op
 
 
+def query_sql_completion():
+    _op = sgqlc.operation.Operation(_schema_root.query_type, name='SqlCompletion', variables=dict(messages=sgqlc.types.Arg(sgqlc.types.non_null(sgqlc.types.list_of(sgqlc.types.non_null(_schema.LlmChatMessage)))), modelSelection=sgqlc.types.Arg(_schema.LlmModelSelection)))
+    _op.sql_completion(messages=sgqlc.types.Variable('messages'), model_selection=sgqlc.types.Variable('modelSelection'))
+    return _op
+
+
 class Query:
     all_chat_entries = query_all_chat_entries()
     chat_completion = query_chat_completion()
@@ -213,6 +219,7 @@ class Query:
     get_max_llm_prompt = query_get_max_llm_prompt()
     narrative_completion = query_narrative_completion()
     skill_memory = query_skill_memory()
+    sql_completion = query_sql_completion()
 
 
 class Operations:
