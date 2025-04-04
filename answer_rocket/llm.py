@@ -59,7 +59,7 @@ class Llm:
     
     def sql_completion(self, messages: list[LlmChatMessage], model_override: str | None = None):
         """
-        Call an LLM API's sql completion endpoint with the provided messages.
+        Call an LLM API's chat completion endpoint with the provided messages -- will utilize the environment's configured 'SQL' model.
         :param messages: a list of dictionaries describing each message in the chat, { "role": str, "content": str }
         :param model_override: a model name or id to use instead of a configured default
         :return: the raw response from the model api
