@@ -421,7 +421,7 @@ class Data:
         except Exception as e:
             return None
 
-    def run_sql_ai(self, dataset_id: UUID, question: str, model_override: Optional[str] = None) -> Optional[RunSqlAiResponse]:
+    def run_sql_ai(self, dataset_id: UUID, question: str, model_override: Optional[str] = None, copilot_id: Optional[UUID] = None) -> Optional[RunSqlAiResponse]:
         try:
             """
             dataset_id: the UUID of the dataset
@@ -432,13 +432,15 @@ class Data:
             query_args = {
                 'datasetId': str(dataset_id),
                 'question': question,
-                'modelOverride': model_override
+                'modelOverride': model_override,
+                'copilotId': str(copilot_id) if copilot_id else str(self.copilot_id) if self.copilot_id else None
             }
 
             query_vars = {
                 'dataset_id': Arg(non_null(GQL_UUID)),
                 'question': Arg(non_null(String)),
                 'model_override': Arg(String),
+                'copilot_id': Arg(GQL_UUID),
             }
 
             operation = self._gql_client.query(variables=query_vars)
@@ -447,6 +449,7 @@ class Data:
                 dataset_id=Variable('dataset_id'),
                 question=Variable('question'),
                 model_override=Variable('model_override'),
+                copilot_id=Variable('copilot_id'),
             )
 
             gql_query.success()

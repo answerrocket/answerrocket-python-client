@@ -827,6 +827,7 @@ class Query(sgqlc.types.Type):
         ('dataset_id', sgqlc.types.Arg(sgqlc.types.non_null(UUID), graphql_name='datasetId', default=None)),
         ('question', sgqlc.types.Arg(sgqlc.types.non_null(String), graphql_name='question', default=None)),
         ('model_override', sgqlc.types.Arg(String, graphql_name='modelOverride', default=None)),
+        ('copilot_id', sgqlc.types.Arg(UUID, graphql_name='copilotId', default=None)),
 ))
     )
     llmapi_config_for_sdk = sgqlc.types.Field(LLMApiConfig, graphql_name='LLMApiConfigForSdk', args=sgqlc.types.ArgDict((
