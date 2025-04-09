@@ -210,6 +210,12 @@ def query_sql_completion():
     return _op
 
 
+def query_research_completion():
+    _op = sgqlc.operation.Operation(_schema_root.query_type, name='ResearchCompletion', variables=dict(messages=sgqlc.types.Arg(sgqlc.types.non_null(sgqlc.types.list_of(sgqlc.types.non_null(_schema.LlmChatMessage)))), modelSelection=sgqlc.types.Arg(_schema.LlmModelSelection)))
+    _op.research_completion(messages=sgqlc.types.Variable('messages'), model_selection=sgqlc.types.Variable('modelSelection'))
+    return _op
+
+
 class Query:
     all_chat_entries = query_all_chat_entries()
     chat_completion = query_chat_completion()
@@ -218,6 +224,7 @@ class Query:
     get_copilot_skill = query_get_copilot_skill()
     get_max_llm_prompt = query_get_max_llm_prompt()
     narrative_completion = query_narrative_completion()
+    research_completion = query_research_completion()
     skill_memory = query_skill_memory()
     sql_completion = query_sql_completion()
 

@@ -74,3 +74,18 @@ class Llm:
         }
         gql_response = self.gql_client.submit(op, args)
         return gql_response.sql_completion
+    
+    def research_completion(self, messages: list[LlmChatMessage], model_override: str | None = None):
+        """
+        Call an LLM API's chat completion endpoint with the provided messages -- will utilize the environment's configured 'Research' model.
+        """
+        op = Operations.query.research_completion
+        args = {
+            'messages': messages,
+            'modelSelection': {
+                'assistantId': self.config.copilot_id,
+                'modelOverride': model_override
+            }
+        }
+        gql_response = self.gql_client.submit(op, args)
+        return gql_response.research_completion

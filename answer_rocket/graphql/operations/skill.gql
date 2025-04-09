@@ -22,3 +22,10 @@ query SqlCompletion(
 ) {
   sqlCompletion(messages: $messages, modelSelection: $modelSelection)
 }
+
+query ResearchCompletion(
+  $messages: [LlmChatMessage!]!
+  $modelSelection: LlmModelSelection
+) {
+  researchCompletion(messages: $messages, modelSelection: $modelSelection)
+}
