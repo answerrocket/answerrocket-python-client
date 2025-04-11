@@ -67,6 +67,11 @@ fragment ChatResultFragment on MaxChatResult {
       label
     }
     customPayload
+    contentBlocks {
+        id
+        title
+        layoutJson
+    }
   }
   threadId
   userId
