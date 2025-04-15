@@ -460,7 +460,7 @@ class Data:
             gql_query.title()
             gql_query.sql()
             gql_query.data()
-
+            gql_query.column_metadata_map()
             result = self._gql_client.submit(operation, query_args)
 
             run_sql_ai_response = result.run_sql_ai

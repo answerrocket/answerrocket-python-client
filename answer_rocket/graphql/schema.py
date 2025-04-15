@@ -909,13 +909,14 @@ class RunMaxSqlGenResponse(sgqlc.types.Type):
 
 class RunSqlAiResponse(sgqlc.types.Type):
     __schema__ = schema
-    __field_names__ = ('success', 'code', 'error', 'sql', 'data', 'rendered_prompt', 'title', 'explanation')
+    __field_names__ = ('success', 'code', 'error', 'sql', 'data', 'rendered_prompt', 'column_metadata_map', 'title', 'explanation')
     success = sgqlc.types.Field(sgqlc.types.non_null(Boolean), graphql_name='success')
     code = sgqlc.types.Field(String, graphql_name='code')
     error = sgqlc.types.Field(String, graphql_name='error')
     sql = sgqlc.types.Field(String, graphql_name='sql')
     data = sgqlc.types.Field(JSON, graphql_name='data')
     rendered_prompt = sgqlc.types.Field(String, graphql_name='renderedPrompt')
+    column_metadata_map = sgqlc.types.Field(JSON, graphql_name='columnMetadataMap')
     title = sgqlc.types.Field(String, graphql_name='title')
     explanation = sgqlc.types.Field(String, graphql_name='explanation')
 
