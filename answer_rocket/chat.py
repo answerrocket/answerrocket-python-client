@@ -419,3 +419,16 @@ class Chat:
         result = self.gql_client.submit(op, set_skill_memory_args)
         return result.set_skill_memory
 
+    def get_dataframes_for_entry(self, entry_id: str) -> [dict]:
+        """
+        This fetches the dataframes for a given chat entry.
+        :param entry_id:
+        :return: a list of dataframes and metadata for the given chat entry
+        """
+        get_dataframes_for_entry_args = {
+            'entryId': UUID(entry_id),
+        }
+        op = Operations.query.dataframes_for_entry
+        result = self.gql_client.submit(op, get_dataframes_for_entry_args)
+
+        return result.chat_entry.answer.report_results[0].gzipped_dataframes_and_metadata

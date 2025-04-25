@@ -119,6 +119,16 @@ def query_chat_entry():
     return _op
 
 
+def query_dataframes_for_entry():
+    _op = sgqlc.operation.Operation(_schema_root.query_type, name='DataframesForEntry', variables=dict(entryId=sgqlc.types.Arg(sgqlc.types.non_null(_schema.UUID))))
+    _op_chat_entry = _op.chat_entry(id=sgqlc.types.Variable('entryId'))
+    _op_chat_entry.id()
+    _op_chat_entry_answer = _op_chat_entry.answer()
+    _op_chat_entry_answer_report_results = _op_chat_entry_answer.report_results()
+    _op_chat_entry_answer_report_results.gzipped_dataframes_and_metadata()
+    return _op
+
+
 def query_chat_thread():
     _op = sgqlc.operation.Operation(_schema_root.query_type, name='ChatThread', variables=dict(id=sgqlc.types.Arg(sgqlc.types.non_null(_schema.UUID))))
     _op_chat_thread = _op.chat_thread(id=sgqlc.types.Variable('id'))
@@ -225,6 +235,7 @@ class Query:
     chat_completion = query_chat_completion()
     chat_entry = query_chat_entry()
     chat_thread = query_chat_thread()
+    dataframes_for_entry = query_dataframes_for_entry()
     get_copilot_skill = query_get_copilot_skill()
     get_max_llm_prompt = query_get_max_llm_prompt()
     narrative_completion = query_narrative_completion()

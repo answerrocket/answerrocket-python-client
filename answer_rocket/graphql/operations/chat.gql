@@ -101,6 +101,17 @@ query ChatEntry($id: UUID!) {
   }
 }
 
+query DataframesForEntry($entryId: UUID!) {
+  chatEntry(id: $entryId) {
+    id
+    answer {
+        reportResults {
+            gzippedDataframesAndMetadata
+        }
+    }
+  }
+}
+
 query ChatThread($id: UUID!) {
   chatThread(id: $id) {
     id
