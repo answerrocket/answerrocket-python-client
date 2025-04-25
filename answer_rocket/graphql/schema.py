@@ -324,6 +324,15 @@ class ExecuteSqlQueryResponse(sgqlc.types.Type):
     data = sgqlc.types.Field(JSON, graphql_name='data')
 
 
+class GenerateVisualizationResponse(sgqlc.types.Type):
+    __schema__ = schema
+    __field_names__ = ('success', 'code', 'error', 'visualization')
+    success = sgqlc.types.Field(sgqlc.types.non_null(Boolean), graphql_name='success')
+    code = sgqlc.types.Field(String, graphql_name='code')
+    error = sgqlc.types.Field(String, graphql_name='error')
+    visualization = sgqlc.types.Field(JSON, graphql_name='visualization')
+
+
 class MaxChatEntry(sgqlc.types.Type):
     __schema__ = schema
     __field_names__ = ('id', 'thread_id', 'question', 'answer', 'feedback', 'user', 'skill_memory_payload')
@@ -755,7 +764,7 @@ class Mutation(sgqlc.types.Type):
 
 class Query(sgqlc.types.Type):
     __schema__ = schema
-    __field_names__ = ('ping', 'current_user', 'get_copilot_skill_artifact_by_path', 'get_copilot_info', 'get_copilot_skill', 'run_copilot_skill', 'get_skill_components', 'execute_sql_query', 'execute_rql_query', 'get_dataset_id', 'get_dataset', 'get_domain_object', 'get_domain_object_by_name', 'run_max_sql_gen', 'run_sql_ai', 'llmapi_config_for_sdk', 'get_max_llm_prompt', 'user_chat_threads', 'user_chat_entries', 'chat_thread', 'chat_entry', 'user', 'all_chat_entries', 'skill_memory', 'chat_completion', 'narrative_completion', 'sql_completion', 'research_completion')
+    __field_names__ = ('ping', 'current_user', 'get_copilot_skill_artifact_by_path', 'get_copilot_info', 'get_copilot_skill', 'run_copilot_skill', 'get_skill_components', 'execute_sql_query', 'execute_rql_query', 'get_dataset_id', 'get_dataset', 'get_domain_object', 'get_domain_object_by_name', 'run_max_sql_gen', 'run_sql_ai', 'generate_visualization', 'llmapi_config_for_sdk', 'get_max_llm_prompt', 'user_chat_threads', 'user_chat_entries', 'chat_thread', 'chat_entry', 'user', 'all_chat_entries', 'skill_memory', 'chat_completion', 'narrative_completion', 'sql_completion', 'research_completion')
     ping = sgqlc.types.Field(String, graphql_name='ping')
     current_user = sgqlc.types.Field(MaxUser, graphql_name='currentUser')
     get_copilot_skill_artifact_by_path = sgqlc.types.Field(CopilotSkillArtifact, graphql_name='getCopilotSkillArtifactByPath', args=sgqlc.types.ArgDict((
@@ -829,6 +838,11 @@ class Query(sgqlc.types.Type):
         ('question', sgqlc.types.Arg(sgqlc.types.non_null(String), graphql_name='question', default=None)),
         ('model_override', sgqlc.types.Arg(String, graphql_name='modelOverride', default=None)),
         ('copilot_id', sgqlc.types.Arg(UUID, graphql_name='copilotId', default=None)),
+))
+    )
+    generate_visualization = sgqlc.types.Field(GenerateVisualizationResponse, graphql_name='generateVisualization', args=sgqlc.types.ArgDict((
+        ('data', sgqlc.types.Arg(sgqlc.types.non_null(JSON), graphql_name='data', default=None)),
+        ('column_metadata_map', sgqlc.types.Arg(sgqlc.types.non_null(JSON), graphql_name='columnMetadataMap', default=None)),
 ))
     )
     llmapi_config_for_sdk = sgqlc.types.Field(LLMApiConfig, graphql_name='LLMApiConfigForSdk', args=sgqlc.types.ArgDict((
