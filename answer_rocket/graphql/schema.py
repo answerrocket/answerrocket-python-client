@@ -579,12 +579,13 @@ class MaxReportParamsAndValues(sgqlc.types.Type):
 
 class MaxReportResult(sgqlc.types.Type):
     __schema__ = schema
-    __field_names__ = ('title', 'report_name', 'parameters', 'custom_payload', 'content_blocks')
+    __field_names__ = ('title', 'report_name', 'parameters', 'custom_payload', 'content_blocks', 'gzipped_dataframes_and_metadata')
     title = sgqlc.types.Field(String, graphql_name='title')
     report_name = sgqlc.types.Field(sgqlc.types.non_null(String), graphql_name='reportName')
     parameters = sgqlc.types.Field(sgqlc.types.list_of(sgqlc.types.non_null(MaxReportParamsAndValues)), graphql_name='parameters')
     custom_payload = sgqlc.types.Field(JSON, graphql_name='customPayload')
     content_blocks = sgqlc.types.Field(sgqlc.types.list_of(sgqlc.types.non_null(MaxContentBlock)), graphql_name='contentBlocks')
+    gzipped_dataframes_and_metadata = sgqlc.types.Field(sgqlc.types.list_of(JSON), graphql_name='gzippedDataframesAndMetadata')
 
 
 class MaxSkillComponent(sgqlc.types.Type):
@@ -910,13 +911,14 @@ class RunMaxSqlGenResponse(sgqlc.types.Type):
 
 class RunSqlAiResponse(sgqlc.types.Type):
     __schema__ = schema
-    __field_names__ = ('success', 'code', 'error', 'sql', 'data', 'rendered_prompt', 'title', 'explanation')
+    __field_names__ = ('success', 'code', 'error', 'sql', 'data', 'rendered_prompt', 'column_metadata_map', 'title', 'explanation')
     success = sgqlc.types.Field(sgqlc.types.non_null(Boolean), graphql_name='success')
     code = sgqlc.types.Field(String, graphql_name='code')
     error = sgqlc.types.Field(String, graphql_name='error')
     sql = sgqlc.types.Field(String, graphql_name='sql')
     data = sgqlc.types.Field(JSON, graphql_name='data')
     rendered_prompt = sgqlc.types.Field(String, graphql_name='renderedPrompt')
+    column_metadata_map = sgqlc.types.Field(JSON, graphql_name='columnMetadataMap')
     title = sgqlc.types.Field(String, graphql_name='title')
     explanation = sgqlc.types.Field(String, graphql_name='explanation')
 
