@@ -8,7 +8,7 @@ from sgqlc.types import Variable, Arg, non_null, String, Int, list_of
 
 from answer_rocket.client_config import ClientConfig
 from answer_rocket.graphql.client import GraphQlClient
-from answer_rocket.graphql.schema import UUID as GQL_UUID, MaxMetricAttribute, MaxDimensionEntity, MaxFactEntity, \
+from answer_rocket.graphql.schema import UUID as GQL_UUID, GenerateVisualizationResponse, MaxMetricAttribute, MaxDimensionEntity, MaxFactEntity, \
     MaxNormalAttribute, \
     MaxPrimaryAttribute, MaxReferenceAttribute, MaxCalculatedMetric, MaxDataset, MaxCalculatedAttribute, \
     MaxMutationResponse, DateTime, RunMaxSqlGenResponse, JSON, RunSqlAiResponse
@@ -460,12 +460,52 @@ class Data:
             gql_query.title()
             gql_query.sql()
             gql_query.data()
-
+            gql_query.column_metadata_map()
             result = self._gql_client.submit(operation, query_args)
 
             run_sql_ai_response = result.run_sql_ai
 
             return run_sql_ai_response
+        except Exception as e:
+            return None
+
+    def generate_visualization(self, data: Dict, column_metadata_map: Dict) -> Optional[GenerateVisualizationResponse]:
+        """
+        Generates a HighchartsChart dynamic vis layout component based on provided data and metadata.
+
+        data: The data to be visualized, can pass directly from the data result of run_sql_ai (the services expects a 'rows' key and a 'columns' key)
+        column_metadata_map: The column metadata map from the run_sql_ai response
+
+        Returns:
+            A HighchartsChart dynamic vis layout component based on provided data and metadata.
+        """
+        try:
+            query_args = {
+                'data': data,
+                'columnMetadataMap': column_metadata_map,
+            }
+
+            query_vars = {
+                'data': Arg(non_null(JSON)),
+                'column_metadata_map': Arg(non_null(JSON)),
+            }
+
+            operation = self._gql_client.query(variables=query_vars)
+
+            gql_query = operation.generate_visualization(
+                data=Variable('data'),
+                column_metadata_map=Variable('column_metadata_map'),
+            )
+
+            gql_query.success()
+            gql_query.code()
+            gql_query.error()
+            gql_query.visualization()
+            result = self._gql_client.submit(operation, query_args)
+
+            generate_visualization_response = result.generate_visualization
+
+            return generate_visualization_response
         except Exception as e:
             return None
 
