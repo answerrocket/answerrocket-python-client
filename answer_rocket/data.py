@@ -55,6 +55,7 @@ class RunSqlAiResult(MaxResult):
     column_metadata_map: Dict[str, any] | None = None
     title: str | None = None
     explanation: str | None = None
+    data = None     # deprecated -- use df instead
 
 class Data:
     """
@@ -535,6 +536,7 @@ class Data:
                 result.column_metadata_map = run_sql_ai_response.column_metadata_map
                 result.title = run_sql_ai_response.title
                 result.explanation = run_sql_ai_response.explanation
+                result.data = run_sql_ai_response.data
 
             return result
         except Exception as e:
