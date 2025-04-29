@@ -12,7 +12,7 @@ from answer_rocket.types import MaxResult, RESULT_EXCEPTION_CODE
 
 @dataclass
 class RunSkillResult(MaxResult):
-    data: ChatReportOutput
+    data: ChatReportOutput | None = None
 
 
 class Skill:
@@ -35,7 +35,7 @@ class Skill:
         :return the full output object of the skill
         """
 
-        final_result = RunSkillResult()
+        final_result = RunSkillResult(None)
 
         preview_query_args = {
             "copilotId": UUID(copilot_id),
