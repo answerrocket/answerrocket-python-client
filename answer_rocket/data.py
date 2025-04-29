@@ -3,6 +3,7 @@ from typing import Optional, List, Dict
 from uuid import UUID
 
 import pandas as pd
+from pandas import DataFrame
 from sgqlc.operation import Fragment
 from sgqlc.types import Variable, Arg, non_null, String, Int, list_of
 
@@ -14,10 +15,21 @@ from answer_rocket.graphql.schema import UUID as GQL_UUID, GenerateVisualization
     MaxMutationResponse, DateTime, RunMaxSqlGenResponse, JSON, RunSqlAiResponse
 from answer_rocket.types import MaxResult, RESULT_EXCEPTION_CODE
 
+def create_df_from_data(data: Dict[str, any]):
+    columns = [column["name"] for column in data["columns"]]
+    rows = [row["data"] for row in data["rows"]] if "rows" in data else []
+
+    df = pd.DataFrame(rows, columns=columns)
+
+    if len(df) == 1 and df.isna().all().all():
+        return df.iloc[0:0]  # Returns an empty DataFrame with the same columns
+    else:
+        return df
+
 @dataclass
 class ExecuteSqlQueryResult(MaxResult):
-    df = None
-    data = None
+    df: DataFrame | None = None
+    data = None     # deprecated -- use df instead
 
 @dataclass
 class ExecuteRqlQueryResult(MaxResult):
@@ -27,6 +39,23 @@ class ExecuteRqlQueryResult(MaxResult):
 @dataclass
 class DomainObjectResult(MaxResult):
     domain_object = None
+
+@dataclass
+class RunMaxSqlGenResult(MaxResult):
+    sql: str | None = None
+    df: DataFrame | None = None
+    row_limit: int | None = None
+    data = None     # deprecated -- use df instead
+
+@dataclass
+class RunSqlAiResult(MaxResult):
+    sql: str | None = None
+    df: DataFrame | None = None
+    rendered_prompt: str | None = None
+    column_metadata_map: Dict[str, any] | None = None
+    title: str | None = None
+    explanation: str | None = None
+    data = None     # deprecated -- use df instead
 
 class Data:
     """
@@ -40,13 +69,22 @@ class Data:
         self.copilot_skill_id = self._config.copilot_skill_id
 
     def execute_sql_query(self, database_id: UUID, sql_query: str, row_limit: Optional[int] = None, copilot_id: Optional[UUID] = None, copilot_skill_id: Optional[UUID] = None) -> ExecuteSqlQueryResult:
+        """
+        Executes a SQL query against the provided database, and returns a dataframe
+
+        Args:
+            database_id (UUID): The UUID of the database.
+            sql_query (str): The SQL query to execute.
+            row_limit (Optional[int]: An optional row limit to apply to the SQL query.
+            copilot_id (Optional[UUID], optional): The UUID of the copilot. Defaults to None.
+
+        Returns:
+            ExecuteSqlQueryResult: The result of the SQL execution process.
+        """
+
+        result = ExecuteSqlQueryResult()
+
         try:
-            """
-            database_id: the database_id of the connection to execute against.
-            sql_query: the SQL query to execute.
-            row_limit: the optional row limit of the query results.
-            copilot_id: the optional copilot ID.
-            """
             query_args = {
                 'databaseId': database_id,
                 'sqlQuery': sql_query,
@@ -78,36 +116,27 @@ class Data:
             execute_sql_query.error()
             execute_sql_query.data()
 
-            result = self._gql_client.submit(operation, query_args)
+            gql_result = self._gql_client.submit(operation, query_args)
 
-            execute_sql_query_response = result.execute_sql_query
+            execute_sql_query_response = gql_result.execute_sql_query
 
-            execute_sql_query_result = ExecuteSqlQueryResult()
-
-            execute_sql_query_result.success = execute_sql_query_response.success
-            execute_sql_query_result.error = execute_sql_query_response.error
-            execute_sql_query_result.code = execute_sql_query_response.code
+            result.success = execute_sql_query_response.success
+            result.error = execute_sql_query_response.error
+            result.code = execute_sql_query_response.code
 
             if execute_sql_query_response.success:
                 data = execute_sql_query_response.data
 
-                columns = [column["name"] for column in data["columns"]]
-                rows = [row["data"] for row in data["rows"]] if "rows" in data else []
+                result.df = create_df_from_data(data)
+                result.data = data
 
-                df = pd.DataFrame(rows, columns=columns)
-
-                execute_sql_query_result.df = df
-                execute_sql_query_result.data = data
-
-            return execute_sql_query_result
+            return result
         except Exception as e:
-            execute_sql_query_result = ExecuteSqlQueryResult()
+            result.success = False
+            result.code = RESULT_EXCEPTION_CODE
+            result.error = str(e)
 
-            execute_sql_query_result.success = False
-            execute_sql_query_result.error = e
-            execute_sql_query_result.code = RESULT_EXCEPTION_CODE
-
-            return execute_sql_query_result
+            return result
 
     def execute_rql_query(self, dataset_id: UUID, rql_query: str, row_limit: Optional[int] = None, copilot_id: Optional[UUID] = None, copilot_skill_id: Optional[UUID] = None) -> ExecuteRqlQueryResult:
         try:
@@ -378,14 +407,22 @@ class Data:
 
             return domain_object_result
 
-    def run_max_sql_gen(self, dataset_id: UUID, pre_query_object: Dict[str, any], copilot_id: Optional[UUID] = None) -> Optional[RunMaxSqlGenResponse]:
-        try:
-            """
-            dataset_id: the UUID of the dataset
-            pre_query_object: the pre-query object that describes the query
-            copilot_id: optional UUID of the copilot
-            """
+    def run_max_sql_gen(self, dataset_id: UUID, pre_query_object: Dict[str, any], copilot_id: Optional[UUID] = None) -> RunMaxSqlGenResult:
+        """
+        Runs the SQL generation logic using the provided dataset and query object.
 
+        Args:
+            dataset_id (UUID): The UUID of the dataset.
+            pre_query_object (Dict[str, any]): The pre-query object that describes the query.
+            copilot_id (Optional[UUID], optional): The UUID of the copilot. Defaults to None.
+
+        Returns:
+            RunMaxSqlGenResult: The result of the SQL generation process.
+        """
+
+        result = RunMaxSqlGenResult()
+
+        try:
             query_args = {
                 'datasetId': str(dataset_id),
                 'preQueryObject': pre_query_object,
@@ -413,22 +450,45 @@ class Data:
             gql_query.row_limit()
             gql_query.data()
 
-            result = self._gql_client.submit(operation, query_args)
+            gql_result = self._gql_client.submit(operation, query_args)
 
-            run_max_sql_gen_response = result.run_max_sql_gen
+            run_max_sql_gen_response = gql_result.run_max_sql_gen
 
-            return run_max_sql_gen_response
+            result.success = run_max_sql_gen_response.success
+            result.error = run_max_sql_gen_response.error
+            result.code = run_max_sql_gen_response.code
+
+            if result.success:
+                result.sql = run_max_sql_gen_response.sql
+                result.df = create_df_from_data(run_max_sql_gen_response.data)
+                result.row_limit = run_max_sql_gen_response.row_limit
+                result.data = run_max_sql_gen_response.data
+
+            return result
         except Exception as e:
-            return None
+            result.success = False
+            result.code = RESULT_EXCEPTION_CODE
+            result.error = str(e)
 
-    def run_sql_ai(self, dataset_id: UUID, question: str, model_override: Optional[str] = None, copilot_id: Optional[UUID] = None) -> Optional[RunSqlAiResponse]:
+            return result
+
+    def run_sql_ai(self, dataset_id: UUID, question: str, model_override: Optional[str] = None, copilot_id: Optional[UUID] = None) -> RunSqlAiResult:
+        """
+        Runs the SQL AI generation logic using the provided dataset and natural language question.
+
+        Args:
+            dataset_id (UUID): The UUID of the dataset.
+            question (str): The natural language question.
+            model_override (Optional[str], optional): Optional LLM model override. Defaults to None.
+            copilot_id (Optional[UUID], optional): The UUID of the copilot. Defaults to None.
+
+        Returns:
+            RunSqlAiResult: The result of the SQL AI generation process.
+        """
+
+        result = RunSqlAiResult()
+
         try:
-            """
-            dataset_id: the UUID of the dataset
-            question: the NL question
-            model_override: optional model override (name or id)
-            """
-
             query_args = {
                 'datasetId': str(dataset_id),
                 'question': question,
@@ -461,13 +521,30 @@ class Data:
             gql_query.sql()
             gql_query.data()
             gql_query.column_metadata_map()
-            result = self._gql_client.submit(operation, query_args)
+            gql_result = self._gql_client.submit(operation, query_args)
 
-            run_sql_ai_response = result.run_sql_ai
+            run_sql_ai_response = gql_result.run_sql_ai
 
-            return run_sql_ai_response
+            result.success = run_sql_ai_response.success
+            result.error = run_sql_ai_response.error
+            result.code = run_sql_ai_response.code
+
+            if result.success:
+                result.sql = run_sql_ai_response.sql
+                result.df = create_df_from_data(run_sql_ai_response.data)
+                result.rendered_prompt = run_sql_ai_response.rendered_prompt
+                result.column_metadata_map = run_sql_ai_response.column_metadata_map
+                result.title = run_sql_ai_response.title
+                result.explanation = run_sql_ai_response.explanation
+                result.data = run_sql_ai_response.data
+
+            return result
         except Exception as e:
-            return None
+            result.success = False
+            result.code = RESULT_EXCEPTION_CODE
+            result.error = str(e)
+
+            return result
 
     def generate_visualization(self, data: Dict, column_metadata_map: Dict) -> Optional[GenerateVisualizationResponse]:
         """
