@@ -1,8 +1,12 @@
+import io
 import logging
 from datetime import datetime
 from typing import Literal
+
+import pandas as pd
 from sgqlc.types import Variable, non_null, String, Arg, list_of
 
+from answer_rocket.util import MetaDataFrame
 from answer_rocket.graphql.client import GraphQlClient
 from answer_rocket.graphql.schema import (UUID, Int, DateTime, ChatDryRunType, MaxChatEntry, MaxChatThread,
                                           SharedThread, MaxChatUser)
@@ -419,10 +423,10 @@ class Chat:
         result = self.gql_client.submit(op, set_skill_memory_args)
         return result.set_skill_memory
 
-    def get_dataframes_for_entry(self, entry_id: str) -> [dict]:
+    def get_dataframes_for_entry(self, entry_id: str) -> [MetaDataFrame]:
         """
-        This fetches the dataframes for a given chat entry.
-        :param entry_id:
+        This fetches the dataframes (with metadata) for a given chat entry.
+        :param entry_id: The answer entry to fetch dataframes for
         :return: a list of dataframes and metadata for the given chat entry
         """
         get_dataframes_for_entry_args = {
@@ -431,4 +435,11 @@ class Chat:
         op = Operations.query.dataframes_for_entry
         result = self.gql_client.submit(op, get_dataframes_for_entry_args)
 
-        return result.chat_entry.answer.report_results[0].gzipped_dataframes_and_metadata
+        df_dicts = result.chat_entry.answer.report_results[0].gzipped_dataframes_and_metadata
+
+        def transform_df(df_dict: dict):
+            df = pd.read_csv(io.StringIO(df_dict.get("df")), compression='gzip')
+            df.max_metadata.hydrate(df_dict.get("metadata", {}))
+            return {**df_dict, "df": df}
+
+        return [transform_df(d) for d in df_dicts]
