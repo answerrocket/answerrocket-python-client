@@ -6,7 +6,6 @@ from typing import Literal
 import pandas as pd
 from sgqlc.types import Variable, non_null, String, Arg, list_of
 
-from answer_rocket.util import MetaDataFrame
 from answer_rocket.graphql.client import GraphQlClient
 from answer_rocket.graphql.schema import (UUID, Int, DateTime, ChatDryRunType, MaxChatEntry, MaxChatThread,
                                           SharedThread, MaxChatUser)
@@ -423,7 +422,7 @@ class Chat:
         result = self.gql_client.submit(op, set_skill_memory_args)
         return result.set_skill_memory
 
-    def get_dataframes_for_entry(self, entry_id: str) -> [MetaDataFrame]:
+    def get_dataframes_for_entry(self, entry_id: str) -> [pd.DataFrame]:
         """
         This fetches the dataframes (with metadata) for a given chat entry.
         :param entry_id: The answer entry to fetch dataframes for
