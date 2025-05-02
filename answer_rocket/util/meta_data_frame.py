@@ -144,6 +144,14 @@ class MetaDataFrame:
     def get_description(self) -> str:
         return self.df.attrs["description"]
 
+    def get_dataset_description(self) -> str:
+        """
+        DEPRECATED: Use get_full_description() instead.
+
+        Gets the full description for a dataset
+        """
+        return self.get_full_description()
+
     def get_id(self) -> str:
         return self.df.attrs["id"]
 
