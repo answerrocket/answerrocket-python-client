@@ -22,7 +22,7 @@ class Chat:
         self.gql_client = gql_client
         self._config = config
 
-    def ask_question(self, copilot_id: str, question: str, thread_id: str = None, skip_report_cache: bool = False, dry_run_type: str = None, model_overrides: dict = None, indicated_skills: list[str] = None, history: list[dict] = None):
+    def ask_question(self, copilot_id: str, question: str, thread_id: str = None, skip_report_cache: bool = False, dry_run_type: str = None, model_overrides: dict = None, indicated_skills: list[str] = None, history: list[dict] = None, question_type: str = None, thread_type: str = None) -> MaxChatEntry:
         """
         Calls the Max chat pipeline to answer a natural language question and receive analysis and insights
         in response.
@@ -35,6 +35,8 @@ class Chat:
         :param model_overrides: If provided, a dictionary of model types to model names to override the LLM model used. Model type options are 'CHAT', 'EMBEDDINGS', 'NARRATIVE'
         :param indicated_skills: If provided, a list of skill names that the copilot will be limited to choosing from. If only 1 skill is provided the copilot will be guaranteed to execute that skill.
         :param history: If provided, a list of messages to be used as the conversation history for the question
+        :param question_type: If provided, the type of question being asked. This is used to categorize the question and can determine how the UI chooses to display it.
+        :param thread_type: If provided, the type of thread being created. This is used to categorize the thread and can determine how the UI chooses to display it.
         :return: the ChatEntry response object associate with the answer from the pipeline
         """
         override_list = []
@@ -50,7 +52,9 @@ class Chat:
             'dryRunType': ChatDryRunType(dry_run_type) if dry_run_type else None,
             'modelOverrides': override_list if override_list else None,
             'indicatedSkills': indicated_skills,
-            'history': history if history else None
+            'history': history if history else None,
+            'questionType': question_type,
+            'threadType': thread_type
         }
 
         op = Operations.mutation.ask_chat_question

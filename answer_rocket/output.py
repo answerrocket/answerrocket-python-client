@@ -46,6 +46,10 @@ class ContentBlock(TypedDict):
     """
     Whether or not the block can be collapsed by the user
     """
+    layout_json: str | None
+    """
+    An alternative to payload, this is a JSON representation of the block's visual layout
+    """
 
 
 class ChatReportOutput(TypedDict, total=False):
@@ -82,14 +86,18 @@ class OutputBuilder:
         )
 
     def _update_answer(self):
-        if self.answer_id and self._config.is_live_run:
+        if self.answer_id: # and self._config.is_live_run:
             query_args = {
                 'answerId': self.answer_id,
-                'payload': self.current_output
+                'payload': self.current_output,
+                'entryAnswerId': self._config.entry_answer_id,
+                'nudgeEntryId': self._config.chat_entry_id
             }
             query_vars = {
                 'answer_id': Arg(sgqlc.types.non_null(GQL_UUID)),
-                'payload': Arg(sgqlc.types.non_null(JSON))
+                'payload': Arg(sgqlc.types.non_null(JSON)),
+                'entry_answer_id': Arg(GQL_UUID),
+                'nudge_entry_id': Arg(GQL_UUID)
             }
 
             operation = self._gql_client.mutation(variables=query_vars)
@@ -97,12 +105,14 @@ class OutputBuilder:
             update_mutation = operation.update_chat_answer_payload(
                 answer_id=Variable('answer_id'),
                 payload=Variable('payload'),
+                entry_answer_id=Variable('entry_answer_id'),
+                nudge_entry_id=Variable('nudge_entry_id'),
             )
 
             self._gql_client.submit(operation, query_args)
 
     def add_block(self, title: str = None, loading_status: ChatLoadingInfo = None, xml: str = None,
-                  is_collapsible: bool = True) -> str:
+                  is_collapsible: bool = True, layout_json: str = None) -> str:
         """
         Adds a new content block to the report output. The newly added blocks becomes the default block for
         future updates until a new block is added.
@@ -111,9 +121,12 @@ class OutputBuilder:
         :param loading_status: The loading state of the block
         :param xml: XML payload for the block to display, represented as a string.
         :param is_collapsible: Whether the block can be collapsed by the user
+        :param layout_json: An alternative to xml, this is a JSON representation of the block's visual layout
         """
+        print("--- ADDING BLOCK ON SDK ---")
+
         new_block = ContentBlock(id=str(uuid.uuid4()), title=title, loading_info=loading_status, payload=xml,
-                                 is_collapsible=is_collapsible)
+                                 is_collapsible=is_collapsible, layout_json=layout_json)
         self.current_output["content_blocks"].append(new_block)
         self._update_answer()
 
@@ -134,7 +147,7 @@ class OutputBuilder:
 
 
     def update_block(self, block_id: UUID = None, title: str = None, loading_info: ChatLoadingInfo = None,
-                     xml: str = None, is_collapsible: bool = None) -> ContentBlock:
+                     xml: str = None, is_collapsible: bool = None, layout_json: str = None) -> ContentBlock:
         """
         Updates the specified content block with any or all of the provided parameters. If no block_id is provided,
         the last block to be added will be updated.
@@ -144,6 +157,7 @@ class OutputBuilder:
         :param loading_info: The loading state of the block, leave blank for no-update
         :param xml: XML payload for the block to display, represented as a string, leave blank for no-update
         :param is_collapsible: Whether the block can be collapsed by the user, leave blank for no-update
+        :param layout_json: An alternative to xml, this is a JSON representation of the block's visual layout
         """
 
         def get_updated_block(b: ContentBlock):
@@ -155,6 +169,8 @@ class OutputBuilder:
                 b['payload'] = xml
             if is_collapsible is not None:
                 b['is_collapsible'] = is_collapsible
+            if layout_json:
+                b['layout_json'] = layout_json
             return b
 
         content_blocks = self.current_output["content_blocks"]
