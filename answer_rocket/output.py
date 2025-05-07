@@ -123,8 +123,6 @@ class OutputBuilder:
         :param is_collapsible: Whether the block can be collapsed by the user
         :param layout_json: An alternative to xml, this is a JSON representation of the block's visual layout
         """
-        print("--- ADDING BLOCK ON SDK ---")
-
         new_block = ContentBlock(id=str(uuid.uuid4()), title=title, loading_info=loading_status, payload=xml,
                                  is_collapsible=is_collapsible, layout_json=layout_json)
         self.current_output["content_blocks"].append(new_block)
