@@ -50,12 +50,22 @@ class ModelTypes(sgqlc.types.Enum):
     __choices__ = ('CHAT', 'EMBEDDINGS', 'NARRATIVE')
 
 
+class QuestionType(sgqlc.types.Enum):
+    __schema__ = schema
+    __choices__ = ('DRILLDOWN', 'EXAMPLE', 'FOLLOWUP', 'RESEARCHER_REPORT', 'SAVED', 'SCHEDULED', 'SHARED', 'SKILL_PREVIEW', 'TEST_RUN', 'USER_WRITTEN', 'XML_CALLBACK')
+
+
 class SimplifiedDataType(sgqlc.types.Enum):
     __schema__ = schema
     __choices__ = ('BOOLEAN', 'DATE', 'NUMBER', 'STRING')
 
 
 String = sgqlc.types.String
+
+class ThreadType(sgqlc.types.Enum):
+    __schema__ = schema
+    __choices__ = ('CHAT', 'COPILOT_QUESTION_PREVIEW', 'RESEARCH', 'SHARED', 'SKILL', 'TEST')
+
 
 class UUID(sgqlc.types.Scalar):
     __schema__ = schema
@@ -704,6 +714,8 @@ class Mutation(sgqlc.types.Type):
     update_chat_answer_payload = sgqlc.types.Field(JSON, graphql_name='updateChatAnswerPayload', args=sgqlc.types.ArgDict((
         ('answer_id', sgqlc.types.Arg(sgqlc.types.non_null(UUID), graphql_name='answerId', default=None)),
         ('payload', sgqlc.types.Arg(sgqlc.types.non_null(JSON), graphql_name='payload', default=None)),
+        ('entry_answer_id', sgqlc.types.Arg(UUID, graphql_name='entryAnswerId', default=None)),
+        ('nudge_entry_id', sgqlc.types.Arg(UUID, graphql_name='nudgeEntryId', default=None)),
 ))
     )
     ask_chat_question = sgqlc.types.Field(MaxChatEntry, graphql_name='askChatQuestion', args=sgqlc.types.ArgDict((
@@ -716,6 +728,8 @@ class Mutation(sgqlc.types.Type):
         ('indicated_skills', sgqlc.types.Arg(sgqlc.types.list_of(String), graphql_name='indicatedSkills', default=None)),
         ('load_all_skills', sgqlc.types.Arg(Boolean, graphql_name='loadAllSkills', default=None)),
         ('history', sgqlc.types.Arg(sgqlc.types.list_of(sgqlc.types.non_null(MessageHistoryInput)), graphql_name='history', default=None)),
+        ('question_type', sgqlc.types.Arg(QuestionType, graphql_name='questionType', default=None)),
+        ('thread_type', sgqlc.types.Arg(ThreadType, graphql_name='threadType', default=None)),
 ))
     )
     evaluate_chat_question = sgqlc.types.Field(sgqlc.types.non_null(EvaluateChatQuestionResponse), graphql_name='evaluateChatQuestion', args=sgqlc.types.ArgDict((
@@ -759,6 +773,7 @@ class Mutation(sgqlc.types.Type):
     update_loading_message = sgqlc.types.Field(UUID, graphql_name='updateLoadingMessage', args=sgqlc.types.ArgDict((
         ('answer_id', sgqlc.types.Arg(sgqlc.types.non_null(UUID), graphql_name='answerId', default=None)),
         ('message', sgqlc.types.Arg(sgqlc.types.non_null(String), graphql_name='message', default=None)),
+        ('nudge_entry_id', sgqlc.types.Arg(UUID, graphql_name='nudgeEntryId', default=None)),
 ))
     )
 
@@ -828,20 +843,20 @@ class Query(sgqlc.types.Type):
         ('rql_name', sgqlc.types.Arg(sgqlc.types.non_null(String), graphql_name='rqlName', default=None)),
 ))
     )
-    run_max_sql_gen = sgqlc.types.Field('RunMaxSqlGenResponse', graphql_name='runMaxSqlGen', args=sgqlc.types.ArgDict((
+    run_max_sql_gen = sgqlc.types.Field(sgqlc.types.non_null('RunMaxSqlGenResponse'), graphql_name='runMaxSqlGen', args=sgqlc.types.ArgDict((
         ('dataset_id', sgqlc.types.Arg(sgqlc.types.non_null(UUID), graphql_name='datasetId', default=None)),
         ('pre_query_object', sgqlc.types.Arg(JSON, graphql_name='preQueryObject', default=None)),
         ('copilot_id', sgqlc.types.Arg(UUID, graphql_name='copilotId', default=None)),
 ))
     )
-    run_sql_ai = sgqlc.types.Field('RunSqlAiResponse', graphql_name='runSqlAi', args=sgqlc.types.ArgDict((
+    run_sql_ai = sgqlc.types.Field(sgqlc.types.non_null('RunSqlAiResponse'), graphql_name='runSqlAi', args=sgqlc.types.ArgDict((
         ('dataset_id', sgqlc.types.Arg(sgqlc.types.non_null(UUID), graphql_name='datasetId', default=None)),
         ('question', sgqlc.types.Arg(sgqlc.types.non_null(String), graphql_name='question', default=None)),
         ('model_override', sgqlc.types.Arg(String, graphql_name='modelOverride', default=None)),
         ('copilot_id', sgqlc.types.Arg(UUID, graphql_name='copilotId', default=None)),
 ))
     )
-    generate_visualization = sgqlc.types.Field(GenerateVisualizationResponse, graphql_name='generateVisualization', args=sgqlc.types.ArgDict((
+    generate_visualization = sgqlc.types.Field(sgqlc.types.non_null(GenerateVisualizationResponse), graphql_name='generateVisualization', args=sgqlc.types.ArgDict((
         ('data', sgqlc.types.Arg(sgqlc.types.non_null(JSON), graphql_name='data', default=None)),
         ('column_metadata_map', sgqlc.types.Arg(sgqlc.types.non_null(JSON), graphql_name='columnMetadataMap', default=None)),
 ))

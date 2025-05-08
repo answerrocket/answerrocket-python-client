@@ -87,6 +87,7 @@ class Skill:
             args = {
                 'answerId': self._config.entry_answer_id,
                 'message': message,
+                'nudgeEntryId': self._config.chat_entry_id,
             }
             op = Operations.mutation.update_loading_message
             self._gql_client.submit(op, args)

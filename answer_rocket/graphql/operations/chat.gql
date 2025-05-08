@@ -7,6 +7,8 @@ mutation AskChatQuestion(
   $modelOverrides: [ModelOverride]
   $indicatedSkills: [String]
   $history: [MessageHistoryInput!]
+  $questionType: QuestionType
+  $threadType: ThreadType
 ) {
   askChatQuestion(
     copilotId: $copilotId
@@ -17,6 +19,8 @@ mutation AskChatQuestion(
     modelOverrides: $modelOverrides
     indicatedSkills: $indicatedSkills
     history: $history
+    questionType: $questionType
+    threadType: $threadType
   ) {
     id
     threadId
