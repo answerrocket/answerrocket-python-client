@@ -9,12 +9,20 @@ from sgqlc.types import Variable, non_null, String, Arg, list_of
 from answer_rocket.graphql.client import GraphQlClient
 from answer_rocket.graphql.schema import (UUID, Int, DateTime, ChatDryRunType, MaxChatEntry, MaxChatThread,
                                           SharedThread, MaxChatUser)
-from answer_rocket.graphql.sdk_operations import Operations
+from answer_rocket.graphql.sdk_operations import Operations, _schema
 from answer_rocket.client_config import ClientConfig
 
 logger = logging.getLogger(__name__)
 
 FeedbackType = Literal['CHAT_POSITIVE', 'CHAT_NEGATIVE']
+QuestionType = Literal['DRILLDOWN', 'EXAMPLE', 'FOLLOWUP', 'RESEARCHER_REPORT', 'SAVED', 'SCHEDULED', 'SHARED', 'SKILL_PREVIEW', 'TEST_RUN', 'USER_WRITTEN', 'XML_CALLBACK']
+"""
+Based on _schema.QuestionType
+"""
+ThreadType = Literal['CHAT', 'COPILOT_QUESTION_PREVIEW', 'RESEARCH', 'SHARED', 'SKILL', 'TEST']
+"""
+Based on _schema.ThreadType.
+"""
 
 
 class Chat:
@@ -22,7 +30,7 @@ class Chat:
         self.gql_client = gql_client
         self._config = config
 
-    def ask_question(self, copilot_id: str, question: str, thread_id: str = None, skip_report_cache: bool = False, dry_run_type: str = None, model_overrides: dict = None, indicated_skills: list[str] = None, history: list[dict] = None, question_type: str = None, thread_type: str = None) -> MaxChatEntry:
+    def ask_question(self, copilot_id: str, question: str, thread_id: str = None, skip_report_cache: bool = False, dry_run_type: str = None, model_overrides: dict = None, indicated_skills: list[str] = None, history: list[dict] = None, question_type: QuestionType = None, thread_type: ThreadType = None) -> MaxChatEntry:
         """
         Calls the Max chat pipeline to answer a natural language question and receive analysis and insights
         in response.
