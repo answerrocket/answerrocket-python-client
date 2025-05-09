@@ -26,6 +26,8 @@ class AnswerRocketClient:
 		self.skill = Skill(self._client_config, self._gql_client)
 		self.llm = Llm(self._client_config, self._gql_client)
 
+		self.can_connect()
+
 	def can_connect(self) -> bool:
 		"""
 		utility method for checking that the client can connect to and authenticate with the server it is pointed at
