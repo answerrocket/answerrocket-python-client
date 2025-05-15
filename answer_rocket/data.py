@@ -472,15 +472,23 @@ class Data:
 
             return result
 
-    def run_sql_ai(self, dataset_id: UUID, question: str, model_override: Optional[str] = None, copilot_id: Optional[UUID] = None) -> RunSqlAiResult:
+    def run_sql_ai(
+            self,
+            dataset_id: Optional[UUID] = None,
+            question: str = "",
+            model_override: Optional[str] = None,
+            copilot_id: Optional[UUID] = None,
+            dataset_ids: list[UUID] = None
+    ) -> RunSqlAiResult:
         """
         Runs the SQL AI generation logic using the provided dataset and natural language question.
 
         Args:
-            dataset_id (UUID): The UUID of the dataset.
+            dataset_id (Optional[UUID]): The UUID of the dataset.
             question (str): The natural language question.
             model_override (Optional[str], optional): Optional LLM model override. Defaults to None.
             copilot_id (Optional[UUID], optional): The UUID of the copilot. Defaults to None.
+            dataset_ids (list[UUID]): The UUIDs of the datasets.
 
         Returns:
             RunSqlAiResult: The result of the SQL AI generation process.
@@ -490,14 +498,16 @@ class Data:
 
         try:
             query_args = {
-                'datasetId': str(dataset_id),
+                'datasetId': str(dataset_id) if dataset_id else None,
+                'datasetIds': dataset_ids,
                 'question': question,
                 'modelOverride': model_override,
                 'copilotId': str(copilot_id) if copilot_id else str(self.copilot_id) if self.copilot_id else None
             }
 
             query_vars = {
-                'dataset_id': Arg(non_null(GQL_UUID)),
+                'dataset_id': Arg(GQL_UUID),
+                'dataset_ids': list_of(non_null(GQL_UUID)),
                 'question': Arg(non_null(String)),
                 'model_override': Arg(String),
                 'copilot_id': Arg(GQL_UUID),
@@ -507,6 +517,7 @@ class Data:
 
             gql_query = operation.run_sql_ai(
                 dataset_id=Variable('dataset_id'),
+                dataset_ids=Variable('dataset_ids'),
                 question=Variable('question'),
                 model_override=Variable('model_override'),
                 copilot_id=Variable('copilot_id'),

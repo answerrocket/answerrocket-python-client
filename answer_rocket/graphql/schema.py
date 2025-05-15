@@ -850,10 +850,11 @@ class Query(sgqlc.types.Type):
 ))
     )
     run_sql_ai = sgqlc.types.Field(sgqlc.types.non_null('RunSqlAiResponse'), graphql_name='runSqlAi', args=sgqlc.types.ArgDict((
-        ('dataset_id', sgqlc.types.Arg(sgqlc.types.non_null(UUID), graphql_name='datasetId', default=None)),
+        ('dataset_id', sgqlc.types.Arg(UUID, graphql_name='datasetId', default=None)),
         ('question', sgqlc.types.Arg(sgqlc.types.non_null(String), graphql_name='question', default=None)),
         ('model_override', sgqlc.types.Arg(String, graphql_name='modelOverride', default=None)),
         ('copilot_id', sgqlc.types.Arg(UUID, graphql_name='copilotId', default=None)),
+        ('dataset_ids', sgqlc.types.Arg(sgqlc.types.list_of(sgqlc.types.non_null(UUID)), graphql_name='datasetIds', default=None)),
 ))
     )
     generate_visualization = sgqlc.types.Field(sgqlc.types.non_null(GenerateVisualizationResponse), graphql_name='generateVisualization', args=sgqlc.types.ArgDict((
