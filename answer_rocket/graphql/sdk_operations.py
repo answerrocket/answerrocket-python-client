@@ -206,6 +206,22 @@ def query_get_copilot_skill():
     return _op
 
 
+def query_get_copilot_info():
+    _op = sgqlc.operation.Operation(_schema_root.query_type, name='GetCopilotInfo', variables=dict(copilotId=sgqlc.types.Arg(sgqlc.types.non_null(_schema.UUID)), usePublishedVersion=sgqlc.types.Arg(_schema.Boolean)))
+    _op_get_copilot_info = _op.get_copilot_info(copilot_id=sgqlc.types.Variable('copilotId'), use_published_version=sgqlc.types.Variable('usePublishedVersion'))
+    _op_get_copilot_info.copilot_id()
+    _op_get_copilot_info.name()
+    _op_get_copilot_info.description()
+    _op_get_copilot_info.system_prompt()
+    _op_get_copilot_info.beta_yaml()
+    _op_get_copilot_info.global_python_code()
+    _op_get_copilot_info.copilot_questions()
+    _op_get_copilot_info.connection_datasets()
+    _op_get_copilot_info.copilot_skill_ids()
+    _op_get_copilot_info.copilot_topics()
+    return _op
+
+
 def query_chat_completion():
     _op = sgqlc.operation.Operation(_schema_root.query_type, name='ChatCompletion', variables=dict(messages=sgqlc.types.Arg(sgqlc.types.non_null(sgqlc.types.list_of(sgqlc.types.non_null(_schema.LlmChatMessage)))), modelSelection=sgqlc.types.Arg(_schema.LlmModelSelection)))
     _op.chat_completion(messages=sgqlc.types.Variable('messages'), model_selection=sgqlc.types.Variable('modelSelection'))
@@ -236,6 +252,7 @@ class Query:
     chat_entry = query_chat_entry()
     chat_thread = query_chat_thread()
     dataframes_for_entry = query_dataframes_for_entry()
+    get_copilot_info = query_get_copilot_info()
     get_copilot_skill = query_get_copilot_skill()
     get_max_llm_prompt = query_get_max_llm_prompt()
     narrative_completion = query_narrative_completion()
