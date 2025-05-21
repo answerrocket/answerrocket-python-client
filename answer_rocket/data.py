@@ -474,21 +474,21 @@ class Data:
 
     def run_sql_ai(
             self,
-            dataset_id: Optional[UUID] = None,
+            dataset_id: Optional[str | UUID] = None,
             question: str = "",
             model_override: Optional[str] = None,
             copilot_id: Optional[UUID] = None,
-            dataset_ids: list[UUID] = None
+            dataset_ids: Optional[list[str | UUID]] = None
     ) -> RunSqlAiResult:
         """
         Runs the SQL AI generation logic using the provided dataset and natural language question.
 
         Args:
-            dataset_id (Optional[UUID]): The UUID of the dataset.
+            dataset_id (Optional[str | UUID]): The UUID of the dataset.
             question (str): The natural language question.
             model_override (Optional[str], optional): Optional LLM model override. Defaults to None.
             copilot_id (Optional[UUID], optional): The UUID of the copilot. Defaults to None.
-            dataset_ids (list[UUID]): The UUIDs of the datasets.
+            dataset_ids (Optional[list[str | UUID]]): The UUIDs of the datasets.
 
         Returns:
             RunSqlAiResult: The result of the SQL AI generation process.
@@ -499,7 +499,7 @@ class Data:
         try:
             query_args = {
                 'datasetId': str(dataset_id) if dataset_id else None,
-                'datasetIds': dataset_ids,
+                'datasetIds': [str(x) for x in dataset_ids],
                 'question': question,
                 'modelOverride': model_override,
                 'copilotId': str(copilot_id) if copilot_id else str(self.copilot_id) if self.copilot_id else None
