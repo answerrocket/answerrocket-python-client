@@ -244,7 +244,7 @@ class Data:
 
             return execute_sql_query_result
 
-    def get_dataset(self, dataset_id: UUID, copilot_id: Optional[UUID] = None) -> Optional[MaxDataset]:
+    def get_dataset(self, dataset_id: UUID, copilot_id: Optional[UUID] = None, include_dim_values: bool = False) -> Optional[MaxDataset]:
         try:
             """
             dataset_id: the UUID of the dataset
@@ -297,7 +297,7 @@ class Data:
             columns.precision()
             columns.scale()
 
-            self._create_domain_object_query(gql_query.domain_objects())
+            self._create_domain_object_query(gql_query.domain_objects(), include_dim_values)
 
             result = self._gql_client.submit(operation, query_args)
 
@@ -597,22 +597,22 @@ class Data:
         except Exception as e:
             return None
 
-    def _create_domain_object_query(self, domain_object):
+    def _create_domain_object_query(self, domain_object, include_dim_values: bool = False):
         # domain_object_frag = Fragment(MaxDomainObject, 'MaxDomainObjectFragment')
         # gql_query.domain_object.__fragment__(domain_object_frag)
 
         self._add_domain_object_fields(domain_object)
 
         fact_entity_frag = Fragment(MaxFactEntity, 'MaxFactEntityFragment')
-        self._add_domain_entity_fields(fact_entity_frag)
+        self._add_domain_entity_fields(fact_entity_frag, include_dim_values)
         domain_object.__fragment__(fact_entity_frag)
 
         dimension_entity_frag = Fragment(MaxDimensionEntity, 'MaxDimensionEntityFragment')
-        self._add_domain_entity_fields(dimension_entity_frag)
+        self._add_domain_entity_fields(dimension_entity_frag, include_dim_values)
         dimension_entity_frag.archetype()
         domain_object.__fragment__(dimension_entity_frag)
 
-        self._add_domain_attribute_fragments(domain_object)
+        self._add_domain_attribute_fragments(domain_object, include_dim_values)
 
         calc_metric_attribute_frag = Fragment(MaxCalculatedMetric, 'MaxCalculatedMetricFragment')
         self._add_domain_object_fields(calc_metric_attribute_frag)
@@ -630,19 +630,19 @@ class Data:
         calc_metric_attribute_frag.metric_type()
         domain_object.__fragment__(calc_metric_attribute_frag)
 
-    def _add_domain_attribute_fragments(self, domain_object):
+    def _add_domain_attribute_fragments(self, domain_object, include_dim_values: bool = False):
         self._add_domain_object_fields(domain_object)
 
         normal_attribute_frag = Fragment(MaxNormalAttribute, 'MaxNormalAttributeFragment')
         self._add_domain_attribute_fields(normal_attribute_frag)
-        self._add_dimension_attribute_fields(normal_attribute_frag)
+        self._add_dimension_attribute_fields(normal_attribute_frag, include_dim_values)
         normal_attribute_frag.db_column()
         normal_attribute_frag.db_secondary_column()
         domain_object.__fragment__(normal_attribute_frag)
 
         primary_attribute_frag = Fragment(MaxPrimaryAttribute, 'MaxPrimaryAttributeFragment')
         self._add_domain_attribute_fields(primary_attribute_frag)
-        self._add_dimension_attribute_fields(primary_attribute_frag)
+        self._add_dimension_attribute_fields(primary_attribute_frag, include_dim_values)
         primary_attribute_frag.db_primary_key_columns()
         primary_attribute_frag.db_secondary_column()
         domain_object.__fragment__(primary_attribute_frag)
@@ -656,7 +656,7 @@ class Data:
 
         calculated_attribute_frag = Fragment(MaxCalculatedAttribute, 'MaxCalculatedAttributeFragment')
         self._add_domain_attribute_fields(calculated_attribute_frag)
-        self._add_dimension_attribute_fields(calculated_attribute_frag)
+        self._add_dimension_attribute_fields(calculated_attribute_frag, include_dim_values)
         calculated_attribute_frag.rql()
         domain_object.__fragment__(calculated_attribute_frag)
 
@@ -674,13 +674,13 @@ class Data:
         metric_attribute_frag.metric_type()
         domain_object.__fragment__(metric_attribute_frag)
 
-    def _add_domain_entity_fields(self, fragment: Fragment):
+    def _add_domain_entity_fields(self, fragment: Fragment, include_dim_values: bool = False):
         fragment.db_table()
         fragment.derived_table_sql()
 
         attributes = fragment.attributes()
 
-        self._add_domain_attribute_fragments(attributes)
+        self._add_domain_attribute_fragments(attributes, include_dim_values)
 
     def _add_domain_object_fields(self, domain_object):
         domain_object.type()
@@ -704,10 +704,14 @@ class Data:
         # fragment.domain_entity().id()
         # fragment.domain_entity().name()
 
-    def _add_dimension_attribute_fields(self, fragment: Fragment):
+    def _add_dimension_attribute_fields(self, fragment: Fragment, include_dim_values: bool = False):
         fragment.default_filter_value()
         fragment.is_required_in_query()
         fragment.dimension_value_mapping_list()
+
+        if include_dim_values:
+            fragment.dimension_values()
+            
         fragment.db_sort_column()
 
     def reload_dataset(self, dataset_id: Optional[UUID] = None, database_id: Optional[UUID] = None, table_names: Optional[List[str]] = None) -> MaxMutationResponse:
