@@ -55,7 +55,8 @@ class RunSqlAiResult(MaxResult):
     column_metadata_map: Dict[str, any] | None = None
     title: str | None = None
     explanation: str | None = None
-    data = None     # deprecated -- use df instead
+    data = None,     # deprecated -- use df instead
+    timing_info: Dict[str, any] | None = None
 
 class Data:
     """
@@ -530,8 +531,10 @@ class Data:
             gql_query.explanation()
             gql_query.title()
             gql_query.sql()
+            gql_query.raw_sql()
             gql_query.data()
             gql_query.column_metadata_map()
+            gql_query.timing_info()
             gql_result = self._gql_client.submit(operation, query_args)
 
             run_sql_ai_response = gql_result.run_sql_ai
@@ -542,20 +545,20 @@ class Data:
 
             if result.success:
                 result.sql = run_sql_ai_response.sql
+                result.raw_sql = run_sql_ai_response.raw_sql
                 result.df = create_df_from_data(run_sql_ai_response.data)
                 result.rendered_prompt = run_sql_ai_response.rendered_prompt
                 result.column_metadata_map = run_sql_ai_response.column_metadata_map
                 result.title = run_sql_ai_response.title
                 result.explanation = run_sql_ai_response.explanation
                 result.data = run_sql_ai_response.data
-
-            return result
+                result.timing_info = run_sql_ai_response.timing_info
         except Exception as e:
             result.success = False
             result.code = RESULT_EXCEPTION_CODE
             result.error = str(e)
 
-            return result
+        return result
 
     def generate_visualization(self, data: Dict, column_metadata_map: Dict) -> Optional[GenerateVisualizationResponse]:
         """
