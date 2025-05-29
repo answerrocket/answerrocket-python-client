@@ -942,7 +942,7 @@ class RunMaxSqlGenResponse(sgqlc.types.Type):
 
 class RunSqlAiResponse(sgqlc.types.Type):
     __schema__ = schema
-    __field_names__ = ('success', 'code', 'error', 'sql', 'raw_sql', 'data', 'rendered_prompt', 'column_metadata_map', 'title', 'explanation', 'timing_info')
+    __field_names__ = ('success', 'code', 'error', 'sql', 'raw_sql', 'data', 'rendered_prompt', 'column_metadata_map', 'title', 'explanation', 'timing_info', 'prior_runs')
     success = sgqlc.types.Field(sgqlc.types.non_null(Boolean), graphql_name='success')
     code = sgqlc.types.Field(String, graphql_name='code')
     error = sgqlc.types.Field(String, graphql_name='error')
@@ -954,6 +954,7 @@ class RunSqlAiResponse(sgqlc.types.Type):
     title = sgqlc.types.Field(String, graphql_name='title')
     explanation = sgqlc.types.Field(String, graphql_name='explanation')
     timing_info = sgqlc.types.Field(JSON, graphql_name='timingInfo')
+    prior_runs = sgqlc.types.Field(sgqlc.types.non_null(sgqlc.types.list_of('RunSqlAiResponse')), graphql_name='priorRuns')
 
 
 class SharedThread(sgqlc.types.Type):

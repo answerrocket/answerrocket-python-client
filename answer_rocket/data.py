@@ -1,4 +1,5 @@
-from dataclasses import dataclass
+from __future__ import annotations
+from dataclasses import dataclass, field
 from typing import Optional, List, Dict
 from uuid import UUID
 
@@ -57,6 +58,7 @@ class RunSqlAiResult(MaxResult):
     explanation: str | None = None
     data = None,     # deprecated -- use df instead
     timing_info: Dict[str, any] | None = None
+    prior_runs: List[RunSqlAiResult] = field(default_factory=list)
 
 class Data:
     """
@@ -535,6 +537,7 @@ class Data:
             gql_query.data()
             gql_query.column_metadata_map()
             gql_query.timing_info()
+            gql_query.prior_runs()
             gql_result = self._gql_client.submit(operation, query_args)
 
             run_sql_ai_response = gql_result.run_sql_ai
@@ -553,6 +556,7 @@ class Data:
                 result.explanation = run_sql_ai_response.explanation
                 result.data = run_sql_ai_response.data
                 result.timing_info = run_sql_ai_response.timing_info
+                result.prior_runs = run_sql_ai_response.prior_runs
         except Exception as e:
             result.success = False
             result.code = RESULT_EXCEPTION_CODE
