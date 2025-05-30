@@ -856,6 +856,7 @@ class Query(sgqlc.types.Type):
         ('model_override', sgqlc.types.Arg(String, graphql_name='modelOverride', default=None)),
         ('copilot_id', sgqlc.types.Arg(UUID, graphql_name='copilotId', default=None)),
         ('dataset_ids', sgqlc.types.Arg(sgqlc.types.list_of(sgqlc.types.non_null(UUID)), graphql_name='datasetIds', default=None)),
+        ('database_id', sgqlc.types.Arg(UUID, graphql_name='databaseId', default=None)),
 ))
     )
     generate_visualization = sgqlc.types.Field(sgqlc.types.non_null(GenerateVisualizationResponse), graphql_name='generateVisualization', args=sgqlc.types.ArgDict((

@@ -481,7 +481,8 @@ class Data:
             question: str = "",
             model_override: Optional[str] = None,
             copilot_id: Optional[UUID] = None,
-            dataset_ids: Optional[list[str | UUID]] = None
+            dataset_ids: Optional[list[str | UUID]] = None,
+            database_id: Optional[str | UUID] = None
     ) -> RunSqlAiResult:
         """
         Runs the SQL AI generation logic using the provided dataset and natural language question.
@@ -492,7 +493,7 @@ class Data:
             model_override (Optional[str], optional): Optional LLM model override. Defaults to None.
             copilot_id (Optional[UUID], optional): The UUID of the copilot. Defaults to None.
             dataset_ids (Optional[list[str | UUID]]): The UUIDs of the datasets.
-
+            database_id (Optional[str | UUID]): The UUID of the database.
         Returns:
             RunSqlAiResult: The result of the SQL AI generation process.
         """
@@ -502,7 +503,8 @@ class Data:
         try:
             query_args = {
                 'datasetId': str(dataset_id) if dataset_id else None,
-                'datasetIds': [str(x) for x in dataset_ids],
+                'datasetIds': [str(x) for x in dataset_ids] if dataset_ids else None,
+                'databaseId': str(database_id) if database_id else None,
                 'question': question,
                 'modelOverride': model_override,
                 'copilotId': str(copilot_id) if copilot_id else str(self.copilot_id) if self.copilot_id else None
@@ -511,6 +513,7 @@ class Data:
             query_vars = {
                 'dataset_id': Arg(GQL_UUID),
                 'dataset_ids': list_of(non_null(GQL_UUID)),
+                'database_id': Arg(GQL_UUID),
                 'question': Arg(non_null(String)),
                 'model_override': Arg(String),
                 'copilot_id': Arg(GQL_UUID),
@@ -521,6 +524,7 @@ class Data:
             gql_query = operation.run_sql_ai(
                 dataset_id=Variable('dataset_id'),
                 dataset_ids=Variable('dataset_ids'),
+                database_id=Variable('database_id'),
                 question=Variable('question'),
                 model_override=Variable('model_override'),
                 copilot_id=Variable('copilot_id'),
