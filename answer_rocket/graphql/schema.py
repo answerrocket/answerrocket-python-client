@@ -851,10 +851,12 @@ class Query(sgqlc.types.Type):
 ))
     )
     run_sql_ai = sgqlc.types.Field(sgqlc.types.non_null('RunSqlAiResponse'), graphql_name='runSqlAi', args=sgqlc.types.ArgDict((
-        ('dataset_id', sgqlc.types.Arg(sgqlc.types.non_null(UUID), graphql_name='datasetId', default=None)),
+        ('dataset_id', sgqlc.types.Arg(UUID, graphql_name='datasetId', default=None)),
         ('question', sgqlc.types.Arg(sgqlc.types.non_null(String), graphql_name='question', default=None)),
         ('model_override', sgqlc.types.Arg(String, graphql_name='modelOverride', default=None)),
         ('copilot_id', sgqlc.types.Arg(UUID, graphql_name='copilotId', default=None)),
+        ('dataset_ids', sgqlc.types.Arg(sgqlc.types.list_of(sgqlc.types.non_null(UUID)), graphql_name='datasetIds', default=None)),
+        ('database_id', sgqlc.types.Arg(UUID, graphql_name='databaseId', default=None)),
 ))
     )
     generate_visualization = sgqlc.types.Field(sgqlc.types.non_null(GenerateVisualizationResponse), graphql_name='generateVisualization', args=sgqlc.types.ArgDict((
@@ -941,16 +943,19 @@ class RunMaxSqlGenResponse(sgqlc.types.Type):
 
 class RunSqlAiResponse(sgqlc.types.Type):
     __schema__ = schema
-    __field_names__ = ('success', 'code', 'error', 'sql', 'data', 'rendered_prompt', 'column_metadata_map', 'title', 'explanation')
+    __field_names__ = ('success', 'code', 'error', 'sql', 'raw_sql', 'data', 'rendered_prompt', 'column_metadata_map', 'title', 'explanation', 'timing_info', 'prior_runs')
     success = sgqlc.types.Field(sgqlc.types.non_null(Boolean), graphql_name='success')
     code = sgqlc.types.Field(String, graphql_name='code')
     error = sgqlc.types.Field(String, graphql_name='error')
     sql = sgqlc.types.Field(String, graphql_name='sql')
+    raw_sql = sgqlc.types.Field(String, graphql_name='rawSql')
     data = sgqlc.types.Field(JSON, graphql_name='data')
     rendered_prompt = sgqlc.types.Field(String, graphql_name='renderedPrompt')
     column_metadata_map = sgqlc.types.Field(JSON, graphql_name='columnMetadataMap')
     title = sgqlc.types.Field(String, graphql_name='title')
     explanation = sgqlc.types.Field(String, graphql_name='explanation')
+    timing_info = sgqlc.types.Field(JSON, graphql_name='timingInfo')
+    prior_runs = sgqlc.types.Field(sgqlc.types.non_null(sgqlc.types.list_of('RunSqlAiResponse')), graphql_name='priorRuns')
 
 
 class SharedThread(sgqlc.types.Type):

@@ -1,4 +1,5 @@
-from dataclasses import dataclass
+from __future__ import annotations
+from dataclasses import dataclass, field
 from typing import Optional, List, Dict
 from uuid import UUID
 
@@ -55,7 +56,9 @@ class RunSqlAiResult(MaxResult):
     column_metadata_map: Dict[str, any] | None = None
     title: str | None = None
     explanation: str | None = None
-    data = None     # deprecated -- use df instead
+    data = None,     # deprecated -- use df instead
+    timing_info: Dict[str, any] | None = None
+    prior_runs: List[RunSqlAiResult] = field(default_factory=list)
 
 class Data:
     """
@@ -472,16 +475,25 @@ class Data:
 
             return result
 
-    def run_sql_ai(self, dataset_id: UUID, question: str, model_override: Optional[str] = None, copilot_id: Optional[UUID] = None) -> RunSqlAiResult:
+    def run_sql_ai(
+            self,
+            dataset_id: Optional[str | UUID] = None,
+            question: str = "",
+            model_override: Optional[str] = None,
+            copilot_id: Optional[UUID] = None,
+            dataset_ids: Optional[list[str | UUID]] = None,
+            database_id: Optional[str | UUID] = None
+    ) -> RunSqlAiResult:
         """
         Runs the SQL AI generation logic using the provided dataset and natural language question.
 
         Args:
-            dataset_id (UUID): The UUID of the dataset.
+            dataset_id (Optional[str | UUID]): The UUID of the dataset.
             question (str): The natural language question.
             model_override (Optional[str], optional): Optional LLM model override. Defaults to None.
             copilot_id (Optional[UUID], optional): The UUID of the copilot. Defaults to None.
-
+            dataset_ids (Optional[list[str | UUID]]): The UUIDs of the datasets.
+            database_id (Optional[str | UUID]): The UUID of the database.
         Returns:
             RunSqlAiResult: The result of the SQL AI generation process.
         """
@@ -490,14 +502,18 @@ class Data:
 
         try:
             query_args = {
-                'datasetId': str(dataset_id),
+                'datasetId': str(dataset_id) if dataset_id else None,
+                'datasetIds': [str(x) for x in dataset_ids] if dataset_ids else None,
+                'databaseId': str(database_id) if database_id else None,
                 'question': question,
                 'modelOverride': model_override,
                 'copilotId': str(copilot_id) if copilot_id else str(self.copilot_id) if self.copilot_id else None
             }
 
             query_vars = {
-                'dataset_id': Arg(non_null(GQL_UUID)),
+                'dataset_id': Arg(GQL_UUID),
+                'dataset_ids': list_of(non_null(GQL_UUID)),
+                'database_id': Arg(GQL_UUID),
                 'question': Arg(non_null(String)),
                 'model_override': Arg(String),
                 'copilot_id': Arg(GQL_UUID),
@@ -507,6 +523,8 @@ class Data:
 
             gql_query = operation.run_sql_ai(
                 dataset_id=Variable('dataset_id'),
+                dataset_ids=Variable('dataset_ids'),
+                database_id=Variable('database_id'),
                 question=Variable('question'),
                 model_override=Variable('model_override'),
                 copilot_id=Variable('copilot_id'),
@@ -519,8 +537,11 @@ class Data:
             gql_query.explanation()
             gql_query.title()
             gql_query.sql()
+            gql_query.raw_sql()
             gql_query.data()
             gql_query.column_metadata_map()
+            gql_query.timing_info()
+            gql_query.prior_runs()
             gql_result = self._gql_client.submit(operation, query_args)
 
             run_sql_ai_response = gql_result.run_sql_ai
@@ -531,20 +552,21 @@ class Data:
 
             if result.success:
                 result.sql = run_sql_ai_response.sql
+                result.raw_sql = run_sql_ai_response.raw_sql
                 result.df = create_df_from_data(run_sql_ai_response.data)
                 result.rendered_prompt = run_sql_ai_response.rendered_prompt
                 result.column_metadata_map = run_sql_ai_response.column_metadata_map
                 result.title = run_sql_ai_response.title
                 result.explanation = run_sql_ai_response.explanation
                 result.data = run_sql_ai_response.data
-
-            return result
+                result.timing_info = run_sql_ai_response.timing_info
+                result.prior_runs = run_sql_ai_response.prior_runs
         except Exception as e:
             result.success = False
             result.code = RESULT_EXCEPTION_CODE
             result.error = str(e)
 
-            return result
+        return result
 
     def generate_visualization(self, data: Dict, column_metadata_map: Dict) -> Optional[GenerateVisualizationResponse]:
         """
