@@ -546,21 +546,30 @@ class Data:
 
             run_sql_ai_response = gql_result.run_sql_ai
 
-            result.success = run_sql_ai_response.success
-            result.error = run_sql_ai_response.error
-            result.code = run_sql_ai_response.code
+            def create_result(response: RunSqlAiResponse) -> RunSqlAiResult:
+                run_sql_ai_result = RunSqlAiResult()
 
-            if result.success:
-                result.sql = run_sql_ai_response.sql
-                result.raw_sql = run_sql_ai_response.raw_sql
-                result.df = create_df_from_data(run_sql_ai_response.data)
-                result.rendered_prompt = run_sql_ai_response.rendered_prompt
-                result.column_metadata_map = run_sql_ai_response.column_metadata_map
-                result.title = run_sql_ai_response.title
-                result.explanation = run_sql_ai_response.explanation
-                result.data = run_sql_ai_response.data
-                result.timing_info = run_sql_ai_response.timing_info
-                result.prior_runs = run_sql_ai_response.prior_runs
+                run_sql_ai_result.success = response.success
+                run_sql_ai_result.error = response.error
+                run_sql_ai_result.code = response.code
+
+                run_sql_ai_result.sql = response.sql
+                run_sql_ai_result.raw_sql = response.raw_sql
+                run_sql_ai_result.rendered_prompt = response.rendered_prompt
+                run_sql_ai_result.column_metadata_map = response.column_metadata_map
+                run_sql_ai_result.title = response.title
+                run_sql_ai_result.explanation = response.explanation
+                run_sql_ai_result.data = response.data
+                run_sql_ai_result.timing_info = response.timing_info
+                run_sql_ai_result.prior_runs = [create_result(x) for x in response.prior_runs] \
+                    if hasattr(response, 'prior_runs') else []
+
+                if run_sql_ai_result.success:
+                    run_sql_ai_result.df = create_df_from_data(response.data)
+
+                return run_sql_ai_result
+
+            result = create_result(run_sql_ai_response)
         except Exception as e:
             result.success = False
             result.code = RESULT_EXCEPTION_CODE
@@ -722,7 +731,7 @@ class Data:
 
         if include_dim_values:
             fragment.dimension_values()
-            
+
         fragment.db_sort_column()
 
     def reload_dataset(self, dataset_id: Optional[UUID] = None, database_id: Optional[UUID] = None, table_names: Optional[List[str]] = None) -> MaxMutationResponse:

@@ -957,7 +957,7 @@ class RunSqlAiResponse(sgqlc.types.Type):
     title = sgqlc.types.Field(String, graphql_name='title')
     explanation = sgqlc.types.Field(String, graphql_name='explanation')
     timing_info = sgqlc.types.Field(JSON, graphql_name='timingInfo')
-    prior_runs = sgqlc.types.Field(sgqlc.types.non_null(sgqlc.types.list_of('RunSqlAiResponse')), graphql_name='priorRuns')
+    prior_runs = sgqlc.types.Field(sgqlc.types.non_null(sgqlc.types.list_of(sgqlc.types.non_null('RunSqlAiResponse'))), graphql_name='priorRuns')
 
 
 class SharedThread(sgqlc.types.Type):
