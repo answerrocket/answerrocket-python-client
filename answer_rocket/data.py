@@ -42,6 +42,10 @@ class DomainObjectResult(MaxResult):
     domain_object = None
 
 @dataclass
+class GroundedValuesResult(MaxResult):
+    data = None
+
+@dataclass
 class RunMaxSqlGenResult(MaxResult):
     sql: str | None = None
     df: DataFrame | None = None
@@ -409,6 +413,69 @@ class Data:
             domain_object_result.code = RESULT_EXCEPTION_CODE
 
             return domain_object_result
+
+    def get_grounded_values(self, dataset_id: UUID, values: str, domain_entity: Optional[str] = None, copilot_id: Optional[UUID] = None) -> GroundedValuesResult:
+        """
+        Gets grounded values for fuzzy matching against domain values.
+
+        Args:
+            dataset_id (UUID): The UUID of the dataset.
+            values (str): The value to ground (single string).
+            domain_entity (Optional[str], optional): The domain entity to search within. Defaults to None.
+            copilot_id (Optional[UUID], optional): The UUID of the copilot. Defaults to None.
+
+        Returns:
+            GroundedValuesResult: The result of the grounded values operation.
+        """
+        try:
+            query_args = {
+                'datasetId': dataset_id,
+                'values': values,
+                'domainEntity': domain_entity,
+                'copilotId': copilot_id or self.copilot_id,
+            }
+
+            query_vars = {
+                'dataset_id': Arg(non_null(GQL_UUID)),
+                'values': Arg(non_null(String)),
+                'domain_entity': Arg(String),
+                'copilot_id': Arg(GQL_UUID),
+            }
+
+            operation = self._gql_client.query(variables=query_vars)
+
+            gql_query = operation.get_grounded_values(
+                dataset_id=Variable('dataset_id'),
+                values=Variable('values'),
+                domain_entity=Variable('domain_entity'),
+                copilot_id=Variable('copilot_id'),
+            )
+
+            gql_query.success()
+            gql_query.code()
+            gql_query.error()
+            gql_query.data()
+
+            result = self._gql_client.submit(operation, query_args)
+
+            gql_response = result.get_grounded_values
+
+            grounded_values_result = GroundedValuesResult()
+
+            grounded_values_result.success = gql_response.success
+            grounded_values_result.error = gql_response.error
+            grounded_values_result.code = gql_response.code
+            grounded_values_result.data = gql_response.data
+
+            return grounded_values_result
+        except Exception as e:
+            grounded_values_result = GroundedValuesResult()
+
+            grounded_values_result.success = False
+            grounded_values_result.error = str(e)
+            grounded_values_result.code = RESULT_EXCEPTION_CODE
+
+            return grounded_values_result
 
     def run_max_sql_gen(self, dataset_id: UUID, pre_query_object: Dict[str, any], copilot_id: Optional[UUID] = None) -> RunMaxSqlGenResult:
         """
