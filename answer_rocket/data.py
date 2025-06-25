@@ -421,7 +421,7 @@ class Data:
         Args:
             dataset_id (UUID): The UUID of the dataset.
             values (str): The value to ground (single string).
-            domain_entity (Optional[str], optional): The domain entity to search within. Defaults to None.
+            domain_entity (Optional[str], optional): The domain entity to search within. Can be "metrics", "dimensions", a specific domain attribute name, or None to search all. Defaults to None.
             copilot_id (Optional[UUID], optional): The UUID of the copilot. Defaults to None.
 
         Returns:
