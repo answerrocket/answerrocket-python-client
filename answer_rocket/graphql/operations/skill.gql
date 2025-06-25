@@ -16,6 +16,14 @@ query NarrativeCompletion(
   narrativeCompletion(prompt: $prompt, modelSelection: $modelSelection)
 }
 
+query NarrativeCompletionWithPrompt(
+  $promptName: String!
+  $promptVariables: JSON
+  $modelSelection: LlmModelSelection
+) {
+  narrativeCompletionWithPrompt(promptName: $promptName, promptVariables: $promptVariables, modelSelection: $modelSelection)
+}
+
 query SqlCompletion(
   $messages: [LlmChatMessage!]!
   $modelSelection: LlmModelSelection
