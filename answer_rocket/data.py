@@ -42,6 +42,17 @@ class DomainObjectResult(MaxResult):
     domain_object = None
 
 @dataclass
+class GroundedValueResult(MaxResult):
+    matched_value: str | None = None
+    match_quality: float | None = None
+    match_type: str | None = None
+    mapped_indicator: bool | None = None
+    mapped_value: str | None = None
+    preferred: bool | None = None
+    domain_entity: str | None = None
+    other_matches: any = None
+
+@dataclass
 class RunMaxSqlGenResult(MaxResult):
     sql: str | None = None
     df: DataFrame | None = None
@@ -409,6 +420,79 @@ class Data:
             domain_object_result.code = RESULT_EXCEPTION_CODE
 
             return domain_object_result
+
+    def get_grounded_value(self, dataset_id: UUID, value: str, domain_entity: Optional[str] = None, copilot_id: Optional[UUID] = None) -> GroundedValueResult:
+        """
+        Gets grounded values for fuzzy matching against domain values.
+
+        Args:
+            dataset_id (UUID): The UUID of the dataset.
+            value (str): The value to ground (single string).
+            domain_entity (Optional[str], optional): The domain entity to search within. Can be "metrics", "dimensions", a specific domain attribute name, or None to search all. Defaults to None.
+            copilot_id (Optional[UUID], optional): The UUID of the copilot. Defaults to None.
+
+        Returns:
+            GroundedValueResult: The result of the grounded value operation.
+        """
+        try:
+            query_args = {
+                'datasetId': dataset_id,
+                'value': value,
+                'domainEntity': domain_entity,
+                'copilotId': copilot_id or self.copilot_id,
+            }
+
+            query_vars = {
+                'dataset_id': Arg(non_null(GQL_UUID)),
+                'value': Arg(non_null(String)),
+                'domain_entity': Arg(String),
+                'copilot_id': Arg(GQL_UUID),
+            }
+
+            operation = self._gql_client.query(variables=query_vars)
+
+            gql_query = operation.get_grounded_value(
+                dataset_id=Variable('dataset_id'),
+                value=Variable('value'),
+                domain_entity=Variable('domain_entity'),
+                copilot_id=Variable('copilot_id'),
+            )
+
+            gql_query.matched_value()
+            gql_query.match_quality()
+            gql_query.match_type()
+            gql_query.mapped_indicator()
+            gql_query.mapped_value()
+            gql_query.preferred()
+            gql_query.domain_entity()
+            gql_query.other_matches()
+
+            result = self._gql_client.submit(operation, query_args)
+
+            gql_response = result.get_grounded_value
+            print(gql_response)
+
+            grounded_value_result = GroundedValueResult()
+
+            grounded_value_result.success = True
+            grounded_value_result.matched_value = gql_response.matched_value
+            grounded_value_result.match_quality = gql_response.match_quality
+            grounded_value_result.match_type = gql_response.match_type
+            grounded_value_result.mapped_indicator = gql_response.mapped_indicator
+            grounded_value_result.mapped_value = gql_response.mapped_value
+            grounded_value_result.preferred = gql_response.preferred
+            grounded_value_result.domain_entity = gql_response.domain_entity
+            grounded_value_result.other_matches = gql_response.other_matches
+
+            return grounded_value_result
+        except Exception as e:
+            grounded_value_result = GroundedValueResult()
+
+            grounded_value_result.success = False
+            grounded_value_result.error = str(e)
+            grounded_value_result.code = RESULT_EXCEPTION_CODE
+
+            return grounded_value_result
 
     def run_max_sql_gen(self, dataset_id: UUID, pre_query_object: Dict[str, any], copilot_id: Optional[UUID] = None) -> RunMaxSqlGenResult:
         """
