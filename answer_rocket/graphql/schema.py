@@ -344,13 +344,17 @@ class GenerateVisualizationResponse(sgqlc.types.Type):
     visualization = sgqlc.types.Field(JSON, graphql_name='visualization')
 
 
-class GroundedValuesResponse(sgqlc.types.Type):
+class GroundedValueResponse(sgqlc.types.Type):
     __schema__ = schema
-    __field_names__ = ('success', 'code', 'error', 'data')
-    success = sgqlc.types.Field(sgqlc.types.non_null(Boolean), graphql_name='success')
-    code = sgqlc.types.Field(String, graphql_name='code')
-    error = sgqlc.types.Field(String, graphql_name='error')
-    data = sgqlc.types.Field(JSON, graphql_name='data')
+    __field_names__ = ('matched_value', 'match_quality', 'match_type', 'mapped_indicator', 'mapped_value', 'preferred', 'domain_entity', 'other_matches')
+    matched_value = sgqlc.types.Field(String, graphql_name='matchedValue')
+    match_quality = sgqlc.types.Field(Float, graphql_name='matchQuality')
+    match_type = sgqlc.types.Field(String, graphql_name='matchType')
+    mapped_indicator = sgqlc.types.Field(Boolean, graphql_name='mappedIndicator')
+    mapped_value = sgqlc.types.Field(String, graphql_name='mappedValue')
+    preferred = sgqlc.types.Field(Boolean, graphql_name='preferred')
+    domain_entity = sgqlc.types.Field(String, graphql_name='domainEntity')
+    other_matches = sgqlc.types.Field(JSON, graphql_name='otherMatches')
 
 
 class MaxAgentWorkflow(sgqlc.types.Type):
@@ -852,7 +856,7 @@ class Mutation(sgqlc.types.Type):
 
 class Query(sgqlc.types.Type):
     __schema__ = schema
-    __field_names__ = ('ping', 'current_user', 'get_copilot_skill_artifact_by_path', 'get_copilot_info', 'get_copilot_skill', 'run_copilot_skill', 'get_skill_components', 'get_max_agent_workflow', 'execute_sql_query', 'execute_rql_query', 'get_dataset_id', 'get_dataset', 'get_domain_object', 'get_domain_object_by_name', 'get_grounded_values', 'run_max_sql_gen', 'run_sql_ai', 'generate_visualization', 'llmapi_config_for_sdk', 'get_max_llm_prompt', 'user_chat_threads', 'user_chat_entries', 'chat_thread', 'chat_entry', 'user', 'all_chat_entries', 'skill_memory', 'chat_completion', 'narrative_completion', 'sql_completion', 'research_completion')
+    __field_names__ = ('ping', 'current_user', 'get_copilot_skill_artifact_by_path', 'get_copilot_info', 'get_copilot_skill', 'run_copilot_skill', 'get_skill_components', 'get_max_agent_workflow', 'execute_sql_query', 'execute_rql_query', 'get_dataset_id', 'get_dataset', 'get_domain_object', 'get_domain_object_by_name', 'get_grounded_value', 'run_max_sql_gen', 'run_sql_ai', 'generate_visualization', 'llmapi_config_for_sdk', 'get_max_llm_prompt', 'user_chat_threads', 'user_chat_entries', 'chat_thread', 'chat_entry', 'user', 'all_chat_entries', 'skill_memory', 'chat_completion', 'narrative_completion', 'sql_completion', 'research_completion')
     ping = sgqlc.types.Field(String, graphql_name='ping')
     current_user = sgqlc.types.Field(MaxUser, graphql_name='currentUser')
     get_copilot_skill_artifact_by_path = sgqlc.types.Field(CopilotSkillArtifact, graphql_name='getCopilotSkillArtifactByPath', args=sgqlc.types.ArgDict((
@@ -919,10 +923,10 @@ class Query(sgqlc.types.Type):
         ('rql_name', sgqlc.types.Arg(sgqlc.types.non_null(String), graphql_name='rqlName', default=None)),
 ))
     )
-    get_grounded_values = sgqlc.types.Field(GroundedValuesResponse, graphql_name='getGroundedValues', args=sgqlc.types.ArgDict((
+    get_grounded_value = sgqlc.types.Field(GroundedValueResponse, graphql_name='getGroundedValue', args=sgqlc.types.ArgDict((
         ('dataset_id', sgqlc.types.Arg(sgqlc.types.non_null(UUID), graphql_name='datasetId', default=None)),
         ('domain_entity', sgqlc.types.Arg(String, graphql_name='domainEntity', default=None)),
-        ('values', sgqlc.types.Arg(sgqlc.types.non_null(String), graphql_name='values', default=None)),
+        ('value', sgqlc.types.Arg(sgqlc.types.non_null(String), graphql_name='value', default=None)),
         ('copilot_id', sgqlc.types.Arg(UUID, graphql_name='copilotId', default=None)),
 ))
     )
