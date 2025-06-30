@@ -62,6 +62,80 @@ class Config:
         if result.get_copilot_skill_artifact_by_path and result.get_copilot_skill_artifact_by_path.artifact:
             return result.get_copilot_skill_artifact_by_path.artifact
 
+    def get_copilots(self) -> list[MaxCopilot]:
+        """
+        Retrieves all copilots available to the user with their metadata.
+
+        Returns:
+            list[MaxCopilot]: A list of MaxCopilot objects.
+        """
+        try:
+            # Once sdk_operations is regenerated, use:
+            # op = Operations.query.get_copilots
+            # result = self._gql_client.submit(op, {})
+            # return result.get_copilots or []
+            
+            # For now, we'll use the query builder pattern
+            operation = self._gql_client.query()
+
+            get_copilots = operation.get_copilots()
+
+            # Add all the fields from MaxCopilot
+            get_copilots.copilot_id()
+            get_copilots.name()
+            get_copilots.description()
+            get_copilots.system_prompt()
+            get_copilots.beta_yaml()
+            get_copilots.global_python_code()
+            get_copilots.database_id()
+            get_copilots.dataset_id()
+            
+            # Add copilot questions
+            copilot_questions = get_copilots.copilot_questions()
+            copilot_questions.copilot_question_id()
+            copilot_questions.nl()
+            copilot_questions.skill_id()
+            copilot_questions.parameters()
+            copilot_questions.is_starter()
+            copilot_questions.hint()
+            copilot_questions.created_user_id()
+            copilot_questions.created_utc()
+            copilot_questions.last_modified_user_id()
+            copilot_questions.last_modified_utc()
+            copilot_questions.version()
+            copilot_questions.is_deleted()
+            
+            # Add connection datasets
+            connection_datasets = get_copilots.connection_datasets()
+            connection_datasets.dataset_id()
+            connection_datasets.name()
+            
+            # Add copilot skill ids
+            get_copilots.copilot_skill_ids()
+            
+            # Add copilot topics
+            copilot_topics = get_copilots.copilot_topics()
+            copilot_topics.copilot_topic_id()
+            copilot_topics.name()
+            copilot_topics.description()
+            copilot_topics.research_outline()
+            copilot_topics.presentation_outline()
+            copilot_topics.created_user_id()
+            copilot_topics.created_user_name()
+            copilot_topics.created_utc()
+            copilot_topics.last_modified_user_id()
+            copilot_topics.last_modified_user_name()
+            copilot_topics.last_modified_utc()
+            copilot_topics.is_active()
+
+            gql_result = self._gql_client.submit(operation, {})
+
+            return gql_result.get_copilots or []
+
+        except Exception as e:
+            print(f"Error retrieving copilots: {e}")
+            return []
+        
     def get_copilot(self, use_published_version: bool = True, copilot_id: str = None) -> MaxCopilot:
         try:
             query_args = {

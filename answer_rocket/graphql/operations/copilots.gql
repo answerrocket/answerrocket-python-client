@@ -45,3 +45,49 @@ query GetCopilotInfo($copilotId: UUID!, $usePublishedVersion: Boolean) {
         copilotTopics
     }
 }
+
+query GetCopilots {
+    getCopilots {
+        copilotId
+        name
+        description
+        systemPrompt
+        betaYaml
+        globalPythonCode
+        copilotQuestions {
+            copilotQuestionId
+            nl
+            skillId
+            parameters
+            isStarter
+            hint
+            createdUserId
+            createdUtc
+            lastModifiedUserId
+            lastModifiedUtc
+            version
+            isDeleted
+        }
+        connectionDatasets {
+            datasetId
+            name
+        }
+        copilotSkillIds
+        copilotTopics {
+            copilotTopicId
+            name
+            description
+            researchOutline
+            presentationOutline
+            createdUserId
+            createdUserName
+            createdUtc
+            lastModifiedUserId
+            lastModifiedUserName
+            lastModifiedUtc
+            isActive
+        }
+        databaseId
+        datasetId
+    }
+}
