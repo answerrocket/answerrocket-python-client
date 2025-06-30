@@ -16,11 +16,6 @@ class ChatDryRunType(sgqlc.types.Enum):
     __choices__ = ('SKIP_SKILL_EXEC', 'SKIP_SKILL_NLG')
 
 
-class CopilotParameterType(sgqlc.types.Enum):
-    __schema__ = schema
-    __choices__ = ('CHAT', 'CODE', 'PROMPT', 'VISUALIZATION')
-
-
 DateTime = sgqlc.types.datetime.DateTime
 
 class DpsAggMethod(sgqlc.types.Enum):
@@ -239,31 +234,6 @@ class CopilotSkillArtifact(sgqlc.types.Type):
     version = sgqlc.types.Field(sgqlc.types.non_null(UUID), graphql_name='version')
     is_active = sgqlc.types.Field(sgqlc.types.non_null(Boolean), graphql_name='isActive')
     is_deleted = sgqlc.types.Field(sgqlc.types.non_null(Boolean), graphql_name='isDeleted')
-
-
-class CopilotSkillParameter(sgqlc.types.Type):
-    __schema__ = schema
-    __field_names__ = ('copilot_skill_parameter_id', 'name', 'copilot_parameter_type', 'parameter_source_key', 'explorer_variable_id', 'key', 'is_multi', 'metadata_field', 'llm_description', 'constrained_values', 'value', 'inherited_value', 'note', 'description', 'is_active', 'created_user_id', 'created_utc', 'last_modified_user_id', 'last_modified_utc', 'version')
-    copilot_skill_parameter_id = sgqlc.types.Field(sgqlc.types.non_null(UUID), graphql_name='copilotSkillParameterId')
-    name = sgqlc.types.Field(sgqlc.types.non_null(String), graphql_name='name')
-    copilot_parameter_type = sgqlc.types.Field(sgqlc.types.non_null(CopilotParameterType), graphql_name='copilotParameterType')
-    parameter_source_key = sgqlc.types.Field(sgqlc.types.non_null(String), graphql_name='parameterSourceKey')
-    explorer_variable_id = sgqlc.types.Field(UUID, graphql_name='explorerVariableId')
-    key = sgqlc.types.Field(sgqlc.types.non_null(String), graphql_name='key')
-    is_multi = sgqlc.types.Field(Boolean, graphql_name='isMulti')
-    metadata_field = sgqlc.types.Field(String, graphql_name='metadataField')
-    llm_description = sgqlc.types.Field(String, graphql_name='llmDescription')
-    constrained_values = sgqlc.types.Field(sgqlc.types.list_of(sgqlc.types.non_null(String)), graphql_name='constrainedValues')
-    value = sgqlc.types.Field(String, graphql_name='value')
-    inherited_value = sgqlc.types.Field(String, graphql_name='inheritedValue')
-    note = sgqlc.types.Field('StudioNote', graphql_name='note')
-    description = sgqlc.types.Field(String, graphql_name='description')
-    is_active = sgqlc.types.Field(Boolean, graphql_name='isActive')
-    created_user_id = sgqlc.types.Field(sgqlc.types.non_null(UUID), graphql_name='createdUserId')
-    created_utc = sgqlc.types.Field(sgqlc.types.non_null(DateTime), graphql_name='createdUtc')
-    last_modified_user_id = sgqlc.types.Field(sgqlc.types.non_null(UUID), graphql_name='lastModifiedUserId')
-    last_modified_utc = sgqlc.types.Field(sgqlc.types.non_null(DateTime), graphql_name='lastModifiedUtc')
-    version = sgqlc.types.Field(sgqlc.types.non_null(UUID), graphql_name='version')
 
 
 class CopilotSkillRunResponse(sgqlc.types.Type):
@@ -535,21 +505,24 @@ class MaxCopilotQuestion(sgqlc.types.Type):
 
 class MaxCopilotSkill(sgqlc.types.Type):
     __schema__ = schema
-    __field_names__ = ('copilot_skill_id', 'name', 'copilot_skill_type', 'detailed_name', 'description', 'detailed_description', 'dataset_id', 'skill_chat_questions', 'yaml_code', 'skill_code', 'misc_info', 'scheduling_only', 'copilot_skill_nodes', 'parameters')
+    __field_names__ = ('copilot_skill_id', 'name', 'copilot_skill_type', 'detailed_name', 'description', 'detailed_description', 'package_organization', 'package_name', 'dataset_id', 'dataset_ids', 'parameters', 'skill_chat_questions', 'yaml_code', 'skill_code', 'misc_info', 'scheduling_only', 'copilot_skill_nodes')
     copilot_skill_id = sgqlc.types.Field(sgqlc.types.non_null(UUID), graphql_name='copilotSkillId')
     name = sgqlc.types.Field(sgqlc.types.non_null(String), graphql_name='name')
     copilot_skill_type = sgqlc.types.Field(sgqlc.types.non_null(String), graphql_name='copilotSkillType')
     detailed_name = sgqlc.types.Field(sgqlc.types.non_null(String), graphql_name='detailedName')
     description = sgqlc.types.Field(sgqlc.types.non_null(String), graphql_name='description')
     detailed_description = sgqlc.types.Field(String, graphql_name='detailedDescription')
+    package_organization = sgqlc.types.Field(sgqlc.types.non_null(String), graphql_name='packageOrganization')
+    package_name = sgqlc.types.Field(sgqlc.types.non_null(String), graphql_name='packageName')
     dataset_id = sgqlc.types.Field(UUID, graphql_name='datasetId')
+    dataset_ids = sgqlc.types.Field(sgqlc.types.non_null(sgqlc.types.list_of(sgqlc.types.non_null(UUID))), graphql_name='datasetIds')
+    parameters = sgqlc.types.Field(sgqlc.types.non_null(sgqlc.types.list_of(sgqlc.types.non_null('MaxCopilotSkillParameter'))), graphql_name='parameters')
     skill_chat_questions = sgqlc.types.Field(sgqlc.types.non_null(sgqlc.types.list_of('MaxCopilotSkillChatQuestion')), graphql_name='skillChatQuestions')
     yaml_code = sgqlc.types.Field(sgqlc.types.non_null(String), graphql_name='yamlCode')
     skill_code = sgqlc.types.Field(sgqlc.types.non_null(String), graphql_name='skillCode')
     misc_info = sgqlc.types.Field(JSON, graphql_name='miscInfo')
     scheduling_only = sgqlc.types.Field(sgqlc.types.non_null(Boolean), graphql_name='schedulingOnly')
     copilot_skill_nodes = sgqlc.types.Field(sgqlc.types.non_null(sgqlc.types.list_of(sgqlc.types.non_null('MaxCopilotSkillNode'))), graphql_name='copilotSkillNodes')
-    parameters = sgqlc.types.Field(sgqlc.types.list_of(sgqlc.types.non_null(CopilotSkillParameter)), graphql_name='parameters')
 
 
 class MaxCopilotSkillChatQuestion(sgqlc.types.Type):
@@ -577,6 +550,32 @@ class MaxCopilotSkillNodeConnection(sgqlc.types.Type):
     input_property = sgqlc.types.Field(sgqlc.types.non_null(String), graphql_name='inputProperty')
     source_node_id = sgqlc.types.Field(sgqlc.types.non_null(UUID), graphql_name='sourceNodeId')
     output_property = sgqlc.types.Field(sgqlc.types.non_null(String), graphql_name='outputProperty')
+
+
+class MaxCopilotSkillParameter(sgqlc.types.Type):
+    __schema__ = schema
+    __field_names__ = ('copilot_skill_parameter_id', 'name', 'value', 'parameter_source_key', 'explorer_variable_id', 'key', 'is_multi', 'llm_description', 'metadata_field', 'constrained_values', 'inherited_value', 'note', 'description', 'copilot_parameter_type', 'is_active', 'is_deleted', 'created_user_id', 'created_utc', 'last_modified_user_id', 'last_modified_utc', 'version')
+    copilot_skill_parameter_id = sgqlc.types.Field(sgqlc.types.non_null(UUID), graphql_name='copilotSkillParameterId')
+    name = sgqlc.types.Field(sgqlc.types.non_null(String), graphql_name='name')
+    value = sgqlc.types.Field(String, graphql_name='value')
+    parameter_source_key = sgqlc.types.Field(sgqlc.types.non_null(String), graphql_name='parameterSourceKey')
+    explorer_variable_id = sgqlc.types.Field(UUID, graphql_name='explorerVariableId')
+    key = sgqlc.types.Field(sgqlc.types.non_null(String), graphql_name='key')
+    is_multi = sgqlc.types.Field(Boolean, graphql_name='isMulti')
+    llm_description = sgqlc.types.Field(String, graphql_name='llmDescription')
+    metadata_field = sgqlc.types.Field(String, graphql_name='metadataField')
+    constrained_values = sgqlc.types.Field(sgqlc.types.list_of(sgqlc.types.non_null(String)), graphql_name='constrainedValues')
+    inherited_value = sgqlc.types.Field(String, graphql_name='inheritedValue')
+    note = sgqlc.types.Field('StudioNote', graphql_name='note')
+    description = sgqlc.types.Field(String, graphql_name='description')
+    copilot_parameter_type = sgqlc.types.Field(sgqlc.types.non_null(String), graphql_name='copilotParameterType')
+    is_active = sgqlc.types.Field(sgqlc.types.non_null(Boolean), graphql_name='isActive')
+    is_deleted = sgqlc.types.Field(sgqlc.types.non_null(Boolean), graphql_name='isDeleted')
+    created_user_id = sgqlc.types.Field(sgqlc.types.non_null(UUID), graphql_name='createdUserId')
+    created_utc = sgqlc.types.Field(sgqlc.types.non_null(DateTime), graphql_name='createdUtc')
+    last_modified_user_id = sgqlc.types.Field(sgqlc.types.non_null(UUID), graphql_name='lastModifiedUserId')
+    last_modified_utc = sgqlc.types.Field(sgqlc.types.non_null(DateTime), graphql_name='lastModifiedUtc')
+    version = sgqlc.types.Field(sgqlc.types.non_null(UUID), graphql_name='version')
 
 
 class MaxCreateCopilotQuestionResponse(sgqlc.types.Type):
