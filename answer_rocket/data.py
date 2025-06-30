@@ -14,6 +14,7 @@ from answer_rocket.graphql.schema import UUID as GQL_UUID, GenerateVisualization
     MaxNormalAttribute, \
     MaxPrimaryAttribute, MaxReferenceAttribute, MaxCalculatedMetric, MaxDataset, MaxCalculatedAttribute, \
     MaxMutationResponse, DateTime, RunMaxSqlGenResponse, JSON, RunSqlAiResponse
+from answer_rocket.graphql.sdk_operations import Operations
 from answer_rocket.types import MaxResult, RESULT_EXCEPTION_CODE
 
 def create_df_from_data(data: Dict[str, any]):
@@ -42,17 +43,6 @@ class DomainObjectResult(MaxResult):
     domain_object = None
 
 @dataclass
-class GroundedValueResult(MaxResult):
-    matched_value: str | None = None
-    match_quality: float | None = None
-    match_type: str | None = None
-    mapped_indicator: bool | None = None
-    mapped_value: str | None = None
-    preferred: bool | None = None
-    domain_entity: str | None = None
-    other_matches: any = None
-
-@dataclass
 class RunMaxSqlGenResult(MaxResult):
     sql: str | None = None
     df: DataFrame | None = None
@@ -70,6 +60,17 @@ class RunSqlAiResult(MaxResult):
     data = None,     # deprecated -- use df instead
     timing_info: Dict[str, any] | None = None
     prior_runs: List[RunSqlAiResult] = field(default_factory=list)
+
+@dataclass
+class GroundedValueResult(MaxResult):
+    matched_value: str | None = None
+    match_quality: float | None = None
+    match_type: str | None = None
+    mapped_indicator: bool | None = None
+    mapped_value: str | None = None
+    preferred: bool | None = None
+    domain_entity: str | None = None
+    other_matches: List | None = None
 
 class Data:
     """
@@ -442,38 +443,12 @@ class Data:
                 'copilotId': copilot_id or self.copilot_id,
             }
 
-            query_vars = {
-                'dataset_id': Arg(non_null(GQL_UUID)),
-                'value': Arg(non_null(String)),
-                'domain_entity': Arg(String),
-                'copilot_id': Arg(GQL_UUID),
-            }
-
-            operation = self._gql_client.query(variables=query_vars)
-
-            gql_query = operation.get_grounded_value(
-                dataset_id=Variable('dataset_id'),
-                value=Variable('value'),
-                domain_entity=Variable('domain_entity'),
-                copilot_id=Variable('copilot_id'),
-            )
-
-            gql_query.matched_value()
-            gql_query.match_quality()
-            gql_query.match_type()
-            gql_query.mapped_indicator()
-            gql_query.mapped_value()
-            gql_query.preferred()
-            gql_query.domain_entity()
-            gql_query.other_matches()
-
-            result = self._gql_client.submit(operation, query_args)
+            op = Operations.query.get_grounded_value
+            result = self._gql_client.submit(op, query_args)
 
             gql_response = result.get_grounded_value
-            print(gql_response)
 
             grounded_value_result = GroundedValueResult()
-
             grounded_value_result.success = True
             grounded_value_result.matched_value = gql_response.matched_value
             grounded_value_result.match_quality = gql_response.match_quality
@@ -483,7 +458,7 @@ class Data:
             grounded_value_result.preferred = gql_response.preferred
             grounded_value_result.domain_entity = gql_response.domain_entity
             grounded_value_result.other_matches = gql_response.other_matches
-
+            
             return grounded_value_result
         except Exception as e:
             grounded_value_result = GroundedValueResult()
