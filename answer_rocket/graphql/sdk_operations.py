@@ -234,6 +234,12 @@ def query_narrative_completion():
     return _op
 
 
+def query_narrative_completion_with_prompt():
+    _op = sgqlc.operation.Operation(_schema_root.query_type, name='NarrativeCompletionWithPrompt', variables=dict(promptName=sgqlc.types.Arg(sgqlc.types.non_null(_schema.String)), promptVariables=sgqlc.types.Arg(_schema.JSON), modelSelection=sgqlc.types.Arg(_schema.LlmModelSelection)))
+    _op.narrative_completion_with_prompt(prompt_name=sgqlc.types.Variable('promptName'), prompt_variables=sgqlc.types.Variable('promptVariables'), model_selection=sgqlc.types.Variable('modelSelection'))
+    return _op
+
+
 def query_sql_completion():
     _op = sgqlc.operation.Operation(_schema_root.query_type, name='SqlCompletion', variables=dict(messages=sgqlc.types.Arg(sgqlc.types.non_null(sgqlc.types.list_of(sgqlc.types.non_null(_schema.LlmChatMessage)))), modelSelection=sgqlc.types.Arg(_schema.LlmModelSelection)))
     _op.sql_completion(messages=sgqlc.types.Variable('messages'), model_selection=sgqlc.types.Variable('modelSelection'))
@@ -256,6 +262,7 @@ class Query:
     get_copilot_skill = query_get_copilot_skill()
     get_max_llm_prompt = query_get_max_llm_prompt()
     narrative_completion = query_narrative_completion()
+    narrative_completion_with_prompt = query_narrative_completion_with_prompt()
     research_completion = query_research_completion()
     skill_memory = query_skill_memory()
     sql_completion = query_sql_completion()

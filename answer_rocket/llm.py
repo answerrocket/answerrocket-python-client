@@ -1,7 +1,6 @@
 from typing import TypedDict
 
 from answer_rocket.graphql.sdk_operations import Operations
-from answer_rocket.graphql.schema import LlmModelSelection
 
 
 class LlmChatMessage(TypedDict):
@@ -56,6 +55,27 @@ class Llm:
         }
         gql_response = self.gql_client.submit(op, args)
         return gql_response.narrative_completion
+
+    def narrative_completion_with_prompt(self, prompt_name: str, prompt_variables: dict,
+                                         model_override: str | None = None):
+        """
+        Call an LLM API's completion endpoint with the provided prompt.
+        :param prompt_name: the name of the prompt to use
+        :param prompt_variables: a dictionary of variables to pass to the prompt
+        :param model_override: a model name or id to use instead of a configured default
+        :return: the raw response from the model api
+        """
+        op = Operations.query.narrative_completion_with_prompt
+        args = {
+            'promptName': prompt_name,
+            'promptVariables': prompt_variables,
+            'modelSelection': {
+                'assistantId': self.config.copilot_id,
+                'modelOverride': model_override
+            }
+        }
+        gql_response = self.gql_client.submit(op, args)
+        return gql_response.narrative_completion_with_prompt
     
     def sql_completion(self, messages: list[LlmChatMessage], model_override: str | None = None):
         """
