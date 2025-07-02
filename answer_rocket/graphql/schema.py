@@ -554,23 +554,19 @@ class MaxCopilotSkillNodeConnection(sgqlc.types.Type):
 
 class MaxCopilotSkillParameter(sgqlc.types.Type):
     __schema__ = schema
-    __field_names__ = ('copilot_skill_parameter_id', 'name', 'value', 'parameter_source_key', 'explorer_variable_id', 'key', 'is_multi', 'llm_description', 'metadata_field', 'constrained_values', 'inherited_value', 'note', 'description', 'copilot_parameter_type', 'is_active', 'is_deleted', 'created_user_id', 'created_utc', 'last_modified_user_id', 'last_modified_utc', 'version')
+    __field_names__ = ('copilot_skill_parameter_id', 'name', 'value', 'parameter_source_key', 'is_multi', 'llm_description', 'metadata_field', 'constrained_values', 'description', 'copilot_parameter_type', 'is_active', 'is_deleted', 'created_user_id', 'created_utc', 'last_modified_user_id', 'last_modified_utc', 'version')
     copilot_skill_parameter_id = sgqlc.types.Field(sgqlc.types.non_null(UUID), graphql_name='copilotSkillParameterId')
-    name = sgqlc.types.Field(sgqlc.types.non_null(String), graphql_name='name')
+    name = sgqlc.types.Field(String, graphql_name='name')
     value = sgqlc.types.Field(String, graphql_name='value')
-    parameter_source_key = sgqlc.types.Field(sgqlc.types.non_null(String), graphql_name='parameterSourceKey')
-    explorer_variable_id = sgqlc.types.Field(UUID, graphql_name='explorerVariableId')
-    key = sgqlc.types.Field(sgqlc.types.non_null(String), graphql_name='key')
+    parameter_source_key = sgqlc.types.Field(String, graphql_name='parameterSourceKey')
     is_multi = sgqlc.types.Field(Boolean, graphql_name='isMulti')
     llm_description = sgqlc.types.Field(String, graphql_name='llmDescription')
     metadata_field = sgqlc.types.Field(String, graphql_name='metadataField')
     constrained_values = sgqlc.types.Field(sgqlc.types.list_of(sgqlc.types.non_null(String)), graphql_name='constrainedValues')
-    inherited_value = sgqlc.types.Field(String, graphql_name='inheritedValue')
-    note = sgqlc.types.Field('StudioNote', graphql_name='note')
     description = sgqlc.types.Field(String, graphql_name='description')
-    copilot_parameter_type = sgqlc.types.Field(sgqlc.types.non_null(String), graphql_name='copilotParameterType')
-    is_active = sgqlc.types.Field(sgqlc.types.non_null(Boolean), graphql_name='isActive')
-    is_deleted = sgqlc.types.Field(sgqlc.types.non_null(Boolean), graphql_name='isDeleted')
+    copilot_parameter_type = sgqlc.types.Field(String, graphql_name='copilotParameterType')
+    is_active = sgqlc.types.Field(Boolean, graphql_name='isActive')
+    is_deleted = sgqlc.types.Field(Boolean, graphql_name='isDeleted')
     created_user_id = sgqlc.types.Field(sgqlc.types.non_null(UUID), graphql_name='createdUserId')
     created_utc = sgqlc.types.Field(sgqlc.types.non_null(DateTime), graphql_name='createdUtc')
     last_modified_user_id = sgqlc.types.Field(sgqlc.types.non_null(UUID), graphql_name='lastModifiedUserId')
@@ -1093,18 +1089,6 @@ class SharedThread(sgqlc.types.Type):
     created_utc = sgqlc.types.Field(sgqlc.types.non_null(DateTime), graphql_name='createdUTC')
     is_deleted = sgqlc.types.Field(sgqlc.types.non_null(Boolean), graphql_name='isDeleted')
     link_to_shared_thread = sgqlc.types.Field(sgqlc.types.non_null(String), graphql_name='linkToSharedThread')
-
-
-class StudioNote(sgqlc.types.Type):
-    __schema__ = schema
-    __field_names__ = ('copilot_note_id', 'text', 'created_user_id', 'created_utc', 'last_modified_user_id', 'last_modified_utc', 'version')
-    copilot_note_id = sgqlc.types.Field(sgqlc.types.non_null(UUID), graphql_name='copilotNoteId')
-    text = sgqlc.types.Field(sgqlc.types.non_null(String), graphql_name='text')
-    created_user_id = sgqlc.types.Field(sgqlc.types.non_null(UUID), graphql_name='createdUserId')
-    created_utc = sgqlc.types.Field(sgqlc.types.non_null(DateTime), graphql_name='createdUtc')
-    last_modified_user_id = sgqlc.types.Field(sgqlc.types.non_null(UUID), graphql_name='lastModifiedUserId')
-    last_modified_utc = sgqlc.types.Field(sgqlc.types.non_null(DateTime), graphql_name='lastModifiedUtc')
-    version = sgqlc.types.Field(sgqlc.types.non_null(UUID), graphql_name='version')
 
 
 class AzureOpenaiCompletionLLMApiConfig(sgqlc.types.Type, LLMApiConfig):

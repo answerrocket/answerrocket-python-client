@@ -33,23 +33,11 @@ query GetCopilotSkill($copilotId: UUID!, $copilotSkillId: UUID!, $usePublishedVe
             name
             copilotParameterType
             parameterSourceKey
-            explorerVariableId
-            key
             isMulti
             metadataField
             llmDescription
             constrainedValues
             value
-            inheritedValue
-            note {
-                copilotNoteId
-                text
-                createdUserId
-                createdUtc
-                lastModifiedUserId
-                lastModifiedUtc
-                version
-            }
             description
             isActive
             createdUserId
