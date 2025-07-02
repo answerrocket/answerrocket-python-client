@@ -1,0 +1,22 @@
+query GetGroundedValue(
+  $datasetId: UUID!
+  $value: String!
+  $domainEntity: String
+  $copilotId: UUID
+) {
+  getGroundedValue(
+    datasetId: $datasetId
+    value: $value
+    domainEntity: $domainEntity
+    copilotId: $copilotId
+  ) {
+    matchedValue
+    matchQuality
+    matchType
+    mappedIndicator
+    mappedValue
+    preferred
+    domainEntity
+    otherMatches
+  }
+}

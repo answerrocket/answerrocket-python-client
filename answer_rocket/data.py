@@ -13,7 +13,8 @@ from answer_rocket.graphql.client import GraphQlClient
 from answer_rocket.graphql.schema import UUID as GQL_UUID, GenerateVisualizationResponse, MaxMetricAttribute, MaxDimensionEntity, MaxFactEntity, \
     MaxNormalAttribute, \
     MaxPrimaryAttribute, MaxReferenceAttribute, MaxCalculatedMetric, MaxDataset, MaxCalculatedAttribute, \
-    MaxMutationResponse, DateTime, RunMaxSqlGenResponse, JSON, RunSqlAiResponse
+    MaxMutationResponse, DateTime, RunMaxSqlGenResponse, JSON, RunSqlAiResponse, GroundedValueResponse
+from answer_rocket.graphql.sdk_operations import Operations
 from answer_rocket.types import MaxResult, RESULT_EXCEPTION_CODE
 
 def create_df_from_data(data: Dict[str, any]):
@@ -59,6 +60,7 @@ class RunSqlAiResult(MaxResult):
     data = None,     # deprecated -- use df instead
     timing_info: Dict[str, any] | None = None
     prior_runs: List[RunSqlAiResult] = field(default_factory=list)
+
 
 class Data:
     """
@@ -409,6 +411,35 @@ class Data:
             domain_object_result.code = RESULT_EXCEPTION_CODE
 
             return domain_object_result
+
+    def get_grounded_value(self, dataset_id: UUID, value: str, domain_entity: Optional[str] = None, copilot_id: Optional[UUID] = None) -> GroundedValueResponse:
+        """
+        Gets grounded values for fuzzy matching against domain values.
+
+        Args:
+            dataset_id (UUID): The UUID of the dataset.
+            value (str): The value to ground (single string).
+            domain_entity (Optional[str], optional): The domain entity to search within. Can be "metrics", "dimensions", a specific domain attribute name, or None to search all. Defaults to None.
+            copilot_id (Optional[UUID], optional): The UUID of the copilot. Defaults to None.
+
+        Returns:
+            GroundedValueResponse: The grounded value response from the GraphQL schema.
+        """
+        
+        try:
+            query_args = {
+                'datasetId': dataset_id,
+                'value': value,
+                'domainEntity': domain_entity,
+                'copilotId': copilot_id or self.copilot_id,
+            }
+    
+            op = Operations.query.get_grounded_value
+            result = self._gql_client.submit(op, query_args)
+    
+            return result.get_grounded_value
+        except Exception as e:
+            return None
 
     def run_max_sql_gen(self, dataset_id: UUID, pre_query_object: Dict[str, any], copilot_id: Optional[UUID] = None) -> RunMaxSqlGenResult:
         """

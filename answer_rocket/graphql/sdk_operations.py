@@ -222,6 +222,20 @@ def query_get_copilot_info():
     return _op
 
 
+def query_get_grounded_value():
+    _op = sgqlc.operation.Operation(_schema_root.query_type, name='GetGroundedValue', variables=dict(datasetId=sgqlc.types.Arg(sgqlc.types.non_null(_schema.UUID)), value=sgqlc.types.Arg(sgqlc.types.non_null(_schema.String)), domainEntity=sgqlc.types.Arg(_schema.String), copilotId=sgqlc.types.Arg(_schema.UUID)))
+    _op_get_grounded_value = _op.get_grounded_value(dataset_id=sgqlc.types.Variable('datasetId'), value=sgqlc.types.Variable('value'), domain_entity=sgqlc.types.Variable('domainEntity'), copilot_id=sgqlc.types.Variable('copilotId'))
+    _op_get_grounded_value.matched_value()
+    _op_get_grounded_value.match_quality()
+    _op_get_grounded_value.match_type()
+    _op_get_grounded_value.mapped_indicator()
+    _op_get_grounded_value.mapped_value()
+    _op_get_grounded_value.preferred()
+    _op_get_grounded_value.domain_entity()
+    _op_get_grounded_value.other_matches()
+    return _op
+
+
 def query_chat_completion():
     _op = sgqlc.operation.Operation(_schema_root.query_type, name='ChatCompletion', variables=dict(messages=sgqlc.types.Arg(sgqlc.types.non_null(sgqlc.types.list_of(sgqlc.types.non_null(_schema.LlmChatMessage)))), modelSelection=sgqlc.types.Arg(_schema.LlmModelSelection)))
     _op.chat_completion(messages=sgqlc.types.Variable('messages'), model_selection=sgqlc.types.Variable('modelSelection'))
@@ -260,6 +274,7 @@ class Query:
     dataframes_for_entry = query_dataframes_for_entry()
     get_copilot_info = query_get_copilot_info()
     get_copilot_skill = query_get_copilot_skill()
+    get_grounded_value = query_get_grounded_value()
     get_max_llm_prompt = query_get_max_llm_prompt()
     narrative_completion = query_narrative_completion()
     narrative_completion_with_prompt = query_narrative_completion_with_prompt()
