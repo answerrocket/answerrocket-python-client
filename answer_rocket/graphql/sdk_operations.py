@@ -87,6 +87,12 @@ def mutation_set_skill_memory():
     return _op
 
 
+def mutation_set_max_agent_workflow():
+    _op = sgqlc.operation.Operation(_schema_root.mutation_type, name='SetMaxAgentWorkflow', variables=dict(entryId=sgqlc.types.Arg(sgqlc.types.non_null(_schema.UUID)), agentRunState=sgqlc.types.Arg(sgqlc.types.non_null(sgqlc.types.list_of(sgqlc.types.non_null(_schema.JSON))))))
+    _op.set_max_agent_workflow(entry_id=sgqlc.types.Variable('entryId'), agent_run_state=sgqlc.types.Variable('agentRunState'))
+    return _op
+
+
 def mutation_update_loading_message():
     _op = sgqlc.operation.Operation(_schema_root.mutation_type, name='UpdateLoadingMessage', variables=dict(answerId=sgqlc.types.Arg(sgqlc.types.non_null(_schema.UUID)), message=sgqlc.types.Arg(sgqlc.types.non_null(_schema.String))))
     _op.update_loading_message(answer_id=sgqlc.types.Variable('answerId'), message=sgqlc.types.Variable('message'))
@@ -99,6 +105,7 @@ class Mutation:
     cancel_chat_question = mutation_cancel_chat_question()
     create_chat_thread = mutation_create_chat_thread()
     queue_chat_question = mutation_queue_chat_question()
+    set_max_agent_workflow = mutation_set_max_agent_workflow()
     set_skill_memory = mutation_set_skill_memory()
     update_loading_message = mutation_update_loading_message()
 
@@ -163,6 +170,32 @@ def query_all_chat_entries():
 def query_skill_memory():
     _op = sgqlc.operation.Operation(_schema_root.query_type, name='SkillMemory', variables=dict(entryId=sgqlc.types.Arg(sgqlc.types.non_null(_schema.UUID))))
     _op.skill_memory(entry_id=sgqlc.types.Variable('entryId'))
+    return _op
+
+
+def query_get_max_agent_workflow():
+    _op = sgqlc.operation.Operation(_schema_root.query_type, name='GetMaxAgentWorkflow', variables=dict(agentWorkflowId=sgqlc.types.Arg(sgqlc.types.non_null(_schema.UUID)), version=sgqlc.types.Arg(_schema.Int)))
+    _op_get_max_agent_workflow = _op.get_max_agent_workflow(agent_workflow_id=sgqlc.types.Variable('agentWorkflowId'), version=sgqlc.types.Variable('version'))
+    _op_get_max_agent_workflow.agent_workflow_id()
+    _op_get_max_agent_workflow_trace = _op_get_max_agent_workflow.trace()
+    _op_get_max_agent_workflow_trace_tool = _op_get_max_agent_workflow_trace.tool()
+    _op_get_max_agent_workflow_trace_tool.name()
+    _op_get_max_agent_workflow_trace_tool.description()
+    _op_get_max_agent_workflow_trace_parameters = _op_get_max_agent_workflow_trace.parameters()
+    _op_get_max_agent_workflow_trace_parameters.name()
+    _op_get_max_agent_workflow_trace_parameters.description()
+    _op_get_max_agent_workflow_trace_parameters.value()
+    _op_get_max_agent_workflow_trace_return_value = _op_get_max_agent_workflow_trace.return_value()
+    _op_get_max_agent_workflow_trace_return_value.success()
+    _op_get_max_agent_workflow_trace_return_value.error_code()
+    _op_get_max_agent_workflow_trace_return_value.return_value()
+    _op_get_max_agent_workflow_trace_referenced_state = _op_get_max_agent_workflow_trace.referenced_state()
+    _op_get_max_agent_workflow_trace_referenced_state.name()
+    _op_get_max_agent_workflow_trace_referenced_state.content()
+    _op_get_max_agent_workflow_trace_updated_state = _op_get_max_agent_workflow_trace.updated_state()
+    _op_get_max_agent_workflow_trace_updated_state.name()
+    _op_get_max_agent_workflow_trace_updated_state.content()
+    _op_get_max_agent_workflow_trace.additional_tool_state()
     return _op
 
 
@@ -275,6 +308,7 @@ class Query:
     get_copilot_info = query_get_copilot_info()
     get_copilot_skill = query_get_copilot_skill()
     get_grounded_value = query_get_grounded_value()
+    get_max_agent_workflow = query_get_max_agent_workflow()
     get_max_llm_prompt = query_get_max_llm_prompt()
     narrative_completion = query_narrative_completion()
     narrative_completion_with_prompt = query_narrative_completion_with_prompt()

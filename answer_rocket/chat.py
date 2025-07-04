@@ -433,6 +433,48 @@ class Chat:
         op = Operations.mutation.set_skill_memory
         result = self.gql_client.submit(op, set_skill_memory_args)
         return result.set_skill_memory
+    
+    def set_agent_run_state(self, agent_run_state: list[dict], chat_entry_id: str) -> bool:
+        """
+        Sets the agent_run_state to a workflow document.
+        :param chat_entry_id: the id of the chat entry
+        :param agent_run_state: the agent workflow state to set -- must be JSON serializable
+        :return: True if the agent_run_state was set successfully, False otherwise
+        """
+
+        if chat_entry_id is None:
+            chat_entry_id = self._config.chat_entry_id
+            if chat_entry_id is None: 
+               print("No chat entry id provided, no config chat entry id found, aborting.")
+               return False
+
+        set_agent_run_state_args = {
+            'entryId': UUID(chat_entry_id),
+            'agentRunState': agent_run_state,
+        }
+        op = Operations.mutation.set_max_agent_workflow
+        result = self.gql_client.submit(op, set_agent_run_state_args)
+        return result.set_max_agent_workflow
+    
+    def get_agent_workflow(self, workflow_id: str, version: int = None):
+        """
+        Gets the workflow document for a given workflow id and version.
+        :param workflow_id: the id of the workflow
+        :param version: the version of the workflow
+        :return: MaxAgentWorkflow object
+        """
+
+        if workflow_id is None:
+            print("No workflow id provided, aborting.")
+            return null
+
+        get_agent_workflow_args = {
+            'agentWorkflowId': UUID(workflow_id),
+            'version': version,
+        }
+        op = Operations.query.get_max_agent_workflow
+        result = self.gql_client.submit(op, get_agent_workflow_args)
+        return result.get_max_agent_workflow
 
     def get_dataframes_for_entry(self, entry_id: str) -> [pd.DataFrame]:
         """

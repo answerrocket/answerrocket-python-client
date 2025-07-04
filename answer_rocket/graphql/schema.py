@@ -775,7 +775,7 @@ class Mutation(sgqlc.types.Type):
         ('agent_run_state', sgqlc.types.Arg(sgqlc.types.non_null(sgqlc.types.list_of(sgqlc.types.non_null(JSON))), graphql_name='agentRunState', default=None)),
 ))
     )
-    reload_dataset = sgqlc.types.Field(MaxMutationResponse, graphql_name='reloadDataset', args=sgqlc.types.ArgDict((
+    reload_dataset = sgqlc.types.Field(sgqlc.types.non_null(MaxMutationResponse), graphql_name='reloadDataset', args=sgqlc.types.ArgDict((
         ('dataset_id', sgqlc.types.Arg(UUID, graphql_name='datasetId', default=None)),
         ('database_id', sgqlc.types.Arg(UUID, graphql_name='databaseId', default=None)),
         ('table_names', sgqlc.types.Arg(sgqlc.types.list_of(sgqlc.types.non_null(String)), graphql_name='tableNames', default=None)),
@@ -886,6 +886,7 @@ class Query(sgqlc.types.Type):
     get_skill_components = sgqlc.types.Field(sgqlc.types.non_null(sgqlc.types.list_of(sgqlc.types.non_null(MaxSkillComponent))), graphql_name='getSkillComponents')
     get_max_agent_workflow = sgqlc.types.Field(MaxAgentWorkflow, graphql_name='getMaxAgentWorkflow', args=sgqlc.types.ArgDict((
         ('agent_workflow_id', sgqlc.types.Arg(sgqlc.types.non_null(UUID), graphql_name='agentWorkflowId', default=None)),
+        ('version', sgqlc.types.Arg(Int, graphql_name='version', default=None)),
 ))
     )
     execute_sql_query = sgqlc.types.Field(ExecuteSqlQueryResponse, graphql_name='executeSqlQuery', args=sgqlc.types.ArgDict((
