@@ -28,6 +28,24 @@ query GetCopilotSkill($copilotId: UUID!, $copilotSkillId: UUID!, $usePublishedVe
                 outputProperty
             }
         }
+        parameters {
+            copilotSkillParameterId
+            name
+            copilotParameterType
+            parameterSourceKey
+            isMulti
+            metadataField
+            llmDescription
+            constrainedValues
+            value
+            description
+            isActive
+            createdUserId
+            createdUtc
+            lastModifiedUserId
+            lastModifiedUtc
+            version
+        }
     }
 }
 
@@ -43,5 +61,51 @@ query GetCopilotInfo($copilotId: UUID!, $usePublishedVersion: Boolean) {
         connectionDatasets
         copilotSkillIds
         copilotTopics
+    }
+}
+
+query GetCopilots {
+    getCopilots {
+        copilotId
+        name
+        description
+        systemPrompt
+        betaYaml
+        globalPythonCode
+        copilotQuestions {
+            copilotQuestionId
+            nl
+            skillId
+            parameters
+            isStarter
+            hint
+            createdUserId
+            createdUtc
+            lastModifiedUserId
+            lastModifiedUtc
+            version
+            isDeleted
+        }
+        connectionDatasets {
+            datasetId
+            name
+        }
+        copilotSkillIds
+        copilotTopics {
+            copilotTopicId
+            name
+            description
+            researchOutline
+            presentationOutline
+            createdUserId
+            createdUserName
+            createdUtc
+            lastModifiedUserId
+            lastModifiedUserName
+            lastModifiedUtc
+            isActive
+        }
+        databaseId
+        datasetId
     }
 }
