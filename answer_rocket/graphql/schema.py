@@ -505,17 +505,14 @@ class MaxCopilotQuestion(sgqlc.types.Type):
 
 class MaxCopilotSkill(sgqlc.types.Type):
     __schema__ = schema
-    __field_names__ = ('copilot_skill_id', 'name', 'copilot_skill_type', 'detailed_name', 'description', 'detailed_description', 'package_organization', 'package_name', 'dataset_id', 'dataset_ids', 'parameters', 'skill_chat_questions', 'yaml_code', 'skill_code', 'misc_info', 'scheduling_only', 'copilot_skill_nodes')
+    __field_names__ = ('copilot_skill_id', 'name', 'copilot_skill_type', 'detailed_name', 'description', 'detailed_description', 'dataset_id', 'parameters', 'skill_chat_questions', 'yaml_code', 'skill_code', 'misc_info', 'scheduling_only', 'copilot_skill_nodes')
     copilot_skill_id = sgqlc.types.Field(sgqlc.types.non_null(UUID), graphql_name='copilotSkillId')
     name = sgqlc.types.Field(sgqlc.types.non_null(String), graphql_name='name')
     copilot_skill_type = sgqlc.types.Field(sgqlc.types.non_null(String), graphql_name='copilotSkillType')
     detailed_name = sgqlc.types.Field(sgqlc.types.non_null(String), graphql_name='detailedName')
     description = sgqlc.types.Field(sgqlc.types.non_null(String), graphql_name='description')
     detailed_description = sgqlc.types.Field(String, graphql_name='detailedDescription')
-    package_organization = sgqlc.types.Field(sgqlc.types.non_null(String), graphql_name='packageOrganization')
-    package_name = sgqlc.types.Field(sgqlc.types.non_null(String), graphql_name='packageName')
     dataset_id = sgqlc.types.Field(UUID, graphql_name='datasetId')
-    dataset_ids = sgqlc.types.Field(sgqlc.types.non_null(sgqlc.types.list_of(sgqlc.types.non_null(UUID))), graphql_name='datasetIds')
     parameters = sgqlc.types.Field(sgqlc.types.non_null(sgqlc.types.list_of(sgqlc.types.non_null('MaxCopilotSkillParameter'))), graphql_name='parameters')
     skill_chat_questions = sgqlc.types.Field(sgqlc.types.non_null(sgqlc.types.list_of('MaxCopilotSkillChatQuestion')), graphql_name='skillChatQuestions')
     yaml_code = sgqlc.types.Field(sgqlc.types.non_null(String), graphql_name='yamlCode')
@@ -801,7 +798,7 @@ class Mutation(sgqlc.types.Type):
         ('agent_run_state', sgqlc.types.Arg(sgqlc.types.non_null(sgqlc.types.list_of(sgqlc.types.non_null(JSON))), graphql_name='agentRunState', default=None)),
 ))
     )
-    reload_dataset = sgqlc.types.Field(MaxMutationResponse, graphql_name='reloadDataset', args=sgqlc.types.ArgDict((
+    reload_dataset = sgqlc.types.Field(sgqlc.types.non_null(MaxMutationResponse), graphql_name='reloadDataset', args=sgqlc.types.ArgDict((
         ('dataset_id', sgqlc.types.Arg(UUID, graphql_name='datasetId', default=None)),
         ('database_id', sgqlc.types.Arg(UUID, graphql_name='databaseId', default=None)),
         ('table_names', sgqlc.types.Arg(sgqlc.types.list_of(sgqlc.types.non_null(String)), graphql_name='tableNames', default=None)),
