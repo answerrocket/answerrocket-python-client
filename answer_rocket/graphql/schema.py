@@ -344,6 +344,47 @@ class GenerateVisualizationResponse(sgqlc.types.Type):
     visualization = sgqlc.types.Field(JSON, graphql_name='visualization')
 
 
+class GroundedValueResponse(sgqlc.types.Type):
+    __schema__ = schema
+    __field_names__ = ('matched_value', 'match_quality', 'match_type', 'mapped_indicator', 'mapped_value', 'preferred', 'domain_entity', 'other_matches')
+    matched_value = sgqlc.types.Field(String, graphql_name='matchedValue')
+    match_quality = sgqlc.types.Field(Float, graphql_name='matchQuality')
+    match_type = sgqlc.types.Field(String, graphql_name='matchType')
+    mapped_indicator = sgqlc.types.Field(Boolean, graphql_name='mappedIndicator')
+    mapped_value = sgqlc.types.Field(String, graphql_name='mappedValue')
+    preferred = sgqlc.types.Field(Boolean, graphql_name='preferred')
+    domain_entity = sgqlc.types.Field(String, graphql_name='domainEntity')
+    other_matches = sgqlc.types.Field(sgqlc.types.list_of(sgqlc.types.non_null(JSON)), graphql_name='otherMatches')
+
+
+class MaxAgentWorkflow(sgqlc.types.Type):
+    __schema__ = schema
+    __field_names__ = ('agent_workflow_id', 'trace')
+    agent_workflow_id = sgqlc.types.Field(sgqlc.types.non_null(UUID), graphql_name='agentWorkflowId')
+    trace = sgqlc.types.Field(sgqlc.types.non_null(sgqlc.types.list_of(sgqlc.types.non_null('MaxToolCall'))), graphql_name='trace')
+
+
+class MaxAgentWorkflowReferencedState(sgqlc.types.Type):
+    __schema__ = schema
+    __field_names__ = ('name', 'content')
+    name = sgqlc.types.Field(sgqlc.types.non_null(String), graphql_name='name')
+    content = sgqlc.types.Field(JSON, graphql_name='content')
+
+
+class MaxAgentWorkflowTool(sgqlc.types.Type):
+    __schema__ = schema
+    __field_names__ = ('name', 'description')
+    name = sgqlc.types.Field(sgqlc.types.non_null(String), graphql_name='name')
+    description = sgqlc.types.Field(sgqlc.types.non_null(String), graphql_name='description')
+
+
+class MaxAgentWorkflowUpdatedState(sgqlc.types.Type):
+    __schema__ = schema
+    __field_names__ = ('name', 'content')
+    name = sgqlc.types.Field(sgqlc.types.non_null(String), graphql_name='name')
+    content = sgqlc.types.Field(JSON, graphql_name='content')
+
+
 class MaxChatEntry(sgqlc.types.Type):
     __schema__ = schema
     __field_names__ = ('id', 'thread_id', 'question', 'answer', 'feedback', 'user', 'skill_memory_payload')
@@ -464,7 +505,7 @@ class MaxCopilotQuestion(sgqlc.types.Type):
 
 class MaxCopilotSkill(sgqlc.types.Type):
     __schema__ = schema
-    __field_names__ = ('copilot_skill_id', 'name', 'copilot_skill_type', 'detailed_name', 'description', 'detailed_description', 'dataset_id', 'skill_chat_questions', 'yaml_code', 'skill_code', 'misc_info', 'scheduling_only', 'copilot_skill_nodes')
+    __field_names__ = ('copilot_skill_id', 'name', 'copilot_skill_type', 'detailed_name', 'description', 'detailed_description', 'dataset_id', 'parameters', 'skill_chat_questions', 'yaml_code', 'skill_code', 'misc_info', 'scheduling_only', 'copilot_skill_nodes')
     copilot_skill_id = sgqlc.types.Field(sgqlc.types.non_null(UUID), graphql_name='copilotSkillId')
     name = sgqlc.types.Field(sgqlc.types.non_null(String), graphql_name='name')
     copilot_skill_type = sgqlc.types.Field(sgqlc.types.non_null(String), graphql_name='copilotSkillType')
@@ -472,6 +513,7 @@ class MaxCopilotSkill(sgqlc.types.Type):
     description = sgqlc.types.Field(sgqlc.types.non_null(String), graphql_name='description')
     detailed_description = sgqlc.types.Field(String, graphql_name='detailedDescription')
     dataset_id = sgqlc.types.Field(UUID, graphql_name='datasetId')
+    parameters = sgqlc.types.Field(sgqlc.types.non_null(sgqlc.types.list_of(sgqlc.types.non_null('MaxCopilotSkillParameter'))), graphql_name='parameters')
     skill_chat_questions = sgqlc.types.Field(sgqlc.types.non_null(sgqlc.types.list_of('MaxCopilotSkillChatQuestion')), graphql_name='skillChatQuestions')
     yaml_code = sgqlc.types.Field(sgqlc.types.non_null(String), graphql_name='yamlCode')
     skill_code = sgqlc.types.Field(sgqlc.types.non_null(String), graphql_name='skillCode')
@@ -505,6 +547,28 @@ class MaxCopilotSkillNodeConnection(sgqlc.types.Type):
     input_property = sgqlc.types.Field(sgqlc.types.non_null(String), graphql_name='inputProperty')
     source_node_id = sgqlc.types.Field(sgqlc.types.non_null(UUID), graphql_name='sourceNodeId')
     output_property = sgqlc.types.Field(sgqlc.types.non_null(String), graphql_name='outputProperty')
+
+
+class MaxCopilotSkillParameter(sgqlc.types.Type):
+    __schema__ = schema
+    __field_names__ = ('copilot_skill_parameter_id', 'name', 'value', 'parameter_source_key', 'is_multi', 'llm_description', 'metadata_field', 'constrained_values', 'description', 'copilot_parameter_type', 'is_active', 'is_deleted', 'created_user_id', 'created_utc', 'last_modified_user_id', 'last_modified_utc', 'version')
+    copilot_skill_parameter_id = sgqlc.types.Field(sgqlc.types.non_null(UUID), graphql_name='copilotSkillParameterId')
+    name = sgqlc.types.Field(String, graphql_name='name')
+    value = sgqlc.types.Field(String, graphql_name='value')
+    parameter_source_key = sgqlc.types.Field(String, graphql_name='parameterSourceKey')
+    is_multi = sgqlc.types.Field(Boolean, graphql_name='isMulti')
+    llm_description = sgqlc.types.Field(String, graphql_name='llmDescription')
+    metadata_field = sgqlc.types.Field(String, graphql_name='metadataField')
+    constrained_values = sgqlc.types.Field(sgqlc.types.list_of(sgqlc.types.non_null(String)), graphql_name='constrainedValues')
+    description = sgqlc.types.Field(String, graphql_name='description')
+    copilot_parameter_type = sgqlc.types.Field(String, graphql_name='copilotParameterType')
+    is_active = sgqlc.types.Field(Boolean, graphql_name='isActive')
+    is_deleted = sgqlc.types.Field(Boolean, graphql_name='isDeleted')
+    created_user_id = sgqlc.types.Field(sgqlc.types.non_null(UUID), graphql_name='createdUserId')
+    created_utc = sgqlc.types.Field(sgqlc.types.non_null(DateTime), graphql_name='createdUtc')
+    last_modified_user_id = sgqlc.types.Field(sgqlc.types.non_null(UUID), graphql_name='lastModifiedUserId')
+    last_modified_utc = sgqlc.types.Field(sgqlc.types.non_null(DateTime), graphql_name='lastModifiedUtc')
+    version = sgqlc.types.Field(sgqlc.types.non_null(UUID), graphql_name='version')
 
 
 class MaxCreateCopilotQuestionResponse(sgqlc.types.Type):
@@ -654,6 +718,33 @@ class MaxTable(sgqlc.types.Type):
     columns = sgqlc.types.Field(sgqlc.types.non_null(sgqlc.types.list_of(sgqlc.types.non_null(MaxColumn))), graphql_name='columns')
 
 
+class MaxToolCall(sgqlc.types.Type):
+    __schema__ = schema
+    __field_names__ = ('tool', 'parameters', 'referenced_state', 'return_value', 'updated_state', 'additional_tool_state')
+    tool = sgqlc.types.Field(sgqlc.types.non_null(MaxAgentWorkflowTool), graphql_name='tool')
+    parameters = sgqlc.types.Field(sgqlc.types.non_null(sgqlc.types.list_of(sgqlc.types.non_null('MaxToolCallParameter'))), graphql_name='parameters')
+    referenced_state = sgqlc.types.Field(sgqlc.types.non_null(sgqlc.types.list_of(sgqlc.types.non_null(MaxAgentWorkflowReferencedState))), graphql_name='referencedState')
+    return_value = sgqlc.types.Field(sgqlc.types.non_null('MaxToolCallResponse'), graphql_name='returnValue')
+    updated_state = sgqlc.types.Field(sgqlc.types.non_null(sgqlc.types.list_of(sgqlc.types.non_null(MaxAgentWorkflowUpdatedState))), graphql_name='updatedState')
+    additional_tool_state = sgqlc.types.Field(JSON, graphql_name='additionalToolState')
+
+
+class MaxToolCallParameter(sgqlc.types.Type):
+    __schema__ = schema
+    __field_names__ = ('name', 'description', 'value')
+    name = sgqlc.types.Field(sgqlc.types.non_null(String), graphql_name='name')
+    description = sgqlc.types.Field(sgqlc.types.non_null(String), graphql_name='description')
+    value = sgqlc.types.Field(JSON, graphql_name='value')
+
+
+class MaxToolCallResponse(sgqlc.types.Type):
+    __schema__ = schema
+    __field_names__ = ('success', 'error_code', 'return_value')
+    success = sgqlc.types.Field(sgqlc.types.non_null(Boolean), graphql_name='success')
+    error_code = sgqlc.types.Field(String, graphql_name='errorCode')
+    return_value = sgqlc.types.Field(String, graphql_name='returnValue')
+
+
 class MaxUser(sgqlc.types.Type):
     __schema__ = schema
     __field_names__ = ('first_name', 'last_name', 'email_address')
@@ -664,7 +755,7 @@ class MaxUser(sgqlc.types.Type):
 
 class Mutation(sgqlc.types.Type):
     __schema__ = schema
-    __field_names__ = ('create_max_copilot_skill_chat_question', 'update_max_copilot_skill_chat_question', 'delete_max_copilot_skill_chat_question', 'create_max_copilot_question', 'update_max_copilot_question', 'delete_max_copilot_question', 'reload_dataset', 'update_dataset_date_range', 'update_chat_answer_payload', 'ask_chat_question', 'evaluate_chat_question', 'queue_chat_question', 'cancel_chat_question', 'create_chat_thread', 'add_feedback', 'set_skill_memory', 'share_thread', 'update_loading_message')
+    __field_names__ = ('create_max_copilot_skill_chat_question', 'update_max_copilot_skill_chat_question', 'delete_max_copilot_skill_chat_question', 'create_max_copilot_question', 'update_max_copilot_question', 'delete_max_copilot_question', 'set_max_agent_workflow', 'reload_dataset', 'update_dataset_date_range', 'update_chat_answer_payload', 'ask_chat_question', 'evaluate_chat_question', 'queue_chat_question', 'cancel_chat_question', 'create_chat_thread', 'add_feedback', 'set_skill_memory', 'share_thread', 'update_loading_message')
     create_max_copilot_skill_chat_question = sgqlc.types.Field(sgqlc.types.non_null(CreateMaxCopilotSkillChatQuestionResponse), graphql_name='createMaxCopilotSkillChatQuestion', args=sgqlc.types.ArgDict((
         ('copilot_id', sgqlc.types.Arg(sgqlc.types.non_null(UUID), graphql_name='copilotId', default=None)),
         ('copilot_skill_id', sgqlc.types.Arg(sgqlc.types.non_null(UUID), graphql_name='copilotSkillId', default=None)),
@@ -700,6 +791,11 @@ class Mutation(sgqlc.types.Type):
     delete_max_copilot_question = sgqlc.types.Field(sgqlc.types.non_null(MaxMutationResponse), graphql_name='deleteMaxCopilotQuestion', args=sgqlc.types.ArgDict((
         ('copilot_id', sgqlc.types.Arg(sgqlc.types.non_null(UUID), graphql_name='copilotId', default=None)),
         ('copilot_question_id', sgqlc.types.Arg(sgqlc.types.non_null(UUID), graphql_name='copilotQuestionId', default=None)),
+))
+    )
+    set_max_agent_workflow = sgqlc.types.Field(sgqlc.types.non_null(MaxMutationResponse), graphql_name='setMaxAgentWorkflow', args=sgqlc.types.ArgDict((
+        ('entry_id', sgqlc.types.Arg(sgqlc.types.non_null(UUID), graphql_name='entryId', default=None)),
+        ('agent_run_state', sgqlc.types.Arg(sgqlc.types.non_null(sgqlc.types.list_of(sgqlc.types.non_null(JSON))), graphql_name='agentRunState', default=None)),
 ))
     )
     reload_dataset = sgqlc.types.Field(sgqlc.types.non_null(MaxMutationResponse), graphql_name='reloadDataset', args=sgqlc.types.ArgDict((
@@ -783,7 +879,7 @@ class Mutation(sgqlc.types.Type):
 
 class Query(sgqlc.types.Type):
     __schema__ = schema
-    __field_names__ = ('ping', 'current_user', 'get_copilot_skill_artifact_by_path', 'get_copilot_info', 'get_copilot_skill', 'run_copilot_skill', 'get_skill_components', 'execute_sql_query', 'execute_rql_query', 'get_dataset_id', 'get_dataset', 'get_domain_object', 'get_domain_object_by_name', 'run_max_sql_gen', 'run_sql_ai', 'generate_visualization', 'llmapi_config_for_sdk', 'get_max_llm_prompt', 'user_chat_threads', 'user_chat_entries', 'chat_thread', 'chat_entry', 'user', 'all_chat_entries', 'skill_memory', 'chat_completion', 'narrative_completion', 'sql_completion', 'research_completion')
+    __field_names__ = ('ping', 'current_user', 'get_copilot_skill_artifact_by_path', 'get_copilots', 'get_copilot_info', 'get_copilot_skill', 'run_copilot_skill', 'get_skill_components', 'get_max_agent_workflow', 'execute_sql_query', 'execute_rql_query', 'get_dataset_id', 'get_dataset', 'get_domain_object', 'get_domain_object_by_name', 'get_grounded_value', 'run_max_sql_gen', 'run_sql_ai', 'generate_visualization', 'llmapi_config_for_sdk', 'get_max_llm_prompt', 'user_chat_threads', 'user_chat_entries', 'chat_thread', 'chat_entry', 'user', 'all_chat_entries', 'skill_memory', 'chat_completion', 'narrative_completion', 'narrative_completion_with_prompt', 'sql_completion', 'research_completion')
     ping = sgqlc.types.Field(String, graphql_name='ping')
     current_user = sgqlc.types.Field(MaxUser, graphql_name='currentUser')
     get_copilot_skill_artifact_by_path = sgqlc.types.Field(CopilotSkillArtifact, graphql_name='getCopilotSkillArtifactByPath', args=sgqlc.types.ArgDict((
@@ -792,6 +888,7 @@ class Query(sgqlc.types.Type):
         ('artifact_path', sgqlc.types.Arg(sgqlc.types.non_null(String), graphql_name='artifactPath', default=None)),
 ))
     )
+    get_copilots = sgqlc.types.Field(sgqlc.types.non_null(sgqlc.types.list_of(sgqlc.types.non_null(MaxCopilot))), graphql_name='getCopilots')
     get_copilot_info = sgqlc.types.Field(MaxCopilot, graphql_name='getCopilotInfo', args=sgqlc.types.ArgDict((
         ('copilot_id', sgqlc.types.Arg(sgqlc.types.non_null(UUID), graphql_name='copilotId', default=None)),
         ('use_published_version', sgqlc.types.Arg(Boolean, graphql_name='usePublishedVersion', default=None)),
@@ -811,6 +908,10 @@ class Query(sgqlc.types.Type):
 ))
     )
     get_skill_components = sgqlc.types.Field(sgqlc.types.non_null(sgqlc.types.list_of(sgqlc.types.non_null(MaxSkillComponent))), graphql_name='getSkillComponents')
+    get_max_agent_workflow = sgqlc.types.Field(MaxAgentWorkflow, graphql_name='getMaxAgentWorkflow', args=sgqlc.types.ArgDict((
+        ('agent_workflow_id', sgqlc.types.Arg(sgqlc.types.non_null(UUID), graphql_name='agentWorkflowId', default=None)),
+))
+    )
     execute_sql_query = sgqlc.types.Field(ExecuteSqlQueryResponse, graphql_name='executeSqlQuery', args=sgqlc.types.ArgDict((
         ('database_id', sgqlc.types.Arg(sgqlc.types.non_null(UUID), graphql_name='databaseId', default=None)),
         ('sql_query', sgqlc.types.Arg(sgqlc.types.non_null(String), graphql_name='sqlQuery', default=None)),
@@ -844,6 +945,13 @@ class Query(sgqlc.types.Type):
     get_domain_object_by_name = sgqlc.types.Field(DomainObjectResponse, graphql_name='getDomainObjectByName', args=sgqlc.types.ArgDict((
         ('dataset_id', sgqlc.types.Arg(sgqlc.types.non_null(UUID), graphql_name='datasetId', default=None)),
         ('rql_name', sgqlc.types.Arg(sgqlc.types.non_null(String), graphql_name='rqlName', default=None)),
+))
+    )
+    get_grounded_value = sgqlc.types.Field(GroundedValueResponse, graphql_name='getGroundedValue', args=sgqlc.types.ArgDict((
+        ('dataset_id', sgqlc.types.Arg(sgqlc.types.non_null(UUID), graphql_name='datasetId', default=None)),
+        ('domain_entity', sgqlc.types.Arg(String, graphql_name='domainEntity', default=None)),
+        ('value', sgqlc.types.Arg(sgqlc.types.non_null(String), graphql_name='value', default=None)),
+        ('copilot_id', sgqlc.types.Arg(UUID, graphql_name='copilotId', default=None)),
 ))
     )
     run_max_sql_gen = sgqlc.types.Field(sgqlc.types.non_null('RunMaxSqlGenResponse'), graphql_name='runMaxSqlGen', args=sgqlc.types.ArgDict((
@@ -917,6 +1025,12 @@ class Query(sgqlc.types.Type):
     )
     narrative_completion = sgqlc.types.Field(LlmResponse, graphql_name='narrativeCompletion', args=sgqlc.types.ArgDict((
         ('prompt', sgqlc.types.Arg(sgqlc.types.non_null(String), graphql_name='prompt', default=None)),
+        ('model_selection', sgqlc.types.Arg(LlmModelSelection, graphql_name='modelSelection', default=None)),
+))
+    )
+    narrative_completion_with_prompt = sgqlc.types.Field(LlmResponse, graphql_name='narrativeCompletionWithPrompt', args=sgqlc.types.ArgDict((
+        ('prompt_name', sgqlc.types.Arg(sgqlc.types.non_null(String), graphql_name='promptName', default=None)),
+        ('prompt_variables', sgqlc.types.Arg(JSON, graphql_name='promptVariables', default=None)),
         ('model_selection', sgqlc.types.Arg(LlmModelSelection, graphql_name='modelSelection', default=None)),
 ))
     )

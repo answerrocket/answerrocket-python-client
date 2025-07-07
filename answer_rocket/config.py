@@ -62,6 +62,22 @@ class Config:
         if result.get_copilot_skill_artifact_by_path and result.get_copilot_skill_artifact_by_path.artifact:
             return result.get_copilot_skill_artifact_by_path.artifact
 
+    def get_copilots(self) -> list[MaxCopilot]:
+        """
+        Retrieves all copilots available to the user with their metadata.
+
+        Returns:
+            list[MaxCopilot]: A list of MaxCopilot objects.
+        """
+        try:
+            op = Operations.query.get_copilots
+            result = self._gql_client.submit(op, {})
+            return result.get_copilots or []
+
+        except Exception as e:
+            print(f"Error retrieving copilots: {e}")
+            return []
+        
     def get_copilot(self, use_published_version: bool = True, copilot_id: str = None) -> MaxCopilot:
         try:
             query_args = {

@@ -203,6 +203,23 @@ def query_get_copilot_skill():
     _op_get_copilot_skill_copilot_skill_nodes_node_connections.input_property()
     _op_get_copilot_skill_copilot_skill_nodes_node_connections.source_node_id()
     _op_get_copilot_skill_copilot_skill_nodes_node_connections.output_property()
+    _op_get_copilot_skill_parameters = _op_get_copilot_skill.parameters()
+    _op_get_copilot_skill_parameters.copilot_skill_parameter_id()
+    _op_get_copilot_skill_parameters.name()
+    _op_get_copilot_skill_parameters.copilot_parameter_type()
+    _op_get_copilot_skill_parameters.parameter_source_key()
+    _op_get_copilot_skill_parameters.is_multi()
+    _op_get_copilot_skill_parameters.metadata_field()
+    _op_get_copilot_skill_parameters.llm_description()
+    _op_get_copilot_skill_parameters.constrained_values()
+    _op_get_copilot_skill_parameters.value()
+    _op_get_copilot_skill_parameters.description()
+    _op_get_copilot_skill_parameters.is_active()
+    _op_get_copilot_skill_parameters.created_user_id()
+    _op_get_copilot_skill_parameters.created_utc()
+    _op_get_copilot_skill_parameters.last_modified_user_id()
+    _op_get_copilot_skill_parameters.last_modified_utc()
+    _op_get_copilot_skill_parameters.version()
     return _op
 
 
@@ -222,6 +239,64 @@ def query_get_copilot_info():
     return _op
 
 
+def query_get_copilots():
+    _op = sgqlc.operation.Operation(_schema_root.query_type, name='GetCopilots')
+    _op_get_copilots = _op.get_copilots()
+    _op_get_copilots.copilot_id()
+    _op_get_copilots.name()
+    _op_get_copilots.description()
+    _op_get_copilots.system_prompt()
+    _op_get_copilots.beta_yaml()
+    _op_get_copilots.global_python_code()
+    _op_get_copilots_copilot_questions = _op_get_copilots.copilot_questions()
+    _op_get_copilots_copilot_questions.copilot_question_id()
+    _op_get_copilots_copilot_questions.nl()
+    _op_get_copilots_copilot_questions.skill_id()
+    _op_get_copilots_copilot_questions.parameters()
+    _op_get_copilots_copilot_questions.is_starter()
+    _op_get_copilots_copilot_questions.hint()
+    _op_get_copilots_copilot_questions.created_user_id()
+    _op_get_copilots_copilot_questions.created_utc()
+    _op_get_copilots_copilot_questions.last_modified_user_id()
+    _op_get_copilots_copilot_questions.last_modified_utc()
+    _op_get_copilots_copilot_questions.version()
+    _op_get_copilots_copilot_questions.is_deleted()
+    _op_get_copilots_connection_datasets = _op_get_copilots.connection_datasets()
+    _op_get_copilots_connection_datasets.dataset_id()
+    _op_get_copilots_connection_datasets.name()
+    _op_get_copilots.copilot_skill_ids()
+    _op_get_copilots_copilot_topics = _op_get_copilots.copilot_topics()
+    _op_get_copilots_copilot_topics.copilot_topic_id()
+    _op_get_copilots_copilot_topics.name()
+    _op_get_copilots_copilot_topics.description()
+    _op_get_copilots_copilot_topics.research_outline()
+    _op_get_copilots_copilot_topics.presentation_outline()
+    _op_get_copilots_copilot_topics.created_user_id()
+    _op_get_copilots_copilot_topics.created_user_name()
+    _op_get_copilots_copilot_topics.created_utc()
+    _op_get_copilots_copilot_topics.last_modified_user_id()
+    _op_get_copilots_copilot_topics.last_modified_user_name()
+    _op_get_copilots_copilot_topics.last_modified_utc()
+    _op_get_copilots_copilot_topics.is_active()
+    _op_get_copilots.database_id()
+    _op_get_copilots.dataset_id()
+    return _op
+
+
+def query_get_grounded_value():
+    _op = sgqlc.operation.Operation(_schema_root.query_type, name='GetGroundedValue', variables=dict(datasetId=sgqlc.types.Arg(sgqlc.types.non_null(_schema.UUID)), value=sgqlc.types.Arg(sgqlc.types.non_null(_schema.String)), domainEntity=sgqlc.types.Arg(_schema.String), copilotId=sgqlc.types.Arg(_schema.UUID)))
+    _op_get_grounded_value = _op.get_grounded_value(dataset_id=sgqlc.types.Variable('datasetId'), value=sgqlc.types.Variable('value'), domain_entity=sgqlc.types.Variable('domainEntity'), copilot_id=sgqlc.types.Variable('copilotId'))
+    _op_get_grounded_value.matched_value()
+    _op_get_grounded_value.match_quality()
+    _op_get_grounded_value.match_type()
+    _op_get_grounded_value.mapped_indicator()
+    _op_get_grounded_value.mapped_value()
+    _op_get_grounded_value.preferred()
+    _op_get_grounded_value.domain_entity()
+    _op_get_grounded_value.other_matches()
+    return _op
+
+
 def query_chat_completion():
     _op = sgqlc.operation.Operation(_schema_root.query_type, name='ChatCompletion', variables=dict(messages=sgqlc.types.Arg(sgqlc.types.non_null(sgqlc.types.list_of(sgqlc.types.non_null(_schema.LlmChatMessage)))), modelSelection=sgqlc.types.Arg(_schema.LlmModelSelection)))
     _op.chat_completion(messages=sgqlc.types.Variable('messages'), model_selection=sgqlc.types.Variable('modelSelection'))
@@ -231,6 +306,12 @@ def query_chat_completion():
 def query_narrative_completion():
     _op = sgqlc.operation.Operation(_schema_root.query_type, name='NarrativeCompletion', variables=dict(prompt=sgqlc.types.Arg(sgqlc.types.non_null(_schema.String)), modelSelection=sgqlc.types.Arg(_schema.LlmModelSelection)))
     _op.narrative_completion(prompt=sgqlc.types.Variable('prompt'), model_selection=sgqlc.types.Variable('modelSelection'))
+    return _op
+
+
+def query_narrative_completion_with_prompt():
+    _op = sgqlc.operation.Operation(_schema_root.query_type, name='NarrativeCompletionWithPrompt', variables=dict(promptName=sgqlc.types.Arg(sgqlc.types.non_null(_schema.String)), promptVariables=sgqlc.types.Arg(_schema.JSON), modelSelection=sgqlc.types.Arg(_schema.LlmModelSelection)))
+    _op.narrative_completion_with_prompt(prompt_name=sgqlc.types.Variable('promptName'), prompt_variables=sgqlc.types.Variable('promptVariables'), model_selection=sgqlc.types.Variable('modelSelection'))
     return _op
 
 
@@ -254,8 +335,11 @@ class Query:
     dataframes_for_entry = query_dataframes_for_entry()
     get_copilot_info = query_get_copilot_info()
     get_copilot_skill = query_get_copilot_skill()
+    get_copilots = query_get_copilots()
+    get_grounded_value = query_get_grounded_value()
     get_max_llm_prompt = query_get_max_llm_prompt()
     narrative_completion = query_narrative_completion()
+    narrative_completion_with_prompt = query_narrative_completion_with_prompt()
     research_completion = query_research_completion()
     skill_memory = query_skill_memory()
     sql_completion = query_sql_completion()
