@@ -884,7 +884,7 @@ class Query(sgqlc.types.Type):
 ))
     )
     get_skill_components = sgqlc.types.Field(sgqlc.types.non_null(sgqlc.types.list_of(sgqlc.types.non_null(MaxSkillComponent))), graphql_name='getSkillComponents')
-    get_max_agent_workflow = sgqlc.types.Field(MaxAgentWorkflow, graphql_name='getMaxAgentWorkflow', args=sgqlc.types.ArgDict((
+    get_max_agent_workflow = sgqlc.types.Field(JSON, graphql_name='getMaxAgentWorkflow', args=sgqlc.types.ArgDict((
         ('agent_workflow_id', sgqlc.types.Arg(sgqlc.types.non_null(UUID), graphql_name='agentWorkflowId', default=None)),
         ('version', sgqlc.types.Arg(Int, graphql_name='version', default=None)),
 ))

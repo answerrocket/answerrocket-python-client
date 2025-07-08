@@ -177,32 +177,5 @@ mutation SetMaxAgentWorkflow($entryId: UUID!, $agentRunState: [JSON!]!) {
 }
 
 query GetMaxAgentWorkflow($agentWorkflowId: UUID!, $version: Int) {
-  getMaxAgentWorkflow(agentWorkflowId: $agentWorkflowId, version: $version) {
-    agentWorkflowId
-    trace {
-      tool {
-        name
-        description
-      }
-      parameters {
-        name
-        description
-        value
-      }
-      returnValue {
-        success
-        errorCode
-        returnValue
-      }
-      referencedState {
-        name
-        content
-      }
-      updatedState {
-        name
-        content
-      }
-      additionalToolState
-    }
-  }
+  getMaxAgentWorkflow(agentWorkflowId: $agentWorkflowId, version: $version)
 }

@@ -175,27 +175,7 @@ def query_skill_memory():
 
 def query_get_max_agent_workflow():
     _op = sgqlc.operation.Operation(_schema_root.query_type, name='GetMaxAgentWorkflow', variables=dict(agentWorkflowId=sgqlc.types.Arg(sgqlc.types.non_null(_schema.UUID)), version=sgqlc.types.Arg(_schema.Int)))
-    _op_get_max_agent_workflow = _op.get_max_agent_workflow(agent_workflow_id=sgqlc.types.Variable('agentWorkflowId'), version=sgqlc.types.Variable('version'))
-    _op_get_max_agent_workflow.agent_workflow_id()
-    _op_get_max_agent_workflow_trace = _op_get_max_agent_workflow.trace()
-    _op_get_max_agent_workflow_trace_tool = _op_get_max_agent_workflow_trace.tool()
-    _op_get_max_agent_workflow_trace_tool.name()
-    _op_get_max_agent_workflow_trace_tool.description()
-    _op_get_max_agent_workflow_trace_parameters = _op_get_max_agent_workflow_trace.parameters()
-    _op_get_max_agent_workflow_trace_parameters.name()
-    _op_get_max_agent_workflow_trace_parameters.description()
-    _op_get_max_agent_workflow_trace_parameters.value()
-    _op_get_max_agent_workflow_trace_return_value = _op_get_max_agent_workflow_trace.return_value()
-    _op_get_max_agent_workflow_trace_return_value.success()
-    _op_get_max_agent_workflow_trace_return_value.error_code()
-    _op_get_max_agent_workflow_trace_return_value.return_value()
-    _op_get_max_agent_workflow_trace_referenced_state = _op_get_max_agent_workflow_trace.referenced_state()
-    _op_get_max_agent_workflow_trace_referenced_state.name()
-    _op_get_max_agent_workflow_trace_referenced_state.content()
-    _op_get_max_agent_workflow_trace_updated_state = _op_get_max_agent_workflow_trace.updated_state()
-    _op_get_max_agent_workflow_trace_updated_state.name()
-    _op_get_max_agent_workflow_trace_updated_state.content()
-    _op_get_max_agent_workflow_trace.additional_tool_state()
+    _op.get_max_agent_workflow(agent_workflow_id=sgqlc.types.Variable('agentWorkflowId'), version=sgqlc.types.Variable('version'))
     return _op
 
 
