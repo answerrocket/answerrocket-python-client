@@ -179,3 +179,7 @@ mutation SetMaxAgentWorkflow($entryId: UUID!, $agentRunState: [JSON!]!) {
 query GetMaxAgentWorkflow($agentWorkflowId: UUID!, $version: Int) {
   getMaxAgentWorkflow(agentWorkflowId: $agentWorkflowId, version: $version)
 }
+
+mutation ImportAgentWorkflowFromZip($entryId: UUID!, $skillName: String!) {
+  importAgentWorkflowFromZip(entryId: $entryId, skillName: $skillName)
+}

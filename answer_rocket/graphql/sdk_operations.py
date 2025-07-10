@@ -93,6 +93,12 @@ def mutation_set_max_agent_workflow():
     return _op
 
 
+def mutation_import_agent_workflow_from_zip():
+    _op = sgqlc.operation.Operation(_schema_root.mutation_type, name='ImportAgentWorkflowFromZip', variables=dict(entryId=sgqlc.types.Arg(sgqlc.types.non_null(_schema.UUID)), skillName=sgqlc.types.Arg(sgqlc.types.non_null(_schema.String))))
+    _op.import_agent_workflow_from_zip(entry_id=sgqlc.types.Variable('entryId'), skill_name=sgqlc.types.Variable('skillName'))
+    return _op
+
+
 def mutation_update_loading_message():
     _op = sgqlc.operation.Operation(_schema_root.mutation_type, name='UpdateLoadingMessage', variables=dict(answerId=sgqlc.types.Arg(sgqlc.types.non_null(_schema.UUID)), message=sgqlc.types.Arg(sgqlc.types.non_null(_schema.String))))
     _op.update_loading_message(answer_id=sgqlc.types.Variable('answerId'), message=sgqlc.types.Variable('message'))
@@ -104,6 +110,7 @@ class Mutation:
     ask_chat_question = mutation_ask_chat_question()
     cancel_chat_question = mutation_cancel_chat_question()
     create_chat_thread = mutation_create_chat_thread()
+    import_agent_workflow_from_zip = mutation_import_agent_workflow_from_zip()
     queue_chat_question = mutation_queue_chat_question()
     set_max_agent_workflow = mutation_set_max_agent_workflow()
     set_skill_memory = mutation_set_skill_memory()
