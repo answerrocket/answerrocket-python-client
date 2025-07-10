@@ -87,6 +87,15 @@ def mutation_set_skill_memory():
     return _op
 
 
+def mutation_create_dimension():
+    _op = sgqlc.operation.Operation(_schema_root.mutation_type, name='CreateDimension', variables=dict(datasetId=sgqlc.types.Arg(sgqlc.types.non_null(_schema.UUID)), dimension=sgqlc.types.Arg(sgqlc.types.non_null(_schema.JSON))))
+    _op_create_dimension = _op.create_dimension(dataset_id=sgqlc.types.Variable('datasetId'), dimension=sgqlc.types.Variable('dimension'))
+    _op_create_dimension.success()
+    _op_create_dimension.code()
+    _op_create_dimension.error()
+    return _op
+
+
 def mutation_update_loading_message():
     _op = sgqlc.operation.Operation(_schema_root.mutation_type, name='UpdateLoadingMessage', variables=dict(answerId=sgqlc.types.Arg(sgqlc.types.non_null(_schema.UUID)), message=sgqlc.types.Arg(sgqlc.types.non_null(_schema.String))))
     _op.update_loading_message(answer_id=sgqlc.types.Variable('answerId'), message=sgqlc.types.Variable('message'))
@@ -98,6 +107,7 @@ class Mutation:
     ask_chat_question = mutation_ask_chat_question()
     cancel_chat_question = mutation_cancel_chat_question()
     create_chat_thread = mutation_create_chat_thread()
+    create_dimension = mutation_create_dimension()
     queue_chat_question = mutation_queue_chat_question()
     set_skill_memory = mutation_set_skill_memory()
     update_loading_message = mutation_update_loading_message()

@@ -20,3 +20,17 @@ query GetGroundedValue(
     otherMatches
   }
 }
+
+mutation CreateDimension(
+  $datasetId: UUID!
+  $dimension: JSON!
+) {
+  createDimension(
+    datasetId: $datasetId
+    dimension: $dimension
+  ) {
+    success
+    code
+    error
+  }
+}
