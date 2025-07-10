@@ -1161,8 +1161,8 @@ class AzureOpenaiEmbeddingLLMApiConfig(sgqlc.types.Type, LLMApiConfig):
 
 class Dimension(sgqlc.types.Type, DomainArtifact):
     __schema__ = schema
-    __field_names__ = ('simplified_data_type', 'sql_expression', 'sql_sort_expression', 'sample_limit')
-    simplified_data_type = sgqlc.types.Field(sgqlc.types.non_null(SimplifiedDataType), graphql_name='simplifiedDataType')
+    __field_names__ = ('data_type', 'sql_expression', 'sql_sort_expression', 'sample_limit')
+    data_type = sgqlc.types.Field(sgqlc.types.non_null(SimplifiedDataType), graphql_name='dataType')
     sql_expression = sgqlc.types.Field(sgqlc.types.non_null(String), graphql_name='sqlExpression')
     sql_sort_expression = sgqlc.types.Field(String, graphql_name='sqlSortExpression')
     sample_limit = sgqlc.types.Field(sgqlc.types.non_null(Int), graphql_name='sampleLimit')
@@ -1241,8 +1241,8 @@ class MaxReferenceAttribute(sgqlc.types.Type, MaxDomainObject, MaxDomainAttribut
 
 class Metric(sgqlc.types.Type, DomainArtifact):
     __schema__ = schema
-    __field_names__ = ('simplified_data_type', 'metric_type', 'display_format', 'sql_agg_expression', 'sql_row_expression', 'growth_type', 'growth_format')
-    simplified_data_type = sgqlc.types.Field(sgqlc.types.non_null(SimplifiedDataType), graphql_name='simplifiedDataType')
+    __field_names__ = ('data_type', 'metric_type', 'display_format', 'sql_agg_expression', 'sql_row_expression', 'growth_type', 'growth_format')
+    data_type = sgqlc.types.Field(sgqlc.types.non_null(SimplifiedDataType), graphql_name='dataType')
     metric_type = sgqlc.types.Field(sgqlc.types.non_null(MetricType), graphql_name='metricType')
     display_format = sgqlc.types.Field(sgqlc.types.non_null(String), graphql_name='displayFormat')
     sql_agg_expression = sgqlc.types.Field(sgqlc.types.non_null(String), graphql_name='sqlAggExpression')
