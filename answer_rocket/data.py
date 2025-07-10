@@ -14,7 +14,8 @@ from answer_rocket.graphql.schema import UUID as GQL_UUID, GenerateVisualization
     MaxDimensionEntity, MaxFactEntity, \
     MaxNormalAttribute, \
     MaxPrimaryAttribute, MaxReferenceAttribute, MaxCalculatedMetric, MaxDataset, MaxCalculatedAttribute, \
-    MaxMutationResponse, DateTime, RunMaxSqlGenResponse, JSON, RunSqlAiResponse, GroundedValueResponse, Dimension
+    MaxMutationResponse, DateTime, RunMaxSqlGenResponse, JSON, RunSqlAiResponse, GroundedValueResponse, Dimension, \
+    Metric
 from answer_rocket.graphql.sdk_operations import Operations
 from answer_rocket.types import MaxResult, RESULT_EXCEPTION_CODE
 
@@ -839,3 +840,14 @@ class Data:
         result = self._gql_client.submit(op, mutation_args)
 
         return result.create_dimension
+
+    def create_metric(self, dataset_id: UUID, metric: Metric) -> MaxMutationResponse:
+        mutation_args = {
+            'datasetId': str(dataset_id),
+            'metric': metric,
+        }
+
+        op = Operations.mutation.create_metric
+        result = self._gql_client.submit(op, mutation_args)
+
+        return result.create_metric

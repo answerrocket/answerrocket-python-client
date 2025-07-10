@@ -34,3 +34,17 @@ mutation CreateDimension(
     error
   }
 }
+
+mutation CreateMetric(
+  $datasetId: UUID!
+  $metric: JSON!
+) {
+  createMetric(
+    datasetId: $datasetId
+    metric: $metric
+  ) {
+    success
+    code
+    error
+  }
+}
