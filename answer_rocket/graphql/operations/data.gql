@@ -21,6 +21,18 @@ query GetGroundedValue(
   }
 }
 
+mutation CreateDataset(
+  $dataset: JSON!
+) {
+  createDataset(
+    dataset: $dataset
+  ) {
+    success
+    code
+    error
+  }
+}
+
 mutation CreateDimension(
   $datasetId: UUID!
   $dimension: JSON!

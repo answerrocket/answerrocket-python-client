@@ -87,6 +87,15 @@ def mutation_set_skill_memory():
     return _op
 
 
+def mutation_create_dataset():
+    _op = sgqlc.operation.Operation(_schema_root.mutation_type, name='CreateDataset', variables=dict(dataset=sgqlc.types.Arg(sgqlc.types.non_null(_schema.JSON))))
+    _op_create_dataset = _op.create_dataset(dataset=sgqlc.types.Variable('dataset'))
+    _op_create_dataset.success()
+    _op_create_dataset.code()
+    _op_create_dataset.error()
+    return _op
+
+
 def mutation_create_dimension():
     _op = sgqlc.operation.Operation(_schema_root.mutation_type, name='CreateDimension', variables=dict(datasetId=sgqlc.types.Arg(sgqlc.types.non_null(_schema.UUID)), dimension=sgqlc.types.Arg(sgqlc.types.non_null(_schema.JSON))))
     _op_create_dimension = _op.create_dimension(dataset_id=sgqlc.types.Variable('datasetId'), dimension=sgqlc.types.Variable('dimension'))
@@ -152,6 +161,7 @@ class Mutation:
     ask_chat_question = mutation_ask_chat_question()
     cancel_chat_question = mutation_cancel_chat_question()
     create_chat_thread = mutation_create_chat_thread()
+    create_dataset = mutation_create_dataset()
     create_dimension = mutation_create_dimension()
     create_metric = mutation_create_metric()
     delete_dimension = mutation_delete_dimension()

@@ -15,7 +15,7 @@ from answer_rocket.graphql.schema import UUID as GQL_UUID, GenerateVisualization
     MaxNormalAttribute, \
     MaxPrimaryAttribute, MaxReferenceAttribute, MaxCalculatedMetric, MaxDataset, MaxCalculatedAttribute, \
     MaxMutationResponse, DateTime, RunMaxSqlGenResponse, JSON, RunSqlAiResponse, GroundedValueResponse, Dimension, \
-    Metric
+    Metric, Dataset
 from answer_rocket.graphql.sdk_operations import Operations
 from answer_rocket.types import MaxResult, RESULT_EXCEPTION_CODE
 
@@ -829,6 +829,16 @@ class Data:
         mutation_response = result.update_dataset_date_range
 
         return mutation_response
+
+    def create_dataset(self, dataset: Dataset) -> MaxMutationResponse:
+        mutation_args = {
+            'dataset': dataset,
+        }
+
+        op = Operations.mutation.create_dataset
+        result = self._gql_client.submit(op, mutation_args)
+
+        return result.create_dataset
 
     def create_dimension(self, dataset_id: UUID, dimension: Dimension) -> MaxMutationResponse:
         mutation_args = {
