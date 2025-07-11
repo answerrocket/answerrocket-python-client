@@ -30,6 +30,11 @@ class FeedbackType(sgqlc.types.Enum):
 
 Float = sgqlc.types.Float
 
+class GrowthType(sgqlc.types.Enum):
+    __schema__ = schema
+    __choices__ = ('DIFFERENCE', 'PERCENT_CHANGE')
+
+
 Int = sgqlc.types.Int
 
 class JSON(sgqlc.types.Scalar):
@@ -125,6 +130,17 @@ class ModelOverride(sgqlc.types.Input):
 ########################################################################
 # Output Objects and Interfaces
 ########################################################################
+class DomainArtifact(sgqlc.types.Interface):
+    __schema__ = schema
+    __field_names__ = ('id', 'name', 'description', 'output_label', 'is_active', 'misc_info')
+    id = sgqlc.types.Field(sgqlc.types.non_null(String), graphql_name='id')
+    name = sgqlc.types.Field(sgqlc.types.non_null(String), graphql_name='name')
+    description = sgqlc.types.Field(String, graphql_name='description')
+    output_label = sgqlc.types.Field(sgqlc.types.non_null(String), graphql_name='outputLabel')
+    is_active = sgqlc.types.Field(sgqlc.types.non_null(Boolean), graphql_name='isActive')
+    misc_info = sgqlc.types.Field(String, graphql_name='miscInfo')
+
+
 class LLMApiConfig(sgqlc.types.Interface):
     __schema__ = schema
     __field_names__ = ('id', 'api_type', 'model_type', 'model_name')
@@ -591,11 +607,13 @@ class MaxDatabase(sgqlc.types.Type):
 
 class MaxDataset(sgqlc.types.Type):
     __schema__ = schema
-    __field_names__ = ('dataset_id', 'name', 'description', 'domain_objects', 'misc_info', 'database', 'tables', 'dimension_value_distribution_map', 'date_range_boundary_attribute_id', 'dimension_hierarchies', 'metric_hierarchies', 'domain_attribute_statistics', 'default_performance_metric_id', 'dataset_min_date', 'dataset_max_date', 'query_row_limit', 'use_database_casing')
+    __field_names__ = ('dataset_id', 'name', 'description', 'domain_objects', 'metrics', 'dimensions', 'misc_info', 'database', 'tables', 'dimension_value_distribution_map', 'date_range_boundary_attribute_id', 'dimension_hierarchies', 'metric_hierarchies', 'domain_attribute_statistics', 'default_performance_metric_id', 'dataset_min_date', 'dataset_max_date', 'query_row_limit', 'use_database_casing')
     dataset_id = sgqlc.types.Field(sgqlc.types.non_null(UUID), graphql_name='datasetId')
     name = sgqlc.types.Field(sgqlc.types.non_null(String), graphql_name='name')
     description = sgqlc.types.Field(String, graphql_name='description')
     domain_objects = sgqlc.types.Field(sgqlc.types.non_null(sgqlc.types.list_of(sgqlc.types.non_null(MaxDomainObject))), graphql_name='domainObjects')
+    metrics = sgqlc.types.Field(sgqlc.types.non_null(sgqlc.types.list_of('Metric')), graphql_name='metrics')
+    dimensions = sgqlc.types.Field(sgqlc.types.non_null(sgqlc.types.list_of('Dimension')), graphql_name='dimensions')
     misc_info = sgqlc.types.Field(String, graphql_name='miscInfo')
     database = sgqlc.types.Field(MaxDatabase, graphql_name='database')
     tables = sgqlc.types.Field(sgqlc.types.non_null(sgqlc.types.list_of(sgqlc.types.non_null('MaxTable'))), graphql_name='tables')
@@ -755,7 +773,7 @@ class MaxUser(sgqlc.types.Type):
 
 class Mutation(sgqlc.types.Type):
     __schema__ = schema
-    __field_names__ = ('create_max_copilot_skill_chat_question', 'update_max_copilot_skill_chat_question', 'delete_max_copilot_skill_chat_question', 'create_max_copilot_question', 'update_max_copilot_question', 'delete_max_copilot_question', 'set_max_agent_workflow', 'reload_dataset', 'update_dataset_date_range', 'update_chat_answer_payload', 'ask_chat_question', 'evaluate_chat_question', 'queue_chat_question', 'cancel_chat_question', 'create_chat_thread', 'add_feedback', 'set_skill_memory', 'share_thread', 'update_loading_message')
+    __field_names__ = ('create_max_copilot_skill_chat_question', 'update_max_copilot_skill_chat_question', 'delete_max_copilot_skill_chat_question', 'create_max_copilot_question', 'update_max_copilot_question', 'delete_max_copilot_question', 'set_max_agent_workflow', 'reload_dataset', 'update_dataset_date_range', 'create_dimension', 'update_dimension', 'delete_dimension', 'create_metric', 'update_metric', 'delete_metric', 'update_chat_answer_payload', 'ask_chat_question', 'evaluate_chat_question', 'queue_chat_question', 'cancel_chat_question', 'create_chat_thread', 'add_feedback', 'set_skill_memory', 'share_thread', 'update_loading_message')
     create_max_copilot_skill_chat_question = sgqlc.types.Field(sgqlc.types.non_null(CreateMaxCopilotSkillChatQuestionResponse), graphql_name='createMaxCopilotSkillChatQuestion', args=sgqlc.types.ArgDict((
         ('copilot_id', sgqlc.types.Arg(sgqlc.types.non_null(UUID), graphql_name='copilotId', default=None)),
         ('copilot_skill_id', sgqlc.types.Arg(sgqlc.types.non_null(UUID), graphql_name='copilotSkillId', default=None)),
@@ -808,6 +826,36 @@ class Mutation(sgqlc.types.Type):
         ('dataset_id', sgqlc.types.Arg(sgqlc.types.non_null(UUID), graphql_name='datasetId', default=None)),
         ('dataset_min_date', sgqlc.types.Arg(sgqlc.types.non_null(DateTime), graphql_name='datasetMinDate', default=None)),
         ('dataset_max_date', sgqlc.types.Arg(sgqlc.types.non_null(DateTime), graphql_name='datasetMaxDate', default=None)),
+))
+    )
+    create_dimension = sgqlc.types.Field(sgqlc.types.non_null(MaxMutationResponse), graphql_name='createDimension', args=sgqlc.types.ArgDict((
+        ('dataset_id', sgqlc.types.Arg(sgqlc.types.non_null(UUID), graphql_name='datasetId', default=None)),
+        ('dimension', sgqlc.types.Arg(sgqlc.types.non_null(JSON), graphql_name='dimension', default=None)),
+))
+    )
+    update_dimension = sgqlc.types.Field(sgqlc.types.non_null(MaxMutationResponse), graphql_name='updateDimension', args=sgqlc.types.ArgDict((
+        ('dataset_id', sgqlc.types.Arg(sgqlc.types.non_null(UUID), graphql_name='datasetId', default=None)),
+        ('dimension', sgqlc.types.Arg(sgqlc.types.non_null(JSON), graphql_name='dimension', default=None)),
+))
+    )
+    delete_dimension = sgqlc.types.Field(sgqlc.types.non_null(MaxMutationResponse), graphql_name='deleteDimension', args=sgqlc.types.ArgDict((
+        ('dataset_id', sgqlc.types.Arg(sgqlc.types.non_null(UUID), graphql_name='datasetId', default=None)),
+        ('dimension_id', sgqlc.types.Arg(sgqlc.types.non_null(String), graphql_name='dimensionId', default=None)),
+))
+    )
+    create_metric = sgqlc.types.Field(sgqlc.types.non_null(MaxMutationResponse), graphql_name='createMetric', args=sgqlc.types.ArgDict((
+        ('dataset_id', sgqlc.types.Arg(sgqlc.types.non_null(UUID), graphql_name='datasetId', default=None)),
+        ('metric', sgqlc.types.Arg(sgqlc.types.non_null(JSON), graphql_name='metric', default=None)),
+))
+    )
+    update_metric = sgqlc.types.Field(sgqlc.types.non_null(MaxMutationResponse), graphql_name='updateMetric', args=sgqlc.types.ArgDict((
+        ('dataset_id', sgqlc.types.Arg(sgqlc.types.non_null(UUID), graphql_name='datasetId', default=None)),
+        ('metric', sgqlc.types.Arg(sgqlc.types.non_null(JSON), graphql_name='metric', default=None)),
+))
+    )
+    delete_metric = sgqlc.types.Field(sgqlc.types.non_null(MaxMutationResponse), graphql_name='deleteMetric', args=sgqlc.types.ArgDict((
+        ('dataset_id', sgqlc.types.Arg(sgqlc.types.non_null(UUID), graphql_name='datasetId', default=None)),
+        ('metric_id', sgqlc.types.Arg(sgqlc.types.non_null(String), graphql_name='metricId', default=None)),
 ))
     )
     update_chat_answer_payload = sgqlc.types.Field(JSON, graphql_name='updateChatAnswerPayload', args=sgqlc.types.ArgDict((
@@ -1111,6 +1159,15 @@ class AzureOpenaiEmbeddingLLMApiConfig(sgqlc.types.Type, LLMApiConfig):
     api_version = sgqlc.types.Field(sgqlc.types.non_null(String), graphql_name='apiVersion')
 
 
+class Dimension(sgqlc.types.Type, DomainArtifact):
+    __schema__ = schema
+    __field_names__ = ('data_type', 'sql_expression', 'sql_sort_expression', 'sample_limit')
+    data_type = sgqlc.types.Field(sgqlc.types.non_null(SimplifiedDataType), graphql_name='dataType')
+    sql_expression = sgqlc.types.Field(sgqlc.types.non_null(String), graphql_name='sqlExpression')
+    sql_sort_expression = sgqlc.types.Field(String, graphql_name='sqlSortExpression')
+    sample_limit = sgqlc.types.Field(sgqlc.types.non_null(Int), graphql_name='sampleLimit')
+
+
 class MaxCalculatedAttribute(sgqlc.types.Type, MaxDomainObject, MaxDomainAttribute, MaxDimensionAttribute):
     __schema__ = schema
     __field_names__ = ('rql',)
@@ -1180,6 +1237,18 @@ class MaxReferenceAttribute(sgqlc.types.Type, MaxDomainObject, MaxDomainAttribut
     __field_names__ = ('db_foreign_key_columns', 'referenced_dimension_entity_id')
     db_foreign_key_columns = sgqlc.types.Field(sgqlc.types.non_null(sgqlc.types.list_of(String)), graphql_name='dbForeignKeyColumns')
     referenced_dimension_entity_id = sgqlc.types.Field(sgqlc.types.non_null(String), graphql_name='referencedDimensionEntityId')
+
+
+class Metric(sgqlc.types.Type, DomainArtifact):
+    __schema__ = schema
+    __field_names__ = ('data_type', 'metric_type', 'display_format', 'sql_agg_expression', 'sql_row_expression', 'growth_type', 'growth_format')
+    data_type = sgqlc.types.Field(sgqlc.types.non_null(SimplifiedDataType), graphql_name='dataType')
+    metric_type = sgqlc.types.Field(sgqlc.types.non_null(MetricType), graphql_name='metricType')
+    display_format = sgqlc.types.Field(sgqlc.types.non_null(String), graphql_name='displayFormat')
+    sql_agg_expression = sgqlc.types.Field(sgqlc.types.non_null(String), graphql_name='sqlAggExpression')
+    sql_row_expression = sgqlc.types.Field(sgqlc.types.non_null(String), graphql_name='sqlRowExpression')
+    growth_type = sgqlc.types.Field(sgqlc.types.non_null(GrowthType), graphql_name='growthType')
+    growth_format = sgqlc.types.Field(sgqlc.types.non_null(String), graphql_name='growthFormat')
 
 
 class OpenaiCompletionLLMApiConfig(sgqlc.types.Type, LLMApiConfig):

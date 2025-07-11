@@ -20,3 +20,87 @@ query GetGroundedValue(
     otherMatches
   }
 }
+
+mutation CreateDimension(
+  $datasetId: UUID!
+  $dimension: JSON!
+) {
+  createDimension(
+    datasetId: $datasetId
+    dimension: $dimension
+  ) {
+    success
+    code
+    error
+  }
+}
+
+mutation UpdateDimension(
+  $datasetId: UUID!
+  $dimension: JSON!
+) {
+  updateDimension(
+    datasetId: $datasetId
+    dimension: $dimension
+  ) {
+    success
+    code
+    error
+  }
+}
+
+mutation DeleteDimension(
+  $datasetId: UUID!
+  $dimensionId: String!
+) {
+  deleteDimension(
+    datasetId: $datasetId
+    dimensionId: $dimensionId
+  ) {
+    success
+    code
+    error
+  }
+}
+
+mutation CreateMetric(
+  $datasetId: UUID!
+  $metric: JSON!
+) {
+  createMetric(
+    datasetId: $datasetId
+    metric: $metric
+  ) {
+    success
+    code
+    error
+  }
+}
+
+mutation UpdateMetric(
+  $datasetId: UUID!
+  $metric: JSON!
+) {
+  updateMetric(
+    datasetId: $datasetId
+    metric: $metric
+  ) {
+    success
+    code
+    error
+  }
+}
+
+mutation DeleteMetric(
+  $datasetId: UUID!
+  $metricId: String!
+) {
+  deleteMetric(
+    datasetId: $datasetId
+    metricId: $metricId
+  ) {
+    success
+    code
+    error
+  }
+}

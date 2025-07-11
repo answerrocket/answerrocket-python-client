@@ -10,10 +10,12 @@ from sgqlc.types import Variable, Arg, non_null, String, Int, list_of
 
 from answer_rocket.client_config import ClientConfig
 from answer_rocket.graphql.client import GraphQlClient
-from answer_rocket.graphql.schema import UUID as GQL_UUID, GenerateVisualizationResponse, MaxMetricAttribute, MaxDimensionEntity, MaxFactEntity, \
+from answer_rocket.graphql.schema import UUID as GQL_UUID, GenerateVisualizationResponse, MaxMetricAttribute, \
+    MaxDimensionEntity, MaxFactEntity, \
     MaxNormalAttribute, \
     MaxPrimaryAttribute, MaxReferenceAttribute, MaxCalculatedMetric, MaxDataset, MaxCalculatedAttribute, \
-    MaxMutationResponse, DateTime, RunMaxSqlGenResponse, JSON, RunSqlAiResponse, GroundedValueResponse
+    MaxMutationResponse, DateTime, RunMaxSqlGenResponse, JSON, RunSqlAiResponse, GroundedValueResponse, Dimension, \
+    Metric
 from answer_rocket.graphql.sdk_operations import Operations
 from answer_rocket.types import MaxResult, RESULT_EXCEPTION_CODE
 
@@ -285,6 +287,9 @@ class Data:
             gql_query.dataset_max_date()
             gql_query.query_row_limit()
             gql_query.use_database_casing()
+
+            gql_query.dimensions()
+            gql_query.metrics()
 
             database = gql_query.database()
             database.database_id()
@@ -824,3 +829,69 @@ class Data:
         mutation_response = result.update_dataset_date_range
 
         return mutation_response
+
+    def create_dimension(self, dataset_id: UUID, dimension: Dimension) -> MaxMutationResponse:
+        mutation_args = {
+            'datasetId': str(dataset_id),
+            'dimension': dimension,
+        }
+
+        op = Operations.mutation.create_dimension
+        result = self._gql_client.submit(op, mutation_args)
+
+        return result.create_dimension
+
+    def update_dimension(self, dataset_id: UUID, dimension: Dimension) -> MaxMutationResponse:
+        mutation_args = {
+            'datasetId': str(dataset_id),
+            'dimension': dimension,
+        }
+
+        op = Operations.mutation.update_dimension
+        result = self._gql_client.submit(op, mutation_args)
+
+        return result.update_dimension
+
+    def delete_dimension(self, dataset_id: UUID, dimension_id: str) -> MaxMutationResponse:
+        mutation_args = {
+            'datasetId': str(dataset_id),
+            'dimensionId': dimension_id,
+        }
+
+        op = Operations.mutation.delete_dimension
+        result = self._gql_client.submit(op, mutation_args)
+
+        return result.delete_dimension
+
+    def create_metric(self, dataset_id: UUID, metric: Metric) -> MaxMutationResponse:
+        mutation_args = {
+            'datasetId': str(dataset_id),
+            'metric': metric,
+        }
+
+        op = Operations.mutation.create_metric
+        result = self._gql_client.submit(op, mutation_args)
+
+        return result.create_metric
+
+    def update_metric(self, dataset_id: UUID, metric: Metric) -> MaxMutationResponse:
+        mutation_args = {
+            'datasetId': str(dataset_id),
+            'metric': metric,
+        }
+
+        op = Operations.mutation.update_metric
+        result = self._gql_client.submit(op, mutation_args)
+
+        return result.update_metric
+
+    def delete_metric(self, dataset_id: UUID, metric_id: str) -> MaxMutationResponse:
+        mutation_args = {
+            'datasetId': str(dataset_id),
+            'metricId': metric_id,
+        }
+
+        op = Operations.mutation.delete_metric
+        result = self._gql_client.submit(op, mutation_args)
+
+        return result.delete_metric

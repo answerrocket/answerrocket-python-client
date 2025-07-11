@@ -87,6 +87,60 @@ def mutation_set_skill_memory():
     return _op
 
 
+def mutation_create_dimension():
+    _op = sgqlc.operation.Operation(_schema_root.mutation_type, name='CreateDimension', variables=dict(datasetId=sgqlc.types.Arg(sgqlc.types.non_null(_schema.UUID)), dimension=sgqlc.types.Arg(sgqlc.types.non_null(_schema.JSON))))
+    _op_create_dimension = _op.create_dimension(dataset_id=sgqlc.types.Variable('datasetId'), dimension=sgqlc.types.Variable('dimension'))
+    _op_create_dimension.success()
+    _op_create_dimension.code()
+    _op_create_dimension.error()
+    return _op
+
+
+def mutation_update_dimension():
+    _op = sgqlc.operation.Operation(_schema_root.mutation_type, name='UpdateDimension', variables=dict(datasetId=sgqlc.types.Arg(sgqlc.types.non_null(_schema.UUID)), dimension=sgqlc.types.Arg(sgqlc.types.non_null(_schema.JSON))))
+    _op_update_dimension = _op.update_dimension(dataset_id=sgqlc.types.Variable('datasetId'), dimension=sgqlc.types.Variable('dimension'))
+    _op_update_dimension.success()
+    _op_update_dimension.code()
+    _op_update_dimension.error()
+    return _op
+
+
+def mutation_delete_dimension():
+    _op = sgqlc.operation.Operation(_schema_root.mutation_type, name='DeleteDimension', variables=dict(datasetId=sgqlc.types.Arg(sgqlc.types.non_null(_schema.UUID)), dimensionId=sgqlc.types.Arg(sgqlc.types.non_null(_schema.String))))
+    _op_delete_dimension = _op.delete_dimension(dataset_id=sgqlc.types.Variable('datasetId'), dimension_id=sgqlc.types.Variable('dimensionId'))
+    _op_delete_dimension.success()
+    _op_delete_dimension.code()
+    _op_delete_dimension.error()
+    return _op
+
+
+def mutation_create_metric():
+    _op = sgqlc.operation.Operation(_schema_root.mutation_type, name='CreateMetric', variables=dict(datasetId=sgqlc.types.Arg(sgqlc.types.non_null(_schema.UUID)), metric=sgqlc.types.Arg(sgqlc.types.non_null(_schema.JSON))))
+    _op_create_metric = _op.create_metric(dataset_id=sgqlc.types.Variable('datasetId'), metric=sgqlc.types.Variable('metric'))
+    _op_create_metric.success()
+    _op_create_metric.code()
+    _op_create_metric.error()
+    return _op
+
+
+def mutation_update_metric():
+    _op = sgqlc.operation.Operation(_schema_root.mutation_type, name='UpdateMetric', variables=dict(datasetId=sgqlc.types.Arg(sgqlc.types.non_null(_schema.UUID)), metric=sgqlc.types.Arg(sgqlc.types.non_null(_schema.JSON))))
+    _op_update_metric = _op.update_metric(dataset_id=sgqlc.types.Variable('datasetId'), metric=sgqlc.types.Variable('metric'))
+    _op_update_metric.success()
+    _op_update_metric.code()
+    _op_update_metric.error()
+    return _op
+
+
+def mutation_delete_metric():
+    _op = sgqlc.operation.Operation(_schema_root.mutation_type, name='DeleteMetric', variables=dict(datasetId=sgqlc.types.Arg(sgqlc.types.non_null(_schema.UUID)), metricId=sgqlc.types.Arg(sgqlc.types.non_null(_schema.String))))
+    _op_delete_metric = _op.delete_metric(dataset_id=sgqlc.types.Variable('datasetId'), metric_id=sgqlc.types.Variable('metricId'))
+    _op_delete_metric.success()
+    _op_delete_metric.code()
+    _op_delete_metric.error()
+    return _op
+
+
 def mutation_update_loading_message():
     _op = sgqlc.operation.Operation(_schema_root.mutation_type, name='UpdateLoadingMessage', variables=dict(answerId=sgqlc.types.Arg(sgqlc.types.non_null(_schema.UUID)), message=sgqlc.types.Arg(sgqlc.types.non_null(_schema.String))))
     _op.update_loading_message(answer_id=sgqlc.types.Variable('answerId'), message=sgqlc.types.Variable('message'))
@@ -98,9 +152,15 @@ class Mutation:
     ask_chat_question = mutation_ask_chat_question()
     cancel_chat_question = mutation_cancel_chat_question()
     create_chat_thread = mutation_create_chat_thread()
+    create_dimension = mutation_create_dimension()
+    create_metric = mutation_create_metric()
+    delete_dimension = mutation_delete_dimension()
+    delete_metric = mutation_delete_metric()
     queue_chat_question = mutation_queue_chat_question()
     set_skill_memory = mutation_set_skill_memory()
+    update_dimension = mutation_update_dimension()
     update_loading_message = mutation_update_loading_message()
+    update_metric = mutation_update_metric()
 
 
 def query_chat_entry():
