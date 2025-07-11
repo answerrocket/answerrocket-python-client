@@ -21,11 +21,93 @@ query GetGroundedValue(
   }
 }
 
+query GetDataset2(
+  $datasetId: UUID!
+) {
+  getDataset2(
+    datasetId: $datasetId
+  ) {
+    datasetId
+    name
+    description
+    databaseId
+    dimensions
+    metrics
+    miscInfo
+    sourceTable
+    sourceSql
+    dataInterval
+    datasetMinDate
+    datasetMaxDate
+    queryRowLimit
+    useDatabaseCasing
+    kShotLimit
+  }
+}
+
 mutation CreateDataset(
   $dataset: JSON!
 ) {
   createDataset(
     dataset: $dataset
+  ) {
+    success
+    code
+    error
+  }
+}
+
+mutation UpdateDatasetName(
+  $datasetId: UUID!
+  $name: String!
+) {
+  updateDatasetName(
+    datasetId: $datasetId
+    name: $name
+  ) {
+    success
+    code
+    error
+  }
+}
+
+mutation UpdateDatasetDescription(
+  $datasetId: UUID!
+  $description: String
+) {
+  updateDatasetDescription(
+    datasetId: $datasetId
+    description: $description
+  ) {
+    success
+    code
+    error
+  }
+}
+
+mutation UpdateDatasetDateRange(
+  $datasetId: UUID!
+  $datasetMinDate: DateTime
+  $datasetMaxDate: DateTime
+) {
+  updateDatasetDateRange(
+    datasetId: $datasetId
+    datasetMinDate: $datasetMinDate
+    datasetMaxDate: $datasetMaxDate
+  ) {
+    success
+    code
+    error
+  }
+}
+
+mutation UpdateDatasetMiscInfo(
+  $datasetId: UUID!
+  $miscInfo: String
+) {
+  updateDatasetMiscInfo(
+    datasetId: $datasetId
+    miscInfo: $miscInfo
   ) {
     success
     code

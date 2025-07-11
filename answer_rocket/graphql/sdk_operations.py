@@ -96,6 +96,42 @@ def mutation_create_dataset():
     return _op
 
 
+def mutation_update_dataset_name():
+    _op = sgqlc.operation.Operation(_schema_root.mutation_type, name='UpdateDatasetName', variables=dict(datasetId=sgqlc.types.Arg(sgqlc.types.non_null(_schema.UUID)), name=sgqlc.types.Arg(sgqlc.types.non_null(_schema.String))))
+    _op_update_dataset_name = _op.update_dataset_name(dataset_id=sgqlc.types.Variable('datasetId'), name=sgqlc.types.Variable('name'))
+    _op_update_dataset_name.success()
+    _op_update_dataset_name.code()
+    _op_update_dataset_name.error()
+    return _op
+
+
+def mutation_update_dataset_description():
+    _op = sgqlc.operation.Operation(_schema_root.mutation_type, name='UpdateDatasetDescription', variables=dict(datasetId=sgqlc.types.Arg(sgqlc.types.non_null(_schema.UUID)), description=sgqlc.types.Arg(_schema.String)))
+    _op_update_dataset_description = _op.update_dataset_description(dataset_id=sgqlc.types.Variable('datasetId'), description=sgqlc.types.Variable('description'))
+    _op_update_dataset_description.success()
+    _op_update_dataset_description.code()
+    _op_update_dataset_description.error()
+    return _op
+
+
+def mutation_update_dataset_date_range():
+    _op = sgqlc.operation.Operation(_schema_root.mutation_type, name='UpdateDatasetDateRange', variables=dict(datasetId=sgqlc.types.Arg(sgqlc.types.non_null(_schema.UUID)), datasetMinDate=sgqlc.types.Arg(_schema.DateTime), datasetMaxDate=sgqlc.types.Arg(_schema.DateTime)))
+    _op_update_dataset_date_range = _op.update_dataset_date_range(dataset_id=sgqlc.types.Variable('datasetId'), dataset_min_date=sgqlc.types.Variable('datasetMinDate'), dataset_max_date=sgqlc.types.Variable('datasetMaxDate'))
+    _op_update_dataset_date_range.success()
+    _op_update_dataset_date_range.code()
+    _op_update_dataset_date_range.error()
+    return _op
+
+
+def mutation_update_dataset_misc_info():
+    _op = sgqlc.operation.Operation(_schema_root.mutation_type, name='UpdateDatasetMiscInfo', variables=dict(datasetId=sgqlc.types.Arg(sgqlc.types.non_null(_schema.UUID)), miscInfo=sgqlc.types.Arg(_schema.String)))
+    _op_update_dataset_misc_info = _op.update_dataset_misc_info(dataset_id=sgqlc.types.Variable('datasetId'), misc_info=sgqlc.types.Variable('miscInfo'))
+    _op_update_dataset_misc_info.success()
+    _op_update_dataset_misc_info.code()
+    _op_update_dataset_misc_info.error()
+    return _op
+
+
 def mutation_create_dimension():
     _op = sgqlc.operation.Operation(_schema_root.mutation_type, name='CreateDimension', variables=dict(datasetId=sgqlc.types.Arg(sgqlc.types.non_null(_schema.UUID)), dimension=sgqlc.types.Arg(sgqlc.types.non_null(_schema.JSON))))
     _op_create_dimension = _op.create_dimension(dataset_id=sgqlc.types.Variable('datasetId'), dimension=sgqlc.types.Variable('dimension'))
@@ -168,6 +204,10 @@ class Mutation:
     delete_metric = mutation_delete_metric()
     queue_chat_question = mutation_queue_chat_question()
     set_skill_memory = mutation_set_skill_memory()
+    update_dataset_date_range = mutation_update_dataset_date_range()
+    update_dataset_description = mutation_update_dataset_description()
+    update_dataset_misc_info = mutation_update_dataset_misc_info()
+    update_dataset_name = mutation_update_dataset_name()
     update_dimension = mutation_update_dimension()
     update_loading_message = mutation_update_loading_message()
     update_metric = mutation_update_metric()
@@ -367,6 +407,27 @@ def query_get_grounded_value():
     return _op
 
 
+def query_get_dataset2():
+    _op = sgqlc.operation.Operation(_schema_root.query_type, name='GetDataset2', variables=dict(datasetId=sgqlc.types.Arg(sgqlc.types.non_null(_schema.UUID))))
+    _op_get_dataset2 = _op.get_dataset2(dataset_id=sgqlc.types.Variable('datasetId'))
+    _op_get_dataset2.dataset_id()
+    _op_get_dataset2.name()
+    _op_get_dataset2.description()
+    _op_get_dataset2.database_id()
+    _op_get_dataset2.dimensions()
+    _op_get_dataset2.metrics()
+    _op_get_dataset2.misc_info()
+    _op_get_dataset2.source_table()
+    _op_get_dataset2.source_sql()
+    _op_get_dataset2.data_interval()
+    _op_get_dataset2.dataset_min_date()
+    _op_get_dataset2.dataset_max_date()
+    _op_get_dataset2.query_row_limit()
+    _op_get_dataset2.use_database_casing()
+    _op_get_dataset2.k_shot_limit()
+    return _op
+
+
 def query_chat_completion():
     _op = sgqlc.operation.Operation(_schema_root.query_type, name='ChatCompletion', variables=dict(messages=sgqlc.types.Arg(sgqlc.types.non_null(sgqlc.types.list_of(sgqlc.types.non_null(_schema.LlmChatMessage)))), modelSelection=sgqlc.types.Arg(_schema.LlmModelSelection)))
     _op.chat_completion(messages=sgqlc.types.Variable('messages'), model_selection=sgqlc.types.Variable('modelSelection'))
@@ -406,6 +467,7 @@ class Query:
     get_copilot_info = query_get_copilot_info()
     get_copilot_skill = query_get_copilot_skill()
     get_copilots = query_get_copilots()
+    get_dataset2 = query_get_dataset2()
     get_grounded_value = query_get_grounded_value()
     get_max_llm_prompt = query_get_max_llm_prompt()
     narrative_completion = query_narrative_completion()

@@ -798,7 +798,7 @@ class MaxUser(sgqlc.types.Type):
 
 class Mutation(sgqlc.types.Type):
     __schema__ = schema
-    __field_names__ = ('create_max_copilot_skill_chat_question', 'update_max_copilot_skill_chat_question', 'delete_max_copilot_skill_chat_question', 'create_max_copilot_question', 'update_max_copilot_question', 'delete_max_copilot_question', 'set_max_agent_workflow', 'reload_dataset', 'update_dataset_date_range', 'create_dataset', 'create_dimension', 'update_dimension', 'delete_dimension', 'create_metric', 'update_metric', 'delete_metric', 'update_chat_answer_payload', 'ask_chat_question', 'evaluate_chat_question', 'queue_chat_question', 'cancel_chat_question', 'create_chat_thread', 'add_feedback', 'set_skill_memory', 'share_thread', 'update_loading_message')
+    __field_names__ = ('create_max_copilot_skill_chat_question', 'update_max_copilot_skill_chat_question', 'delete_max_copilot_skill_chat_question', 'create_max_copilot_question', 'update_max_copilot_question', 'delete_max_copilot_question', 'set_max_agent_workflow', 'reload_dataset', 'update_dataset_name', 'update_dataset_description', 'update_dataset_date_range', 'update_dataset_misc_info', 'create_dataset', 'create_dimension', 'update_dimension', 'delete_dimension', 'create_metric', 'update_metric', 'delete_metric', 'update_chat_answer_payload', 'ask_chat_question', 'evaluate_chat_question', 'queue_chat_question', 'cancel_chat_question', 'create_chat_thread', 'add_feedback', 'set_skill_memory', 'share_thread', 'update_loading_message')
     create_max_copilot_skill_chat_question = sgqlc.types.Field(sgqlc.types.non_null(CreateMaxCopilotSkillChatQuestionResponse), graphql_name='createMaxCopilotSkillChatQuestion', args=sgqlc.types.ArgDict((
         ('copilot_id', sgqlc.types.Arg(sgqlc.types.non_null(UUID), graphql_name='copilotId', default=None)),
         ('copilot_skill_id', sgqlc.types.Arg(sgqlc.types.non_null(UUID), graphql_name='copilotSkillId', default=None)),
@@ -847,10 +847,25 @@ class Mutation(sgqlc.types.Type):
         ('table_names', sgqlc.types.Arg(sgqlc.types.list_of(sgqlc.types.non_null(String)), graphql_name='tableNames', default=None)),
 ))
     )
+    update_dataset_name = sgqlc.types.Field(MaxMutationResponse, graphql_name='updateDatasetName', args=sgqlc.types.ArgDict((
+        ('dataset_id', sgqlc.types.Arg(sgqlc.types.non_null(UUID), graphql_name='datasetId', default=None)),
+        ('name', sgqlc.types.Arg(sgqlc.types.non_null(String), graphql_name='name', default=None)),
+))
+    )
+    update_dataset_description = sgqlc.types.Field(MaxMutationResponse, graphql_name='updateDatasetDescription', args=sgqlc.types.ArgDict((
+        ('dataset_id', sgqlc.types.Arg(sgqlc.types.non_null(UUID), graphql_name='datasetId', default=None)),
+        ('description', sgqlc.types.Arg(String, graphql_name='description', default=None)),
+))
+    )
     update_dataset_date_range = sgqlc.types.Field(MaxMutationResponse, graphql_name='updateDatasetDateRange', args=sgqlc.types.ArgDict((
         ('dataset_id', sgqlc.types.Arg(sgqlc.types.non_null(UUID), graphql_name='datasetId', default=None)),
-        ('dataset_min_date', sgqlc.types.Arg(sgqlc.types.non_null(DateTime), graphql_name='datasetMinDate', default=None)),
-        ('dataset_max_date', sgqlc.types.Arg(sgqlc.types.non_null(DateTime), graphql_name='datasetMaxDate', default=None)),
+        ('dataset_min_date', sgqlc.types.Arg(DateTime, graphql_name='datasetMinDate', default=None)),
+        ('dataset_max_date', sgqlc.types.Arg(DateTime, graphql_name='datasetMaxDate', default=None)),
+))
+    )
+    update_dataset_misc_info = sgqlc.types.Field(MaxMutationResponse, graphql_name='updateDatasetMiscInfo', args=sgqlc.types.ArgDict((
+        ('dataset_id', sgqlc.types.Arg(sgqlc.types.non_null(UUID), graphql_name='datasetId', default=None)),
+        ('misc_info', sgqlc.types.Arg(String, graphql_name='miscInfo', default=None)),
 ))
     )
     create_dataset = sgqlc.types.Field(sgqlc.types.non_null(MaxMutationResponse), graphql_name='createDataset', args=sgqlc.types.ArgDict((
@@ -956,7 +971,7 @@ class Mutation(sgqlc.types.Type):
 
 class Query(sgqlc.types.Type):
     __schema__ = schema
-    __field_names__ = ('ping', 'current_user', 'get_copilot_skill_artifact_by_path', 'get_copilots', 'get_copilot_info', 'get_copilot_skill', 'run_copilot_skill', 'get_skill_components', 'get_max_agent_workflow', 'execute_sql_query', 'execute_rql_query', 'get_dataset_id', 'get_dataset', 'get_domain_object', 'get_domain_object_by_name', 'get_grounded_value', 'run_max_sql_gen', 'run_sql_ai', 'generate_visualization', 'llmapi_config_for_sdk', 'get_max_llm_prompt', 'user_chat_threads', 'user_chat_entries', 'chat_thread', 'chat_entry', 'user', 'all_chat_entries', 'skill_memory', 'chat_completion', 'narrative_completion', 'narrative_completion_with_prompt', 'sql_completion', 'research_completion')
+    __field_names__ = ('ping', 'current_user', 'get_copilot_skill_artifact_by_path', 'get_copilots', 'get_copilot_info', 'get_copilot_skill', 'run_copilot_skill', 'get_skill_components', 'get_max_agent_workflow', 'execute_sql_query', 'execute_rql_query', 'get_dataset_id', 'get_dataset', 'get_dataset2', 'get_domain_object', 'get_domain_object_by_name', 'get_grounded_value', 'run_max_sql_gen', 'run_sql_ai', 'generate_visualization', 'llmapi_config_for_sdk', 'get_max_llm_prompt', 'user_chat_threads', 'user_chat_entries', 'chat_thread', 'chat_entry', 'user', 'all_chat_entries', 'skill_memory', 'chat_completion', 'narrative_completion', 'narrative_completion_with_prompt', 'sql_completion', 'research_completion')
     ping = sgqlc.types.Field(String, graphql_name='ping')
     current_user = sgqlc.types.Field(MaxUser, graphql_name='currentUser')
     get_copilot_skill_artifact_by_path = sgqlc.types.Field(CopilotSkillArtifact, graphql_name='getCopilotSkillArtifactByPath', args=sgqlc.types.ArgDict((
@@ -1012,6 +1027,10 @@ class Query(sgqlc.types.Type):
     get_dataset = sgqlc.types.Field(MaxDataset, graphql_name='getDataset', args=sgqlc.types.ArgDict((
         ('dataset_id', sgqlc.types.Arg(sgqlc.types.non_null(UUID), graphql_name='datasetId', default=None)),
         ('copilot_id', sgqlc.types.Arg(UUID, graphql_name='copilotId', default=None)),
+))
+    )
+    get_dataset2 = sgqlc.types.Field(Dataset, graphql_name='getDataset2', args=sgqlc.types.ArgDict((
+        ('dataset_id', sgqlc.types.Arg(sgqlc.types.non_null(UUID), graphql_name='datasetId', default=None)),
 ))
     )
     get_domain_object = sgqlc.types.Field(DomainObjectResponse, graphql_name='getDomainObject', args=sgqlc.types.ArgDict((

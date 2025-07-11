@@ -317,6 +317,23 @@ class Data:
         except Exception as e:
             return None
 
+    def get_dataset2(self, dataset_id: UUID) -> Optional[Dataset]:
+        try:
+            """
+            dataset_id: the UUID of the dataset
+            """
+            query_args = {
+                'datasetId': str(dataset_id),
+            }
+
+            op = Operations.query.get_dataset2
+
+            result = self._gql_client.submit(op, query_args)
+
+            return result.get_dataset2
+        except Exception as e:
+            return None
+
     def get_domain_object_by_name(self, dataset_id: UUID, rql_name: str) -> DomainObjectResult:
         try:
             """
@@ -803,32 +820,59 @@ class Data:
         except Exception as e:
             return None
 
-    def update_dataset_date_range(self, dataset_id: UUID, min_date: str, max_date: str):
+    def update_dataset_name(self, dataset_id: UUID, name: str) -> MaxMutationResponse:
         mutation_args = {
-            'datasetId': dataset_id,
-            'datasetMinDate': min_date,
-            'datasetMaxDate': max_date,
+            'datasetId': str(dataset_id),
+            'name': name,
         }
 
-        mutation_vars = {
-            'dataset_id': Arg(non_null(GQL_UUID)),
-            'dataset_min_date': Arg(non_null(DateTime)),
-            'dataset_max_date': Arg(non_null(DateTime)),
+        op = Operations.mutation.update_dataset_name
+        result = self._gql_client.submit(op, mutation_args)
+
+        return result.update_dataset_name
+
+    def update_dataset_description(self, dataset_id: UUID, description: Optional[str]) -> MaxMutationResponse:
+        mutation_args = {
+            'datasetId': str(dataset_id),
+            'description': description,
         }
 
-        operation = self._gql_client.mutation(variables=mutation_vars)
+        op = Operations.mutation.update_dataset_description
+        result = self._gql_client.submit(op, mutation_args)
 
-        operation.update_dataset_date_range(
-            dataset_id=Variable('dataset_id'),
-            dataset_min_date=Variable('dataset_min_date'),
-            dataset_max_date=Variable('dataset_max_date'),
-        )
+        return result.update_dataset_description
 
-        result = self._gql_client.submit(operation, mutation_args)
+    def update_dataset_date_range(self, dataset_id: UUID, min_date: Optional[str], max_date: Optional[str]) -> MaxMutationResponse:
+        min_date_arg = min_date
+        max_date_arg = max_date
 
-        mutation_response = result.update_dataset_date_range
+        if min_date_arg and "Z" not in min_date_arg:
+            min_date_arg += "T00:00:00Z"
 
-        return mutation_response
+        if max_date_arg and "Z" not in max_date_arg:
+            max_date_arg += "T00:00:00Z"
+
+        mutation_args = {
+            'datasetId': str(dataset_id),
+            'datasetMinDate': min_date_arg,
+            'datasetMaxDate': max_date_arg,
+        }
+
+        op = Operations.mutation.update_dataset_date_range
+        result = self._gql_client.submit(op, mutation_args)
+
+        return result.update_dataset_date_range
+
+    def update_dataset_misc_info(self, dataset_id: UUID, misc_info: Optional[str]) -> MaxMutationResponse:
+        mutation_args = {
+            'datasetId': str(dataset_id),
+            'miscInfo': misc_info,
+        }
+
+        op = Operations.mutation.update_dataset_misc_info
+        result = self._gql_client.submit(op, mutation_args)
+
+        return result.update_dataset_misc_info
 
     def create_dataset(self, dataset: Dataset) -> MaxMutationResponse:
         mutation_args = {
@@ -839,6 +883,16 @@ class Data:
         result = self._gql_client.submit(op, mutation_args)
 
         return result.create_dataset
+
+    def update_dataset(self, dataset: Dataset) -> MaxMutationResponse:
+        mutation_args = {
+            'dataset': dataset,
+        }
+
+        op = Operations.mutation.update_dataset
+        result = self._gql_client.submit(op, mutation_args)
+
+        return result.update_dataset
 
     def create_dimension(self, dataset_id: UUID, dimension: Dimension) -> MaxMutationResponse:
         mutation_args = {
