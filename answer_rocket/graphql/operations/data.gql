@@ -21,6 +21,259 @@ query GetGroundedValue(
   }
 }
 
+query GetDatabase(
+  $databaseId: UUID!
+) {
+  getDatabase(
+    databaseId: $databaseId
+  ) {
+    databaseId
+    name
+    description
+    llmDescription
+    mermaidErDiagram
+    kShotLimit
+  }
+}
+
+query GetDataset2(
+  $datasetId: UUID!
+) {
+  getDataset2(
+    datasetId: $datasetId
+  ) {
+    datasetId
+    name
+    description
+    databaseId
+    dimensions
+    metrics
+    miscInfo
+    sourceTable
+    sourceSql
+    dataInterval
+    datasetMinDate
+    datasetMaxDate
+    queryRowLimit
+    useDatabaseCasing
+    kShotLimit
+  }
+}
+
+mutation UpdateDatabaseName(
+  $databaseId: UUID!
+  $name: String!
+) {
+  updateDatabaseName(
+    databaseId: $databaseId
+    name: $name
+  ) {
+    success
+    code
+    error
+  }
+}
+
+mutation UpdateDatabaseDescription(
+  $databaseId: UUID!
+  $description: String
+) {
+  updateDatabaseDescription(
+    databaseId: $databaseId
+    description: $description
+  ) {
+    success
+    code
+    error
+  }
+}
+
+mutation UpdateDatabaseLlmDescription(
+  $databaseId: UUID!
+  $llmDescription: String
+) {
+  updateDatabaseLlmDescription(
+    databaseId: $databaseId
+    llmDescription: $llmDescription
+  ) {
+    success
+    code
+    error
+  }
+}
+
+mutation UpdateDatabaseMermaidErDiagram(
+  $databaseId: UUID!
+  $mermaidErDiagram: String
+) {
+  updateDatabaseMermaidErDiagram(
+    databaseId: $databaseId
+    mermaidErDiagram: $mermaidErDiagram
+  ) {
+    success
+    code
+    error
+  }
+}
+
+mutation UpdateDatabaseKShotLimit(
+  $databaseId: UUID!
+  $kShotLimit: Int!
+) {
+  updateDatabaseKShotLimit(
+    databaseId: $databaseId
+    kShotLimit: $kShotLimit
+  ) {
+    success
+    code
+    error
+  }
+}
+
+mutation CreateDataset(
+  $dataset: JSON!
+) {
+  createDataset(
+    dataset: $dataset
+  ) {
+    success
+    code
+    error
+  }
+}
+
+mutation UpdateDatasetName(
+  $datasetId: UUID!
+  $name: String!
+) {
+  updateDatasetName(
+    datasetId: $datasetId
+    name: $name
+  ) {
+    success
+    code
+    error
+  }
+}
+
+mutation UpdateDatasetDescription(
+  $datasetId: UUID!
+  $description: String
+) {
+  updateDatasetDescription(
+    datasetId: $datasetId
+    description: $description
+  ) {
+    success
+    code
+    error
+  }
+}
+
+mutation UpdateDatasetDateRange(
+  $datasetId: UUID!
+  $datasetMinDate: DateTime
+  $datasetMaxDate: DateTime
+) {
+  updateDatasetDateRange(
+    datasetId: $datasetId
+    datasetMinDate: $datasetMinDate
+    datasetMaxDate: $datasetMaxDate
+  ) {
+    success
+    code
+    error
+  }
+}
+
+mutation UpdateDatasetDataInterval(
+  $datasetId: UUID!
+  $dataInterval: DatasetDataInterval
+) {
+  updateDatasetDataInterval(
+    datasetId: $datasetId
+    dataInterval: $dataInterval
+  ) {
+    success
+    code
+    error
+  }
+}
+
+mutation UpdateDatasetMiscInfo(
+  $datasetId: UUID!
+  $miscInfo: String
+) {
+  updateDatasetMiscInfo(
+    datasetId: $datasetId
+    miscInfo: $miscInfo
+  ) {
+    success
+    code
+    error
+  }
+}
+
+mutation UpdateDatasetSource(
+  $datasetId: UUID!
+  $sourceTable: String!
+  $sourceSql: String
+  $derivedTableAlias: String
+) {
+  updateDatasetSource(
+    datasetId: $datasetId
+    sourceTable: $sourceTable
+    sourceSql: $sourceSql
+    derivedTableAlias: $derivedTableAlias
+  ) {
+    success
+    code
+    error
+  }
+}
+
+mutation UpdateDatasetQueryRowLimit(
+  $datasetId: UUID!
+  $queryRowLimit: Int
+) {
+  updateDatasetQueryRowLimit(
+    datasetId: $datasetId
+    queryRowLimit: $queryRowLimit
+  ) {
+    success
+    code
+    error
+  }
+}
+
+mutation UpdateDatasetUseDatabaseCasing(
+  $datasetId: UUID!
+  $useDatabaseCasing: Boolean!
+) {
+  updateDatasetUseDatabaseCasing(
+    datasetId: $datasetId
+    useDatabaseCasing: $useDatabaseCasing
+  ) {
+    success
+    code
+    error
+  }
+}
+
+mutation UpdateDatasetKShotLimit(
+  $datasetId: UUID!
+  $kShotLimit: Int!
+) {
+  updateDatasetKShotLimit(
+    datasetId: $datasetId
+    kShotLimit: $kShotLimit
+  ) {
+    success
+    code
+    error
+  }
+}
+
 mutation CreateDimension(
   $datasetId: UUID!
   $dimension: JSON!

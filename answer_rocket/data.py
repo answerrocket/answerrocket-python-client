@@ -15,7 +15,7 @@ from answer_rocket.graphql.schema import UUID as GQL_UUID, GenerateVisualization
     MaxNormalAttribute, \
     MaxPrimaryAttribute, MaxReferenceAttribute, MaxCalculatedMetric, MaxDataset, MaxCalculatedAttribute, \
     MaxMutationResponse, DateTime, RunMaxSqlGenResponse, JSON, RunSqlAiResponse, GroundedValueResponse, Dimension, \
-    Metric
+    Metric, Dataset, DatasetDataInterval, Database
 from answer_rocket.graphql.sdk_operations import Operations
 from answer_rocket.types import MaxResult, RESULT_EXCEPTION_CODE
 
@@ -218,6 +218,37 @@ class Data:
 
             return execute_rql_query_result
 
+    def get_database(self, database_id: UUID) -> Optional[Database]:
+        """
+        Retrieve a database by its ID.
+
+        This method queries the backend for a database using the given unique identifier.
+        If the database is found, it is returned as a `Database` object. If not found or
+        if an error occurs during the query, `None` is returned.
+
+        Parameters
+        ----------
+        database_id : UUID
+            The unique identifier of the database to retrieve.
+
+        Returns
+        -------
+        Database or None
+            The database object if found, or `None` if not found or if an error occurs.
+        """
+        try:
+            query_args = {
+                'databaseId': str(database_id),
+            }
+
+            op = Operations.query.get_database
+
+            result = self._gql_client.submit(op, query_args)
+
+            return result.get_database
+        except Exception as e:
+            return None
+
     def get_dataset_id(self, dataset_name: str) -> Optional[UUID]:
         try:
             """
@@ -314,6 +345,37 @@ class Data:
             dataset = result.get_dataset
 
             return dataset
+        except Exception as e:
+            return None
+
+    def get_dataset2(self, dataset_id: UUID) -> Optional[Dataset]:
+        """
+        Retrieve a dataset by its ID.
+
+        This method queries the backend for a dataset using the given unique identifier.
+        If the dataset is found, it is returned as a `Dataset` object. If not found or
+        if an error occurs during the query, `None` is returned.
+
+        Parameters
+        ----------
+        dataset_id : UUID
+            The unique identifier of the dataset to retrieve.
+
+        Returns
+        -------
+        Dataset or None
+            The dataset object if found, or `None` if not found or if an error occurs.
+        """
+        try:
+            query_args = {
+                'datasetId': str(dataset_id),
+            }
+
+            op = Operations.query.get_dataset2
+
+            result = self._gql_client.submit(op, query_args)
+
+            return result.get_dataset2
         except Exception as e:
             return None
 
@@ -770,6 +832,146 @@ class Data:
 
         fragment.db_sort_column()
 
+    def update_database_name(self, database_id: UUID, name: str) -> MaxMutationResponse:
+        """
+        Update the name of a database.
+
+        Parameters
+        ----------
+        database_id : UUID
+            The unique identifier of the database to be updated.
+        name : str
+            The new name to assign to the database. Must be a non-empty string.
+            This name is typically used for display purposes in the UI or SDK.
+
+        Returns
+        -------
+        MaxMutationResponse
+            The result of the GraphQL mutation containing the updated database name.
+        """
+        mutation_args = {
+            'databaseId': str(database_id),
+            'name': name,
+        }
+
+        op = Operations.mutation.update_database_name
+        result = self._gql_client.submit(op, mutation_args)
+
+        return result.update_database_name
+
+    def update_database_description(self, database_id: UUID, description: Optional[str]) -> MaxMutationResponse:
+        """
+        Update the description of a database.
+
+        Parameters
+        ----------
+        database_id : UUID
+            The unique identifier of the database to be updated.
+        description : str or None
+            A new description for the database. This can be any free-form text.
+
+        Returns
+        -------
+        MaxMutationResponse
+            The result of the GraphQL mutation containing the updated database description.
+        """
+        mutation_args = {
+            'databaseId': str(database_id),
+            'description': description,
+        }
+
+        op = Operations.mutation.update_database_description
+        result = self._gql_client.submit(op, mutation_args)
+
+        return result.update_database_description
+
+    def update_database_llm_description(self, database_id: UUID, llm_description: Optional[str]) -> MaxMutationResponse:
+        """
+        Update the LLM-specific description of a database.
+
+        This description is intended to provide context or metadata optimized for use by
+        large language models (LLMs), such as for query generation or schema understanding.
+
+        Parameters
+        ----------
+        database_id : UUID
+            The unique identifier of the database to be updated.
+        llm_description : str or None
+            A natural-language description of the database, written to assist LLMs.
+
+        Returns
+        -------
+        MaxMutationResponse
+            The result of the GraphQL mutation containing the updated LLM description.
+        """
+        mutation_args = {
+            'databaseId': str(database_id),
+            'llmDescription': llm_description,
+        }
+
+        op = Operations.mutation.update_database_llm_description
+        result = self._gql_client.submit(op, mutation_args)
+
+        return result.update_database_llm_description
+
+    def update_database_mermaid_er_diagram(self, database_id: UUID, mermaid_er_diagram: Optional[str]) -> MaxMutationResponse:
+        """
+        Update the Mermaid.js ER diagram representation for a database.
+
+        This diagram can be used to visually describe the entity-relationship structure of the database,
+        and is formatted using the Mermaid.js syntax.
+
+        Parameters
+        ----------
+        database_id : UUID
+            The unique identifier of the database to be updated.
+        mermaid_er_diagram : str or None
+            A string containing a Mermaid.js ER diagram definition.
+
+        Returns
+        -------
+        MaxMutationResponse
+            The result of the GraphQL mutation containing the updated ER diagram information.
+        """
+        mutation_args = {
+            'databaseId': str(database_id),
+            'mermaidErDiagram': mermaid_er_diagram,
+        }
+
+        op = Operations.mutation.update_database_mermaid_er_diagram
+        result = self._gql_client.submit(op, mutation_args)
+
+        return result.update_database_mermaid_er_diagram
+
+    def update_database_kshot_limit(self, database_id: UUID, kshot_limit: int) -> MaxMutationResponse:
+        """
+        Update the k-shot limit for a database.
+
+        The k-shot limit defines the maximum number of example rows to be used when generating
+        prompts, previews, or training examples involving this database.
+
+        Parameters
+        ----------
+        database_id : UUID
+            The unique identifier of the database to be updated.
+        kshot_limit : int
+            The maximum number of rows (k-shot examples) to include. Must be a non-negative integer.
+
+        Returns
+        -------
+        MaxMutationResponse
+            The result of the GraphQL mutation containing the updated k-shot limit.
+        """
+        mutation_args = {
+            'databaseId': str(database_id),
+            'kShotLimit': kshot_limit,
+        }
+
+        op = Operations.mutation.update_database_kshot_limit
+        result = self._gql_client.submit(op, mutation_args)
+
+        return result.update_database_kshot_limit
+
     def reload_dataset(self, dataset_id: Optional[UUID] = None, database_id: Optional[UUID] = None, table_names: Optional[List[str]] = None) -> MaxMutationResponse:
         try:
             """
@@ -803,32 +1005,364 @@ class Data:
         except Exception as e:
             return None
 
-    def update_dataset_date_range(self, dataset_id: UUID, min_date: str, max_date: str):
+    def update_dataset_name(self, dataset_id: UUID, name: str) -> MaxMutationResponse:
+        """
+        Update the name of a dataset using its unique identifier.
+
+        Parameters
+        ----------
+        dataset_id : UUID
+            The unique identifier of the dataset to be updated.
+        name : str
+            The new name to assign to the dataset.
+
+        Returns
+        -------
+        MaxMutationResponse
+            The result of the GraphQL mutation containing the updated dataset information.
+        """
         mutation_args = {
-            'datasetId': dataset_id,
-            'datasetMinDate': min_date,
-            'datasetMaxDate': max_date,
+            'datasetId': str(dataset_id),
+            'name': name,
         }
 
-        mutation_vars = {
-            'dataset_id': Arg(non_null(GQL_UUID)),
-            'dataset_min_date': Arg(non_null(DateTime)),
-            'dataset_max_date': Arg(non_null(DateTime)),
+        op = Operations.mutation.update_dataset_name
+        result = self._gql_client.submit(op, mutation_args)
+
+        return result.update_dataset_name
+
+    def update_dataset_description(self, dataset_id: UUID, description: Optional[str]) -> MaxMutationResponse:
+        """
+        Update the description of a dataset using its unique identifier.
+
+        Parameters
+        ----------
+        dataset_id : UUID
+            The unique identifier of the dataset to be updated.
+        description : str
+            The new description to assign to the dataset.
+
+        Returns
+        -------
+        MaxMutationResponse
+            The result of the GraphQL mutation containing the updated dataset information.
+        """
+        mutation_args = {
+            'datasetId': str(dataset_id),
+            'description': description,
         }
 
-        operation = self._gql_client.mutation(variables=mutation_vars)
+        op = Operations.mutation.update_dataset_description
+        result = self._gql_client.submit(op, mutation_args)
 
-        operation.update_dataset_date_range(
-            dataset_id=Variable('dataset_id'),
-            dataset_min_date=Variable('dataset_min_date'),
-            dataset_max_date=Variable('dataset_max_date'),
-        )
+        return result.update_dataset_description
 
-        result = self._gql_client.submit(operation, mutation_args)
+    def update_dataset_date_range(self, dataset_id: UUID, min_date: Optional[str], max_date: Optional[str]) -> MaxMutationResponse:
+        """
+        Update the minimum and/or maximum date range for a dataset.
 
-        mutation_response = result.update_dataset_date_range
+        Parameters
+        ----------
+        dataset_id : UUID
+            The unique identifier of the dataset to be updated.
+        min_date : str or None
+            The new minimum date for the dataset in ISO 8601 format (e.g., "2023-01-01").
+            If provided and missing a time component, "T00:00:00Z" will be appended.
+        max_date : str or None
+            The new maximum date for the dataset in ISO 8601 format (e.g., "2023-12-31").
+            If provided and missing a time component, "T00:00:00Z" will be appended.
 
-        return mutation_response
+        Returns
+        -------
+        MaxMutationResponse
+            The result of the GraphQL mutation containing the updated dataset date range.
+        """
+        min_date_arg = min_date
+        max_date_arg = max_date
+
+        if min_date_arg and "Z" not in min_date_arg:
+            min_date_arg += "T00:00:00Z"
+
+        if max_date_arg and "Z" not in max_date_arg:
+            max_date_arg += "T00:00:00Z"
+
+        mutation_args = {
+            'datasetId': str(dataset_id),
+            'datasetMinDate': min_date_arg,
+            'datasetMaxDate': max_date_arg,
+        }
+
+        op = Operations.mutation.update_dataset_date_range
+        result = self._gql_client.submit(op, mutation_args)
+
+        return result.update_dataset_date_range
+
+    def update_dataset_data_interval(self, dataset_id: UUID, data_interval: Optional[DatasetDataInterval]) -> MaxMutationResponse:
+        """
+        Update the data interval setting for a dataset.
+
+        Parameters
+        ----------
+        dataset_id : UUID
+            The unique identifier of the dataset to be updated.
+        data_interval : DatasetDataInterval or None
+            The new data interval to assign to the dataset. Valid values are:
+
+            - 'DATE'     : Daily data
+            - 'WEEK'     : Weekly data
+            - 'MONTH'    : Monthly data
+            - 'QUARTER'  : Quarterly data
+            - 'YEAR'     : Yearly data
+
+            If None, the data interval will be set to DATE on the backend
+
+        Returns
+        -------
+        MaxMutationResponse
+            The result of the GraphQL mutation containing the updated dataset data interval.
+        """
+        mutation_args = {
+            'datasetId': str(dataset_id),
+            'dataInterval': data_interval,
+        }
+
+        op = Operations.mutation.update_dataset_data_interval
+        result = self._gql_client.submit(op, mutation_args)
+
+        return result.update_dataset_data_interval
+
+    def update_dataset_misc_info(self, dataset_id: UUID, misc_info: Optional[str]) -> MaxMutationResponse:
+        """
+        Update the miscellaneous information associated with a dataset.
+
+        Parameters
+        ----------
+        dataset_id : UUID
+            The unique identifier of the dataset to be updated.
+        misc_info : str or None
+            Arbitrary additional information to associate with the dataset.
+            Can be any string, such as notes, metadata, or descriptive text.
+            If None, the existing misc info may be cleared or left unchanged.
+
+        Returns
+        -------
+        MaxMutationResponse
+            The result of the GraphQL mutation containing the updated dataset information.
+        """
+        mutation_args = {
+            'datasetId': str(dataset_id),
+            'miscInfo': misc_info,
+        }
+
+        op = Operations.mutation.update_dataset_misc_info
+        result = self._gql_client.submit(op, mutation_args)
+
+        return result.update_dataset_misc_info
+
+    def update_dataset_source(self, dataset_id: UUID, source_table: str, source_sql: Optional[str] = None, derived_table_alias: Optional[str] = None) -> MaxMutationResponse:
+        mutation_args = {
+            'datasetId': str(dataset_id),
+            'sourceTable': source_table,
+            'sourceSql': source_sql,
+            'derivedTableAlias': derived_table_alias,
+        }
+
+        op = Operations.mutation.update_dataset_source
+        result = self._gql_client.submit(op, mutation_args)
+
+        return result.update_dataset_source
+
+    def update_dataset_query_row_limit(self, dataset_id: UUID, query_row_limit: Optional[int]) -> MaxMutationResponse:
+        """
+        Update the maximum number of rows that can be returned in queries for a dataset.
+
+        Parameters
+        ----------
+        dataset_id : UUID
+            The unique identifier of the dataset to be updated.
+        query_row_limit : int or None
+            The maximum number of rows allowed per query. Must be a positive integer if provided.
+
+        Returns
+        -------
+        MaxMutationResponse
+            The result of the GraphQL mutation containing the updated row limit setting.
+        """
+        mutation_args = {
+            'datasetId': str(dataset_id),
+            'queryRowLimit': query_row_limit,
+        }
+
+        op = Operations.mutation.update_dataset_query_row_limit
+        result = self._gql_client.submit(op, mutation_args)
+
+        return result.update_dataset_query_row_limit
+
+    def update_dataset_use_database_casing(self, dataset_id: UUID, use_database_casing: bool) -> MaxMutationResponse:
+        """
+        Update whether the dataset should use the original database casing for field names.
+
+        Parameters
+        ----------
+        dataset_id : UUID
+            The unique identifier of the dataset to be updated.
+        use_database_casing : bool
+            If True, the dataset will preserve the original casing of field names as defined in the database.
+            If False, field names may be normalized (e.g., lowercased or transformed) by the system.
+
+        Returns
+        -------
+        MaxMutationResponse
+            The result of the GraphQL mutation reflecting the updated casing preference.
+        """
+        mutation_args = {
+            'datasetId': str(dataset_id),
+            'useDatabaseCasing': use_database_casing,
+        }
+
+        op = Operations.mutation.update_dataset_use_database_casing
+        result = self._gql_client.submit(op, mutation_args)
+
+        return result.update_dataset_use_database_casing
+
+    def update_dataset_kshot_limit(self, dataset_id: UUID, kshot_limit: int) -> MaxMutationResponse:
+        """
+        Update the k-shot limit for the dataset, which controls the number of example rows used for processing or training.
+
+        Parameters
+        ----------
+        dataset_id : UUID
+            The unique identifier of the dataset to be updated.
+        kshot_limit : int
+            The maximum number of examples (k-shot limit) to use when sampling or displaying example data.
+            Must be a non-negative integer.
+
+        Returns
+        -------
+        MaxMutationResponse
+            The result of the GraphQL mutation containing the updated k-shot limit.
+        """
+        mutation_args = {
+            'datasetId': str(dataset_id),
+            'kShotLimit': kshot_limit,
+        }
+
+        op = Operations.mutation.update_dataset_kshot_limit
+        result = self._gql_client.submit(op, mutation_args)
+
+        return result.update_dataset_kshot_limit
+
+    def create_dataset(self, dataset: Dataset) -> MaxMutationResponse:
+        """
+        Create a new dataset with the specified configuration.
+
+        Parameters
+        ----------
+        dataset : Dataset
+            The dataset object containing all necessary metadata and configuration
+            required to create the dataset (e.g., name, schema, source connection, etc.).
+
+        Returns
+        -------
+        MaxMutationResponse
+            The result of the GraphQL mutation containing the created dataset details.
+
+        Examples
+        --------
+        Create a dataset with dimensions and metrics:
+
+        >>> dataset = {
+        ...     "datasetId": dataset_id,
+        ...     "name": "test from sdk",
+        ...     "databaseId": "f4a03916-3a85-4774-95f2-2184bcfa5893",
+        ...     "description": "Distributor sales",
+        ...     "sourceTable": "fact_distributor_sales",
+        ...     "dataInterval": "date",
+        ...     "miscInfo": None,
+        ...     "datasetMinDate": None,
+        ...     "datasetMaxDate": None,
+        ...     "queryRowLimit": 100,
+        ...     "useDatabaseCasing": False,
+        ...     "kShotLimit": 3,
+        ...     "dimensions": [
+        ...         {
+        ...             "id" : "date",
+        ...             "name" : "date",
+        ...             "description" : None,
+        ...             "outputLabel" : "Date",
+        ...             "isActive" : True,
+        ...             "miscInfo" : None,
+        ...             "dataType" : "date",
+        ...             "sqlExpression" : "date",
+        ...             "sqlSortExpression" : None,
+        ...             "sampleLimit" : 10
+        ...         },
+        ...         {
+        ...             "id" : "department",
+        ...             "name" : "department",
+        ...             "description" : None,
+        ...             "outputLabel" : "Department",
+        ...             "isActive" : True,
+        ...             "miscInfo" : None,
+        ...             "dataType" : "string",
+        ...             "sqlExpression" : "department",
+        ...             "sqlSortExpression" : None,
+        ...             "sampleLimit" : 10
+        ...         }
+        ...     ],
+        ...     "metrics": [
+        ...         {
+        ...             "id" : "sales_amt",
+        ...             "name" : "sales",
+        ...             "description" : None,
+        ...             "outputLabel" : "Sales",
+        ...             "isActive" : True,
+        ...             "miscInfo" : None,
+        ...             "dataType" : "number",
+        ...             "metricType": "basic",
+        ...             "displayFormat": "$,.2f",
+        ...             "sqlAggExpression": "SUM(sales_amt)",
+        ...             "sqlRowExpression": "sales_amt",
+        ...             "growthType": "percent_change",
+        ...             "growthFormat": ",.2%"
+        ...         },
+        ...         {
+        ...             "id" : "tax_amt",
+        ...             "name" : "tax",
+        ...             "description" : None,
+        ...             "outputLabel" : "Tax",
+        ...             "isActive" : True,
+        ...             "miscInfo" : None,
+        ...             "dataType" : "number",
+        ...             "metricType": "basic",
+        ...             "displayFormat": "$,.2f",
+        ...             "sqlAggExpression": "SUM(tax_amt)",
+        ...             "sqlRowExpression": "tax_amt",
+        ...             "growthType": "percent_change",
+        ...             "growthFormat": ",.2%"
+        ...         }
+        ...     ]
+        ... }
+        >>> response = max.data.create_dataset(dataset)
+        """
+        mutation_args = {
+            'dataset': dataset,
+        }
+
+        op = Operations.mutation.create_dataset
+        result = self._gql_client.submit(op, mutation_args)
+
+        return result.create_dataset
+
+    def update_dataset(self, dataset: Dataset) -> MaxMutationResponse:
+        mutation_args = {
+            'dataset': dataset,
+        }
+
+        op = Operations.mutation.update_dataset
+        result = self._gql_client.submit(op, mutation_args)
+
+        return result.update_dataset
 
     def create_dimension(self, dataset_id: UUID, dimension: Dimension) -> MaxMutationResponse:
         mutation_args = {
