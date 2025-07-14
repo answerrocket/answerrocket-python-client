@@ -821,6 +821,21 @@ class Data:
             return None
 
     def update_dataset_name(self, dataset_id: UUID, name: str) -> MaxMutationResponse:
+        """
+        Update the name of a dataset using its unique identifier.
+
+        Parameters
+        ----------
+        dataset_id : UUID
+            The unique identifier of the dataset to be updated.
+        name : str
+            The new name to assign to the dataset.
+
+        Returns
+        -------
+        MaxMutationResponse
+            The result of the GraphQL mutation containing the updated dataset information.
+        """
         mutation_args = {
             'datasetId': str(dataset_id),
             'name': name,
@@ -832,6 +847,21 @@ class Data:
         return result.update_dataset_name
 
     def update_dataset_description(self, dataset_id: UUID, description: Optional[str]) -> MaxMutationResponse:
+        """
+        Update the description of a dataset using its unique identifier.
+
+        Parameters
+        ----------
+        dataset_id : UUID
+            The unique identifier of the dataset to be updated.
+        description : str
+            The new description to assign to the dataset.
+
+        Returns
+        -------
+        MaxMutationResponse
+            The result of the GraphQL mutation containing the updated dataset information.
+        """
         mutation_args = {
             'datasetId': str(dataset_id),
             'description': description,
@@ -843,6 +873,25 @@ class Data:
         return result.update_dataset_description
 
     def update_dataset_date_range(self, dataset_id: UUID, min_date: Optional[str], max_date: Optional[str]) -> MaxMutationResponse:
+        """
+        Update the minimum and/or maximum date range for a dataset.
+
+        Parameters
+        ----------
+        dataset_id : UUID
+            The unique identifier of the dataset to be updated.
+        min_date : str or None
+            The new minimum date for the dataset in ISO 8601 format (e.g., "2023-01-01").
+            If provided and missing a time component, "T00:00:00Z" will be appended.
+        max_date : str or None
+            The new maximum date for the dataset in ISO 8601 format (e.g., "2023-12-31").
+            If provided and missing a time component, "T00:00:00Z" will be appended.
+
+        Returns
+        -------
+        MaxMutationResponse
+            The result of the GraphQL mutation containing the updated dataset date range.
+        """
         min_date_arg = min_date
         max_date_arg = max_date
 
@@ -864,6 +913,29 @@ class Data:
         return result.update_dataset_date_range
 
     def update_dataset_data_interval(self, dataset_id: UUID, data_interval: Optional[DatasetDataInterval]) -> MaxMutationResponse:
+        """
+        Update the data interval setting for a dataset.
+
+        Parameters
+        ----------
+        dataset_id : UUID
+            The unique identifier of the dataset to be updated.
+        data_interval : DatasetDataInterval or None
+            The new data interval to assign to the dataset. Valid values are:
+
+            - 'DATE'     : Daily data
+            - 'WEEK'     : Weekly data
+            - 'MONTH'    : Monthly data
+            - 'QUARTER'  : Quarterly data
+            - 'YEAR'     : Yearly data
+
+            If None, the data interval will be set to DATE on the backend
+
+        Returns
+        -------
+        MaxMutationResponse
+            The result of the GraphQL mutation containing the updated dataset data interval.
+        """
         mutation_args = {
             'datasetId': str(dataset_id),
             'dataInterval': data_interval,
@@ -875,6 +947,23 @@ class Data:
         return result.update_dataset_data_interval
 
     def update_dataset_misc_info(self, dataset_id: UUID, misc_info: Optional[str]) -> MaxMutationResponse:
+        """
+        Update the miscellaneous information associated with a dataset.
+
+        Parameters
+        ----------
+        dataset_id : UUID
+            The unique identifier of the dataset to be updated.
+        misc_info : str or None
+            Arbitrary additional information to associate with the dataset.
+            Can be any string, such as notes, metadata, or descriptive text.
+            If None, the existing misc info may be cleared or left unchanged.
+
+        Returns
+        -------
+        MaxMutationResponse
+            The result of the GraphQL mutation containing the updated dataset information.
+        """
         mutation_args = {
             'datasetId': str(dataset_id),
             'miscInfo': misc_info,
@@ -899,6 +988,21 @@ class Data:
         return result.update_dataset_source
 
     def update_dataset_query_row_limit(self, dataset_id: UUID, query_row_limit: Optional[int]) -> MaxMutationResponse:
+        """
+        Update the maximum number of rows that can be returned in queries for a dataset.
+
+        Parameters
+        ----------
+        dataset_id : UUID
+            The unique identifier of the dataset to be updated.
+        query_row_limit : int or None
+            The maximum number of rows allowed per query. Must be a positive integer if provided.
+
+        Returns
+        -------
+        MaxMutationResponse
+            The result of the GraphQL mutation containing the updated row limit setting.
+        """
         mutation_args = {
             'datasetId': str(dataset_id),
             'queryRowLimit': query_row_limit,
@@ -910,6 +1014,22 @@ class Data:
         return result.update_dataset_query_row_limit
 
     def update_dataset_use_database_casing(self, dataset_id: UUID, use_database_casing: bool) -> MaxMutationResponse:
+        """
+        Update whether the dataset should use the original database casing for field names.
+
+        Parameters
+        ----------
+        dataset_id : UUID
+            The unique identifier of the dataset to be updated.
+        use_database_casing : bool
+            If True, the dataset will preserve the original casing of field names as defined in the database.
+            If False, field names may be normalized (e.g., lowercased or transformed) by the system.
+
+        Returns
+        -------
+        MaxMutationResponse
+            The result of the GraphQL mutation reflecting the updated casing preference.
+        """
         mutation_args = {
             'datasetId': str(dataset_id),
             'useDatabaseCasing': use_database_casing,
@@ -921,6 +1041,22 @@ class Data:
         return result.update_dataset_use_database_casing
 
     def update_dataset_kshot_limit(self, dataset_id: UUID, use_database_kshot_limit: int) -> MaxMutationResponse:
+        """
+        Update the k-shot limit for the dataset, which controls the number of example rows used for processing or training.
+
+        Parameters
+        ----------
+        dataset_id : UUID
+            The unique identifier of the dataset to be updated.
+        use_database_kshot_limit : int
+            The maximum number of examples (k-shot limit) to use when sampling or displaying example data.
+            Must be a non-negative integer.
+
+        Returns
+        -------
+        MaxMutationResponse
+            The result of the GraphQL mutation containing the updated k-shot limit.
+        """
         mutation_args = {
             'datasetId': str(dataset_id),
             'kShotLimit': use_database_kshot_limit,
@@ -932,6 +1068,98 @@ class Data:
         return result.update_dataset_kshot_limit
 
     def create_dataset(self, dataset: Dataset) -> MaxMutationResponse:
+        """
+        Create a new dataset with the specified configuration.
+
+        Parameters
+        ----------
+        dataset : Dataset
+            The dataset object containing all necessary metadata and configuration
+            required to create the dataset (e.g., name, schema, source connection, etc.).
+
+        Returns
+        -------
+        MaxMutationResponse
+            The result of the GraphQL mutation containing the created dataset details.
+
+        Examples
+        --------
+        Create a dataset with dimensions and metrics:
+
+        >>> dataset = {
+        ...     "datasetId": dataset_id,
+        ...     "name": "test from sdk",
+        ...     "databaseId": "f4a03916-3a85-4774-95f2-2184bcfa5893",
+        ...     "description": "Distributor sales",
+        ...     "sourceTable": "fact_distributor_sales",
+        ...     "dataInterval": "date",
+        ...     "miscInfo": None,
+        ...     "datasetMinDate": None,
+        ...     "datasetMaxDate": None,
+        ...     "queryRowLimit": 100,
+        ...     "useDatabaseCasing": False,
+        ...     "kShotLimit": 3,
+        ...     "dimensions": [
+        ...         {
+        ...             "id" : "date",
+        ...             "name" : "date",
+        ...             "description" : None,
+        ...             "outputLabel" : "Date",
+        ...             "isActive" : True,
+        ...             "miscInfo" : None,
+        ...             "dataType" : "date",
+        ...             "sqlExpression" : "date",
+        ...             "sqlSortExpression" : None,
+        ...             "sampleLimit" : 10
+        ...         },
+        ...         {
+        ...             "id" : "department",
+        ...             "name" : "department",
+        ...             "description" : None,
+        ...             "outputLabel" : "Department",
+        ...             "isActive" : True,
+        ...             "miscInfo" : None,
+        ...             "dataType" : "string",
+        ...             "sqlExpression" : "department",
+        ...             "sqlSortExpression" : None,
+        ...             "sampleLimit" : 10
+        ...         }
+        ...     ],
+        ...     "metrics": [
+        ...         {
+        ...             "id" : "sales_amt",
+        ...             "name" : "sales",
+        ...             "description" : None,
+        ...             "outputLabel" : "Sales",
+        ...             "isActive" : True,
+        ...             "miscInfo" : None,
+        ...             "dataType" : "number",
+        ...             "metricType": "basic",
+        ...             "displayFormat": "$,.2f",
+        ...             "sqlAggExpression": "SUM(sales_amt)",
+        ...             "sqlRowExpression": "sales_amt",
+        ...             "growthType": "percent_change",
+        ...             "growthFormat": ",.2%"
+        ...         },
+        ...         {
+        ...             "id" : "tax_amt",
+        ...             "name" : "tax",
+        ...             "description" : None,
+        ...             "outputLabel" : "Tax",
+        ...             "isActive" : True,
+        ...             "miscInfo" : None,
+        ...             "dataType" : "number",
+        ...             "metricType": "basic",
+        ...             "displayFormat": "$,.2f",
+        ...             "sqlAggExpression": "SUM(tax_amt)",
+        ...             "sqlRowExpression": "tax_amt",
+        ...             "growthType": "percent_change",
+        ...             "growthFormat": ",.2%"
+        ...         }
+        ...     ]
+        ... }
+        >>> response = max.data.create_dataset(dataset)
+        """
         mutation_args = {
             'dataset': dataset,
         }
