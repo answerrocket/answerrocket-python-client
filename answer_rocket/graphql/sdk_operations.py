@@ -123,6 +123,15 @@ def mutation_update_database_mermaid_er_diagram():
     return _op
 
 
+def mutation_update_database_kshot_limit():
+    _op = sgqlc.operation.Operation(_schema_root.mutation_type, name='UpdateDatabaseKShotLimit', variables=dict(databaseId=sgqlc.types.Arg(sgqlc.types.non_null(_schema.UUID)), kShotLimit=sgqlc.types.Arg(sgqlc.types.non_null(_schema.Int))))
+    _op_update_database_kshot_limit = _op.update_database_kshot_limit(database_id=sgqlc.types.Variable('databaseId'), k_shot_limit=sgqlc.types.Variable('kShotLimit'))
+    _op_update_database_kshot_limit.success()
+    _op_update_database_kshot_limit.code()
+    _op_update_database_kshot_limit.error()
+    return _op
+
+
 def mutation_create_dataset():
     _op = sgqlc.operation.Operation(_schema_root.mutation_type, name='CreateDataset', variables=dict(dataset=sgqlc.types.Arg(sgqlc.types.non_null(_schema.JSON))))
     _op_create_dataset = _op.create_dataset(dataset=sgqlc.types.Variable('dataset'))
@@ -286,6 +295,7 @@ class Mutation:
     queue_chat_question = mutation_queue_chat_question()
     set_skill_memory = mutation_set_skill_memory()
     update_database_description = mutation_update_database_description()
+    update_database_kshot_limit = mutation_update_database_kshot_limit()
     update_database_llm_description = mutation_update_database_llm_description()
     update_database_mermaid_er_diagram = mutation_update_database_mermaid_er_diagram()
     update_database_name = mutation_update_database_name()
@@ -497,6 +507,18 @@ def query_get_grounded_value():
     return _op
 
 
+def query_get_database():
+    _op = sgqlc.operation.Operation(_schema_root.query_type, name='GetDatabase', variables=dict(databaseId=sgqlc.types.Arg(sgqlc.types.non_null(_schema.UUID))))
+    _op_get_database = _op.get_database(database_id=sgqlc.types.Variable('databaseId'))
+    _op_get_database.database_id()
+    _op_get_database.name()
+    _op_get_database.description()
+    _op_get_database.llm_description()
+    _op_get_database.mermaid_er_diagram()
+    _op_get_database.k_shot_limit()
+    return _op
+
+
 def query_get_dataset2():
     _op = sgqlc.operation.Operation(_schema_root.query_type, name='GetDataset2', variables=dict(datasetId=sgqlc.types.Arg(sgqlc.types.non_null(_schema.UUID))))
     _op_get_dataset2 = _op.get_dataset2(dataset_id=sgqlc.types.Variable('datasetId'))
@@ -557,6 +579,7 @@ class Query:
     get_copilot_info = query_get_copilot_info()
     get_copilot_skill = query_get_copilot_skill()
     get_copilots = query_get_copilots()
+    get_database = query_get_database()
     get_dataset2 = query_get_dataset2()
     get_grounded_value = query_get_grounded_value()
     get_max_llm_prompt = query_get_max_llm_prompt()

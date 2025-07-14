@@ -21,6 +21,21 @@ query GetGroundedValue(
   }
 }
 
+query GetDatabase(
+  $databaseId: UUID!
+) {
+  getDatabase(
+    databaseId: $databaseId
+  ) {
+    databaseId
+    name
+    description
+    llmDescription
+    mermaidErDiagram
+    kShotLimit
+  }
+}
+
 query GetDataset2(
   $datasetId: UUID!
 ) {
@@ -94,6 +109,20 @@ mutation UpdateDatabaseMermaidErDiagram(
   updateDatabaseMermaidErDiagram(
     databaseId: $databaseId
     mermaidErDiagram: $mermaidErDiagram
+  ) {
+    success
+    code
+    error
+  }
+}
+
+mutation UpdateDatabaseKShotLimit(
+  $databaseId: UUID!
+  $kShotLimit: Int!
+) {
+  updateDatabaseKShotLimit(
+    databaseId: $databaseId
+    kShotLimit: $kShotLimit
   ) {
     success
     code

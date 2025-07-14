@@ -15,7 +15,7 @@ from answer_rocket.graphql.schema import UUID as GQL_UUID, GenerateVisualization
     MaxNormalAttribute, \
     MaxPrimaryAttribute, MaxReferenceAttribute, MaxCalculatedMetric, MaxDataset, MaxCalculatedAttribute, \
     MaxMutationResponse, DateTime, RunMaxSqlGenResponse, JSON, RunSqlAiResponse, GroundedValueResponse, Dimension, \
-    Metric, Dataset, DatasetDataInterval
+    Metric, Dataset, DatasetDataInterval, Database
 from answer_rocket.graphql.sdk_operations import Operations
 from answer_rocket.types import MaxResult, RESULT_EXCEPTION_CODE
 
@@ -218,6 +218,37 @@ class Data:
 
             return execute_rql_query_result
 
+    def get_database(self, database_id: UUID) -> Optional[Database]:
+        """
+        Retrieve a database by its ID.
+
+        This method queries the backend for a database using the given unique identifier.
+        If the database is found, it is returned as a `Database` object. If not found or
+        if an error occurs during the query, `None` is returned.
+
+        Parameters
+        ----------
+        database_id : UUID
+            The unique identifier of the database to retrieve.
+
+        Returns
+        -------
+        Database or None
+            The database object if found, or `None` if not found or if an error occurs.
+        """
+        try:
+            query_args = {
+                'databaseId': str(database_id),
+            }
+
+            op = Operations.query.get_database
+
+            result = self._gql_client.submit(op, query_args)
+
+            return result.get_database
+        except Exception as e:
+            return None
+
     def get_dataset_id(self, dataset_name: str) -> Optional[UUID]:
         try:
             """
@@ -318,10 +349,24 @@ class Data:
             return None
 
     def get_dataset2(self, dataset_id: UUID) -> Optional[Dataset]:
+        """
+        Retrieve a dataset by its ID.
+
+        This method queries the backend for a dataset using the given unique identifier.
+        If the dataset is found, it is returned as a `Dataset` object. If not found or
+        if an error occurs during the query, `None` is returned.
+
+        Parameters
+        ----------
+        dataset_id : UUID
+            The unique identifier of the dataset to retrieve.
+
+        Returns
+        -------
+        Dataset or None
+            The dataset object if found, or `None` if not found or if an error occurs.
+        """
         try:
-            """
-            dataset_id: the UUID of the dataset
-            """
             query_args = {
                 'datasetId': str(dataset_id),
             }
@@ -870,6 +915,24 @@ class Data:
         return result.update_database_llm_description
 
     def update_database_mermaid_er_diagram(self, database_id: UUID, mermaid_er_diagram: Optional[str]) -> MaxMutationResponse:
+        """
+        Update the Mermaid.js ER diagram representation for a database.
+
+        This diagram can be used to visually describe the entity-relationship structure of the database,
+        and is formatted using the Mermaid.js syntax.
+
+        Parameters
+        ----------
+        database_id : UUID
+            The unique identifier of the database to be updated.
+        mermaid_er_diagram : str or None
+            A string containing a Mermaid.js ER diagram definition.
+
+        Returns
+        -------
+        MaxMutationResponse
+            The result of the GraphQL mutation containing the updated ER diagram information.
+        """
         mutation_args = {
             'databaseId': str(database_id),
             'mermaidErDiagram': mermaid_er_diagram,
@@ -879,6 +942,35 @@ class Data:
         result = self._gql_client.submit(op, mutation_args)
 
         return result.update_database_mermaid_er_diagram
+
+    def update_database_kshot_limit(self, database_id: UUID, kshot_limit: int) -> MaxMutationResponse:
+        """
+        Update the k-shot limit for a database.
+
+        The k-shot limit defines the maximum number of example rows to be used when generating
+        prompts, previews, or training examples involving this database.
+
+        Parameters
+        ----------
+        database_id : UUID
+            The unique identifier of the database to be updated.
+        kshot_limit : int
+            The maximum number of rows (k-shot examples) to include. Must be a non-negative integer.
+
+        Returns
+        -------
+        MaxMutationResponse
+            The result of the GraphQL mutation containing the updated k-shot limit.
+        """
+        mutation_args = {
+            'databaseId': str(database_id),
+            'kShotLimit': kshot_limit,
+        }
+
+        op = Operations.mutation.update_database_kshot_limit
+        result = self._gql_client.submit(op, mutation_args)
+
+        return result.update_database_kshot_limit
 
     def reload_dataset(self, dataset_id: Optional[UUID] = None, database_id: Optional[UUID] = None, table_names: Optional[List[str]] = None) -> MaxMutationResponse:
         try:
@@ -1133,7 +1225,7 @@ class Data:
 
         return result.update_dataset_use_database_casing
 
-    def update_dataset_kshot_limit(self, dataset_id: UUID, use_database_kshot_limit: int) -> MaxMutationResponse:
+    def update_dataset_kshot_limit(self, dataset_id: UUID, kshot_limit: int) -> MaxMutationResponse:
         """
         Update the k-shot limit for the dataset, which controls the number of example rows used for processing or training.
 
@@ -1141,7 +1233,7 @@ class Data:
         ----------
         dataset_id : UUID
             The unique identifier of the dataset to be updated.
-        use_database_kshot_limit : int
+        kshot_limit : int
             The maximum number of examples (k-shot limit) to use when sampling or displaying example data.
             Must be a non-negative integer.
 
@@ -1152,7 +1244,7 @@ class Data:
         """
         mutation_args = {
             'datasetId': str(dataset_id),
-            'kShotLimit': use_database_kshot_limit,
+            'kShotLimit': kshot_limit,
         }
 
         op = Operations.mutation.update_dataset_kshot_limit
