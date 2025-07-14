@@ -101,6 +101,20 @@ mutation UpdateDatasetDateRange(
   }
 }
 
+mutation UpdateDatasetDataInterval(
+  $datasetId: UUID!
+  $dataInterval: DatasetDataInterval
+) {
+  updateDatasetDataInterval(
+    datasetId: $datasetId
+    dataInterval: $dataInterval
+  ) {
+    success
+    code
+    error
+  }
+}
+
 mutation UpdateDatasetMiscInfo(
   $datasetId: UUID!
   $miscInfo: String
@@ -108,6 +122,66 @@ mutation UpdateDatasetMiscInfo(
   updateDatasetMiscInfo(
     datasetId: $datasetId
     miscInfo: $miscInfo
+  ) {
+    success
+    code
+    error
+  }
+}
+
+mutation UpdateDatasetSource(
+  $datasetId: UUID!
+  $sourceTable: String!
+  $sourceSql: String
+  $derivedTableAlias: String
+) {
+  updateDatasetSource(
+    datasetId: $datasetId
+    sourceTable: $sourceTable
+    sourceSql: $sourceSql
+    derivedTableAlias: $derivedTableAlias
+  ) {
+    success
+    code
+    error
+  }
+}
+
+mutation UpdateDatasetQueryRowLimit(
+  $datasetId: UUID!
+  $queryRowLimit: Int
+) {
+  updateDatasetQueryRowLimit(
+    datasetId: $datasetId
+    queryRowLimit: $queryRowLimit
+  ) {
+    success
+    code
+    error
+  }
+}
+
+mutation UpdateDatasetUseDatabaseCasing(
+  $datasetId: UUID!
+  $useDatabaseCasing: Boolean!
+) {
+  updateDatasetUseDatabaseCasing(
+    datasetId: $datasetId
+    useDatabaseCasing: $useDatabaseCasing
+  ) {
+    success
+    code
+    error
+  }
+}
+
+mutation UpdateDatasetKShotLimit(
+  $datasetId: UUID!
+  $kShotLimit: Int!
+) {
+  updateDatasetKShotLimit(
+    datasetId: $datasetId
+    kShotLimit: $kShotLimit
   ) {
     success
     code

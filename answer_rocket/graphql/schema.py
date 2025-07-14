@@ -304,7 +304,7 @@ class CreateMaxCopilotSkillChatQuestionResponse(sgqlc.types.Type):
 
 class Dataset(sgqlc.types.Type):
     __schema__ = schema
-    __field_names__ = ('dataset_id', 'name', 'description', 'database_id', 'dimensions', 'metrics', 'misc_info', 'source_table', 'source_sql', 'data_interval', 'dataset_min_date', 'dataset_max_date', 'query_row_limit', 'use_database_casing', 'k_shot_limit')
+    __field_names__ = ('dataset_id', 'name', 'description', 'database_id', 'dimensions', 'metrics', 'misc_info', 'source_table', 'source_sql', 'derived_table_alias', 'data_interval', 'dataset_min_date', 'dataset_max_date', 'query_row_limit', 'use_database_casing', 'k_shot_limit')
     dataset_id = sgqlc.types.Field(sgqlc.types.non_null(UUID), graphql_name='datasetId')
     name = sgqlc.types.Field(sgqlc.types.non_null(String), graphql_name='name')
     description = sgqlc.types.Field(String, graphql_name='description')
@@ -314,6 +314,7 @@ class Dataset(sgqlc.types.Type):
     misc_info = sgqlc.types.Field(String, graphql_name='miscInfo')
     source_table = sgqlc.types.Field(sgqlc.types.non_null(String), graphql_name='sourceTable')
     source_sql = sgqlc.types.Field(String, graphql_name='sourceSql')
+    derived_table_alias = sgqlc.types.Field(String, graphql_name='derivedTableAlias')
     data_interval = sgqlc.types.Field(DatasetDataInterval, graphql_name='dataInterval')
     dataset_min_date = sgqlc.types.Field(DateTime, graphql_name='datasetMinDate')
     dataset_max_date = sgqlc.types.Field(DateTime, graphql_name='datasetMaxDate')
@@ -798,7 +799,7 @@ class MaxUser(sgqlc.types.Type):
 
 class Mutation(sgqlc.types.Type):
     __schema__ = schema
-    __field_names__ = ('create_max_copilot_skill_chat_question', 'update_max_copilot_skill_chat_question', 'delete_max_copilot_skill_chat_question', 'create_max_copilot_question', 'update_max_copilot_question', 'delete_max_copilot_question', 'set_max_agent_workflow', 'reload_dataset', 'update_dataset_name', 'update_dataset_description', 'update_dataset_date_range', 'update_dataset_misc_info', 'create_dataset', 'create_dimension', 'update_dimension', 'delete_dimension', 'create_metric', 'update_metric', 'delete_metric', 'update_chat_answer_payload', 'ask_chat_question', 'evaluate_chat_question', 'queue_chat_question', 'cancel_chat_question', 'create_chat_thread', 'add_feedback', 'set_skill_memory', 'share_thread', 'update_loading_message')
+    __field_names__ = ('create_max_copilot_skill_chat_question', 'update_max_copilot_skill_chat_question', 'delete_max_copilot_skill_chat_question', 'create_max_copilot_question', 'update_max_copilot_question', 'delete_max_copilot_question', 'set_max_agent_workflow', 'reload_dataset', 'update_dataset_name', 'update_dataset_description', 'update_dataset_date_range', 'update_dataset_data_interval', 'update_dataset_misc_info', 'update_dataset_source', 'update_dataset_query_row_limit', 'update_dataset_use_database_casing', 'update_dataset_kshot_limit', 'create_dataset', 'create_dimension', 'update_dimension', 'delete_dimension', 'create_metric', 'update_metric', 'delete_metric', 'update_chat_answer_payload', 'ask_chat_question', 'evaluate_chat_question', 'queue_chat_question', 'cancel_chat_question', 'create_chat_thread', 'add_feedback', 'set_skill_memory', 'share_thread', 'update_loading_message')
     create_max_copilot_skill_chat_question = sgqlc.types.Field(sgqlc.types.non_null(CreateMaxCopilotSkillChatQuestionResponse), graphql_name='createMaxCopilotSkillChatQuestion', args=sgqlc.types.ArgDict((
         ('copilot_id', sgqlc.types.Arg(sgqlc.types.non_null(UUID), graphql_name='copilotId', default=None)),
         ('copilot_skill_id', sgqlc.types.Arg(sgqlc.types.non_null(UUID), graphql_name='copilotSkillId', default=None)),
@@ -863,9 +864,36 @@ class Mutation(sgqlc.types.Type):
         ('dataset_max_date', sgqlc.types.Arg(DateTime, graphql_name='datasetMaxDate', default=None)),
 ))
     )
+    update_dataset_data_interval = sgqlc.types.Field(MaxMutationResponse, graphql_name='updateDatasetDataInterval', args=sgqlc.types.ArgDict((
+        ('dataset_id', sgqlc.types.Arg(sgqlc.types.non_null(UUID), graphql_name='datasetId', default=None)),
+        ('data_interval', sgqlc.types.Arg(DatasetDataInterval, graphql_name='dataInterval', default=None)),
+))
+    )
     update_dataset_misc_info = sgqlc.types.Field(MaxMutationResponse, graphql_name='updateDatasetMiscInfo', args=sgqlc.types.ArgDict((
         ('dataset_id', sgqlc.types.Arg(sgqlc.types.non_null(UUID), graphql_name='datasetId', default=None)),
         ('misc_info', sgqlc.types.Arg(String, graphql_name='miscInfo', default=None)),
+))
+    )
+    update_dataset_source = sgqlc.types.Field(MaxMutationResponse, graphql_name='updateDatasetSource', args=sgqlc.types.ArgDict((
+        ('dataset_id', sgqlc.types.Arg(sgqlc.types.non_null(UUID), graphql_name='datasetId', default=None)),
+        ('source_table', sgqlc.types.Arg(sgqlc.types.non_null(String), graphql_name='sourceTable', default=None)),
+        ('source_sql', sgqlc.types.Arg(String, graphql_name='sourceSql', default=None)),
+        ('derived_table_alias', sgqlc.types.Arg(String, graphql_name='derivedTableAlias', default=None)),
+))
+    )
+    update_dataset_query_row_limit = sgqlc.types.Field(MaxMutationResponse, graphql_name='updateDatasetQueryRowLimit', args=sgqlc.types.ArgDict((
+        ('dataset_id', sgqlc.types.Arg(sgqlc.types.non_null(UUID), graphql_name='datasetId', default=None)),
+        ('query_row_limit', sgqlc.types.Arg(Int, graphql_name='queryRowLimit', default=None)),
+))
+    )
+    update_dataset_use_database_casing = sgqlc.types.Field(MaxMutationResponse, graphql_name='updateDatasetUseDatabaseCasing', args=sgqlc.types.ArgDict((
+        ('dataset_id', sgqlc.types.Arg(sgqlc.types.non_null(UUID), graphql_name='datasetId', default=None)),
+        ('use_database_casing', sgqlc.types.Arg(sgqlc.types.non_null(Boolean), graphql_name='useDatabaseCasing', default=None)),
+))
+    )
+    update_dataset_kshot_limit = sgqlc.types.Field(MaxMutationResponse, graphql_name='updateDatasetKShotLimit', args=sgqlc.types.ArgDict((
+        ('dataset_id', sgqlc.types.Arg(sgqlc.types.non_null(UUID), graphql_name='datasetId', default=None)),
+        ('k_shot_limit', sgqlc.types.Arg(sgqlc.types.non_null(Int), graphql_name='kShotLimit', default=None)),
 ))
     )
     create_dataset = sgqlc.types.Field(sgqlc.types.non_null(MaxMutationResponse), graphql_name='createDataset', args=sgqlc.types.ArgDict((

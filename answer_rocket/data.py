@@ -15,7 +15,7 @@ from answer_rocket.graphql.schema import UUID as GQL_UUID, GenerateVisualization
     MaxNormalAttribute, \
     MaxPrimaryAttribute, MaxReferenceAttribute, MaxCalculatedMetric, MaxDataset, MaxCalculatedAttribute, \
     MaxMutationResponse, DateTime, RunMaxSqlGenResponse, JSON, RunSqlAiResponse, GroundedValueResponse, Dimension, \
-    Metric, Dataset
+    Metric, Dataset, DatasetDataInterval
 from answer_rocket.graphql.sdk_operations import Operations
 from answer_rocket.types import MaxResult, RESULT_EXCEPTION_CODE
 
@@ -863,6 +863,17 @@ class Data:
 
         return result.update_dataset_date_range
 
+    def update_dataset_data_interval(self, dataset_id: UUID, data_interval: Optional[DatasetDataInterval]) -> MaxMutationResponse:
+        mutation_args = {
+            'datasetId': str(dataset_id),
+            'dataInterval': data_interval,
+        }
+
+        op = Operations.mutation.update_dataset_data_interval
+        result = self._gql_client.submit(op, mutation_args)
+
+        return result.update_dataset_data_interval
+
     def update_dataset_misc_info(self, dataset_id: UUID, misc_info: Optional[str]) -> MaxMutationResponse:
         mutation_args = {
             'datasetId': str(dataset_id),
@@ -873,6 +884,52 @@ class Data:
         result = self._gql_client.submit(op, mutation_args)
 
         return result.update_dataset_misc_info
+
+    def update_dataset_source(self, dataset_id: UUID, source_table: str, source_sql: Optional[str] = None, derived_table_alias: Optional[str] = None) -> MaxMutationResponse:
+        mutation_args = {
+            'datasetId': str(dataset_id),
+            'sourceTable': source_table,
+            'sourceSql': source_sql,
+            'derivedTableAlias': derived_table_alias,
+        }
+
+        op = Operations.mutation.update_dataset_source
+        result = self._gql_client.submit(op, mutation_args)
+
+        return result.update_dataset_source
+
+    def update_dataset_query_row_limit(self, dataset_id: UUID, query_row_limit: Optional[int]) -> MaxMutationResponse:
+        mutation_args = {
+            'datasetId': str(dataset_id),
+            'queryRowLimit': query_row_limit,
+        }
+
+        op = Operations.mutation.update_dataset_query_row_limit
+        result = self._gql_client.submit(op, mutation_args)
+
+        return result.update_dataset_query_row_limit
+
+    def update_dataset_use_database_casing(self, dataset_id: UUID, use_database_casing: bool) -> MaxMutationResponse:
+        mutation_args = {
+            'datasetId': str(dataset_id),
+            'useDatabaseCasing': use_database_casing,
+        }
+
+        op = Operations.mutation.update_dataset_use_database_casing
+        result = self._gql_client.submit(op, mutation_args)
+
+        return result.update_dataset_use_database_casing
+
+    def update_dataset_kshot_limit(self, dataset_id: UUID, use_database_kshot_limit: int) -> MaxMutationResponse:
+        mutation_args = {
+            'datasetId': str(dataset_id),
+            'kShotLimit': use_database_kshot_limit,
+        }
+
+        op = Operations.mutation.update_dataset_kshot_limit
+        result = self._gql_client.submit(op, mutation_args)
+
+        return result.update_dataset_kshot_limit
 
     def create_dataset(self, dataset: Dataset) -> MaxMutationResponse:
         mutation_args = {

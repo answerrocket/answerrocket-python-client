@@ -123,12 +123,57 @@ def mutation_update_dataset_date_range():
     return _op
 
 
+def mutation_update_dataset_data_interval():
+    _op = sgqlc.operation.Operation(_schema_root.mutation_type, name='UpdateDatasetDataInterval', variables=dict(datasetId=sgqlc.types.Arg(sgqlc.types.non_null(_schema.UUID)), dataInterval=sgqlc.types.Arg(_schema.DatasetDataInterval)))
+    _op_update_dataset_data_interval = _op.update_dataset_data_interval(dataset_id=sgqlc.types.Variable('datasetId'), data_interval=sgqlc.types.Variable('dataInterval'))
+    _op_update_dataset_data_interval.success()
+    _op_update_dataset_data_interval.code()
+    _op_update_dataset_data_interval.error()
+    return _op
+
+
 def mutation_update_dataset_misc_info():
     _op = sgqlc.operation.Operation(_schema_root.mutation_type, name='UpdateDatasetMiscInfo', variables=dict(datasetId=sgqlc.types.Arg(sgqlc.types.non_null(_schema.UUID)), miscInfo=sgqlc.types.Arg(_schema.String)))
     _op_update_dataset_misc_info = _op.update_dataset_misc_info(dataset_id=sgqlc.types.Variable('datasetId'), misc_info=sgqlc.types.Variable('miscInfo'))
     _op_update_dataset_misc_info.success()
     _op_update_dataset_misc_info.code()
     _op_update_dataset_misc_info.error()
+    return _op
+
+
+def mutation_update_dataset_source():
+    _op = sgqlc.operation.Operation(_schema_root.mutation_type, name='UpdateDatasetSource', variables=dict(datasetId=sgqlc.types.Arg(sgqlc.types.non_null(_schema.UUID)), sourceTable=sgqlc.types.Arg(sgqlc.types.non_null(_schema.String)), sourceSql=sgqlc.types.Arg(_schema.String), derivedTableAlias=sgqlc.types.Arg(_schema.String)))
+    _op_update_dataset_source = _op.update_dataset_source(dataset_id=sgqlc.types.Variable('datasetId'), source_table=sgqlc.types.Variable('sourceTable'), source_sql=sgqlc.types.Variable('sourceSql'), derived_table_alias=sgqlc.types.Variable('derivedTableAlias'))
+    _op_update_dataset_source.success()
+    _op_update_dataset_source.code()
+    _op_update_dataset_source.error()
+    return _op
+
+
+def mutation_update_dataset_query_row_limit():
+    _op = sgqlc.operation.Operation(_schema_root.mutation_type, name='UpdateDatasetQueryRowLimit', variables=dict(datasetId=sgqlc.types.Arg(sgqlc.types.non_null(_schema.UUID)), queryRowLimit=sgqlc.types.Arg(_schema.Int)))
+    _op_update_dataset_query_row_limit = _op.update_dataset_query_row_limit(dataset_id=sgqlc.types.Variable('datasetId'), query_row_limit=sgqlc.types.Variable('queryRowLimit'))
+    _op_update_dataset_query_row_limit.success()
+    _op_update_dataset_query_row_limit.code()
+    _op_update_dataset_query_row_limit.error()
+    return _op
+
+
+def mutation_update_dataset_use_database_casing():
+    _op = sgqlc.operation.Operation(_schema_root.mutation_type, name='UpdateDatasetUseDatabaseCasing', variables=dict(datasetId=sgqlc.types.Arg(sgqlc.types.non_null(_schema.UUID)), useDatabaseCasing=sgqlc.types.Arg(sgqlc.types.non_null(_schema.Boolean))))
+    _op_update_dataset_use_database_casing = _op.update_dataset_use_database_casing(dataset_id=sgqlc.types.Variable('datasetId'), use_database_casing=sgqlc.types.Variable('useDatabaseCasing'))
+    _op_update_dataset_use_database_casing.success()
+    _op_update_dataset_use_database_casing.code()
+    _op_update_dataset_use_database_casing.error()
+    return _op
+
+
+def mutation_update_dataset_kshot_limit():
+    _op = sgqlc.operation.Operation(_schema_root.mutation_type, name='UpdateDatasetKShotLimit', variables=dict(datasetId=sgqlc.types.Arg(sgqlc.types.non_null(_schema.UUID)), kShotLimit=sgqlc.types.Arg(sgqlc.types.non_null(_schema.Int))))
+    _op_update_dataset_kshot_limit = _op.update_dataset_kshot_limit(dataset_id=sgqlc.types.Variable('datasetId'), k_shot_limit=sgqlc.types.Variable('kShotLimit'))
+    _op_update_dataset_kshot_limit.success()
+    _op_update_dataset_kshot_limit.code()
+    _op_update_dataset_kshot_limit.error()
     return _op
 
 
@@ -204,10 +249,15 @@ class Mutation:
     delete_metric = mutation_delete_metric()
     queue_chat_question = mutation_queue_chat_question()
     set_skill_memory = mutation_set_skill_memory()
+    update_dataset_data_interval = mutation_update_dataset_data_interval()
     update_dataset_date_range = mutation_update_dataset_date_range()
     update_dataset_description = mutation_update_dataset_description()
+    update_dataset_kshot_limit = mutation_update_dataset_kshot_limit()
     update_dataset_misc_info = mutation_update_dataset_misc_info()
     update_dataset_name = mutation_update_dataset_name()
+    update_dataset_query_row_limit = mutation_update_dataset_query_row_limit()
+    update_dataset_source = mutation_update_dataset_source()
+    update_dataset_use_database_casing = mutation_update_dataset_use_database_casing()
     update_dimension = mutation_update_dimension()
     update_loading_message = mutation_update_loading_message()
     update_metric = mutation_update_metric()
