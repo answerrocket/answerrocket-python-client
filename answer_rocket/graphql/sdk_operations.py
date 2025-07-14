@@ -87,6 +87,42 @@ def mutation_set_skill_memory():
     return _op
 
 
+def mutation_update_database_name():
+    _op = sgqlc.operation.Operation(_schema_root.mutation_type, name='UpdateDatabaseName', variables=dict(databaseId=sgqlc.types.Arg(sgqlc.types.non_null(_schema.UUID)), name=sgqlc.types.Arg(sgqlc.types.non_null(_schema.String))))
+    _op_update_database_name = _op.update_database_name(database_id=sgqlc.types.Variable('databaseId'), name=sgqlc.types.Variable('name'))
+    _op_update_database_name.success()
+    _op_update_database_name.code()
+    _op_update_database_name.error()
+    return _op
+
+
+def mutation_update_database_description():
+    _op = sgqlc.operation.Operation(_schema_root.mutation_type, name='UpdateDatabaseDescription', variables=dict(databaseId=sgqlc.types.Arg(sgqlc.types.non_null(_schema.UUID)), description=sgqlc.types.Arg(_schema.String)))
+    _op_update_database_description = _op.update_database_description(database_id=sgqlc.types.Variable('databaseId'), description=sgqlc.types.Variable('description'))
+    _op_update_database_description.success()
+    _op_update_database_description.code()
+    _op_update_database_description.error()
+    return _op
+
+
+def mutation_update_database_llm_description():
+    _op = sgqlc.operation.Operation(_schema_root.mutation_type, name='UpdateDatabaseLlmDescription', variables=dict(databaseId=sgqlc.types.Arg(sgqlc.types.non_null(_schema.UUID)), llmDescription=sgqlc.types.Arg(_schema.String)))
+    _op_update_database_llm_description = _op.update_database_llm_description(database_id=sgqlc.types.Variable('databaseId'), llm_description=sgqlc.types.Variable('llmDescription'))
+    _op_update_database_llm_description.success()
+    _op_update_database_llm_description.code()
+    _op_update_database_llm_description.error()
+    return _op
+
+
+def mutation_update_database_mermaid_er_diagram():
+    _op = sgqlc.operation.Operation(_schema_root.mutation_type, name='UpdateDatabaseMermaidErDiagram', variables=dict(databaseId=sgqlc.types.Arg(sgqlc.types.non_null(_schema.UUID)), mermaidErDiagram=sgqlc.types.Arg(_schema.String)))
+    _op_update_database_mermaid_er_diagram = _op.update_database_mermaid_er_diagram(database_id=sgqlc.types.Variable('databaseId'), mermaid_er_diagram=sgqlc.types.Variable('mermaidErDiagram'))
+    _op_update_database_mermaid_er_diagram.success()
+    _op_update_database_mermaid_er_diagram.code()
+    _op_update_database_mermaid_er_diagram.error()
+    return _op
+
+
 def mutation_create_dataset():
     _op = sgqlc.operation.Operation(_schema_root.mutation_type, name='CreateDataset', variables=dict(dataset=sgqlc.types.Arg(sgqlc.types.non_null(_schema.JSON))))
     _op_create_dataset = _op.create_dataset(dataset=sgqlc.types.Variable('dataset'))
@@ -249,6 +285,10 @@ class Mutation:
     delete_metric = mutation_delete_metric()
     queue_chat_question = mutation_queue_chat_question()
     set_skill_memory = mutation_set_skill_memory()
+    update_database_description = mutation_update_database_description()
+    update_database_llm_description = mutation_update_database_llm_description()
+    update_database_mermaid_er_diagram = mutation_update_database_mermaid_er_diagram()
+    update_database_name = mutation_update_database_name()
     update_dataset_data_interval = mutation_update_dataset_data_interval()
     update_dataset_date_range = mutation_update_dataset_date_range()
     update_dataset_description = mutation_update_dataset_description()

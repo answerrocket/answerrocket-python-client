@@ -799,7 +799,7 @@ class MaxUser(sgqlc.types.Type):
 
 class Mutation(sgqlc.types.Type):
     __schema__ = schema
-    __field_names__ = ('create_max_copilot_skill_chat_question', 'update_max_copilot_skill_chat_question', 'delete_max_copilot_skill_chat_question', 'create_max_copilot_question', 'update_max_copilot_question', 'delete_max_copilot_question', 'set_max_agent_workflow', 'reload_dataset', 'update_dataset_name', 'update_dataset_description', 'update_dataset_date_range', 'update_dataset_data_interval', 'update_dataset_misc_info', 'update_dataset_source', 'update_dataset_query_row_limit', 'update_dataset_use_database_casing', 'update_dataset_kshot_limit', 'create_dataset', 'create_dimension', 'update_dimension', 'delete_dimension', 'create_metric', 'update_metric', 'delete_metric', 'update_chat_answer_payload', 'ask_chat_question', 'evaluate_chat_question', 'queue_chat_question', 'cancel_chat_question', 'create_chat_thread', 'add_feedback', 'set_skill_memory', 'share_thread', 'update_loading_message')
+    __field_names__ = ('create_max_copilot_skill_chat_question', 'update_max_copilot_skill_chat_question', 'delete_max_copilot_skill_chat_question', 'create_max_copilot_question', 'update_max_copilot_question', 'delete_max_copilot_question', 'set_max_agent_workflow', 'reload_dataset', 'update_database_name', 'update_database_description', 'update_database_llm_description', 'update_database_mermaid_er_diagram', 'update_dataset_name', 'update_dataset_description', 'update_dataset_date_range', 'update_dataset_data_interval', 'update_dataset_misc_info', 'update_dataset_source', 'update_dataset_query_row_limit', 'update_dataset_use_database_casing', 'update_dataset_kshot_limit', 'create_dataset', 'create_dimension', 'update_dimension', 'delete_dimension', 'create_metric', 'update_metric', 'delete_metric', 'update_chat_answer_payload', 'ask_chat_question', 'evaluate_chat_question', 'queue_chat_question', 'cancel_chat_question', 'create_chat_thread', 'add_feedback', 'set_skill_memory', 'share_thread', 'update_loading_message')
     create_max_copilot_skill_chat_question = sgqlc.types.Field(sgqlc.types.non_null(CreateMaxCopilotSkillChatQuestionResponse), graphql_name='createMaxCopilotSkillChatQuestion', args=sgqlc.types.ArgDict((
         ('copilot_id', sgqlc.types.Arg(sgqlc.types.non_null(UUID), graphql_name='copilotId', default=None)),
         ('copilot_skill_id', sgqlc.types.Arg(sgqlc.types.non_null(UUID), graphql_name='copilotSkillId', default=None)),
@@ -846,6 +846,26 @@ class Mutation(sgqlc.types.Type):
         ('dataset_id', sgqlc.types.Arg(UUID, graphql_name='datasetId', default=None)),
         ('database_id', sgqlc.types.Arg(UUID, graphql_name='databaseId', default=None)),
         ('table_names', sgqlc.types.Arg(sgqlc.types.list_of(sgqlc.types.non_null(String)), graphql_name='tableNames', default=None)),
+))
+    )
+    update_database_name = sgqlc.types.Field(MaxMutationResponse, graphql_name='updateDatabaseName', args=sgqlc.types.ArgDict((
+        ('database_id', sgqlc.types.Arg(sgqlc.types.non_null(UUID), graphql_name='databaseId', default=None)),
+        ('name', sgqlc.types.Arg(sgqlc.types.non_null(String), graphql_name='name', default=None)),
+))
+    )
+    update_database_description = sgqlc.types.Field(MaxMutationResponse, graphql_name='updateDatabaseDescription', args=sgqlc.types.ArgDict((
+        ('database_id', sgqlc.types.Arg(sgqlc.types.non_null(UUID), graphql_name='databaseId', default=None)),
+        ('description', sgqlc.types.Arg(String, graphql_name='description', default=None)),
+))
+    )
+    update_database_llm_description = sgqlc.types.Field(MaxMutationResponse, graphql_name='updateDatabaseLlmDescription', args=sgqlc.types.ArgDict((
+        ('database_id', sgqlc.types.Arg(sgqlc.types.non_null(UUID), graphql_name='databaseId', default=None)),
+        ('llm_description', sgqlc.types.Arg(String, graphql_name='llmDescription', default=None)),
+))
+    )
+    update_database_mermaid_er_diagram = sgqlc.types.Field(MaxMutationResponse, graphql_name='updateDatabaseMermaidErDiagram', args=sgqlc.types.ArgDict((
+        ('database_id', sgqlc.types.Arg(sgqlc.types.non_null(UUID), graphql_name='databaseId', default=None)),
+        ('mermaid_er_diagram', sgqlc.types.Arg(String, graphql_name='mermaidErDiagram', default=None)),
 ))
     )
     update_dataset_name = sgqlc.types.Field(MaxMutationResponse, graphql_name='updateDatasetName', args=sgqlc.types.ArgDict((

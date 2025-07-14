@@ -787,6 +787,99 @@ class Data:
 
         fragment.db_sort_column()
 
+    def update_database_name(self, database_id: UUID, name: str) -> MaxMutationResponse:
+        """
+        Update the name of a database.
+
+        Parameters
+        ----------
+        database_id : UUID
+            The unique identifier of the database to be updated.
+        name : str
+            The new name to assign to the database. Must be a non-empty string.
+            This name is typically used for display purposes in the UI or SDK.
+
+        Returns
+        -------
+        MaxMutationResponse
+            The result of the GraphQL mutation containing the updated database name.
+        """
+        mutation_args = {
+            'databaseId': str(database_id),
+            'name': name,
+        }
+
+        op = Operations.mutation.update_database_name
+        result = self._gql_client.submit(op, mutation_args)
+
+        return result.update_database_name
+
+    def update_database_description(self, database_id: UUID, description: Optional[str]) -> MaxMutationResponse:
+        """
+        Update the description of a database.
+
+        Parameters
+        ----------
+        database_id : UUID
+            The unique identifier of the database to be updated.
+        description : str or None
+            A new description for the database. This can be any free-form text.
+
+        Returns
+        -------
+        MaxMutationResponse
+            The result of the GraphQL mutation containing the updated database description.
+        """
+        mutation_args = {
+            'databaseId': str(database_id),
+            'description': description,
+        }
+
+        op = Operations.mutation.update_database_description
+        result = self._gql_client.submit(op, mutation_args)
+
+        return result.update_database_description
+
+    def update_database_llm_description(self, database_id: UUID, llm_description: Optional[str]) -> MaxMutationResponse:
+        """
+        Update the LLM-specific description of a database.
+
+        This description is intended to provide context or metadata optimized for use by
+        large language models (LLMs), such as for query generation or schema understanding.
+
+        Parameters
+        ----------
+        database_id : UUID
+            The unique identifier of the database to be updated.
+        llm_description : str or None
+            A natural-language description of the database, written to assist LLMs.
+
+        Returns
+        -------
+        MaxMutationResponse
+            The result of the GraphQL mutation containing the updated LLM description.
+        """
+        mutation_args = {
+            'databaseId': str(database_id),
+            'llmDescription': llm_description,
+        }
+
+        op = Operations.mutation.update_database_llm_description
+        result = self._gql_client.submit(op, mutation_args)
+
+        return result.update_database_llm_description
+
+    def update_database_mermaid_er_diagram(self, database_id: UUID, mermaid_er_diagram: Optional[str]) -> MaxMutationResponse:
+        mutation_args = {
+            'databaseId': str(database_id),
+            'mermaidErDiagram': mermaid_er_diagram,
+        }
+
+        op = Operations.mutation.update_database_mermaid_er_diagram
+        result = self._gql_client.submit(op, mutation_args)
+
+        return result.update_database_mermaid_er_diagram
+
     def reload_dataset(self, dataset_id: Optional[UUID] = None, database_id: Optional[UUID] = None, table_names: Optional[List[str]] = None) -> MaxMutationResponse:
         try:
             """

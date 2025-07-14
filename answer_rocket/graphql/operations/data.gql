@@ -45,6 +45,62 @@ query GetDataset2(
   }
 }
 
+mutation UpdateDatabaseName(
+  $databaseId: UUID!
+  $name: String!
+) {
+  updateDatabaseName(
+    databaseId: $databaseId
+    name: $name
+  ) {
+    success
+    code
+    error
+  }
+}
+
+mutation UpdateDatabaseDescription(
+  $databaseId: UUID!
+  $description: String
+) {
+  updateDatabaseDescription(
+    databaseId: $databaseId
+    description: $description
+  ) {
+    success
+    code
+    error
+  }
+}
+
+mutation UpdateDatabaseLlmDescription(
+  $databaseId: UUID!
+  $llmDescription: String
+) {
+  updateDatabaseLlmDescription(
+    databaseId: $databaseId
+    llmDescription: $llmDescription
+  ) {
+    success
+    code
+    error
+  }
+}
+
+mutation UpdateDatabaseMermaidErDiagram(
+  $databaseId: UUID!
+  $mermaidErDiagram: String
+) {
+  updateDatabaseMermaidErDiagram(
+    databaseId: $databaseId
+    mermaidErDiagram: $mermaidErDiagram
+  ) {
+    success
+    code
+    error
+  }
+}
+
 mutation CreateDataset(
   $dataset: JSON!
 ) {
