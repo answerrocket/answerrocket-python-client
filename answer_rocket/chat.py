@@ -488,6 +488,20 @@ class Chat:
             return None
 
     def create_chat_artifact(self, chat_artifact: ChatArtifact) -> MaxMutationResponse:
+        """
+        Submits a GraphQL mutation to create a new chat artifact.
+
+        Parameters
+        ----------
+        chat_artifact : ChatArtifact
+            The chat artifact object containing the data to be created.
+
+        Returns
+        -------
+        MaxMutationResponse
+            The response object containing the result of the mutation,
+            specifically the created chat artifact.
+        """
         mutation_args = {
             'chatArtifact': chat_artifact
         }
@@ -498,8 +512,21 @@ class Chat:
         return result.create_chat_artifact
 
     def delete_chat_artifact(self, chat_artifact_id: uuid) -> MaxMutationResponse:
+        """
+        Submits a GraphQL mutation to delete an existing chat artifact by its ID.
+
+        Parameters
+        ----------
+        chat_artifact_id : uuid
+            The UUID of the chat artifact to delete.
+
+        Returns
+        -------
+        MaxMutationResponse
+            The response object containing the result of the deletion mutation.
+        """
         mutation_args = {
-            'chatArtifactId': chat_artifact_id
+            'chatArtifactId': str(chat_artifact_id)
         }
 
         op = Operations.mutation.delete_chat_artifact

@@ -398,6 +398,7 @@ def query_get_chat_artifact():
     _op_get_chat_artifact.owner_user_id()
     _op_get_chat_artifact.chat_entry_id()
     _op_get_chat_artifact.content_block_id()
+    _op_get_chat_artifact.block_data()
     return _op
 
 

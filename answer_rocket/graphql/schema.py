@@ -16,6 +16,11 @@ class ChatDryRunType(sgqlc.types.Enum):
     __choices__ = ('SKIP_SKILL_EXEC', 'SKIP_SKILL_NLG')
 
 
+class ContentBlockType(sgqlc.types.Enum):
+    __schema__ = schema
+    __choices__ = ('INSIGHTS', 'VISUAL')
+
+
 class DatasetDataInterval(sgqlc.types.Enum):
     __schema__ = schema
     __choices__ = ('DATE', 'MONTH', 'QUARTER', 'WEEK', 'YEAR')
@@ -231,14 +236,23 @@ class MaxDomainEntity(sgqlc.types.Interface):
     attributes = sgqlc.types.Field(sgqlc.types.non_null(sgqlc.types.list_of(sgqlc.types.non_null(MaxDomainAttribute))), graphql_name='attributes')
 
 
+class BlockData(sgqlc.types.Type):
+    __schema__ = schema
+    __field_names__ = ('answer_id', 'block_index', 'content_block')
+    answer_id = sgqlc.types.Field(sgqlc.types.non_null(UUID), graphql_name='answerId')
+    block_index = sgqlc.types.Field(sgqlc.types.non_null(Int), graphql_name='blockIndex')
+    content_block = sgqlc.types.Field(sgqlc.types.non_null('ContentBlock'), graphql_name='contentBlock')
+
+
 class ChatArtifact(sgqlc.types.Type):
     __schema__ = schema
-    __field_names__ = ('chat_artifact_id', 'name', 'owner_user_id', 'chat_entry_id', 'content_block_id')
+    __field_names__ = ('chat_artifact_id', 'name', 'owner_user_id', 'chat_entry_id', 'content_block_id', 'block_data')
     chat_artifact_id = sgqlc.types.Field(sgqlc.types.non_null(UUID), graphql_name='chatArtifactId')
     name = sgqlc.types.Field(String, graphql_name='name')
     owner_user_id = sgqlc.types.Field(sgqlc.types.non_null(UUID), graphql_name='ownerUserId')
     chat_entry_id = sgqlc.types.Field(sgqlc.types.non_null(UUID), graphql_name='chatEntryId')
     content_block_id = sgqlc.types.Field(sgqlc.types.non_null(UUID), graphql_name='contentBlockId')
+    block_data = sgqlc.types.Field(BlockData, graphql_name='blockData')
 
 
 class ChatFeedback(sgqlc.types.Type):
@@ -247,6 +261,17 @@ class ChatFeedback(sgqlc.types.Type):
     type = sgqlc.types.Field(String, graphql_name='type')
     feedback = sgqlc.types.Field(JSON, graphql_name='feedback')
     user_id = sgqlc.types.Field(UUID, graphql_name='userId')
+
+
+class ContentBlock(sgqlc.types.Type):
+    __schema__ = schema
+    __field_names__ = ('id', 'title', 'payload', 'layout_json', 'type', 'export_as_landscape')
+    id = sgqlc.types.Field(sgqlc.types.non_null(UUID), graphql_name='id')
+    title = sgqlc.types.Field(String, graphql_name='title')
+    payload = sgqlc.types.Field(String, graphql_name='payload')
+    layout_json = sgqlc.types.Field(String, graphql_name='layoutJson')
+    type = sgqlc.types.Field(ContentBlockType, graphql_name='type')
+    export_as_landscape = sgqlc.types.Field(Boolean, graphql_name='exportAsLandscape')
 
 
 class CopilotSkillArtifact(sgqlc.types.Type):
