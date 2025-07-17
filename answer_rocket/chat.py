@@ -445,8 +445,8 @@ class Chat:
         if chat_entry_id is None:
             chat_entry_id = self._config.chat_entry_id
             if chat_entry_id is None: 
-               print("No chat entry id provided, no config chat entry id found, aborting.")
-               return False
+               logger.warning("No chat entry id provided, no config chat entry id found, aborting.")
+               return None
 
         set_agent_run_state_args = {
             'entryId': UUID(chat_entry_id),
@@ -465,8 +465,8 @@ class Chat:
         """
 
         if workflow_id is None:
-            print("No workflow id provided, aborting.")
-            return null
+            logger.warning("No workflow id provided, aborting.")
+            return None
 
         get_agent_workflow_args = {
             'agentWorkflowId': UUID(workflow_id),
@@ -485,12 +485,12 @@ class Chat:
         """
 
         if entry_id is None:
-            print("No entry id provided, aborting.")
-            return null
+            logger.warning("No entry id provided, aborting.")
+            return None
         
         if skill_name is None:
-            print("No skill name provided, aborting.")
-            return null
+            logger.warning("No skill name provided, aborting.")
+            return None
 
         import_copilot_skill_from_zip_args = {
             'entryId': UUID(entry_id),
