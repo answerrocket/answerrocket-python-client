@@ -87,6 +87,18 @@ def mutation_set_skill_memory():
     return _op
 
 
+def mutation_create_chat_artifact():
+    _op = sgqlc.operation.Operation(_schema_root.mutation_type, name='CreateChatArtifact', variables=dict(chatArtifact=sgqlc.types.Arg(sgqlc.types.non_null(_schema.JSON))))
+    _op.create_chat_artifact(chat_artifact=sgqlc.types.Variable('chatArtifact'))
+    return _op
+
+
+def mutation_delete_chat_artifact():
+    _op = sgqlc.operation.Operation(_schema_root.mutation_type, name='DeleteChatArtifact', variables=dict(chatArtifactId=sgqlc.types.Arg(sgqlc.types.non_null(_schema.UUID))))
+    _op.delete_chat_artifact(chat_artifact_id=sgqlc.types.Variable('chatArtifactId'))
+    return _op
+
+
 def mutation_update_database_name():
     _op = sgqlc.operation.Operation(_schema_root.mutation_type, name='UpdateDatabaseName', variables=dict(databaseId=sgqlc.types.Arg(sgqlc.types.non_null(_schema.UUID)), name=sgqlc.types.Arg(sgqlc.types.non_null(_schema.String))))
     _op_update_database_name = _op.update_database_name(database_id=sgqlc.types.Variable('databaseId'), name=sgqlc.types.Variable('name'))
@@ -286,10 +298,12 @@ class Mutation:
     add_feedback = mutation_add_feedback()
     ask_chat_question = mutation_ask_chat_question()
     cancel_chat_question = mutation_cancel_chat_question()
+    create_chat_artifact = mutation_create_chat_artifact()
     create_chat_thread = mutation_create_chat_thread()
     create_dataset = mutation_create_dataset()
     create_dimension = mutation_create_dimension()
     create_metric = mutation_create_metric()
+    delete_chat_artifact = mutation_delete_chat_artifact()
     delete_dimension = mutation_delete_dimension()
     delete_metric = mutation_delete_metric()
     queue_chat_question = mutation_queue_chat_question()

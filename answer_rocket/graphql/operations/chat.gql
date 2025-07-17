@@ -181,3 +181,11 @@ query GetChatArtifact($chatArtifactId: UUID!) {
     contentBlockId
   }
 }
+
+mutation CreateChatArtifact($chatArtifact: JSON!) {
+  createChatArtifact(chatArtifact: $chatArtifact)
+}
+
+mutation DeleteChatArtifact($chatArtifactId: UUID!) {
+  deleteChatArtifact(chatArtifactId: $chatArtifactId)
+}

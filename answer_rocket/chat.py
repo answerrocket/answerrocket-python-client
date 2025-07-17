@@ -1,5 +1,6 @@
 import io
 import logging
+import uuid
 from datetime import datetime
 from typing import Literal, Optional
 
@@ -8,7 +9,7 @@ from sgqlc.types import Variable, non_null, String, Arg, list_of
 
 from answer_rocket.graphql.client import GraphQlClient
 from answer_rocket.graphql.schema import (UUID, Int, DateTime, ChatDryRunType, MaxChatEntry, MaxChatThread,
-                                          SharedThread, MaxChatUser, ChatArtifact)
+                                          SharedThread, MaxChatUser, ChatArtifact, MaxMutationResponse)
 from answer_rocket.graphql.sdk_operations import Operations, _schema
 from answer_rocket.client_config import ClientConfig
 
@@ -485,3 +486,23 @@ class Chat:
             return result.get_chat_artifact
         except Exception as e:
             return None
+
+    def create_chat_artifact(self, chat_artifact: ChatArtifact) -> MaxMutationResponse:
+        mutation_args = {
+            'chatArtifact': chat_artifact
+        }
+
+        op = Operations.mutation.create_chat_artifact
+        result = self.gql_client.submit(op, mutation_args)
+
+        return result.create_chat_artifact
+
+    def delete_chat_artifact(self, chat_artifact_id: uuid) -> MaxMutationResponse:
+        mutation_args = {
+            'chatArtifactId': chat_artifact_id
+        }
+
+        op = Operations.mutation.delete_chat_artifact
+        result = self.gql_client.submit(op, mutation_args)
+
+        return result.delete_chat_artifact
