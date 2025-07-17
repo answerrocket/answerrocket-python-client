@@ -231,6 +231,16 @@ class MaxDomainEntity(sgqlc.types.Interface):
     attributes = sgqlc.types.Field(sgqlc.types.non_null(sgqlc.types.list_of(sgqlc.types.non_null(MaxDomainAttribute))), graphql_name='attributes')
 
 
+class ChatArtifact(sgqlc.types.Type):
+    __schema__ = schema
+    __field_names__ = ('chat_artifact_id', 'name', 'owner_user_id', 'chat_entry_id', 'content_block_id')
+    chat_artifact_id = sgqlc.types.Field(sgqlc.types.non_null(UUID), graphql_name='chatArtifactId')
+    name = sgqlc.types.Field(String, graphql_name='name')
+    owner_user_id = sgqlc.types.Field(sgqlc.types.non_null(UUID), graphql_name='ownerUserId')
+    chat_entry_id = sgqlc.types.Field(sgqlc.types.non_null(UUID), graphql_name='chatEntryId')
+    content_block_id = sgqlc.types.Field(sgqlc.types.non_null(UUID), graphql_name='contentBlockId')
+
+
 class ChatFeedback(sgqlc.types.Type):
     __schema__ = schema
     __field_names__ = ('type', 'feedback', 'user_id')
@@ -1035,7 +1045,7 @@ class Mutation(sgqlc.types.Type):
 
 class Query(sgqlc.types.Type):
     __schema__ = schema
-    __field_names__ = ('ping', 'current_user', 'get_copilot_skill_artifact_by_path', 'get_copilots', 'get_copilot_info', 'get_copilot_skill', 'run_copilot_skill', 'get_skill_components', 'get_max_agent_workflow', 'execute_sql_query', 'execute_rql_query', 'get_database', 'get_dataset_id', 'get_dataset', 'get_dataset2', 'get_domain_object', 'get_domain_object_by_name', 'get_grounded_value', 'run_max_sql_gen', 'run_sql_ai', 'generate_visualization', 'llmapi_config_for_sdk', 'get_max_llm_prompt', 'user_chat_threads', 'user_chat_entries', 'chat_thread', 'chat_entry', 'user', 'all_chat_entries', 'skill_memory', 'chat_completion', 'narrative_completion', 'narrative_completion_with_prompt', 'sql_completion', 'research_completion')
+    __field_names__ = ('ping', 'current_user', 'get_copilot_skill_artifact_by_path', 'get_copilots', 'get_copilot_info', 'get_copilot_skill', 'run_copilot_skill', 'get_skill_components', 'get_max_agent_workflow', 'execute_sql_query', 'execute_rql_query', 'get_database', 'get_dataset_id', 'get_dataset', 'get_dataset2', 'get_domain_object', 'get_domain_object_by_name', 'get_grounded_value', 'run_max_sql_gen', 'run_sql_ai', 'generate_visualization', 'llmapi_config_for_sdk', 'get_max_llm_prompt', 'user_chat_threads', 'user_chat_entries', 'chat_thread', 'chat_entry', 'user', 'all_chat_entries', 'skill_memory', 'chat_completion', 'narrative_completion', 'narrative_completion_with_prompt', 'sql_completion', 'research_completion', 'get_chat_artifact')
     ping = sgqlc.types.Field(String, graphql_name='ping')
     current_user = sgqlc.types.Field(MaxUser, graphql_name='currentUser')
     get_copilot_skill_artifact_by_path = sgqlc.types.Field(CopilotSkillArtifact, graphql_name='getCopilotSkillArtifactByPath', args=sgqlc.types.ArgDict((
@@ -1206,6 +1216,10 @@ class Query(sgqlc.types.Type):
     research_completion = sgqlc.types.Field(LlmResponse, graphql_name='researchCompletion', args=sgqlc.types.ArgDict((
         ('messages', sgqlc.types.Arg(sgqlc.types.non_null(sgqlc.types.list_of(sgqlc.types.non_null(LlmChatMessage))), graphql_name='messages', default=None)),
         ('model_selection', sgqlc.types.Arg(LlmModelSelection, graphql_name='modelSelection', default=None)),
+))
+    )
+    get_chat_artifact = sgqlc.types.Field(ChatArtifact, graphql_name='getChatArtifact', args=sgqlc.types.ArgDict((
+        ('chat_artifact_id', sgqlc.types.Arg(sgqlc.types.non_null(UUID), graphql_name='chatArtifactId', default=None)),
 ))
     )
 

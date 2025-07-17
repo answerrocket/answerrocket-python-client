@@ -376,6 +376,17 @@ def query_skill_memory():
     return _op
 
 
+def query_get_chat_artifact():
+    _op = sgqlc.operation.Operation(_schema_root.query_type, name='GetChatArtifact', variables=dict(chatArtifactId=sgqlc.types.Arg(sgqlc.types.non_null(_schema.UUID))))
+    _op_get_chat_artifact = _op.get_chat_artifact(chat_artifact_id=sgqlc.types.Variable('chatArtifactId'))
+    _op_get_chat_artifact.chat_artifact_id()
+    _op_get_chat_artifact.name()
+    _op_get_chat_artifact.owner_user_id()
+    _op_get_chat_artifact.chat_entry_id()
+    _op_get_chat_artifact.content_block_id()
+    return _op
+
+
 def query_get_max_llm_prompt():
     _op = sgqlc.operation.Operation(_schema_root.query_type, name='GetMaxLlmPrompt', variables=dict(llmPromptId=sgqlc.types.Arg(sgqlc.types.non_null(_schema.UUID)), templateVariables=sgqlc.types.Arg(_schema.JSON), kShotMatch=sgqlc.types.Arg(_schema.String)))
     _op_get_max_llm_prompt = _op.get_max_llm_prompt(llm_prompt_id=sgqlc.types.Variable('llmPromptId'), template_variables=sgqlc.types.Variable('templateVariables'), k_shot_match=sgqlc.types.Variable('kShotMatch'))
@@ -576,6 +587,7 @@ class Query:
     chat_entry = query_chat_entry()
     chat_thread = query_chat_thread()
     dataframes_for_entry = query_dataframes_for_entry()
+    get_chat_artifact = query_get_chat_artifact()
     get_copilot_info = query_get_copilot_info()
     get_copilot_skill = query_get_copilot_skill()
     get_copilots = query_get_copilots()

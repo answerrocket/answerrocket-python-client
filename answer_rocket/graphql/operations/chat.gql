@@ -171,3 +171,13 @@ query SkillMemory($entryId: UUID!) {
 mutation SetSkillMemory($entryId: UUID!, $skillMemoryPayload: JSON!) {
   setSkillMemory(entryId: $entryId, skillMemoryPayload: $skillMemoryPayload)
 }
+
+query GetChatArtifact($chatArtifactId: UUID!) {
+  getChatArtifact(chatArtifactId: $chatArtifactId) {
+    chatArtifactId
+    name
+    ownerUserId
+    chatEntryId
+    contentBlockId
+  }
+}

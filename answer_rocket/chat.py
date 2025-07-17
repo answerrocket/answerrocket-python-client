@@ -1,14 +1,14 @@
 import io
 import logging
 from datetime import datetime
-from typing import Literal
+from typing import Literal, Optional
 
 import pandas as pd
 from sgqlc.types import Variable, non_null, String, Arg, list_of
 
 from answer_rocket.graphql.client import GraphQlClient
 from answer_rocket.graphql.schema import (UUID, Int, DateTime, ChatDryRunType, MaxChatEntry, MaxChatThread,
-                                          SharedThread, MaxChatUser)
+                                          SharedThread, MaxChatUser, ChatArtifact)
 from answer_rocket.graphql.sdk_operations import Operations, _schema
 from answer_rocket.client_config import ClientConfig
 
@@ -454,3 +454,34 @@ class Chat:
             return {**df_dict, "df": df}
 
         return [transform_df(d) for d in df_dicts]
+
+    def get_chat_artifact(self, chat_artifact_id: UUID) -> Optional[ChatArtifact]:
+        """
+        Retrieve a chat artifact by its ID.
+
+        This method queries the backend for a chat artifact using the given unique identifier.
+        If the artifact is found, it is returned as a `ChatArtifact` object. If not found or
+        if an error occurs during the query, `None` is returned.
+
+        Parameters
+        ----------
+        chat_artifact_id : UUID
+            The unique identifier of the chat artifact to retrieve.
+
+        Returns
+        -------
+        ChatArtifact or None
+            The chat artifact object if found, or `None` if not found or if an error occurs.
+        """
+        try:
+            query_args = {
+                'chatArtifactId': str(chat_artifact_id),
+            }
+
+            op = Operations.query.get_chat_artifact
+
+            result = self.gql_client.submit(op, query_args)
+
+            return result.get_chat_artifact
+        except Exception as e:
+            return None
