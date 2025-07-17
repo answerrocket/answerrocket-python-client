@@ -99,6 +99,195 @@ def mutation_import_copilot_skill_from_zip():
     return _op
 
 
+def mutation_update_database_name():
+    _op = sgqlc.operation.Operation(_schema_root.mutation_type, name='UpdateDatabaseName', variables=dict(databaseId=sgqlc.types.Arg(sgqlc.types.non_null(_schema.UUID)), name=sgqlc.types.Arg(sgqlc.types.non_null(_schema.String))))
+    _op_update_database_name = _op.update_database_name(database_id=sgqlc.types.Variable('databaseId'), name=sgqlc.types.Variable('name'))
+    _op_update_database_name.success()
+    _op_update_database_name.code()
+    _op_update_database_name.error()
+    return _op
+
+
+def mutation_update_database_description():
+    _op = sgqlc.operation.Operation(_schema_root.mutation_type, name='UpdateDatabaseDescription', variables=dict(databaseId=sgqlc.types.Arg(sgqlc.types.non_null(_schema.UUID)), description=sgqlc.types.Arg(_schema.String)))
+    _op_update_database_description = _op.update_database_description(database_id=sgqlc.types.Variable('databaseId'), description=sgqlc.types.Variable('description'))
+    _op_update_database_description.success()
+    _op_update_database_description.code()
+    _op_update_database_description.error()
+    return _op
+
+
+def mutation_update_database_llm_description():
+    _op = sgqlc.operation.Operation(_schema_root.mutation_type, name='UpdateDatabaseLlmDescription', variables=dict(databaseId=sgqlc.types.Arg(sgqlc.types.non_null(_schema.UUID)), llmDescription=sgqlc.types.Arg(_schema.String)))
+    _op_update_database_llm_description = _op.update_database_llm_description(database_id=sgqlc.types.Variable('databaseId'), llm_description=sgqlc.types.Variable('llmDescription'))
+    _op_update_database_llm_description.success()
+    _op_update_database_llm_description.code()
+    _op_update_database_llm_description.error()
+    return _op
+
+
+def mutation_update_database_mermaid_er_diagram():
+    _op = sgqlc.operation.Operation(_schema_root.mutation_type, name='UpdateDatabaseMermaidErDiagram', variables=dict(databaseId=sgqlc.types.Arg(sgqlc.types.non_null(_schema.UUID)), mermaidErDiagram=sgqlc.types.Arg(_schema.String)))
+    _op_update_database_mermaid_er_diagram = _op.update_database_mermaid_er_diagram(database_id=sgqlc.types.Variable('databaseId'), mermaid_er_diagram=sgqlc.types.Variable('mermaidErDiagram'))
+    _op_update_database_mermaid_er_diagram.success()
+    _op_update_database_mermaid_er_diagram.code()
+    _op_update_database_mermaid_er_diagram.error()
+    return _op
+
+
+def mutation_update_database_kshot_limit():
+    _op = sgqlc.operation.Operation(_schema_root.mutation_type, name='UpdateDatabaseKShotLimit', variables=dict(databaseId=sgqlc.types.Arg(sgqlc.types.non_null(_schema.UUID)), kShotLimit=sgqlc.types.Arg(sgqlc.types.non_null(_schema.Int))))
+    _op_update_database_kshot_limit = _op.update_database_kshot_limit(database_id=sgqlc.types.Variable('databaseId'), k_shot_limit=sgqlc.types.Variable('kShotLimit'))
+    _op_update_database_kshot_limit.success()
+    _op_update_database_kshot_limit.code()
+    _op_update_database_kshot_limit.error()
+    return _op
+
+
+def mutation_create_dataset():
+    _op = sgqlc.operation.Operation(_schema_root.mutation_type, name='CreateDataset', variables=dict(dataset=sgqlc.types.Arg(sgqlc.types.non_null(_schema.JSON))))
+    _op_create_dataset = _op.create_dataset(dataset=sgqlc.types.Variable('dataset'))
+    _op_create_dataset.success()
+    _op_create_dataset.code()
+    _op_create_dataset.error()
+    return _op
+
+
+def mutation_update_dataset_name():
+    _op = sgqlc.operation.Operation(_schema_root.mutation_type, name='UpdateDatasetName', variables=dict(datasetId=sgqlc.types.Arg(sgqlc.types.non_null(_schema.UUID)), name=sgqlc.types.Arg(sgqlc.types.non_null(_schema.String))))
+    _op_update_dataset_name = _op.update_dataset_name(dataset_id=sgqlc.types.Variable('datasetId'), name=sgqlc.types.Variable('name'))
+    _op_update_dataset_name.success()
+    _op_update_dataset_name.code()
+    _op_update_dataset_name.error()
+    return _op
+
+
+def mutation_update_dataset_description():
+    _op = sgqlc.operation.Operation(_schema_root.mutation_type, name='UpdateDatasetDescription', variables=dict(datasetId=sgqlc.types.Arg(sgqlc.types.non_null(_schema.UUID)), description=sgqlc.types.Arg(_schema.String)))
+    _op_update_dataset_description = _op.update_dataset_description(dataset_id=sgqlc.types.Variable('datasetId'), description=sgqlc.types.Variable('description'))
+    _op_update_dataset_description.success()
+    _op_update_dataset_description.code()
+    _op_update_dataset_description.error()
+    return _op
+
+
+def mutation_update_dataset_date_range():
+    _op = sgqlc.operation.Operation(_schema_root.mutation_type, name='UpdateDatasetDateRange', variables=dict(datasetId=sgqlc.types.Arg(sgqlc.types.non_null(_schema.UUID)), datasetMinDate=sgqlc.types.Arg(_schema.DateTime), datasetMaxDate=sgqlc.types.Arg(_schema.DateTime)))
+    _op_update_dataset_date_range = _op.update_dataset_date_range(dataset_id=sgqlc.types.Variable('datasetId'), dataset_min_date=sgqlc.types.Variable('datasetMinDate'), dataset_max_date=sgqlc.types.Variable('datasetMaxDate'))
+    _op_update_dataset_date_range.success()
+    _op_update_dataset_date_range.code()
+    _op_update_dataset_date_range.error()
+    return _op
+
+
+def mutation_update_dataset_data_interval():
+    _op = sgqlc.operation.Operation(_schema_root.mutation_type, name='UpdateDatasetDataInterval', variables=dict(datasetId=sgqlc.types.Arg(sgqlc.types.non_null(_schema.UUID)), dataInterval=sgqlc.types.Arg(_schema.DatasetDataInterval)))
+    _op_update_dataset_data_interval = _op.update_dataset_data_interval(dataset_id=sgqlc.types.Variable('datasetId'), data_interval=sgqlc.types.Variable('dataInterval'))
+    _op_update_dataset_data_interval.success()
+    _op_update_dataset_data_interval.code()
+    _op_update_dataset_data_interval.error()
+    return _op
+
+
+def mutation_update_dataset_misc_info():
+    _op = sgqlc.operation.Operation(_schema_root.mutation_type, name='UpdateDatasetMiscInfo', variables=dict(datasetId=sgqlc.types.Arg(sgqlc.types.non_null(_schema.UUID)), miscInfo=sgqlc.types.Arg(_schema.String)))
+    _op_update_dataset_misc_info = _op.update_dataset_misc_info(dataset_id=sgqlc.types.Variable('datasetId'), misc_info=sgqlc.types.Variable('miscInfo'))
+    _op_update_dataset_misc_info.success()
+    _op_update_dataset_misc_info.code()
+    _op_update_dataset_misc_info.error()
+    return _op
+
+
+def mutation_update_dataset_source():
+    _op = sgqlc.operation.Operation(_schema_root.mutation_type, name='UpdateDatasetSource', variables=dict(datasetId=sgqlc.types.Arg(sgqlc.types.non_null(_schema.UUID)), sourceTable=sgqlc.types.Arg(sgqlc.types.non_null(_schema.String)), sourceSql=sgqlc.types.Arg(_schema.String), derivedTableAlias=sgqlc.types.Arg(_schema.String)))
+    _op_update_dataset_source = _op.update_dataset_source(dataset_id=sgqlc.types.Variable('datasetId'), source_table=sgqlc.types.Variable('sourceTable'), source_sql=sgqlc.types.Variable('sourceSql'), derived_table_alias=sgqlc.types.Variable('derivedTableAlias'))
+    _op_update_dataset_source.success()
+    _op_update_dataset_source.code()
+    _op_update_dataset_source.error()
+    return _op
+
+
+def mutation_update_dataset_query_row_limit():
+    _op = sgqlc.operation.Operation(_schema_root.mutation_type, name='UpdateDatasetQueryRowLimit', variables=dict(datasetId=sgqlc.types.Arg(sgqlc.types.non_null(_schema.UUID)), queryRowLimit=sgqlc.types.Arg(_schema.Int)))
+    _op_update_dataset_query_row_limit = _op.update_dataset_query_row_limit(dataset_id=sgqlc.types.Variable('datasetId'), query_row_limit=sgqlc.types.Variable('queryRowLimit'))
+    _op_update_dataset_query_row_limit.success()
+    _op_update_dataset_query_row_limit.code()
+    _op_update_dataset_query_row_limit.error()
+    return _op
+
+
+def mutation_update_dataset_use_database_casing():
+    _op = sgqlc.operation.Operation(_schema_root.mutation_type, name='UpdateDatasetUseDatabaseCasing', variables=dict(datasetId=sgqlc.types.Arg(sgqlc.types.non_null(_schema.UUID)), useDatabaseCasing=sgqlc.types.Arg(sgqlc.types.non_null(_schema.Boolean))))
+    _op_update_dataset_use_database_casing = _op.update_dataset_use_database_casing(dataset_id=sgqlc.types.Variable('datasetId'), use_database_casing=sgqlc.types.Variable('useDatabaseCasing'))
+    _op_update_dataset_use_database_casing.success()
+    _op_update_dataset_use_database_casing.code()
+    _op_update_dataset_use_database_casing.error()
+    return _op
+
+
+def mutation_update_dataset_kshot_limit():
+    _op = sgqlc.operation.Operation(_schema_root.mutation_type, name='UpdateDatasetKShotLimit', variables=dict(datasetId=sgqlc.types.Arg(sgqlc.types.non_null(_schema.UUID)), kShotLimit=sgqlc.types.Arg(sgqlc.types.non_null(_schema.Int))))
+    _op_update_dataset_kshot_limit = _op.update_dataset_kshot_limit(dataset_id=sgqlc.types.Variable('datasetId'), k_shot_limit=sgqlc.types.Variable('kShotLimit'))
+    _op_update_dataset_kshot_limit.success()
+    _op_update_dataset_kshot_limit.code()
+    _op_update_dataset_kshot_limit.error()
+    return _op
+
+
+def mutation_create_dimension():
+    _op = sgqlc.operation.Operation(_schema_root.mutation_type, name='CreateDimension', variables=dict(datasetId=sgqlc.types.Arg(sgqlc.types.non_null(_schema.UUID)), dimension=sgqlc.types.Arg(sgqlc.types.non_null(_schema.JSON))))
+    _op_create_dimension = _op.create_dimension(dataset_id=sgqlc.types.Variable('datasetId'), dimension=sgqlc.types.Variable('dimension'))
+    _op_create_dimension.success()
+    _op_create_dimension.code()
+    _op_create_dimension.error()
+    return _op
+
+
+def mutation_update_dimension():
+    _op = sgqlc.operation.Operation(_schema_root.mutation_type, name='UpdateDimension', variables=dict(datasetId=sgqlc.types.Arg(sgqlc.types.non_null(_schema.UUID)), dimension=sgqlc.types.Arg(sgqlc.types.non_null(_schema.JSON))))
+    _op_update_dimension = _op.update_dimension(dataset_id=sgqlc.types.Variable('datasetId'), dimension=sgqlc.types.Variable('dimension'))
+    _op_update_dimension.success()
+    _op_update_dimension.code()
+    _op_update_dimension.error()
+    return _op
+
+
+def mutation_delete_dimension():
+    _op = sgqlc.operation.Operation(_schema_root.mutation_type, name='DeleteDimension', variables=dict(datasetId=sgqlc.types.Arg(sgqlc.types.non_null(_schema.UUID)), dimensionId=sgqlc.types.Arg(sgqlc.types.non_null(_schema.String))))
+    _op_delete_dimension = _op.delete_dimension(dataset_id=sgqlc.types.Variable('datasetId'), dimension_id=sgqlc.types.Variable('dimensionId'))
+    _op_delete_dimension.success()
+    _op_delete_dimension.code()
+    _op_delete_dimension.error()
+    return _op
+
+
+def mutation_create_metric():
+    _op = sgqlc.operation.Operation(_schema_root.mutation_type, name='CreateMetric', variables=dict(datasetId=sgqlc.types.Arg(sgqlc.types.non_null(_schema.UUID)), metric=sgqlc.types.Arg(sgqlc.types.non_null(_schema.JSON))))
+    _op_create_metric = _op.create_metric(dataset_id=sgqlc.types.Variable('datasetId'), metric=sgqlc.types.Variable('metric'))
+    _op_create_metric.success()
+    _op_create_metric.code()
+    _op_create_metric.error()
+    return _op
+
+
+def mutation_update_metric():
+    _op = sgqlc.operation.Operation(_schema_root.mutation_type, name='UpdateMetric', variables=dict(datasetId=sgqlc.types.Arg(sgqlc.types.non_null(_schema.UUID)), metric=sgqlc.types.Arg(sgqlc.types.non_null(_schema.JSON))))
+    _op_update_metric = _op.update_metric(dataset_id=sgqlc.types.Variable('datasetId'), metric=sgqlc.types.Variable('metric'))
+    _op_update_metric.success()
+    _op_update_metric.code()
+    _op_update_metric.error()
+    return _op
+
+
+def mutation_delete_metric():
+    _op = sgqlc.operation.Operation(_schema_root.mutation_type, name='DeleteMetric', variables=dict(datasetId=sgqlc.types.Arg(sgqlc.types.non_null(_schema.UUID)), metricId=sgqlc.types.Arg(sgqlc.types.non_null(_schema.String))))
+    _op_delete_metric = _op.delete_metric(dataset_id=sgqlc.types.Variable('datasetId'), metric_id=sgqlc.types.Variable('metricId'))
+    _op_delete_metric.success()
+    _op_delete_metric.code()
+    _op_delete_metric.error()
+    return _op
+
+
 def mutation_update_loading_message():
     _op = sgqlc.operation.Operation(_schema_root.mutation_type, name='UpdateLoadingMessage', variables=dict(answerId=sgqlc.types.Arg(sgqlc.types.non_null(_schema.UUID)), message=sgqlc.types.Arg(sgqlc.types.non_null(_schema.String))))
     _op.update_loading_message(answer_id=sgqlc.types.Variable('answerId'), message=sgqlc.types.Variable('message'))
@@ -110,11 +299,32 @@ class Mutation:
     ask_chat_question = mutation_ask_chat_question()
     cancel_chat_question = mutation_cancel_chat_question()
     create_chat_thread = mutation_create_chat_thread()
+    create_dataset = mutation_create_dataset()
+    create_dimension = mutation_create_dimension()
+    create_metric = mutation_create_metric()
+    delete_dimension = mutation_delete_dimension()
+    delete_metric = mutation_delete_metric()
     import_copilot_skill_from_zip = mutation_import_copilot_skill_from_zip()
     queue_chat_question = mutation_queue_chat_question()
     set_max_agent_workflow = mutation_set_max_agent_workflow()
     set_skill_memory = mutation_set_skill_memory()
+    update_database_description = mutation_update_database_description()
+    update_database_kshot_limit = mutation_update_database_kshot_limit()
+    update_database_llm_description = mutation_update_database_llm_description()
+    update_database_mermaid_er_diagram = mutation_update_database_mermaid_er_diagram()
+    update_database_name = mutation_update_database_name()
+    update_dataset_data_interval = mutation_update_dataset_data_interval()
+    update_dataset_date_range = mutation_update_dataset_date_range()
+    update_dataset_description = mutation_update_dataset_description()
+    update_dataset_kshot_limit = mutation_update_dataset_kshot_limit()
+    update_dataset_misc_info = mutation_update_dataset_misc_info()
+    update_dataset_name = mutation_update_dataset_name()
+    update_dataset_query_row_limit = mutation_update_dataset_query_row_limit()
+    update_dataset_source = mutation_update_dataset_source()
+    update_dataset_use_database_casing = mutation_update_dataset_use_database_casing()
+    update_dimension = mutation_update_dimension()
     update_loading_message = mutation_update_loading_message()
+    update_metric = mutation_update_metric()
 
 
 def query_chat_entry():
@@ -317,6 +527,39 @@ def query_get_grounded_value():
     return _op
 
 
+def query_get_database():
+    _op = sgqlc.operation.Operation(_schema_root.query_type, name='GetDatabase', variables=dict(databaseId=sgqlc.types.Arg(sgqlc.types.non_null(_schema.UUID))))
+    _op_get_database = _op.get_database(database_id=sgqlc.types.Variable('databaseId'))
+    _op_get_database.database_id()
+    _op_get_database.name()
+    _op_get_database.description()
+    _op_get_database.llm_description()
+    _op_get_database.mermaid_er_diagram()
+    _op_get_database.k_shot_limit()
+    return _op
+
+
+def query_get_dataset2():
+    _op = sgqlc.operation.Operation(_schema_root.query_type, name='GetDataset2', variables=dict(datasetId=sgqlc.types.Arg(sgqlc.types.non_null(_schema.UUID))))
+    _op_get_dataset2 = _op.get_dataset2(dataset_id=sgqlc.types.Variable('datasetId'))
+    _op_get_dataset2.dataset_id()
+    _op_get_dataset2.name()
+    _op_get_dataset2.description()
+    _op_get_dataset2.database_id()
+    _op_get_dataset2.dimensions()
+    _op_get_dataset2.metrics()
+    _op_get_dataset2.misc_info()
+    _op_get_dataset2.source_table()
+    _op_get_dataset2.source_sql()
+    _op_get_dataset2.data_interval()
+    _op_get_dataset2.dataset_min_date()
+    _op_get_dataset2.dataset_max_date()
+    _op_get_dataset2.query_row_limit()
+    _op_get_dataset2.use_database_casing()
+    _op_get_dataset2.k_shot_limit()
+    return _op
+
+
 def query_chat_completion():
     _op = sgqlc.operation.Operation(_schema_root.query_type, name='ChatCompletion', variables=dict(messages=sgqlc.types.Arg(sgqlc.types.non_null(sgqlc.types.list_of(sgqlc.types.non_null(_schema.LlmChatMessage)))), modelSelection=sgqlc.types.Arg(_schema.LlmModelSelection)))
     _op.chat_completion(messages=sgqlc.types.Variable('messages'), model_selection=sgqlc.types.Variable('modelSelection'))
@@ -356,6 +599,8 @@ class Query:
     get_copilot_info = query_get_copilot_info()
     get_copilot_skill = query_get_copilot_skill()
     get_copilots = query_get_copilots()
+    get_database = query_get_database()
+    get_dataset2 = query_get_dataset2()
     get_grounded_value = query_get_grounded_value()
     get_max_agent_workflow = query_get_max_agent_workflow()
     get_max_llm_prompt = query_get_max_llm_prompt()
