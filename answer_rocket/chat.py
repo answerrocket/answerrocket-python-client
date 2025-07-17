@@ -433,6 +433,75 @@ class Chat:
         op = Operations.mutation.set_skill_memory
         result = self.gql_client.submit(op, set_skill_memory_args)
         return result.set_skill_memory
+    
+    def set_agent_run_state(self, agent_run_state: list[dict], chat_entry_id: str) -> bool:
+        """
+        TODO: This is meant to be temprorary, used for skill builder and should be removed once builder is moved internal
+        Sets the agent_run_state to a workflow document.
+        :param chat_entry_id: the id of the chat entry
+        :param agent_run_state: the agent workflow state to set -- must be JSON serializable
+        :return: True if the agent_run_state was set successfully, False otherwise
+        """
+
+        if chat_entry_id is None:
+            chat_entry_id = self._config.chat_entry_id
+            if chat_entry_id is None: 
+               logger.warning("No chat entry id provided, no config chat entry id found, aborting.")
+               return None
+
+        set_agent_run_state_args = {
+            'entryId': UUID(chat_entry_id),
+            'agentRunState': agent_run_state,
+        }
+        op = Operations.mutation.set_max_agent_workflow
+        result = self.gql_client.submit(op, set_agent_run_state_args)
+        return result.set_max_agent_workflow
+    
+    def get_agent_workflow(self, workflow_id: str, version: int = None):
+        """
+        TODO: This is meant to be temprorary, used for skill builder and should be removed once builder is moved internal
+        Gets the workflow document for a given workflow id and version.
+        :param workflow_id: the id of the workflow
+        :param version: the version of the workflow
+        :return: MaxAgentWorkflow object
+        """
+
+        if workflow_id is None:
+            logger.warning("No workflow id provided, aborting.")
+            return None
+
+        get_agent_workflow_args = {
+            'agentWorkflowId': UUID(workflow_id),
+            'version': version,
+        }
+        op = Operations.query.get_max_agent_workflow
+        result = self.gql_client.submit(op, get_agent_workflow_args)
+        return result.get_max_agent_workflow
+    
+    def import_copilot_skill_from_zip(self, entry_id: str, skill_name: str):
+        """
+        TODO: This is meant to be temprorary, used for skill builder and should be removed or reworked once builder is moved internal
+        Imports an agent workflow from a zip file.
+        :param entry_id: the id of the chat entry
+        :param skill_name: the name of the skill to import the workflow for
+        :return: True if the workflow was imported successfully, False otherwise
+        """
+
+        if entry_id is None:
+            logger.warning("No entry id provided, aborting.")
+            return None
+        
+        if skill_name is None:
+            logger.warning("No skill name provided, aborting.")
+            return None
+
+        import_copilot_skill_from_zip_args = {
+            'entryId': UUID(entry_id),
+            'skillName': skill_name,
+        }
+        op = Operations.mutation.import_copilot_skill_from_zip
+        result = self.gql_client.submit(op, import_copilot_skill_from_zip_args)
+        return result.import_copilot_skill_from_zip
 
     def get_dataframes_for_entry(self, entry_id: str) -> [pd.DataFrame]:
         """

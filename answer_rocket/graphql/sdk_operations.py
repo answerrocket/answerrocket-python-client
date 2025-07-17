@@ -87,6 +87,18 @@ def mutation_set_skill_memory():
     return _op
 
 
+def mutation_set_max_agent_workflow():
+    _op = sgqlc.operation.Operation(_schema_root.mutation_type, name='SetMaxAgentWorkflow', variables=dict(entryId=sgqlc.types.Arg(sgqlc.types.non_null(_schema.UUID)), agentRunState=sgqlc.types.Arg(sgqlc.types.non_null(sgqlc.types.list_of(sgqlc.types.non_null(_schema.JSON))))))
+    _op.set_max_agent_workflow(entry_id=sgqlc.types.Variable('entryId'), agent_run_state=sgqlc.types.Variable('agentRunState'))
+    return _op
+
+
+def mutation_import_copilot_skill_from_zip():
+    _op = sgqlc.operation.Operation(_schema_root.mutation_type, name='ImportCopilotSkillFromZip', variables=dict(entryId=sgqlc.types.Arg(sgqlc.types.non_null(_schema.UUID)), skillName=sgqlc.types.Arg(sgqlc.types.non_null(_schema.String))))
+    _op.import_copilot_skill_from_zip(entry_id=sgqlc.types.Variable('entryId'), skill_name=sgqlc.types.Variable('skillName'))
+    return _op
+
+
 def mutation_update_database_name():
     _op = sgqlc.operation.Operation(_schema_root.mutation_type, name='UpdateDatabaseName', variables=dict(databaseId=sgqlc.types.Arg(sgqlc.types.non_null(_schema.UUID)), name=sgqlc.types.Arg(sgqlc.types.non_null(_schema.String))))
     _op_update_database_name = _op.update_database_name(database_id=sgqlc.types.Variable('databaseId'), name=sgqlc.types.Variable('name'))
@@ -292,7 +304,9 @@ class Mutation:
     create_metric = mutation_create_metric()
     delete_dimension = mutation_delete_dimension()
     delete_metric = mutation_delete_metric()
+    import_copilot_skill_from_zip = mutation_import_copilot_skill_from_zip()
     queue_chat_question = mutation_queue_chat_question()
+    set_max_agent_workflow = mutation_set_max_agent_workflow()
     set_skill_memory = mutation_set_skill_memory()
     update_database_description = mutation_update_database_description()
     update_database_kshot_limit = mutation_update_database_kshot_limit()
@@ -373,6 +387,12 @@ def query_all_chat_entries():
 def query_skill_memory():
     _op = sgqlc.operation.Operation(_schema_root.query_type, name='SkillMemory', variables=dict(entryId=sgqlc.types.Arg(sgqlc.types.non_null(_schema.UUID))))
     _op.skill_memory(entry_id=sgqlc.types.Variable('entryId'))
+    return _op
+
+
+def query_get_max_agent_workflow():
+    _op = sgqlc.operation.Operation(_schema_root.query_type, name='GetMaxAgentWorkflow', variables=dict(agentWorkflowId=sgqlc.types.Arg(sgqlc.types.non_null(_schema.UUID)), version=sgqlc.types.Arg(_schema.Int)))
+    _op.get_max_agent_workflow(agent_workflow_id=sgqlc.types.Variable('agentWorkflowId'), version=sgqlc.types.Variable('version'))
     return _op
 
 
@@ -582,6 +602,7 @@ class Query:
     get_database = query_get_database()
     get_dataset2 = query_get_dataset2()
     get_grounded_value = query_get_grounded_value()
+    get_max_agent_workflow = query_get_max_agent_workflow()
     get_max_llm_prompt = query_get_max_llm_prompt()
     narrative_completion = query_narrative_completion()
     narrative_completion_with_prompt = query_narrative_completion_with_prompt()
