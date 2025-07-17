@@ -93,9 +93,9 @@ def mutation_set_max_agent_workflow():
     return _op
 
 
-def mutation_import_agent_workflow_from_zip():
-    _op = sgqlc.operation.Operation(_schema_root.mutation_type, name='ImportAgentWorkflowFromZip', variables=dict(entryId=sgqlc.types.Arg(sgqlc.types.non_null(_schema.UUID)), skillName=sgqlc.types.Arg(sgqlc.types.non_null(_schema.String))))
-    _op.import_agent_workflow_from_zip(entry_id=sgqlc.types.Variable('entryId'), skill_name=sgqlc.types.Variable('skillName'))
+def mutation_import_copilot_skill_from_zip():
+    _op = sgqlc.operation.Operation(_schema_root.mutation_type, name='ImportCopilotSkillFromZip', variables=dict(entryId=sgqlc.types.Arg(sgqlc.types.non_null(_schema.UUID)), skillName=sgqlc.types.Arg(sgqlc.types.non_null(_schema.String))))
+    _op.import_copilot_skill_from_zip(entry_id=sgqlc.types.Variable('entryId'), skill_name=sgqlc.types.Variable('skillName'))
     return _op
 
 
@@ -110,7 +110,7 @@ class Mutation:
     ask_chat_question = mutation_ask_chat_question()
     cancel_chat_question = mutation_cancel_chat_question()
     create_chat_thread = mutation_create_chat_thread()
-    import_agent_workflow_from_zip = mutation_import_agent_workflow_from_zip()
+    import_copilot_skill_from_zip = mutation_import_copilot_skill_from_zip()
     queue_chat_question = mutation_queue_chat_question()
     set_max_agent_workflow = mutation_set_max_agent_workflow()
     set_skill_memory = mutation_set_skill_memory()

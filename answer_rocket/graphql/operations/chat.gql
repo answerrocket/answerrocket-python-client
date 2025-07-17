@@ -180,6 +180,6 @@ query GetMaxAgentWorkflow($agentWorkflowId: UUID!, $version: Int) {
   getMaxAgentWorkflow(agentWorkflowId: $agentWorkflowId, version: $version)
 }
 
-mutation ImportAgentWorkflowFromZip($entryId: UUID!, $skillName: String!) {
-  importAgentWorkflowFromZip(entryId: $entryId, skillName: $skillName)
+mutation ImportCopilotSkillFromZip($entryId: UUID!, $skillName: String!) {
+  importCopilotSkillFromZip(entryId: $entryId, skillName: $skillName)
 }

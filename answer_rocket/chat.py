@@ -476,7 +476,7 @@ class Chat:
         result = self.gql_client.submit(op, get_agent_workflow_args)
         return result.get_max_agent_workflow
     
-    def import_agent_workflow_from_zip(self, entry_id: str, skill_name: str):
+    def import_copilot_skill_from_zip(self, entry_id: str, skill_name: str):
         """
         Imports an agent workflow from a zip file.
         :param entry_id: the id of the chat entry
@@ -492,13 +492,13 @@ class Chat:
             print("No skill name provided, aborting.")
             return null
 
-        import_agent_workflow_from_zip_args = {
+        import_copilot_skill_from_zip_args = {
             'entryId': UUID(entry_id),
             'skillName': skill_name,
         }
-        op = Operations.mutation.import_agent_workflow_from_zip
-        result = self.gql_client.submit(op, import_agent_workflow_from_zip_args)
-        return result.import_agent_workflow_from_zip
+        op = Operations.mutation.import_copilot_skill_from_zip
+        result = self.gql_client.submit(op, import_copilot_skill_from_zip_args)
+        return result.import_copilot_skill_from_zip
 
     def get_dataframes_for_entry(self, entry_id: str) -> [pd.DataFrame]:
         """
