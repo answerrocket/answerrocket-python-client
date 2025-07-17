@@ -436,6 +436,7 @@ class Chat:
     
     def set_agent_run_state(self, agent_run_state: list[dict], chat_entry_id: str) -> bool:
         """
+        TODO: This is meant to be temprorary, used for skill builder and should be removed once builder is moved internal
         Sets the agent_run_state to a workflow document.
         :param chat_entry_id: the id of the chat entry
         :param agent_run_state: the agent workflow state to set -- must be JSON serializable
@@ -458,6 +459,7 @@ class Chat:
     
     def get_agent_workflow(self, workflow_id: str, version: int = None):
         """
+        TODO: This is meant to be temprorary, used for skill builder and should be removed once builder is moved internal
         Gets the workflow document for a given workflow id and version.
         :param workflow_id: the id of the workflow
         :param version: the version of the workflow
@@ -478,6 +480,7 @@ class Chat:
     
     def import_copilot_skill_from_zip(self, entry_id: str, skill_name: str):
         """
+        TODO: This is meant to be temprorary, used for skill builder and should be removed or reworked once builder is moved internal
         Imports an agent workflow from a zip file.
         :param entry_id: the id of the chat entry
         :param skill_name: the name of the skill to import the workflow for
