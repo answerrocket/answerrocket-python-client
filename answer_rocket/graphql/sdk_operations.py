@@ -404,6 +404,19 @@ def query_get_chat_artifact():
     return _op
 
 
+def query_get_chat_artifacts():
+    _op = sgqlc.operation.Operation(_schema_root.query_type, name='GetChatArtifacts', variables=dict(searchInput=sgqlc.types.Arg(sgqlc.types.non_null(_schema.ChatArtifactSearchInput)), paging=sgqlc.types.Arg(sgqlc.types.non_null(_schema.PagingInput))))
+    _op_get_chat_artifacts = _op.get_chat_artifacts(search_input=sgqlc.types.Variable('searchInput'), paging=sgqlc.types.Variable('paging'))
+    _op_get_chat_artifacts.chat_artifact_id()
+    _op_get_chat_artifacts.name()
+    _op_get_chat_artifacts.owner_user_id()
+    _op_get_chat_artifacts.chat_entry_id()
+    _op_get_chat_artifacts.content_block_id()
+    _op_get_chat_artifacts.misc_info()
+    _op_get_chat_artifacts.created_utc()
+    return _op
+
+
 def query_get_max_llm_prompt():
     _op = sgqlc.operation.Operation(_schema_root.query_type, name='GetMaxLlmPrompt', variables=dict(llmPromptId=sgqlc.types.Arg(sgqlc.types.non_null(_schema.UUID)), templateVariables=sgqlc.types.Arg(_schema.JSON), kShotMatch=sgqlc.types.Arg(_schema.String)))
     _op_get_max_llm_prompt = _op.get_max_llm_prompt(llm_prompt_id=sgqlc.types.Variable('llmPromptId'), template_variables=sgqlc.types.Variable('templateVariables'), k_shot_match=sgqlc.types.Variable('kShotMatch'))
@@ -605,6 +618,7 @@ class Query:
     chat_thread = query_chat_thread()
     dataframes_for_entry = query_dataframes_for_entry()
     get_chat_artifact = query_get_chat_artifact()
+    get_chat_artifacts = query_get_chat_artifacts()
     get_copilot_info = query_get_copilot_info()
     get_copilot_skill = query_get_copilot_skill()
     get_copilots = query_get_copilots()

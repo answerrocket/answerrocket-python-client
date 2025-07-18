@@ -9,8 +9,9 @@ from sgqlc.types import Variable, non_null, String, Arg, list_of
 
 from answer_rocket.graphql.client import GraphQlClient
 from answer_rocket.graphql.schema import (UUID, Int, DateTime, ChatDryRunType, MaxChatEntry, MaxChatThread,
-                                          SharedThread, MaxChatUser, ChatArtifact, MaxMutationResponse)
-from answer_rocket.graphql.sdk_operations import Operations, _schema
+                                          SharedThread, MaxChatUser, ChatArtifact, MaxMutationResponse,
+                                          ChatArtifactSearchInput, PagingInput)
+from answer_rocket.graphql.sdk_operations import Operations
 from answer_rocket.client_config import ClientConfig
 
 logger = logging.getLogger(__name__)
@@ -486,6 +487,57 @@ class Chat:
             return result.get_chat_artifact
         except Exception as e:
             return None
+
+    def get_chat_artifacts(self, search_input: Optional[ChatArtifactSearchInput]=None, paging: Optional[PagingInput]=None) -> list[ChatArtifact]:
+        """
+        Retrieve chat artifacts based on optional search and paging criteria.
+
+        If no `search_input` or `paging` is provided, default values will be used.
+
+        Parameters
+        ----------
+        search_input : ChatArtifactSearchInput, optional
+            An object specifying the search criteria for chat artifacts.
+            If None, no filters are applied on name or misc_info.
+        paging : PagingInput, optional
+            An object specifying pagination details such as page number and page size.
+            If None, defaults to page 1 with a page size of 100.
+
+        Returns
+        -------
+        list of ChatArtifact
+            A list of retrieved chat artifact objects. Returns an empty list if an error occurs during retrieval.
+
+        Notes
+        -----
+        This method uses a GraphQL client to submit a query to fetch the data.
+        In the event of any exception, the method safely returns an empty list.
+        """
+        try:
+            if not search_input:
+                search_input = ChatArtifactSearchInput(
+                    name_contains=None,
+                    misc_info=None
+                )
+
+            if not paging:
+                paging = PagingInput(
+                    page_num=1,
+                    page_size=100
+                )
+
+            query_args = {
+                'searchInput': search_input.__to_json_value__(),
+                'paging': paging.__to_json_value__()
+            }
+
+            op = Operations.query.get_chat_artifacts
+
+            result = self.gql_client.submit(op, query_args)
+
+            return result.get_chat_artifacts
+        except Exception as e:
+            return []
 
     def create_chat_artifact(self, chat_artifact: ChatArtifact) -> MaxMutationResponse:
         """
