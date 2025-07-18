@@ -187,13 +187,16 @@ query GetChatArtifact($chatArtifactId: UUID!) {
 
 query GetChatArtifacts($searchInput: ChatArtifactSearchInput!, $paging: PagingInput!) {
   getChatArtifacts(searchInput: $searchInput, paging: $paging) {
-    chatArtifactId
-    name
-    ownerUserId
-    chatEntryId
-    contentBlockId
-    miscInfo
-    createdUtc
+    totalRows
+    rows {
+      chatArtifactId
+      name
+      ownerUserId
+      chatEntryId
+      contentBlockId
+      miscInfo
+      createdUtc
+    }
   }
 }
 

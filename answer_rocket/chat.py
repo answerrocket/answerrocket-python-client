@@ -10,7 +10,7 @@ from sgqlc.types import Variable, non_null, String, Arg, list_of
 from answer_rocket.graphql.client import GraphQlClient
 from answer_rocket.graphql.schema import (UUID, Int, DateTime, ChatDryRunType, MaxChatEntry, MaxChatThread,
                                           SharedThread, MaxChatUser, ChatArtifact, MaxMutationResponse,
-                                          ChatArtifactSearchInput, PagingInput)
+                                          ChatArtifactSearchInput, PagingInput, PagedChatArtifacts)
 from answer_rocket.graphql.sdk_operations import Operations
 from answer_rocket.client_config import ClientConfig
 
@@ -488,9 +488,9 @@ class Chat:
         except Exception as e:
             return None
 
-    def get_chat_artifacts(self, search_input: Optional[ChatArtifactSearchInput]=None, paging: Optional[PagingInput]=None) -> list[ChatArtifact]:
+    def get_chat_artifacts(self, search_input: Optional[ChatArtifactSearchInput]=None, paging: Optional[PagingInput]=None) -> PagedChatArtifacts:
         """
-        Retrieve chat artifacts based on optional search and paging criteria.
+        Retrieve paged chat artifacts based on optional search and paging criteria.
 
         If no `search_input` or `paging` is provided, default values will be used.
 
@@ -505,13 +505,12 @@ class Chat:
 
         Returns
         -------
-        list of ChatArtifact
-            A list of retrieved chat artifact objects. Returns an empty list if an error occurs during retrieval.
+        PagedChatArtifacts
+            A paged collection of chat artifacts. Returns an empty `PagedChatArtifacts` instance if an error occurs during retrieval.
 
         Notes
         -----
         This method uses a GraphQL client to submit a query to fetch the data.
-        In the event of any exception, the method safely returns an empty list.
         """
         try:
             if not search_input:
@@ -537,7 +536,7 @@ class Chat:
 
             return result.get_chat_artifacts
         except Exception as e:
-            return []
+            return PagedChatArtifacts()
 
     def create_chat_artifact(self, chat_artifact: ChatArtifact) -> MaxMutationResponse:
         """

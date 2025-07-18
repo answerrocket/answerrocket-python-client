@@ -407,13 +407,15 @@ def query_get_chat_artifact():
 def query_get_chat_artifacts():
     _op = sgqlc.operation.Operation(_schema_root.query_type, name='GetChatArtifacts', variables=dict(searchInput=sgqlc.types.Arg(sgqlc.types.non_null(_schema.ChatArtifactSearchInput)), paging=sgqlc.types.Arg(sgqlc.types.non_null(_schema.PagingInput))))
     _op_get_chat_artifacts = _op.get_chat_artifacts(search_input=sgqlc.types.Variable('searchInput'), paging=sgqlc.types.Variable('paging'))
-    _op_get_chat_artifacts.chat_artifact_id()
-    _op_get_chat_artifacts.name()
-    _op_get_chat_artifacts.owner_user_id()
-    _op_get_chat_artifacts.chat_entry_id()
-    _op_get_chat_artifacts.content_block_id()
-    _op_get_chat_artifacts.misc_info()
-    _op_get_chat_artifacts.created_utc()
+    _op_get_chat_artifacts.total_rows()
+    _op_get_chat_artifacts_rows = _op_get_chat_artifacts.rows()
+    _op_get_chat_artifacts_rows.chat_artifact_id()
+    _op_get_chat_artifacts_rows.name()
+    _op_get_chat_artifacts_rows.owner_user_id()
+    _op_get_chat_artifacts_rows.chat_entry_id()
+    _op_get_chat_artifacts_rows.content_block_id()
+    _op_get_chat_artifacts_rows.misc_info()
+    _op_get_chat_artifacts_rows.created_utc()
     return _op
 
 
