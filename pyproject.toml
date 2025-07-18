@@ -8,6 +8,7 @@ dependencies = [
     "sgqlc",
     "pandas>=1.5.1",
     "typing-extensions",
+    "pika",
 ]
 
 [project.optional-dependencies]

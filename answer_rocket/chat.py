@@ -11,6 +11,7 @@ from answer_rocket.graphql.schema import (UUID, Int, DateTime, ChatDryRunType, M
                                           SharedThread, MaxChatUser)
 from answer_rocket.graphql.sdk_operations import Operations, _schema
 from answer_rocket.client_config import ClientConfig
+from answer_rocket.util.rabbit import safe_publish, ANSWER_EXCHANGE, initialize_rabbit_channel
 
 logger = logging.getLogger(__name__)
 
@@ -523,3 +524,7 @@ class Chat:
             return {**df_dict, "df": df}
 
         return [transform_df(d) for d in df_dicts]
+
+    def stream_text(self, entry_id: UUID, text: str):
+        chan = initialize_rabbit_channel()
+        safe_publish(chan, exchange_name=ANSWER_EXCHANGE, routing_key=f"{str(entry_id)}.chat", body=text)
