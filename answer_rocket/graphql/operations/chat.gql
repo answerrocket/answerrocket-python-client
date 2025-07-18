@@ -180,6 +180,8 @@ query GetChatArtifact($chatArtifactId: UUID!) {
     chatEntryId
     contentBlockId
     blockData
+    miscInfo
+    createdUtc
   }
 }
 

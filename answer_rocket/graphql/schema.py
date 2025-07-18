@@ -246,13 +246,15 @@ class BlockData(sgqlc.types.Type):
 
 class ChatArtifact(sgqlc.types.Type):
     __schema__ = schema
-    __field_names__ = ('chat_artifact_id', 'name', 'owner_user_id', 'chat_entry_id', 'content_block_id', 'block_data')
+    __field_names__ = ('chat_artifact_id', 'name', 'owner_user_id', 'chat_entry_id', 'content_block_id', 'block_data', 'misc_info', 'created_utc')
     chat_artifact_id = sgqlc.types.Field(sgqlc.types.non_null(UUID), graphql_name='chatArtifactId')
     name = sgqlc.types.Field(String, graphql_name='name')
     owner_user_id = sgqlc.types.Field(sgqlc.types.non_null(UUID), graphql_name='ownerUserId')
     chat_entry_id = sgqlc.types.Field(sgqlc.types.non_null(UUID), graphql_name='chatEntryId')
     content_block_id = sgqlc.types.Field(sgqlc.types.non_null(UUID), graphql_name='contentBlockId')
     block_data = sgqlc.types.Field(BlockData, graphql_name='blockData')
+    misc_info = sgqlc.types.Field(JSON, graphql_name='miscInfo')
+    created_utc = sgqlc.types.Field(sgqlc.types.non_null(DateTime), graphql_name='createdUtc')
 
 
 class ChatFeedback(sgqlc.types.Type):
