@@ -183,3 +183,39 @@ query GetMaxAgentWorkflow($agentWorkflowId: UUID!, $version: Int) {
 mutation ImportCopilotSkillFromZip($entryId: UUID!, $skillName: String!) {
   importCopilotSkillFromZip(entryId: $entryId, skillName: $skillName)
 }
+
+query GetChatArtifact($chatArtifactId: UUID!) {
+  getChatArtifact(chatArtifactId: $chatArtifactId) {
+    chatArtifactId
+    name
+    ownerUserId
+    chatEntryId
+    contentBlockId
+    blockData
+    miscInfo
+    createdUtc
+  }
+}
+
+query GetChatArtifacts($searchInput: ChatArtifactSearchInput!, $paging: PagingInput!) {
+  getChatArtifacts(searchInput: $searchInput, paging: $paging) {
+    totalRows
+    rows {
+      chatArtifactId
+      name
+      ownerUserId
+      chatEntryId
+      contentBlockId
+      miscInfo
+      createdUtc
+    }
+  }
+}
+
+mutation CreateChatArtifact($chatArtifact: JSON!) {
+  createChatArtifact(chatArtifact: $chatArtifact)
+}
+
+mutation DeleteChatArtifact($chatArtifactId: UUID!) {
+  deleteChatArtifact(chatArtifactId: $chatArtifactId)
+}

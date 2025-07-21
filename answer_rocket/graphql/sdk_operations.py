@@ -99,6 +99,18 @@ def mutation_import_copilot_skill_from_zip():
     return _op
 
 
+def mutation_create_chat_artifact():
+    _op = sgqlc.operation.Operation(_schema_root.mutation_type, name='CreateChatArtifact', variables=dict(chatArtifact=sgqlc.types.Arg(sgqlc.types.non_null(_schema.JSON))))
+    _op.create_chat_artifact(chat_artifact=sgqlc.types.Variable('chatArtifact'))
+    return _op
+
+
+def mutation_delete_chat_artifact():
+    _op = sgqlc.operation.Operation(_schema_root.mutation_type, name='DeleteChatArtifact', variables=dict(chatArtifactId=sgqlc.types.Arg(sgqlc.types.non_null(_schema.UUID))))
+    _op.delete_chat_artifact(chat_artifact_id=sgqlc.types.Variable('chatArtifactId'))
+    return _op
+
+
 def mutation_update_database_name():
     _op = sgqlc.operation.Operation(_schema_root.mutation_type, name='UpdateDatabaseName', variables=dict(databaseId=sgqlc.types.Arg(sgqlc.types.non_null(_schema.UUID)), name=sgqlc.types.Arg(sgqlc.types.non_null(_schema.String))))
     _op_update_database_name = _op.update_database_name(database_id=sgqlc.types.Variable('databaseId'), name=sgqlc.types.Variable('name'))
@@ -298,10 +310,12 @@ class Mutation:
     add_feedback = mutation_add_feedback()
     ask_chat_question = mutation_ask_chat_question()
     cancel_chat_question = mutation_cancel_chat_question()
+    create_chat_artifact = mutation_create_chat_artifact()
     create_chat_thread = mutation_create_chat_thread()
     create_dataset = mutation_create_dataset()
     create_dimension = mutation_create_dimension()
     create_metric = mutation_create_metric()
+    delete_chat_artifact = mutation_delete_chat_artifact()
     delete_dimension = mutation_delete_dimension()
     delete_metric = mutation_delete_metric()
     import_copilot_skill_from_zip = mutation_import_copilot_skill_from_zip()
@@ -393,6 +407,35 @@ def query_skill_memory():
 def query_get_max_agent_workflow():
     _op = sgqlc.operation.Operation(_schema_root.query_type, name='GetMaxAgentWorkflow', variables=dict(agentWorkflowId=sgqlc.types.Arg(sgqlc.types.non_null(_schema.UUID)), version=sgqlc.types.Arg(_schema.Int)))
     _op.get_max_agent_workflow(agent_workflow_id=sgqlc.types.Variable('agentWorkflowId'), version=sgqlc.types.Variable('version'))
+    return _op
+
+
+def query_get_chat_artifact():
+    _op = sgqlc.operation.Operation(_schema_root.query_type, name='GetChatArtifact', variables=dict(chatArtifactId=sgqlc.types.Arg(sgqlc.types.non_null(_schema.UUID))))
+    _op_get_chat_artifact = _op.get_chat_artifact(chat_artifact_id=sgqlc.types.Variable('chatArtifactId'))
+    _op_get_chat_artifact.chat_artifact_id()
+    _op_get_chat_artifact.name()
+    _op_get_chat_artifact.owner_user_id()
+    _op_get_chat_artifact.chat_entry_id()
+    _op_get_chat_artifact.content_block_id()
+    _op_get_chat_artifact.block_data()
+    _op_get_chat_artifact.misc_info()
+    _op_get_chat_artifact.created_utc()
+    return _op
+
+
+def query_get_chat_artifacts():
+    _op = sgqlc.operation.Operation(_schema_root.query_type, name='GetChatArtifacts', variables=dict(searchInput=sgqlc.types.Arg(sgqlc.types.non_null(_schema.ChatArtifactSearchInput)), paging=sgqlc.types.Arg(sgqlc.types.non_null(_schema.PagingInput))))
+    _op_get_chat_artifacts = _op.get_chat_artifacts(search_input=sgqlc.types.Variable('searchInput'), paging=sgqlc.types.Variable('paging'))
+    _op_get_chat_artifacts.total_rows()
+    _op_get_chat_artifacts_rows = _op_get_chat_artifacts.rows()
+    _op_get_chat_artifacts_rows.chat_artifact_id()
+    _op_get_chat_artifacts_rows.name()
+    _op_get_chat_artifacts_rows.owner_user_id()
+    _op_get_chat_artifacts_rows.chat_entry_id()
+    _op_get_chat_artifacts_rows.content_block_id()
+    _op_get_chat_artifacts_rows.misc_info()
+    _op_get_chat_artifacts_rows.created_utc()
     return _op
 
 
@@ -596,6 +639,8 @@ class Query:
     chat_entry = query_chat_entry()
     chat_thread = query_chat_thread()
     dataframes_for_entry = query_dataframes_for_entry()
+    get_chat_artifact = query_get_chat_artifact()
+    get_chat_artifacts = query_get_chat_artifacts()
     get_copilot_info = query_get_copilot_info()
     get_copilot_skill = query_get_copilot_skill()
     get_copilots = query_get_copilots()

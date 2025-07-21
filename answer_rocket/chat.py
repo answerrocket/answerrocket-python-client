@@ -1,15 +1,17 @@
 import io
 import logging
+import uuid
 from datetime import datetime
-from typing import Literal
+from typing import Literal, Optional
 
 import pandas as pd
 from sgqlc.types import Variable, non_null, String, Arg, list_of
 
 from answer_rocket.graphql.client import GraphQlClient
 from answer_rocket.graphql.schema import (UUID, Int, DateTime, ChatDryRunType, MaxChatEntry, MaxChatThread,
-                                          SharedThread, MaxChatUser)
-from answer_rocket.graphql.sdk_operations import Operations, _schema
+                                          SharedThread, MaxChatUser, ChatArtifact, MaxMutationResponse,
+                                          ChatArtifactSearchInput, PagingInput, PagedChatArtifacts)
+from answer_rocket.graphql.sdk_operations import Operations
 from answer_rocket.client_config import ClientConfig
 
 logger = logging.getLogger(__name__)
@@ -523,3 +525,131 @@ class Chat:
             return {**df_dict, "df": df}
 
         return [transform_df(d) for d in df_dicts]
+
+    def get_chat_artifact(self, chat_artifact_id: UUID) -> Optional[ChatArtifact]:
+        """
+        Retrieve a chat artifact by its ID.
+
+        This method queries the backend for a chat artifact using the given unique identifier.
+        If the artifact is found, it is returned as a `ChatArtifact` object. If not found or
+        if an error occurs during the query, `None` is returned.
+
+        Parameters
+        ----------
+        chat_artifact_id : UUID
+            The unique identifier of the chat artifact to retrieve.
+
+        Returns
+        -------
+        ChatArtifact or None
+            The chat artifact object if found, or `None` if not found or if an error occurs.
+        """
+        try:
+            query_args = {
+                'chatArtifactId': str(chat_artifact_id),
+            }
+
+            op = Operations.query.get_chat_artifact
+
+            result = self.gql_client.submit(op, query_args)
+
+            return result.get_chat_artifact
+        except Exception as e:
+            return None
+
+    def get_chat_artifacts(self, search_input: Optional[ChatArtifactSearchInput]=None, paging: Optional[PagingInput]=None) -> PagedChatArtifacts:
+        """
+        Retrieve paged chat artifacts based on optional search and paging criteria.
+
+        If no `search_input` or `paging` is provided, default values will be used.
+
+        Parameters
+        ----------
+        search_input : ChatArtifactSearchInput, optional
+            An object specifying the search criteria for chat artifacts.
+            If None, no filters are applied on name or misc_info.
+        paging : PagingInput, optional
+            An object specifying pagination details such as page number and page size.
+            If None, defaults to page 1 with a page size of 100.
+
+        Returns
+        -------
+        PagedChatArtifacts
+            A paged collection of chat artifacts. Returns an empty `PagedChatArtifacts` instance if an error occurs during retrieval.
+
+        Notes
+        -----
+        This method uses a GraphQL client to submit a query to fetch the data.
+        """
+        try:
+            if not search_input:
+                search_input = ChatArtifactSearchInput(
+                    name_contains=None,
+                    misc_info=None
+                )
+
+            if not paging:
+                paging = PagingInput(
+                    page_num=1,
+                    page_size=100
+                )
+
+            query_args = {
+                'searchInput': search_input.__to_json_value__(),
+                'paging': paging.__to_json_value__()
+            }
+
+            op = Operations.query.get_chat_artifacts
+
+            result = self.gql_client.submit(op, query_args)
+
+            return result.get_chat_artifacts
+        except Exception as e:
+            return PagedChatArtifacts()
+
+    def create_chat_artifact(self, chat_artifact: ChatArtifact) -> MaxMutationResponse:
+        """
+        Submits a GraphQL mutation to create a new chat artifact.
+
+        Parameters
+        ----------
+        chat_artifact : ChatArtifact
+            The chat artifact object containing the data to be created.
+
+        Returns
+        -------
+        MaxMutationResponse
+            The response object containing the result of the mutation,
+            specifically the created chat artifact.
+        """
+        mutation_args = {
+            'chatArtifact': chat_artifact
+        }
+
+        op = Operations.mutation.create_chat_artifact
+        result = self.gql_client.submit(op, mutation_args)
+
+        return result.create_chat_artifact
+
+    def delete_chat_artifact(self, chat_artifact_id: uuid) -> MaxMutationResponse:
+        """
+        Submits a GraphQL mutation to delete an existing chat artifact by its ID.
+
+        Parameters
+        ----------
+        chat_artifact_id : uuid
+            The UUID of the chat artifact to delete.
+
+        Returns
+        -------
+        MaxMutationResponse
+            The response object containing the result of the deletion mutation.
+        """
+        mutation_args = {
+            'chatArtifactId': str(chat_artifact_id)
+        }
+
+        op = Operations.mutation.delete_chat_artifact
+        result = self.gql_client.submit(op, mutation_args)
+
+        return result.delete_chat_artifact
