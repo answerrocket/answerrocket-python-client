@@ -92,8 +92,10 @@ class UUID(sgqlc.types.Scalar):
 ########################################################################
 class ChatArtifactSearchInput(sgqlc.types.Input):
     __schema__ = schema
-    __field_names__ = ('name_contains', 'misc_info')
+    __field_names__ = ('name_contains', 'created_utc_start', 'created_utc_end', 'misc_info')
     name_contains = sgqlc.types.Field(String, graphql_name='nameContains')
+    created_utc_start = sgqlc.types.Field(DateTime, graphql_name='createdUtcStart')
+    created_utc_end = sgqlc.types.Field(DateTime, graphql_name='createdUtcEnd')
     misc_info = sgqlc.types.Field(JSON, graphql_name='miscInfo')
 
 
