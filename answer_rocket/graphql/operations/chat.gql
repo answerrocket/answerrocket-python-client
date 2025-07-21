@@ -72,9 +72,9 @@ fragment ChatResultFragment on MaxChatResult {
     }
     customPayload
     contentBlocks {
-        id
-        title
-        layoutJson
+      id
+      title
+      layoutJson
     }
   }
   threadId
@@ -109,9 +109,9 @@ query DataframesForEntry($entryId: UUID!) {
   chatEntry(id: $entryId) {
     id
     answer {
-        reportResults {
-            gzippedDataframesAndMetadata
-        }
+      reportResults {
+        gzippedDataframesAndMetadata
+      }
     }
   }
 }
@@ -170,6 +170,18 @@ query SkillMemory($entryId: UUID!) {
 
 mutation SetSkillMemory($entryId: UUID!, $skillMemoryPayload: JSON!) {
   setSkillMemory(entryId: $entryId, skillMemoryPayload: $skillMemoryPayload)
+}
+
+mutation SetMaxAgentWorkflow($entryId: UUID!, $agentRunState: [JSON!]!) {
+  setMaxAgentWorkflow(entryId: $entryId, agentRunState: $agentRunState)
+}
+
+query GetMaxAgentWorkflow($agentWorkflowId: UUID!, $version: Int) {
+  getMaxAgentWorkflow(agentWorkflowId: $agentWorkflowId, version: $version)
+}
+
+mutation ImportCopilotSkillFromZip($entryId: UUID!, $skillName: String!) {
+  importCopilotSkillFromZip(entryId: $entryId, skillName: $skillName)
 }
 
 query GetChatArtifact($chatArtifactId: UUID!) {
