@@ -15,7 +15,7 @@ from answer_rocket.graphql.schema import UUID as GQL_UUID, GenerateVisualization
     MaxNormalAttribute, \
     MaxPrimaryAttribute, MaxReferenceAttribute, MaxCalculatedMetric, MaxDataset, MaxCalculatedAttribute, \
     MaxMutationResponse, DateTime, RunMaxSqlGenResponse, JSON, RunSqlAiResponse, GroundedValueResponse, Dimension, \
-    Metric, Dataset, DatasetDataInterval, Database
+    Metric, Dataset, DatasetDataInterval, Database, DatabaseSearchInput, PagingInput, PagedDatabases
 from answer_rocket.graphql.sdk_operations import Operations
 from answer_rocket.types import MaxResult, RESULT_EXCEPTION_CODE
 
@@ -248,6 +248,55 @@ class Data:
             return result.get_database
         except Exception as e:
             return None
+
+    def get_databases(self, search_input: Optional[DatabaseSearchInput]=None, paging: Optional[PagingInput]=None) -> PagedDatabases:
+        """
+        Retrieve databases based on optional search and paging criteria.
+
+        If no `search_input` or `paging` is provided, default values will be used.
+
+        Parameters
+        ----------
+        search_input : DatabaseSearchInput, optional
+            An object specifying the search criteria for databases.
+            If None, no filters are applied on name or misc_info.
+        paging : PagingInput, optional
+            An object specifying pagination details such as page number and page size.
+            If None, defaults to page 1 with a page size of 100.
+
+        Returns
+        -------
+        PagedDatabases
+            A paged collection of databases. Returns an empty `PagedDatabases` instance if an error occurs during retrieval.
+
+        Notes
+        -----
+        This method uses a GraphQL client to submit a query to fetch the data.
+        """
+        try:
+            if not search_input:
+                search_input = DatabaseSearchInput(
+                    name_contains=None,
+                )
+
+            if not paging:
+                paging = PagingInput(
+                    page_num=1,
+                    page_size=100
+                )
+
+            query_args = {
+                'searchInput': search_input.__to_json_value__(),
+                'paging': paging.__to_json_value__()
+            }
+
+            op = Operations.query.get_databases
+
+            result = self._gql_client.submit(op, query_args)
+
+            return result.get_databases
+        except Exception as e:
+            return PagedDatabases()
 
     def get_dataset_id(self, dataset_name: str) -> Optional[UUID]:
         try:

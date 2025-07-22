@@ -579,6 +579,22 @@ def query_get_database():
     _op_get_database.llm_description()
     _op_get_database.mermaid_er_diagram()
     _op_get_database.k_shot_limit()
+    _op_get_database.created_utc()
+    return _op
+
+
+def query_get_databases():
+    _op = sgqlc.operation.Operation(_schema_root.query_type, name='GetDatabases', variables=dict(searchInput=sgqlc.types.Arg(sgqlc.types.non_null(_schema.DatabaseSearchInput)), paging=sgqlc.types.Arg(sgqlc.types.non_null(_schema.PagingInput))))
+    _op_get_databases = _op.get_databases(search_input=sgqlc.types.Variable('searchInput'), paging=sgqlc.types.Variable('paging'))
+    _op_get_databases.total_rows()
+    _op_get_databases_rows = _op_get_databases.rows()
+    _op_get_databases_rows.database_id()
+    _op_get_databases_rows.name()
+    _op_get_databases_rows.description()
+    _op_get_databases_rows.llm_description()
+    _op_get_databases_rows.mermaid_er_diagram()
+    _op_get_databases_rows.k_shot_limit()
+    _op_get_databases_rows.created_utc()
     return _op
 
 
@@ -645,6 +661,7 @@ class Query:
     get_copilot_skill = query_get_copilot_skill()
     get_copilots = query_get_copilots()
     get_database = query_get_database()
+    get_databases = query_get_databases()
     get_dataset2 = query_get_dataset2()
     get_grounded_value = query_get_grounded_value()
     get_max_agent_workflow = query_get_max_agent_workflow()

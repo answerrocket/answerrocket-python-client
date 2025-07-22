@@ -33,6 +33,22 @@ query GetDatabase(
     llmDescription
     mermaidErDiagram
     kShotLimit
+    createdUtc
+  }
+}
+
+query GetDatabases($searchInput: DatabaseSearchInput!, $paging: PagingInput!) {
+  getDatabases(searchInput: $searchInput, paging: $paging) {
+    totalRows
+    rows {
+      databaseId
+      name
+      description
+      llmDescription
+      mermaidErDiagram
+      kShotLimit
+      createdUtc
+    }
   }
 }
 
