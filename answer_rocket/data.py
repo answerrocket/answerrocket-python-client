@@ -21,6 +21,22 @@ from answer_rocket.graphql.sdk_operations import Operations
 from answer_rocket.types import MaxResult, RESULT_EXCEPTION_CODE
 
 def create_df_from_data(data: Dict[str, any]):
+    """
+    Create a pandas DataFrame from structured data dictionary.
+
+    Parameters
+    ----------
+    data : Dict[str, any]
+        A dictionary containing 'columns' and optionally 'rows' keys.
+        The 'columns' key should contain a list of column dictionaries with 'name' keys.
+        The 'rows' key should contain a list of row dictionaries with 'data' keys.
+
+    Returns
+    -------
+    DataFrame
+        A pandas DataFrame created from the input data. Returns an empty DataFrame
+        with the same columns if the only row contains all NaN values.
+    """
     columns = [column["name"] for column in data["columns"]]
     rows = [row["data"] for row in data["rows"]] if "rows" in data else []
 
@@ -147,14 +163,28 @@ class Data:
             return result
 
     def execute_rql_query(self, dataset_id: UUID, rql_query: str, row_limit: Optional[int] = None, copilot_id: Optional[UUID] = None, copilot_skill_id: Optional[UUID] = None) -> ExecuteRqlQueryResult:
+        """
+        Execute an RQL query against a dataset and return results.
+
+        Parameters
+        ----------
+        dataset_id : UUID
+            The UUID of the dataset to execute the query against.
+        rql_query : str
+            The RQL query string to execute.
+        row_limit : Optional[int], optional
+            Maximum number of rows to return in the query results.
+        copilot_id : Optional[UUID], optional
+            The UUID of the copilot. Defaults to the configured copilot_id.
+        copilot_skill_id : Optional[UUID], optional
+            The UUID of the copilot skill. Defaults to the configured copilot_skill_id.
+
+        Returns
+        -------
+        ExecuteRqlQueryResult
+            The result containing success status, error information, DataFrame, and RQL script response.
+        """
         try:
-            """
-            dataset_id: the dataset_id of the dataset to execute against.
-            rql_query: the RQL query to execute.
-            row_limit: the optional row limit of the query results.
-            copilot_id: the optional copilot ID.
-            
-            """
             query_args = {
                 'datasetId': dataset_id,
                 'rqlQuery': rql_query,
@@ -352,10 +382,20 @@ class Data:
             return PagedDatabaseTables()
 
     def get_dataset_id(self, dataset_name: str) -> Optional[UUID]:
+        """
+        Retrieve the UUID of a dataset by its name.
+
+        Parameters
+        ----------
+        dataset_name : str
+            The name of the dataset to look up.
+
+        Returns
+        -------
+        Optional[UUID]
+            The UUID of the dataset if found, otherwise None.
+        """
         try:
-            """
-            dataset_name: the name of the dataset
-            """
             query_args = {
                 'datasetName': dataset_name,
             }
@@ -385,10 +425,24 @@ class Data:
             return execute_sql_query_result
 
     def get_dataset(self, dataset_id: UUID, copilot_id: Optional[UUID] = None, include_dim_values: bool = False) -> Optional[MaxDataset]:
+        """
+        Retrieve a dataset by its UUID with optional dimension values.
+
+        Parameters
+        ----------
+        dataset_id : UUID
+            The UUID of the dataset to retrieve.
+        copilot_id : Optional[UUID], optional
+            The UUID of the copilot. Defaults to the configured copilot_id.
+        include_dim_values : bool, optional
+            Whether to include dimension values in the response. Defaults to False.
+
+        Returns
+        -------
+        Optional[MaxDataset]
+            The dataset object if found, otherwise None.
+        """
         try:
-            """
-            dataset_id: the UUID of the dataset
-            """
             query_args = {
                 'datasetId': str(dataset_id),
                 'copilotId': str(copilot_id) if copilot_id else str(self.copilot_id) if self.copilot_id else None
@@ -482,11 +536,23 @@ class Data:
             return None
 
     def get_domain_object_by_name(self, dataset_id: UUID, rql_name: str) -> DomainObjectResult:
+        """
+        Retrieve a domain object by its RQL name within a dataset.
+
+        Parameters
+        ----------
+        dataset_id : UUID
+            The UUID of the dataset containing the domain object.
+        rql_name : str
+            The fully qualified RQL name of the domain object 
+            (e.g. 'transactions.sales', 'transactions', 'net_sales').
+
+        Returns
+        -------
+        DomainObjectResult
+            The result containing success status, error information, and the domain object if found.
+        """
         try:
-            """
-            dataset_id: the UUID of the dataset
-            rql_name: the fully qualified RQL name of the domain object (e.g. transactions.sales, transactions, net_sales)
-            """
             query_args = {
                 'datasetId': dataset_id,
                 'rqlName': rql_name
@@ -532,11 +598,22 @@ class Data:
             return domain_object_result
 
     def get_domain_object(self, dataset_id: UUID, domain_object_id: str) -> DomainObjectResult:
+        """
+        Retrieve a domain object by its ID within a dataset.
+
+        Parameters
+        ----------
+        dataset_id : UUID
+            The UUID of the dataset containing the domain object.
+        domain_object_id : str
+            The domain object ID (e.g. 'transactions__sales').
+
+        Returns
+        -------
+        DomainObjectResult
+            The result containing success status, error information, and the domain object if found.
+        """
         try:
-            """
-            dataset_id: the UUID of the dataset
-            domain_object_id: the domain object ID domain object (e.g. transactions__sales)
-            """
             query_args = {
                 'datasetId': dataset_id,
                 'domainObjectId': domain_object_id
@@ -1075,10 +1152,24 @@ class Data:
         return result.update_database_kshot_limit
 
     def reload_dataset(self, dataset_id: Optional[UUID] = None, database_id: Optional[UUID] = None, table_names: Optional[List[str]] = None) -> MaxMutationResponse:
+        """
+        Reload a dataset to refresh its metadata and structure.
+
+        Parameters
+        ----------
+        dataset_id : Optional[UUID], optional
+            The UUID of the dataset to reload.
+        database_id : Optional[UUID], optional
+            The UUID of the database containing tables to reload.
+        table_names : Optional[List[str]], optional
+            List of specific table names to reload.
+
+        Returns
+        -------
+        MaxMutationResponse
+            The result of the reload operation, or None if an error occurs.
+        """
         try:
-            """
-            dataset_id: the UUID of the dataset
-            """
             mutation_args = {
                 'datasetId': str(dataset_id) if dataset_id is not None else None,
                 'databaseId': str(database_id) if database_id is not None else None,
@@ -1262,6 +1353,25 @@ class Data:
         return result.update_dataset_misc_info
 
     def update_dataset_source(self, dataset_id: UUID, source_table: str, source_sql: Optional[str] = None, derived_table_alias: Optional[str] = None) -> MaxMutationResponse:
+        """
+        Update the source table configuration for a dataset.
+
+        Parameters
+        ----------
+        dataset_id : UUID
+            The UUID of the dataset to update.
+        source_table : str
+            The name of the source table.
+        source_sql : Optional[str], optional
+            Custom SQL for the source table. Defaults to None.
+        derived_table_alias : Optional[str], optional
+            Alias for derived table queries. Defaults to None.
+
+        Returns
+        -------
+        MaxMutationResponse
+            The result of the update operation.
+        """
         mutation_args = {
             'datasetId': str(dataset_id),
             'sourceTable': source_table,
@@ -1483,6 +1593,19 @@ class Data:
         return result.create_dataset_from_table
 
     def update_dataset(self, dataset: Dataset) -> MaxMutationResponse:
+        """
+        Update an existing dataset with new configuration.
+
+        Parameters
+        ----------
+        dataset : Dataset
+            The dataset object containing the updated configuration and metadata.
+
+        Returns
+        -------
+        MaxMutationResponse
+            The result of the update operation.
+        """
         mutation_args = {
             'dataset': dataset,
         }
@@ -1493,6 +1616,21 @@ class Data:
         return result.update_dataset
 
     def create_dimension(self, dataset_id: UUID, dimension: Dimension) -> MaxMutationResponse:
+        """
+        Create a new dimension within a dataset.
+
+        Parameters
+        ----------
+        dataset_id : UUID
+            The UUID of the dataset to add the dimension to.
+        dimension : Dimension
+            The dimension object containing the configuration and metadata.
+
+        Returns
+        -------
+        MaxMutationResponse
+            The result of the create operation.
+        """
         mutation_args = {
             'datasetId': str(dataset_id),
             'dimension': dimension,
@@ -1504,6 +1642,21 @@ class Data:
         return result.create_dimension
 
     def update_dimension(self, dataset_id: UUID, dimension: Dimension) -> MaxMutationResponse:
+        """
+        Update an existing dimension within a dataset.
+
+        Parameters
+        ----------
+        dataset_id : UUID
+            The UUID of the dataset containing the dimension.
+        dimension : Dimension
+            The dimension object containing the updated configuration and metadata.
+
+        Returns
+        -------
+        MaxMutationResponse
+            The result of the update operation.
+        """
         mutation_args = {
             'datasetId': str(dataset_id),
             'dimension': dimension,
@@ -1515,6 +1668,21 @@ class Data:
         return result.update_dimension
 
     def delete_dimension(self, dataset_id: UUID, dimension_id: str) -> MaxMutationResponse:
+        """
+        Delete a dimension from a dataset.
+
+        Parameters
+        ----------
+        dataset_id : UUID
+            The UUID of the dataset containing the dimension.
+        dimension_id : str
+            The ID of the dimension to delete.
+
+        Returns
+        -------
+        MaxMutationResponse
+            The result of the delete operation.
+        """
         mutation_args = {
             'datasetId': str(dataset_id),
             'dimensionId': dimension_id,
@@ -1526,6 +1694,21 @@ class Data:
         return result.delete_dimension
 
     def create_metric(self, dataset_id: UUID, metric: Metric) -> MaxMutationResponse:
+        """
+        Create a new metric within a dataset.
+
+        Parameters
+        ----------
+        dataset_id : UUID
+            The UUID of the dataset to add the metric to.
+        metric : Metric
+            The metric object containing the configuration and metadata.
+
+        Returns
+        -------
+        MaxMutationResponse
+            The result of the create operation.
+        """
         mutation_args = {
             'datasetId': str(dataset_id),
             'metric': metric,
@@ -1537,6 +1720,21 @@ class Data:
         return result.create_metric
 
     def update_metric(self, dataset_id: UUID, metric: Metric) -> MaxMutationResponse:
+        """
+        Update an existing metric within a dataset.
+
+        Parameters
+        ----------
+        dataset_id : UUID
+            The UUID of the dataset containing the metric.
+        metric : Metric
+            The metric object containing the updated configuration and metadata.
+
+        Returns
+        -------
+        MaxMutationResponse
+            The result of the update operation.
+        """
         mutation_args = {
             'datasetId': str(dataset_id),
             'metric': metric,
@@ -1548,6 +1746,21 @@ class Data:
         return result.update_metric
 
     def delete_metric(self, dataset_id: UUID, metric_id: str) -> MaxMutationResponse:
+        """
+        Delete a metric from a dataset.
+
+        Parameters
+        ----------
+        dataset_id : UUID
+            The UUID of the dataset containing the metric.
+        metric_id : str
+            The ID of the metric to delete.
+
+        Returns
+        -------
+        MaxMutationResponse
+            The result of the delete operation.
+        """
         mutation_args = {
             'datasetId': str(dataset_id),
             'metricId': metric_id,
