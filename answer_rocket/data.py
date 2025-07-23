@@ -16,7 +16,7 @@ from answer_rocket.graphql.schema import UUID as GQL_UUID, GenerateVisualization
     MaxPrimaryAttribute, MaxReferenceAttribute, MaxCalculatedMetric, MaxDataset, MaxCalculatedAttribute, \
     MaxMutationResponse, DateTime, RunMaxSqlGenResponse, JSON, RunSqlAiResponse, GroundedValueResponse, Dimension, \
     Metric, Dataset, DatasetDataInterval, Database, DatabaseSearchInput, PagingInput, PagedDatabases, \
-    DatabaseTableSearchInput, PagedDatabaseTables
+    DatabaseTableSearchInput, PagedDatabaseTables, CreateDatasetFromTableResponse
 from answer_rocket.graphql.sdk_operations import Operations
 from answer_rocket.types import MaxResult, RESULT_EXCEPTION_CODE
 
@@ -1455,6 +1455,32 @@ class Data:
         result = self._gql_client.submit(op, mutation_args)
 
         return result.create_dataset
+
+    def create_dataset_from_table(self, database_id: UUID, table_name: str) -> CreateDatasetFromTableResponse:
+        """
+        Create a new dataset from the specified table
+
+        Parameters
+        ----------
+        database_id : UUID
+            The database ID under which to create the dataset
+        table_name : str
+            The name of the database table from which to create the dataset
+
+        Returns
+        -------
+        CreateDatasetFromTableResponse
+            The result of the GraphQL mutation containing the created dataset details.
+        """
+        mutation_args = {
+            'databaseId': str(database_id),
+            'tableName': table_name
+        }
+
+        op = Operations.mutation.create_dataset_from_table
+        result = self._gql_client.submit(op, mutation_args)
+
+        return result.create_dataset_from_table
 
     def update_dataset(self, dataset: Dataset) -> MaxMutationResponse:
         mutation_args = {

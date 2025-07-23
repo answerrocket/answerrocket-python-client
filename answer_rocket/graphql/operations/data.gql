@@ -165,6 +165,20 @@ mutation CreateDataset(
   }
 }
 
+mutation CreateDatasetFromTable(
+  $databaseId: UUID!
+  $tableName: String!
+) {
+  createDatasetFromTable(
+    databaseId: $databaseId
+    tableName: $tableName
+  ) {
+    datasetId
+    queuedTaskGuid
+    error
+  }
+}
+
 mutation UpdateDatasetName(
   $datasetId: UUID!
   $name: String!

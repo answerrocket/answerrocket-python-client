@@ -21,11 +21,6 @@ class ContentBlockType(sgqlc.types.Enum):
     __choices__ = ('INSIGHTS', 'VISUAL')
 
 
-class DatabaseObjectType(sgqlc.types.Enum):
-    __schema__ = schema
-    __choices__ = ('TABLE', 'VIEW')
-
-
 class DatasetDataInterval(sgqlc.types.Enum):
     __schema__ = schema
     __choices__ = ('DATE', 'MONTH', 'QUARTER', 'WEEK', 'YEAR')
@@ -369,6 +364,14 @@ class CostInfo(sgqlc.types.Type):
     model = sgqlc.types.Field(String, graphql_name='model')
 
 
+class CreateDatasetFromTableResponse(sgqlc.types.Type):
+    __schema__ = schema
+    __field_names__ = ('dataset_id', 'queued_task_guid', 'error')
+    dataset_id = sgqlc.types.Field(UUID, graphql_name='datasetId')
+    queued_task_guid = sgqlc.types.Field(UUID, graphql_name='queuedTaskGuid')
+    error = sgqlc.types.Field(String, graphql_name='error')
+
+
 class CreateMaxCopilotSkillChatQuestionResponse(sgqlc.types.Type):
     __schema__ = schema
     __field_names__ = ('copilot_skill_chat_question_id', 'success', 'code', 'error')
@@ -391,9 +394,8 @@ class Database(sgqlc.types.Type):
 
 class DatabaseTable(sgqlc.types.Type):
     __schema__ = schema
-    __field_names__ = ('table_name', 'database_object_type')
+    __field_names__ = ('table_name',)
     table_name = sgqlc.types.Field(sgqlc.types.non_null(String), graphql_name='tableName')
-    database_object_type = sgqlc.types.Field(sgqlc.types.non_null(DatabaseObjectType), graphql_name='databaseObjectType')
 
 
 class Dataset(sgqlc.types.Type):
@@ -893,7 +895,7 @@ class MaxUser(sgqlc.types.Type):
 
 class Mutation(sgqlc.types.Type):
     __schema__ = schema
-    __field_names__ = ('create_max_copilot_skill_chat_question', 'update_max_copilot_skill_chat_question', 'delete_max_copilot_skill_chat_question', 'create_max_copilot_question', 'update_max_copilot_question', 'delete_max_copilot_question', 'set_max_agent_workflow', 'import_copilot_skill_from_zip', 'reload_dataset', 'update_database_name', 'update_database_description', 'update_database_llm_description', 'update_database_mermaid_er_diagram', 'update_database_kshot_limit', 'update_dataset_name', 'update_dataset_description', 'update_dataset_date_range', 'update_dataset_data_interval', 'update_dataset_misc_info', 'update_dataset_source', 'update_dataset_query_row_limit', 'update_dataset_use_database_casing', 'update_dataset_kshot_limit', 'create_dataset', 'create_dimension', 'update_dimension', 'delete_dimension', 'create_metric', 'update_metric', 'delete_metric', 'update_chat_answer_payload', 'ask_chat_question', 'evaluate_chat_question', 'queue_chat_question', 'cancel_chat_question', 'create_chat_thread', 'add_feedback', 'set_skill_memory', 'share_thread', 'update_loading_message', 'create_chat_artifact', 'delete_chat_artifact')
+    __field_names__ = ('create_max_copilot_skill_chat_question', 'update_max_copilot_skill_chat_question', 'delete_max_copilot_skill_chat_question', 'create_max_copilot_question', 'update_max_copilot_question', 'delete_max_copilot_question', 'set_max_agent_workflow', 'import_copilot_skill_from_zip', 'reload_dataset', 'update_database_name', 'update_database_description', 'update_database_llm_description', 'update_database_mermaid_er_diagram', 'update_database_kshot_limit', 'update_dataset_name', 'update_dataset_description', 'update_dataset_date_range', 'update_dataset_data_interval', 'update_dataset_misc_info', 'update_dataset_source', 'update_dataset_query_row_limit', 'update_dataset_use_database_casing', 'update_dataset_kshot_limit', 'create_dataset', 'create_dataset_from_table', 'create_dimension', 'update_dimension', 'delete_dimension', 'create_metric', 'update_metric', 'delete_metric', 'update_chat_answer_payload', 'ask_chat_question', 'evaluate_chat_question', 'queue_chat_question', 'cancel_chat_question', 'create_chat_thread', 'add_feedback', 'set_skill_memory', 'share_thread', 'update_loading_message', 'create_chat_artifact', 'delete_chat_artifact')
     create_max_copilot_skill_chat_question = sgqlc.types.Field(sgqlc.types.non_null(CreateMaxCopilotSkillChatQuestionResponse), graphql_name='createMaxCopilotSkillChatQuestion', args=sgqlc.types.ArgDict((
         ('copilot_id', sgqlc.types.Arg(sgqlc.types.non_null(UUID), graphql_name='copilotId', default=None)),
         ('copilot_skill_id', sgqlc.types.Arg(sgqlc.types.non_null(UUID), graphql_name='copilotSkillId', default=None)),
@@ -1022,6 +1024,11 @@ class Mutation(sgqlc.types.Type):
     )
     create_dataset = sgqlc.types.Field(sgqlc.types.non_null(MaxMutationResponse), graphql_name='createDataset', args=sgqlc.types.ArgDict((
         ('dataset', sgqlc.types.Arg(sgqlc.types.non_null(JSON), graphql_name='dataset', default=None)),
+))
+    )
+    create_dataset_from_table = sgqlc.types.Field(sgqlc.types.non_null(CreateDatasetFromTableResponse), graphql_name='createDatasetFromTable', args=sgqlc.types.ArgDict((
+        ('database_id', sgqlc.types.Arg(sgqlc.types.non_null(UUID), graphql_name='databaseId', default=None)),
+        ('table_name', sgqlc.types.Arg(sgqlc.types.non_null(String), graphql_name='tableName', default=None)),
 ))
     )
     create_dimension = sgqlc.types.Field(sgqlc.types.non_null(MaxMutationResponse), graphql_name='createDimension', args=sgqlc.types.ArgDict((

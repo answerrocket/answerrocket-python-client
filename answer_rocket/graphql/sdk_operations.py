@@ -165,6 +165,15 @@ def mutation_create_dataset():
     return _op
 
 
+def mutation_create_dataset_from_table():
+    _op = sgqlc.operation.Operation(_schema_root.mutation_type, name='CreateDatasetFromTable', variables=dict(databaseId=sgqlc.types.Arg(sgqlc.types.non_null(_schema.UUID)), tableName=sgqlc.types.Arg(sgqlc.types.non_null(_schema.String))))
+    _op_create_dataset_from_table = _op.create_dataset_from_table(database_id=sgqlc.types.Variable('databaseId'), table_name=sgqlc.types.Variable('tableName'))
+    _op_create_dataset_from_table.dataset_id()
+    _op_create_dataset_from_table.queued_task_guid()
+    _op_create_dataset_from_table.error()
+    return _op
+
+
 def mutation_update_dataset_name():
     _op = sgqlc.operation.Operation(_schema_root.mutation_type, name='UpdateDatasetName', variables=dict(datasetId=sgqlc.types.Arg(sgqlc.types.non_null(_schema.UUID)), name=sgqlc.types.Arg(sgqlc.types.non_null(_schema.String))))
     _op_update_dataset_name = _op.update_dataset_name(dataset_id=sgqlc.types.Variable('datasetId'), name=sgqlc.types.Variable('name'))
@@ -313,6 +322,7 @@ class Mutation:
     create_chat_artifact = mutation_create_chat_artifact()
     create_chat_thread = mutation_create_chat_thread()
     create_dataset = mutation_create_dataset()
+    create_dataset_from_table = mutation_create_dataset_from_table()
     create_dimension = mutation_create_dimension()
     create_metric = mutation_create_metric()
     delete_chat_artifact = mutation_delete_chat_artifact()
