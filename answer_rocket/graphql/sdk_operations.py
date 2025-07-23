@@ -579,7 +579,6 @@ def query_get_database():
     _op_get_database.llm_description()
     _op_get_database.mermaid_er_diagram()
     _op_get_database.k_shot_limit()
-    _op_get_database.created_utc()
     return _op
 
 
@@ -594,7 +593,15 @@ def query_get_databases():
     _op_get_databases_rows.llm_description()
     _op_get_databases_rows.mermaid_er_diagram()
     _op_get_databases_rows.k_shot_limit()
-    _op_get_databases_rows.created_utc()
+    return _op
+
+
+def query_get_database_tables():
+    _op = sgqlc.operation.Operation(_schema_root.query_type, name='GetDatabaseTables', variables=dict(databaseId=sgqlc.types.Arg(sgqlc.types.non_null(_schema.UUID)), searchInput=sgqlc.types.Arg(sgqlc.types.non_null(_schema.DatabaseTableSearchInput)), paging=sgqlc.types.Arg(sgqlc.types.non_null(_schema.PagingInput))))
+    _op_get_database_tables = _op.get_database_tables(database_id=sgqlc.types.Variable('databaseId'), search_input=sgqlc.types.Variable('searchInput'), paging=sgqlc.types.Variable('paging'))
+    _op_get_database_tables.total_rows()
+    _op_get_database_tables_rows = _op_get_database_tables.rows()
+    _op_get_database_tables_rows.table_name()
     return _op
 
 
@@ -661,6 +668,7 @@ class Query:
     get_copilot_skill = query_get_copilot_skill()
     get_copilots = query_get_copilots()
     get_database = query_get_database()
+    get_database_tables = query_get_database_tables()
     get_databases = query_get_databases()
     get_dataset2 = query_get_dataset2()
     get_grounded_value = query_get_grounded_value()

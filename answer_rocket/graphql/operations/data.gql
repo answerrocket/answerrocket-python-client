@@ -33,7 +33,6 @@ query GetDatabase(
     llmDescription
     mermaidErDiagram
     kShotLimit
-    createdUtc
   }
 }
 
@@ -47,7 +46,15 @@ query GetDatabases($searchInput: DatabaseSearchInput!, $paging: PagingInput!) {
       llmDescription
       mermaidErDiagram
       kShotLimit
-      createdUtc
+    }
+  }
+}
+
+query GetDatabaseTables($databaseId: UUID!, $searchInput: DatabaseTableSearchInput!, $paging: PagingInput!) {
+  getDatabaseTables(databaseId: $databaseId, searchInput: $searchInput, paging: $paging) {
+    totalRows
+    rows {
+      tableName
     }
   }
 }

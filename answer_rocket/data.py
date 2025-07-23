@@ -15,7 +15,8 @@ from answer_rocket.graphql.schema import UUID as GQL_UUID, GenerateVisualization
     MaxNormalAttribute, \
     MaxPrimaryAttribute, MaxReferenceAttribute, MaxCalculatedMetric, MaxDataset, MaxCalculatedAttribute, \
     MaxMutationResponse, DateTime, RunMaxSqlGenResponse, JSON, RunSqlAiResponse, GroundedValueResponse, Dimension, \
-    Metric, Dataset, DatasetDataInterval, Database, DatabaseSearchInput, PagingInput, PagedDatabases
+    Metric, Dataset, DatasetDataInterval, Database, DatabaseSearchInput, PagingInput, PagedDatabases, \
+    DatabaseTableSearchInput, PagedDatabaseTables
 from answer_rocket.graphql.sdk_operations import Operations
 from answer_rocket.types import MaxResult, RESULT_EXCEPTION_CODE
 
@@ -259,7 +260,7 @@ class Data:
         ----------
         search_input : DatabaseSearchInput, optional
             An object specifying the search criteria for databases.
-            If None, no filters are applied on name or misc_info.
+            If None, no filters are applied
         paging : PagingInput, optional
             An object specifying pagination details such as page number and page size.
             If None, defaults to page 1 with a page size of 100.
@@ -297,6 +298,58 @@ class Data:
             return result.get_databases
         except Exception as e:
             return PagedDatabases()
+
+    def get_database_tables(self, database_id: UUID, search_input: Optional[DatabaseTableSearchInput]=None, paging: Optional[PagingInput]=None) -> PagedDatabaseTables:
+        """
+        Retrieve database tables based on optional search and paging criteria.
+
+        If no `search_input` or `paging` is provided, default values will be used.
+
+        Parameters
+        ----------
+        database_id : UUID
+            The database_id that contains the tables
+        search_input : DatabaseTableSearchInput, optional
+            An object specifying the search criteria for the tables.
+            If None, no filters are applied
+        paging : PagingInput, optional
+            An object specifying pagination details such as page number and page size.
+            If None, defaults to page 1 with a page size of 100.
+
+        Returns
+        -------
+        PagedDatabaseTables
+            A paged collection of database tables. Returns an empty `PagedDatabaseTables` instance if an error occurs during retrieval.
+
+        Notes
+        -----
+        This method uses a GraphQL client to submit a query to fetch the data.
+        """
+        try:
+            if not search_input:
+                search_input = DatabaseTableSearchInput(
+                    name_contains=None,
+                )
+
+            if not paging:
+                paging = PagingInput(
+                    page_num=1,
+                    page_size=100
+                )
+
+            query_args = {
+                'databaseId': str(database_id),
+                'searchInput': search_input.__to_json_value__(),
+                'paging': paging.__to_json_value__()
+            }
+
+            op = Operations.query.get_database_tables
+
+            result = self._gql_client.submit(op, query_args)
+
+            return result.get_database_tables
+        except Exception as e:
+            return PagedDatabaseTables()
 
     def get_dataset_id(self, dataset_name: str) -> Optional[UUID]:
         try:
