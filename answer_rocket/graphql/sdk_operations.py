@@ -220,6 +220,10 @@ def query_get_copilot_skill():
     _op_get_copilot_skill_parameters.last_modified_user_id()
     _op_get_copilot_skill_parameters.last_modified_utc()
     _op_get_copilot_skill_parameters.version()
+    _op_get_copilot_skill.capabilities()
+    _op_get_copilot_skill.limitations()
+    _op_get_copilot_skill.example_questions()
+    _op_get_copilot_skill.parameter_guidance()
     return _op
 
 
@@ -283,20 +287,6 @@ def query_get_copilots():
     return _op
 
 
-def query_get_grounded_value():
-    _op = sgqlc.operation.Operation(_schema_root.query_type, name='GetGroundedValue', variables=dict(datasetId=sgqlc.types.Arg(sgqlc.types.non_null(_schema.UUID)), value=sgqlc.types.Arg(sgqlc.types.non_null(_schema.String)), domainEntity=sgqlc.types.Arg(_schema.String), copilotId=sgqlc.types.Arg(_schema.UUID)))
-    _op_get_grounded_value = _op.get_grounded_value(dataset_id=sgqlc.types.Variable('datasetId'), value=sgqlc.types.Variable('value'), domain_entity=sgqlc.types.Variable('domainEntity'), copilot_id=sgqlc.types.Variable('copilotId'))
-    _op_get_grounded_value.matched_value()
-    _op_get_grounded_value.match_quality()
-    _op_get_grounded_value.match_type()
-    _op_get_grounded_value.mapped_indicator()
-    _op_get_grounded_value.mapped_value()
-    _op_get_grounded_value.preferred()
-    _op_get_grounded_value.domain_entity()
-    _op_get_grounded_value.other_matches()
-    return _op
-
-
 def query_chat_completion():
     _op = sgqlc.operation.Operation(_schema_root.query_type, name='ChatCompletion', variables=dict(messages=sgqlc.types.Arg(sgqlc.types.non_null(sgqlc.types.list_of(sgqlc.types.non_null(_schema.LlmChatMessage)))), modelSelection=sgqlc.types.Arg(_schema.LlmModelSelection)))
     _op.chat_completion(messages=sgqlc.types.Variable('messages'), model_selection=sgqlc.types.Variable('modelSelection'))
@@ -306,12 +296,6 @@ def query_chat_completion():
 def query_narrative_completion():
     _op = sgqlc.operation.Operation(_schema_root.query_type, name='NarrativeCompletion', variables=dict(prompt=sgqlc.types.Arg(sgqlc.types.non_null(_schema.String)), modelSelection=sgqlc.types.Arg(_schema.LlmModelSelection)))
     _op.narrative_completion(prompt=sgqlc.types.Variable('prompt'), model_selection=sgqlc.types.Variable('modelSelection'))
-    return _op
-
-
-def query_narrative_completion_with_prompt():
-    _op = sgqlc.operation.Operation(_schema_root.query_type, name='NarrativeCompletionWithPrompt', variables=dict(promptName=sgqlc.types.Arg(sgqlc.types.non_null(_schema.String)), promptVariables=sgqlc.types.Arg(_schema.JSON), modelSelection=sgqlc.types.Arg(_schema.LlmModelSelection)))
-    _op.narrative_completion_with_prompt(prompt_name=sgqlc.types.Variable('promptName'), prompt_variables=sgqlc.types.Variable('promptVariables'), model_selection=sgqlc.types.Variable('modelSelection'))
     return _op
 
 
@@ -336,10 +320,8 @@ class Query:
     get_copilot_info = query_get_copilot_info()
     get_copilot_skill = query_get_copilot_skill()
     get_copilots = query_get_copilots()
-    get_grounded_value = query_get_grounded_value()
     get_max_llm_prompt = query_get_max_llm_prompt()
     narrative_completion = query_narrative_completion()
-    narrative_completion_with_prompt = query_narrative_completion_with_prompt()
     research_completion = query_research_completion()
     skill_memory = query_skill_memory()
     sql_completion = query_sql_completion()

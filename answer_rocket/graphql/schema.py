@@ -344,19 +344,6 @@ class GenerateVisualizationResponse(sgqlc.types.Type):
     visualization = sgqlc.types.Field(JSON, graphql_name='visualization')
 
 
-class GroundedValueResponse(sgqlc.types.Type):
-    __schema__ = schema
-    __field_names__ = ('matched_value', 'match_quality', 'match_type', 'mapped_indicator', 'mapped_value', 'preferred', 'domain_entity', 'other_matches')
-    matched_value = sgqlc.types.Field(String, graphql_name='matchedValue')
-    match_quality = sgqlc.types.Field(Float, graphql_name='matchQuality')
-    match_type = sgqlc.types.Field(String, graphql_name='matchType')
-    mapped_indicator = sgqlc.types.Field(Boolean, graphql_name='mappedIndicator')
-    mapped_value = sgqlc.types.Field(String, graphql_name='mappedValue')
-    preferred = sgqlc.types.Field(Boolean, graphql_name='preferred')
-    domain_entity = sgqlc.types.Field(String, graphql_name='domainEntity')
-    other_matches = sgqlc.types.Field(sgqlc.types.list_of(sgqlc.types.non_null(JSON)), graphql_name='otherMatches')
-
-
 class MaxAgentWorkflow(sgqlc.types.Type):
     __schema__ = schema
     __field_names__ = ('agent_workflow_id', 'trace')
@@ -505,7 +492,7 @@ class MaxCopilotQuestion(sgqlc.types.Type):
 
 class MaxCopilotSkill(sgqlc.types.Type):
     __schema__ = schema
-    __field_names__ = ('copilot_skill_id', 'name', 'copilot_skill_type', 'detailed_name', 'description', 'detailed_description', 'dataset_id', 'parameters', 'skill_chat_questions', 'yaml_code', 'skill_code', 'misc_info', 'scheduling_only', 'copilot_skill_nodes')
+    __field_names__ = ('copilot_skill_id', 'name', 'copilot_skill_type', 'detailed_name', 'description', 'detailed_description', 'dataset_id', 'parameters', 'skill_chat_questions', 'yaml_code', 'skill_code', 'misc_info', 'scheduling_only', 'copilot_skill_nodes', 'capabilities', 'limitations', 'example_questions', 'parameter_guidance')
     copilot_skill_id = sgqlc.types.Field(sgqlc.types.non_null(UUID), graphql_name='copilotSkillId')
     name = sgqlc.types.Field(sgqlc.types.non_null(String), graphql_name='name')
     copilot_skill_type = sgqlc.types.Field(sgqlc.types.non_null(String), graphql_name='copilotSkillType')
@@ -520,6 +507,10 @@ class MaxCopilotSkill(sgqlc.types.Type):
     misc_info = sgqlc.types.Field(JSON, graphql_name='miscInfo')
     scheduling_only = sgqlc.types.Field(sgqlc.types.non_null(Boolean), graphql_name='schedulingOnly')
     copilot_skill_nodes = sgqlc.types.Field(sgqlc.types.non_null(sgqlc.types.list_of(sgqlc.types.non_null('MaxCopilotSkillNode'))), graphql_name='copilotSkillNodes')
+    capabilities = sgqlc.types.Field(String, graphql_name='capabilities')
+    limitations = sgqlc.types.Field(String, graphql_name='limitations')
+    example_questions = sgqlc.types.Field(String, graphql_name='exampleQuestions')
+    parameter_guidance = sgqlc.types.Field(String, graphql_name='parameterGuidance')
 
 
 class MaxCopilotSkillChatQuestion(sgqlc.types.Type):
@@ -879,7 +870,7 @@ class Mutation(sgqlc.types.Type):
 
 class Query(sgqlc.types.Type):
     __schema__ = schema
-    __field_names__ = ('ping', 'current_user', 'get_copilot_skill_artifact_by_path', 'get_copilots', 'get_copilot_info', 'get_copilot_skill', 'run_copilot_skill', 'get_skill_components', 'get_max_agent_workflow', 'execute_sql_query', 'execute_rql_query', 'get_dataset_id', 'get_dataset', 'get_domain_object', 'get_domain_object_by_name', 'get_grounded_value', 'run_max_sql_gen', 'run_sql_ai', 'generate_visualization', 'llmapi_config_for_sdk', 'get_max_llm_prompt', 'user_chat_threads', 'user_chat_entries', 'chat_thread', 'chat_entry', 'user', 'all_chat_entries', 'skill_memory', 'chat_completion', 'narrative_completion', 'narrative_completion_with_prompt', 'sql_completion', 'research_completion')
+    __field_names__ = ('ping', 'current_user', 'get_copilot_skill_artifact_by_path', 'get_copilots', 'get_copilot_info', 'get_copilot_skill', 'run_copilot_skill', 'get_skill_components', 'get_max_agent_workflow', 'execute_sql_query', 'execute_rql_query', 'get_dataset_id', 'get_dataset', 'get_domain_object', 'get_domain_object_by_name', 'run_max_sql_gen', 'run_sql_ai', 'generate_visualization', 'llmapi_config_for_sdk', 'get_max_llm_prompt', 'user_chat_threads', 'user_chat_entries', 'chat_thread', 'chat_entry', 'user', 'all_chat_entries', 'skill_memory', 'chat_completion', 'narrative_completion', 'sql_completion', 'research_completion')
     ping = sgqlc.types.Field(String, graphql_name='ping')
     current_user = sgqlc.types.Field(MaxUser, graphql_name='currentUser')
     get_copilot_skill_artifact_by_path = sgqlc.types.Field(CopilotSkillArtifact, graphql_name='getCopilotSkillArtifactByPath', args=sgqlc.types.ArgDict((
@@ -945,13 +936,6 @@ class Query(sgqlc.types.Type):
     get_domain_object_by_name = sgqlc.types.Field(DomainObjectResponse, graphql_name='getDomainObjectByName', args=sgqlc.types.ArgDict((
         ('dataset_id', sgqlc.types.Arg(sgqlc.types.non_null(UUID), graphql_name='datasetId', default=None)),
         ('rql_name', sgqlc.types.Arg(sgqlc.types.non_null(String), graphql_name='rqlName', default=None)),
-))
-    )
-    get_grounded_value = sgqlc.types.Field(GroundedValueResponse, graphql_name='getGroundedValue', args=sgqlc.types.ArgDict((
-        ('dataset_id', sgqlc.types.Arg(sgqlc.types.non_null(UUID), graphql_name='datasetId', default=None)),
-        ('domain_entity', sgqlc.types.Arg(String, graphql_name='domainEntity', default=None)),
-        ('value', sgqlc.types.Arg(sgqlc.types.non_null(String), graphql_name='value', default=None)),
-        ('copilot_id', sgqlc.types.Arg(UUID, graphql_name='copilotId', default=None)),
 ))
     )
     run_max_sql_gen = sgqlc.types.Field(sgqlc.types.non_null('RunMaxSqlGenResponse'), graphql_name='runMaxSqlGen', args=sgqlc.types.ArgDict((
@@ -1025,12 +1009,6 @@ class Query(sgqlc.types.Type):
     )
     narrative_completion = sgqlc.types.Field(LlmResponse, graphql_name='narrativeCompletion', args=sgqlc.types.ArgDict((
         ('prompt', sgqlc.types.Arg(sgqlc.types.non_null(String), graphql_name='prompt', default=None)),
-        ('model_selection', sgqlc.types.Arg(LlmModelSelection, graphql_name='modelSelection', default=None)),
-))
-    )
-    narrative_completion_with_prompt = sgqlc.types.Field(LlmResponse, graphql_name='narrativeCompletionWithPrompt', args=sgqlc.types.ArgDict((
-        ('prompt_name', sgqlc.types.Arg(sgqlc.types.non_null(String), graphql_name='promptName', default=None)),
-        ('prompt_variables', sgqlc.types.Arg(JSON, graphql_name='promptVariables', default=None)),
         ('model_selection', sgqlc.types.Arg(LlmModelSelection, graphql_name='modelSelection', default=None)),
 ))
     )
