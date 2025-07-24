@@ -419,7 +419,7 @@ class Data:
                     page_size=100
                 )
 
-            if hasattr(search_input, "database_id"):
+            if hasattr(search_input, "database_id") and search_input.database_id:
                 search_input.database_id = str(search_input.database_id)
 
             query_args = {
