@@ -46,6 +46,10 @@ query GetCopilotSkill($copilotId: UUID!, $copilotSkillId: UUID!, $usePublishedVe
             lastModifiedUtc
             version
         }
+        capabilities
+        limitations
+        exampleQuestions
+        parameterGuidance
     }
 }
 
