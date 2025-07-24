@@ -636,6 +636,18 @@ def query_get_dataset2():
     return _op
 
 
+def query_get_datasets():
+    _op = sgqlc.operation.Operation(_schema_root.query_type, name='GetDatasets', variables=dict(searchInput=sgqlc.types.Arg(sgqlc.types.non_null(_schema.DatasetSearchInput)), paging=sgqlc.types.Arg(sgqlc.types.non_null(_schema.PagingInput))))
+    _op_get_datasets = _op.get_datasets(search_input=sgqlc.types.Variable('searchInput'), paging=sgqlc.types.Variable('paging'))
+    _op_get_datasets.total_rows()
+    _op_get_datasets_rows = _op_get_datasets.rows()
+    _op_get_datasets_rows.dataset_id()
+    _op_get_datasets_rows.database_id()
+    _op_get_datasets_rows.name()
+    _op_get_datasets_rows.description()
+    return _op
+
+
 def query_chat_completion():
     _op = sgqlc.operation.Operation(_schema_root.query_type, name='ChatCompletion', variables=dict(messages=sgqlc.types.Arg(sgqlc.types.non_null(sgqlc.types.list_of(sgqlc.types.non_null(_schema.LlmChatMessage)))), modelSelection=sgqlc.types.Arg(_schema.LlmModelSelection)))
     _op.chat_completion(messages=sgqlc.types.Variable('messages'), model_selection=sgqlc.types.Variable('modelSelection'))
@@ -681,6 +693,7 @@ class Query:
     get_database_tables = query_get_database_tables()
     get_databases = query_get_databases()
     get_dataset2 = query_get_dataset2()
+    get_datasets = query_get_datasets()
     get_grounded_value = query_get_grounded_value()
     get_max_agent_workflow = query_get_max_agent_workflow()
     get_max_llm_prompt = query_get_max_llm_prompt()

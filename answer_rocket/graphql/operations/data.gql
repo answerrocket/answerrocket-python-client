@@ -83,6 +83,18 @@ query GetDataset2(
   }
 }
 
+query GetDatasets($searchInput: DatasetSearchInput!, $paging: PagingInput!) {
+  getDatasets(searchInput: $searchInput, paging: $paging) {
+    totalRows
+    rows {
+      datasetId
+      databaseId
+      name
+      description
+    }
+  }
+}
+
 mutation UpdateDatabaseName(
   $databaseId: UUID!
   $name: String!

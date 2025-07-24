@@ -117,6 +117,13 @@ class DatabaseTableSearchInput(sgqlc.types.Input):
     table_search_type = sgqlc.types.Field(TableSearchType, graphql_name='tableSearchType')
 
 
+class DatasetSearchInput(sgqlc.types.Input):
+    __schema__ = schema
+    __field_names__ = ('database_id', 'name_contains')
+    database_id = sgqlc.types.Field(UUID, graphql_name='databaseId')
+    name_contains = sgqlc.types.Field(String, graphql_name='nameContains')
+
+
 class FunctionCallMessageInput(sgqlc.types.Input):
     __schema__ = schema
     __field_names__ = ('name', 'arguments')
@@ -1157,9 +1164,16 @@ class PagedDatabases(sgqlc.types.Type):
     rows = sgqlc.types.Field(sgqlc.types.non_null(sgqlc.types.list_of(sgqlc.types.non_null(Database))), graphql_name='rows')
 
 
+class PagedDatasets(sgqlc.types.Type):
+    __schema__ = schema
+    __field_names__ = ('total_rows', 'rows')
+    total_rows = sgqlc.types.Field(sgqlc.types.non_null(Int), graphql_name='totalRows')
+    rows = sgqlc.types.Field(sgqlc.types.non_null(sgqlc.types.list_of(sgqlc.types.non_null(Dataset))), graphql_name='rows')
+
+
 class Query(sgqlc.types.Type):
     __schema__ = schema
-    __field_names__ = ('ping', 'current_user', 'get_copilot_skill_artifact_by_path', 'get_copilots', 'get_copilot_info', 'get_copilot_skill', 'run_copilot_skill', 'get_skill_components', 'get_max_agent_workflow', 'execute_sql_query', 'execute_rql_query', 'get_databases', 'get_database', 'get_database_tables', 'get_dataset_id', 'get_dataset', 'get_dataset2', 'get_domain_object', 'get_domain_object_by_name', 'get_grounded_value', 'run_max_sql_gen', 'run_sql_ai', 'generate_visualization', 'llmapi_config_for_sdk', 'get_max_llm_prompt', 'user_chat_threads', 'user_chat_entries', 'chat_thread', 'chat_entry', 'user', 'all_chat_entries', 'skill_memory', 'chat_completion', 'narrative_completion', 'narrative_completion_with_prompt', 'sql_completion', 'research_completion', 'get_chat_artifact', 'get_chat_artifacts')
+    __field_names__ = ('ping', 'current_user', 'get_copilot_skill_artifact_by_path', 'get_copilots', 'get_copilot_info', 'get_copilot_skill', 'run_copilot_skill', 'get_skill_components', 'get_max_agent_workflow', 'execute_sql_query', 'execute_rql_query', 'get_databases', 'get_database', 'get_database_tables', 'get_dataset_id', 'get_dataset', 'get_dataset2', 'get_datasets', 'get_domain_object', 'get_domain_object_by_name', 'get_grounded_value', 'run_max_sql_gen', 'run_sql_ai', 'generate_visualization', 'llmapi_config_for_sdk', 'get_max_llm_prompt', 'user_chat_threads', 'user_chat_entries', 'chat_thread', 'chat_entry', 'user', 'all_chat_entries', 'skill_memory', 'chat_completion', 'narrative_completion', 'narrative_completion_with_prompt', 'sql_completion', 'research_completion', 'get_chat_artifact', 'get_chat_artifacts')
     ping = sgqlc.types.Field(String, graphql_name='ping')
     current_user = sgqlc.types.Field(MaxUser, graphql_name='currentUser')
     get_copilot_skill_artifact_by_path = sgqlc.types.Field(CopilotSkillArtifact, graphql_name='getCopilotSkillArtifactByPath', args=sgqlc.types.ArgDict((
@@ -1235,6 +1249,11 @@ class Query(sgqlc.types.Type):
     )
     get_dataset2 = sgqlc.types.Field(Dataset, graphql_name='getDataset2', args=sgqlc.types.ArgDict((
         ('dataset_id', sgqlc.types.Arg(sgqlc.types.non_null(UUID), graphql_name='datasetId', default=None)),
+))
+    )
+    get_datasets = sgqlc.types.Field(sgqlc.types.non_null(PagedDatasets), graphql_name='getDatasets', args=sgqlc.types.ArgDict((
+        ('search_input', sgqlc.types.Arg(sgqlc.types.non_null(DatasetSearchInput), graphql_name='searchInput', default=None)),
+        ('paging', sgqlc.types.Arg(sgqlc.types.non_null(PagingInput), graphql_name='paging', default=None)),
 ))
     )
     get_domain_object = sgqlc.types.Field(DomainObjectResponse, graphql_name='getDomainObject', args=sgqlc.types.ArgDict((

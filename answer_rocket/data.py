@@ -1,4 +1,5 @@
 from __future__ import annotations
+
 from dataclasses import dataclass, field
 from typing import Optional, List, Dict
 from uuid import UUID
@@ -14,11 +15,12 @@ from answer_rocket.graphql.schema import UUID as GQL_UUID, GenerateVisualization
     MaxDimensionEntity, MaxFactEntity, \
     MaxNormalAttribute, \
     MaxPrimaryAttribute, MaxReferenceAttribute, MaxCalculatedMetric, MaxDataset, MaxCalculatedAttribute, \
-    MaxMutationResponse, DateTime, RunMaxSqlGenResponse, JSON, RunSqlAiResponse, GroundedValueResponse, Dimension, \
+    MaxMutationResponse, JSON, RunSqlAiResponse, GroundedValueResponse, Dimension, \
     Metric, Dataset, DatasetDataInterval, Database, DatabaseSearchInput, PagingInput, PagedDatabases, \
-    DatabaseTableSearchInput, PagedDatabaseTables, CreateDatasetFromTableResponse
+    DatabaseTableSearchInput, PagedDatabaseTables, CreateDatasetFromTableResponse, DatasetSearchInput, PagedDatasets
 from answer_rocket.graphql.sdk_operations import Operations
 from answer_rocket.types import MaxResult, RESULT_EXCEPTION_CODE
+
 
 def create_df_from_data(data: Dict[str, any]):
     """
@@ -380,6 +382,58 @@ class Data:
             return result.get_database_tables
         except Exception as e:
             return PagedDatabaseTables()
+
+    def get_datasets(self, search_input: Optional[DatasetSearchInput]=None, paging: Optional[PagingInput]=None) -> PagedDatasets:
+        """
+        Retrieve datasets based on optional search and paging criteria.
+
+        If no `search_input` or `paging` is provided, default values will be used.
+
+        Parameters
+        ----------
+        search_input : DatasetSearchInput, optional
+            An object specifying the search criteria for datasets.
+            If None, no filters are applied
+        paging : PagingInput, optional
+            An object specifying pagination details such as page number and page size.
+            If None, defaults to page 1 with a page size of 100.
+
+        Returns
+        -------
+        PagedDataset
+            A paged collection of datasets. Returns an empty `PagedDataset` instance if an error occurs during retrieval.
+
+        Notes
+        -----
+        This method uses a GraphQL client to submit a query to fetch the data.
+        """
+        try:
+            if not search_input:
+                search_input = DatasetSearchInput(
+                    name_contains=None,
+                )
+
+            if not paging:
+                paging = PagingInput(
+                    page_num=1,
+                    page_size=100
+                )
+
+            if hasattr(search_input, "database_id"):
+                search_input.database_id = str(search_input.database_id)
+
+            query_args = {
+                'searchInput': search_input.__to_json_value__(),
+                'paging': paging.__to_json_value__()
+            }
+
+            op = Operations.query.get_datasets
+
+            result = self._gql_client.submit(op, query_args)
+
+            return result.get_datasets
+        except Exception as e:
+            return PagedDatasets(0, [])
 
     def get_dataset_id(self, dataset_name: str) -> Optional[UUID]:
         """
