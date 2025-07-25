@@ -183,3 +183,19 @@ query GetMaxAgentWorkflow($agentWorkflowId: UUID!, $version: Int) {
 mutation ImportCopilotSkillFromZip($entryId: UUID!, $skillName: String!) {
   importCopilotSkillFromZip(entryId: $entryId, skillName: $skillName)
 }
+
+mutation ImportSkillFromRepo(
+  $copilotId: UUID!
+  $skillName: String!
+  $repositoryId: UUID!
+) {
+  importSkillFromRepo(
+    copilotId: $copilotId
+    skillName: $skillName
+    repositoryId: $repositoryId
+  )
+}
+
+mutation SyncMaxSkillRepository($id: UUID!) {
+  syncMaxSkillRepository(id: $id)
+}

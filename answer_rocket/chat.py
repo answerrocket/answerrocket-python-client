@@ -502,6 +502,57 @@ class Chat:
         op = Operations.mutation.import_copilot_skill_from_zip
         result = self.gql_client.submit(op, import_copilot_skill_from_zip_args)
         return result.import_copilot_skill_from_zip
+    
+    def import_skill_from_repo(self, copilot_id: str, skill_name: str, repository_id: str):
+        """
+        TODO: This is meant to be temprorary, used for skill builder and should be removed or reworked once builder is moved internal
+        Imports an agent workflow from a repository.
+        :param copilot_id: the id of the copilot
+        :param skill_name: the name of the skill to import the workflow for
+
+        :param repository_id: the id of the repository to import from
+        :return: True if the workflow was imported successfully, False otherwise
+        """
+
+        if copilot_id is None:
+            logger.warning("No copilot id provided, aborting.")
+            return None
+        
+        if skill_name is None:
+            logger.warning("No skill name provided, aborting.")
+            return None
+        
+        if repository_id is None:
+            logger.warning("No repository id provided, aborting.")
+            return None 
+        
+        import_skill_from_repo_args = {
+            'copilotId': UUID(copilot_id),
+            'skillName': skill_name,
+            'repositoryId': UUID(repository_id),
+        }
+        op = Operations.mutation.import_skill_from_repo
+        result = self.gql_client.submit(op, import_skill_from_repo_args)
+        return result.import_skill_from_repo
+    
+    def sync_max_skill_repository(self, repository_id: str):
+        """
+        TODO: This is meant to be temprorary, used for skill builder and should be removed or reworked once builder is moved internal
+        Syncs a repository.
+        :param repository_id: the id of the repository to sync
+        :return: True if the repository was synced successfully, False otherwise
+        """
+
+        if repository_id is None:
+            logger.warning("No repository id provided, aborting.")
+            return None
+
+        sync_max_skill_repository_args = {
+            'id': UUID(repository_id),
+        }
+        op = Operations.mutation.sync_max_skill_repository
+        result = self.gql_client.submit(op, sync_max_skill_repository_args)
+        return result.sync_max_skill_repository
 
     def get_dataframes_for_entry(self, entry_id: str) -> [pd.DataFrame]:
         """

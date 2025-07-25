@@ -99,6 +99,18 @@ def mutation_import_copilot_skill_from_zip():
     return _op
 
 
+def mutation_import_skill_from_repo():
+    _op = sgqlc.operation.Operation(_schema_root.mutation_type, name='ImportSkillFromRepo', variables=dict(copilotId=sgqlc.types.Arg(sgqlc.types.non_null(_schema.UUID)), skillName=sgqlc.types.Arg(sgqlc.types.non_null(_schema.String)), repositoryId=sgqlc.types.Arg(sgqlc.types.non_null(_schema.UUID))))
+    _op.import_skill_from_repo(copilot_id=sgqlc.types.Variable('copilotId'), skill_name=sgqlc.types.Variable('skillName'), repository_id=sgqlc.types.Variable('repositoryId'))
+    return _op
+
+
+def mutation_sync_max_skill_repository():
+    _op = sgqlc.operation.Operation(_schema_root.mutation_type, name='SyncMaxSkillRepository', variables=dict(id=sgqlc.types.Arg(sgqlc.types.non_null(_schema.UUID))))
+    _op.sync_max_skill_repository(id=sgqlc.types.Variable('id'))
+    return _op
+
+
 def mutation_update_database_name():
     _op = sgqlc.operation.Operation(_schema_root.mutation_type, name='UpdateDatabaseName', variables=dict(databaseId=sgqlc.types.Arg(sgqlc.types.non_null(_schema.UUID)), name=sgqlc.types.Arg(sgqlc.types.non_null(_schema.String))))
     _op_update_database_name = _op.update_database_name(database_id=sgqlc.types.Variable('databaseId'), name=sgqlc.types.Variable('name'))
@@ -305,9 +317,11 @@ class Mutation:
     delete_dimension = mutation_delete_dimension()
     delete_metric = mutation_delete_metric()
     import_copilot_skill_from_zip = mutation_import_copilot_skill_from_zip()
+    import_skill_from_repo = mutation_import_skill_from_repo()
     queue_chat_question = mutation_queue_chat_question()
     set_max_agent_workflow = mutation_set_max_agent_workflow()
     set_skill_memory = mutation_set_skill_memory()
+    sync_max_skill_repository = mutation_sync_max_skill_repository()
     update_database_description = mutation_update_database_description()
     update_database_kshot_limit = mutation_update_database_kshot_limit()
     update_database_llm_description = mutation_update_database_llm_description()
