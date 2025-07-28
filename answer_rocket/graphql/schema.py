@@ -390,9 +390,10 @@ class CreateMaxCopilotSkillChatQuestionResponse(sgqlc.types.Type):
 
 class Database(sgqlc.types.Type):
     __schema__ = schema
-    __field_names__ = ('database_id', 'name', 'description', 'llm_description', 'mermaid_er_diagram', 'k_shot_limit')
+    __field_names__ = ('database_id', 'name', 'dbms', 'description', 'llm_description', 'mermaid_er_diagram', 'k_shot_limit')
     database_id = sgqlc.types.Field(sgqlc.types.non_null(UUID), graphql_name='databaseId')
     name = sgqlc.types.Field(sgqlc.types.non_null(String), graphql_name='name')
+    dbms = sgqlc.types.Field(sgqlc.types.non_null(String), graphql_name='dbms')
     description = sgqlc.types.Field(String, graphql_name='description')
     llm_description = sgqlc.types.Field(String, graphql_name='llmDescription')
     mermaid_er_diagram = sgqlc.types.Field(String, graphql_name='mermaidErDiagram')

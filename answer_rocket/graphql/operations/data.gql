@@ -29,6 +29,7 @@ query GetDatabase(
   ) {
     databaseId
     name
+    dbms
     description
     llmDescription
     mermaidErDiagram
@@ -42,6 +43,7 @@ query GetDatabases($searchInput: DatabaseSearchInput!, $paging: PagingInput!) {
     rows {
       databaseId
       name
+      dbms
       description
       llmDescription
       mermaidErDiagram
