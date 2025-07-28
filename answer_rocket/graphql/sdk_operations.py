@@ -493,6 +493,10 @@ def query_get_copilot_skill():
     _op_get_copilot_skill_parameters.last_modified_user_id()
     _op_get_copilot_skill_parameters.last_modified_utc()
     _op_get_copilot_skill_parameters.version()
+    _op_get_copilot_skill.capabilities()
+    _op_get_copilot_skill.limitations()
+    _op_get_copilot_skill.example_questions()
+    _op_get_copilot_skill.parameter_guidance()
     return _op
 
 

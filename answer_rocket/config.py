@@ -1,5 +1,5 @@
 import os
-from typing import Optional, Dict, Any, List
+from typing import Optional, Dict, Any
 from uuid import UUID
 
 from answer_rocket.client_config import ClientConfig
@@ -123,7 +123,7 @@ class Config:
             print(e)
             return None
 
-    def get_skill_components(self) -> List[MaxSkillComponent]:
+    def get_skill_components(self) -> [MaxSkillComponent]:
         try:
             query_args = {
             }
@@ -142,7 +142,7 @@ class Config:
 
             return skill_components
         except Exception as e:
-            return []
+            return None
 
     def get_copilot_reports(self, copilot_id: Optional[str] = None, override_dataset_id: Optional[str] = None, load_all_skills: bool = False) -> List[Any]:
         """
