@@ -120,7 +120,6 @@ class Config:
 
             return result.get_copilot_skill
         except Exception as e:
-            print(e)
             return None
 
     def get_skill_components(self) -> [MaxSkillComponent]:
