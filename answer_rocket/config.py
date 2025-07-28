@@ -1,5 +1,5 @@
 import os
-from typing import Optional, Dict, Any
+from typing import Optional, Dict, Any, List
 from uuid import UUID
 
 from answer_rocket.client_config import ClientConfig
@@ -120,9 +120,10 @@ class Config:
 
             return result.get_copilot_skill
         except Exception as e:
+            print(e)
             return None
 
-    def get_skill_components(self) -> [MaxSkillComponent]:
+    def get_skill_components(self) -> List[MaxSkillComponent]:
         try:
             query_args = {
             }
@@ -141,7 +142,43 @@ class Config:
 
             return skill_components
         except Exception as e:
-            return None
+            return []
+
+    def get_copilot_reports(self, copilot_id: Optional[str] = None, override_dataset_id: Optional[str] = None, load_all_skills: bool = False) -> List[Any]:
+        """
+        Get hydrated reports for a copilot.
+        
+        Args:
+            copilot_id: The copilot ID (defaults to the configured copilot_id)
+            override_dataset_id: Optional dataset ID to override the copilot's default dataset
+            load_all_skills: Whether to load all skills or just active ones (defaults to False)
+            
+        Returns:
+            List of hydrated report objects
+        """
+        try:
+            effective_copilot_id = copilot_id or self.copilot_id
+            if not effective_copilot_id:
+                raise ValueError("copilot_id must be provided or configured")
+                
+            query_args = {
+                'copilotId': effective_copilot_id,
+            }
+            
+            if override_dataset_id:
+                query_args['overrideDatasetId'] = override_dataset_id
+                
+            if load_all_skills:
+                query_args['loadAllSkills'] = load_all_skills
+
+            op = Operations.query.get_copilot_hydrated_reports
+
+            result = self._gql_client.submit(op, query_args)
+
+            return result.get_copilot_hydrated_reports
+        except Exception as e:
+            print(e)
+            return []
 
     def create_copilot_skill_chat_question(self, question: str, expected_completion_response: str) -> CreateMaxCopilotSkillChatQuestionResponse:
         try:
