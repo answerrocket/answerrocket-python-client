@@ -494,7 +494,7 @@ class MatchValues(sgqlc.types.Type):
     dataset_date_dimensions = sgqlc.types.Field(sgqlc.types.list_of(sgqlc.types.non_null(String)), graphql_name='datasetDateDimensions')
     dataset_dimensions = sgqlc.types.Field(sgqlc.types.list_of(sgqlc.types.non_null(String)), graphql_name='datasetDimensions')
     dataset_metrics = sgqlc.types.Field(sgqlc.types.list_of(sgqlc.types.non_null(String)), graphql_name='datasetMetrics')
-    predicate_vocab = sgqlc.types.Field(JSON, graphql_name='predicateVocab')
+    predicate_vocab = sgqlc.types.Field(sgqlc.types.list_of(sgqlc.types.non_null('PredicateVocabItem')), graphql_name='predicateVocab')
 
 
 class MaxAgentWorkflow(sgqlc.types.Type):
@@ -1155,9 +1155,11 @@ class ParameterDefinition(sgqlc.types.Type):
 
 class PredicateVocabItem(sgqlc.types.Type):
     __schema__ = schema
-    __field_names__ = ('attribute', 'values')
-    attribute = sgqlc.types.Field(String, graphql_name='attribute')
-    values = sgqlc.types.Field(sgqlc.types.list_of(sgqlc.types.non_null(String)), graphql_name='values')
+    __field_names__ = ('db_attr_name', 'db_value', 'nl_value', 'preferred')
+    db_attr_name = sgqlc.types.Field(String, graphql_name='dbAttrName')
+    db_value = sgqlc.types.Field(String, graphql_name='dbValue')
+    nl_value = sgqlc.types.Field(String, graphql_name='nlValue')
+    preferred = sgqlc.types.Field(Boolean, graphql_name='preferred')
 
 
 class Query(sgqlc.types.Type):
