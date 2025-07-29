@@ -113,3 +113,50 @@ query GetCopilots {
         datasetId
     }
 }
+
+query GetCopilotHydratedReports($copilotId: UUID!, $overrideDatasetId: UUID, $loadAllSkills: Boolean) {
+    getCopilotHydratedReports(copilotId: $copilotId, overrideDatasetId: $overrideDatasetId, loadAllSkills: $loadAllSkills) {
+        copilotId
+        copilotSkillId
+        datasetId
+        datasetIds
+        detailedDescription
+        key
+        name
+        packageName
+        parameters {
+            constrainedValues
+            definition {
+                constraints
+                key
+                multi
+                type
+            }
+            description
+            isHidden
+            isMulti
+            key
+            llmDescription
+            metadataField
+            skillParamDefKey
+            value
+            matchValues {
+                automaticDbWhitelist
+                datasetId
+                inverseMap
+                phraseTemplate
+                popularValues
+                valueCollectionName
+                datasetDateDimensions
+                datasetDimensions
+                datasetMetrics
+                predicateVocab
+            }
+        }
+        schedulingOnly
+        toolDescription
+        toolName
+        type
+        usePredicateFilters
+    }
+}
