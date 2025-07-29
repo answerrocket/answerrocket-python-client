@@ -176,9 +176,8 @@ class Config:
 
             return result.get_copilot_hydrated_reports
         except Exception as e:
-            print(e)
-            return []
-
+            return None
+        
     def create_copilot_skill_chat_question(self, question: str, expected_completion_response: str) -> CreateMaxCopilotSkillChatQuestionResponse:
         try:
             mutation_args = {
