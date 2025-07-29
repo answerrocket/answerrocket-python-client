@@ -150,12 +150,7 @@ query GetCopilotHydratedReports($copilotId: UUID!, $overrideDatasetId: UUID, $lo
                 datasetDateDimensions
                 datasetDimensions
                 datasetMetrics
-                predicateVocab {
-                    dbAttrName
-                    dbValue
-                    nlValue
-                    preferred
-                }
+                predicateVocab
             }
         }
         schedulingOnly
