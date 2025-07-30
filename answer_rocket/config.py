@@ -9,7 +9,7 @@ from sgqlc.types import Variable, Arg, non_null, String
 from answer_rocket.graphql.client import GraphQlClient
 from answer_rocket.graphql.schema import UUID as GQL_UUID, MaxCopilotSkill, MaxCopilot, \
     MaxMutationResponse, CreateMaxCopilotSkillChatQuestionResponse, MaxCopilotQuestionInput, \
-    MaxCreateCopilotQuestionResponse, MaxUser, MaxSkillComponent, MaxLLmPrompt, Boolean
+    MaxCreateCopilotQuestionResponse, MaxUser, MaxSkillComponent, MaxLLmPrompt, Boolean, HydratedReport
 
 
 class Config:
@@ -143,6 +143,41 @@ class Config:
         except Exception as e:
             return None
 
+    def get_copilot_hydrated_reports(self, copilot_id: Optional[str] = None, override_dataset_id: Optional[str] = None, load_all_skills: bool = False) -> [HydratedReport]:
+        """
+        Get hydrated reports for a copilot.
+        
+        Args:
+            copilot_id: The copilot ID (defaults to the configured copilot_id)
+            override_dataset_id: Optional dataset ID to override the copilot's default dataset
+            load_all_skills: Whether to load all skills or just active ones (defaults to False)
+            
+        Returns:
+            List of hydrated report objects
+        """
+        try:
+            effective_copilot_id = copilot_id or self.copilot_id
+            if not effective_copilot_id:
+                raise ValueError("copilot_id must be provided or configured")
+                
+            query_args = {
+                'copilotId': effective_copilot_id,
+            }
+            
+            if override_dataset_id:
+                query_args['overrideDatasetId'] = override_dataset_id
+                
+            if load_all_skills:
+                query_args['loadAllSkills'] = load_all_skills
+
+            op = Operations.query.get_copilot_hydrated_reports
+
+            result = self._gql_client.submit(op, query_args)
+
+            return result.get_copilot_hydrated_reports
+        except Exception as e:
+            return None
+        
     def create_copilot_skill_chat_question(self, question: str, expected_completion_response: str) -> CreateMaxCopilotSkillChatQuestionResponse:
         try:
             mutation_args = {
