@@ -199,3 +199,17 @@ mutation ImportSkillFromRepo(
 mutation SyncMaxSkillRepository($id: UUID!) {
   syncMaxSkillRepository(id: $id)
 }
+
+mutation TestRunCopilotSkill(
+  $copilotId: UUID!
+  $skillName: String!
+  $nl: String!
+  $parameters: JSON
+) {
+  testRunCopilotSkill(
+    copilotId: $copilotId
+    skillName: $skillName
+    nl: $nl
+    parameters: $parameters
+  )
+}

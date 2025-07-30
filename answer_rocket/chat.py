@@ -553,6 +553,34 @@ class Chat:
         op = Operations.mutation.sync_max_skill_repository
         result = self.gql_client.submit(op, sync_max_skill_repository_args)
         return result.sync_max_skill_repository
+    
+    def test_run_copilot_skill(self, copilot_id: str, skill_name: str, nl: str = None, parameters: dict = None):
+        """
+        TODO: This is meant to be temprorary, used for skill builder and should be removed or reworked once builder is moved internal
+        Test runs a copilot skill.
+        :param copilot_id: the id of the copilot    
+        :param skill_name: the name of the skill to test run
+        :param nl: the natural language query to test run
+        :param parameters: the parameters to pass to the skill
+        :return: True if the test run was successful, False otherwise
+        """
+        if copilot_id is None:
+            logger.warning("No copilot id provided, aborting.")
+            return None
+        
+        if skill_name is None:
+            logger.warning("No skill name provided, aborting.")
+            return None
+        
+        test_run_copilot_skill_args = {
+            'copilotId': UUID(copilot_id),
+            'skillName': skill_name,
+            'nl': nl if nl is not None else "",
+            'parameters': parameters,
+        }
+        op = Operations.mutation.test_run_copilot_skill
+        result = self.gql_client.submit(op, test_run_copilot_skill_args)
+        return result.test_run_copilot_skill
 
     def get_dataframes_for_entry(self, entry_id: str) -> [pd.DataFrame]:
         """

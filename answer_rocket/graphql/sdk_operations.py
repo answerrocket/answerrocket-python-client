@@ -111,6 +111,12 @@ def mutation_sync_max_skill_repository():
     return _op
 
 
+def mutation_test_run_copilot_skill():
+    _op = sgqlc.operation.Operation(_schema_root.mutation_type, name='TestRunCopilotSkill', variables=dict(copilotId=sgqlc.types.Arg(sgqlc.types.non_null(_schema.UUID)), skillName=sgqlc.types.Arg(sgqlc.types.non_null(_schema.String)), nl=sgqlc.types.Arg(sgqlc.types.non_null(_schema.String)), parameters=sgqlc.types.Arg(_schema.JSON)))
+    _op.test_run_copilot_skill(copilot_id=sgqlc.types.Variable('copilotId'), skill_name=sgqlc.types.Variable('skillName'), nl=sgqlc.types.Variable('nl'), parameters=sgqlc.types.Variable('parameters'))
+    return _op
+
+
 def mutation_update_database_name():
     _op = sgqlc.operation.Operation(_schema_root.mutation_type, name='UpdateDatabaseName', variables=dict(databaseId=sgqlc.types.Arg(sgqlc.types.non_null(_schema.UUID)), name=sgqlc.types.Arg(sgqlc.types.non_null(_schema.String))))
     _op_update_database_name = _op.update_database_name(database_id=sgqlc.types.Variable('databaseId'), name=sgqlc.types.Variable('name'))
@@ -322,6 +328,7 @@ class Mutation:
     set_max_agent_workflow = mutation_set_max_agent_workflow()
     set_skill_memory = mutation_set_skill_memory()
     sync_max_skill_repository = mutation_sync_max_skill_repository()
+    test_run_copilot_skill = mutation_test_run_copilot_skill()
     update_database_description = mutation_update_database_description()
     update_database_kshot_limit = mutation_update_database_kshot_limit()
     update_database_llm_description = mutation_update_database_llm_description()
