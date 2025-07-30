@@ -1219,13 +1219,6 @@ class ParameterDefinition(sgqlc.types.Type):
     type = sgqlc.types.Field(sgqlc.types.non_null(String), graphql_name='type')
 
 
-class PredicateVocabItem(sgqlc.types.Type):
-    __schema__ = schema
-    __field_names__ = ('attribute', 'values')
-    attribute = sgqlc.types.Field(String, graphql_name='attribute')
-    values = sgqlc.types.Field(sgqlc.types.list_of(sgqlc.types.non_null(String)), graphql_name='values')
-
-
 class Query(sgqlc.types.Type):
     __schema__ = schema
     __field_names__ = ('ping', 'current_user', 'get_copilot_skill_artifact_by_path', 'get_copilots', 'get_copilot_info', 'get_copilot_skill', 'run_copilot_skill', 'get_skill_components', 'get_copilot_hydrated_reports', 'get_max_agent_workflow', 'execute_sql_query', 'execute_rql_query', 'get_databases', 'get_database', 'get_database_tables', 'get_dataset_id', 'get_dataset', 'get_dataset2', 'get_datasets', 'get_domain_object', 'get_domain_object_by_name', 'get_grounded_value', 'run_max_sql_gen', 'run_sql_ai', 'generate_visualization', 'llmapi_config_for_sdk', 'get_max_llm_prompt', 'user_chat_threads', 'user_chat_entries', 'chat_thread', 'chat_entry', 'user', 'all_chat_entries', 'skill_memory', 'chat_completion', 'narrative_completion', 'narrative_completion_with_prompt', 'sql_completion', 'research_completion', 'get_chat_artifact', 'get_chat_artifacts')
@@ -1254,6 +1247,8 @@ class Query(sgqlc.types.Type):
         ('skill_name', sgqlc.types.Arg(sgqlc.types.non_null(String), graphql_name='skillName', default=None)),
         ('parameters', sgqlc.types.Arg(JSON, graphql_name='parameters', default=None)),
         ('use_published_version', sgqlc.types.Arg(Boolean, graphql_name='usePublishedVersion', default=None)),
+        ('validate_parameters', sgqlc.types.Arg(Boolean, graphql_name='validateParameters', default=None)),
+        ('tool_definition', sgqlc.types.Arg(JSON, graphql_name='toolDefinition', default=None)),
 ))
     )
     get_skill_components = sgqlc.types.Field(sgqlc.types.non_null(sgqlc.types.list_of(sgqlc.types.non_null(MaxSkillComponent))), graphql_name='getSkillComponents')

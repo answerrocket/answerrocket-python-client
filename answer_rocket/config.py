@@ -146,14 +146,12 @@ class Config:
     def get_copilot_hydrated_reports(self, copilot_id: Optional[str] = None, override_dataset_id: Optional[str] = None, load_all_skills: bool = False) -> [HydratedReport]:
         """
         Get hydrated reports for a copilot.
-        
-        Args:
-            copilot_id: The copilot ID (defaults to the configured copilot_id)
-            override_dataset_id: Optional dataset ID to override the copilot's default dataset
-            load_all_skills: Whether to load all skills or just active ones (defaults to False)
-            
-        Returns:
-            List of hydrated report objects
+
+        :param copilot_id: The copilot ID (defaults to the configured copilot_id)
+        :param override_dataset_id: Optional dataset ID to override the copilot's default dataset
+        :param load_all_skills: Whether to load all skills or just active ones (defaults to False)
+
+        :returns List of hydrated report objects
         """
         try:
             effective_copilot_id = copilot_id or self.copilot_id

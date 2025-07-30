@@ -3,7 +3,7 @@ from dataclasses import dataclass
 from sgqlc.types import Arg, non_null, Variable
 from answer_rocket.client_config import ClientConfig
 from answer_rocket.graphql.client import GraphQlClient
-from answer_rocket.graphql.schema import JSON, String, UUID
+from answer_rocket.graphql.schema import JSON, String, UUID, Boolean
 from answer_rocket.graphql.sdk_operations import Operations
 from answer_rocket.output import ChatReportOutput
 from answer_rocket.graphql.schema import UUID as GQL_UUID
@@ -24,7 +24,7 @@ class Skill:
         self._config = config
         self._gql_client = gql_client
 
-    def run(self, copilot_id: str, skill_name: str, parameters: dict | None = None) -> RunSkillResult:
+    def run(self, copilot_id: str, skill_name: str, parameters: dict | None = None, validate_parameters: bool = False, tool_definition: dict | None = None) -> RunSkillResult:
         """
         Runs a skill and returns its full output (does not stream intermediate skill output).
 
@@ -32,8 +32,15 @@ class Skill:
         :param skill_name: the name of the skill to execute
         :param parameters: a dict of parameters to pass to the skill where keys are the param keys and values are the values
          to populate them with
+        :param validate_parameters: boolean switch which applies guardrails to the parameters before the skill is run
+        :param tool_definition: a dictionary of the hydrated report corresponding to the skill.b Can be fetched from config.get_copilot_hydrated_reports. Required when validate_parameters is True
+
+
         :return the full output object of the skill
         """
+
+        if validate_parameters and tool_definition is None:
+            raise ValueError("tool_definition is required when validate_parameters is True")
 
         final_result = RunSkillResult(None)
 
@@ -41,12 +48,16 @@ class Skill:
             "copilotId": UUID(copilot_id),
             "skillName": skill_name,
             'parameters': parameters or {},
+            'validateParameters': validate_parameters,
+            'toolDefinition': tool_definition or {},
         }
 
         preview_query_vars = {
             'copilot_id': Arg(non_null(GQL_UUID)),
             'skill_name': Arg(non_null(String)),
             'parameters': Arg(JSON),
+            'validate_parameters': Arg(Boolean),
+            'tool_definition': Arg(JSON),
         }
 
         operation = self._gql_client.query(variables=preview_query_vars)
@@ -55,6 +66,8 @@ class Skill:
             copilot_id=Variable('copilot_id'),
             skill_name=Variable('skill_name'),
             parameters=Variable('parameters'),
+            validate_parameters=Variable('validate_parameters'),
+            tool_definition=Variable('tool_definition'),
         )
 
         try:
