@@ -32,6 +32,10 @@ class Skill:
         :param skill_name: the name of the skill to execute
         :param parameters: a dict of parameters to pass to the skill where keys are the param keys and values are the values
          to populate them with
+        :param validate_parameters: boolean switch which applies guardrails to the parameters before the skill is run
+        :param tool_definition: a dictionary of the hydrated report corresponding to the skill.b Can be fetched from config.get_copilot_hydrated_reports. Required when validate_parameters is True
+
+
         :return the full output object of the skill
         """
 
