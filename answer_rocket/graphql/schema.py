@@ -77,6 +77,11 @@ class SimplifiedDataType(sgqlc.types.Enum):
 
 String = sgqlc.types.String
 
+class TableSearchType(sgqlc.types.Enum):
+    __schema__ = schema
+    __choices__ = ('TABLES_AND_VIEWS', 'TABLES_ONLY', 'VIEWS_ONLY')
+
+
 class ThreadType(sgqlc.types.Enum):
     __schema__ = schema
     __choices__ = ('CHAT', 'COPILOT_QUESTION_PREVIEW', 'RESEARCH', 'SHARED', 'SKILL', 'TEST')
@@ -97,6 +102,26 @@ class ChatArtifactSearchInput(sgqlc.types.Input):
     created_utc_start = sgqlc.types.Field(DateTime, graphql_name='createdUtcStart')
     created_utc_end = sgqlc.types.Field(DateTime, graphql_name='createdUtcEnd')
     misc_info = sgqlc.types.Field(JSON, graphql_name='miscInfo')
+
+
+class DatabaseSearchInput(sgqlc.types.Input):
+    __schema__ = schema
+    __field_names__ = ('name_contains',)
+    name_contains = sgqlc.types.Field(String, graphql_name='nameContains')
+
+
+class DatabaseTableSearchInput(sgqlc.types.Input):
+    __schema__ = schema
+    __field_names__ = ('name_contains', 'table_search_type')
+    name_contains = sgqlc.types.Field(String, graphql_name='nameContains')
+    table_search_type = sgqlc.types.Field(TableSearchType, graphql_name='tableSearchType')
+
+
+class DatasetSearchInput(sgqlc.types.Input):
+    __schema__ = schema
+    __field_names__ = ('database_id', 'name_contains')
+    database_id = sgqlc.types.Field(UUID, graphql_name='databaseId')
+    name_contains = sgqlc.types.Field(String, graphql_name='nameContains')
 
 
 class FunctionCallMessageInput(sgqlc.types.Input):
@@ -346,6 +371,14 @@ class CostInfo(sgqlc.types.Type):
     model = sgqlc.types.Field(String, graphql_name='model')
 
 
+class CreateDatasetFromTableResponse(sgqlc.types.Type):
+    __schema__ = schema
+    __field_names__ = ('dataset_id', 'queued_task_guid', 'error')
+    dataset_id = sgqlc.types.Field(UUID, graphql_name='datasetId')
+    queued_task_guid = sgqlc.types.Field(UUID, graphql_name='queuedTaskGuid')
+    error = sgqlc.types.Field(String, graphql_name='error')
+
+
 class CreateMaxCopilotSkillChatQuestionResponse(sgqlc.types.Type):
     __schema__ = schema
     __field_names__ = ('copilot_skill_chat_question_id', 'success', 'code', 'error')
@@ -357,13 +390,20 @@ class CreateMaxCopilotSkillChatQuestionResponse(sgqlc.types.Type):
 
 class Database(sgqlc.types.Type):
     __schema__ = schema
-    __field_names__ = ('database_id', 'name', 'description', 'llm_description', 'mermaid_er_diagram', 'k_shot_limit')
+    __field_names__ = ('database_id', 'name', 'dbms', 'description', 'llm_description', 'mermaid_er_diagram', 'k_shot_limit')
     database_id = sgqlc.types.Field(sgqlc.types.non_null(UUID), graphql_name='databaseId')
     name = sgqlc.types.Field(sgqlc.types.non_null(String), graphql_name='name')
+    dbms = sgqlc.types.Field(sgqlc.types.non_null(String), graphql_name='dbms')
     description = sgqlc.types.Field(String, graphql_name='description')
     llm_description = sgqlc.types.Field(String, graphql_name='llmDescription')
     mermaid_er_diagram = sgqlc.types.Field(String, graphql_name='mermaidErDiagram')
     k_shot_limit = sgqlc.types.Field(sgqlc.types.non_null(Int), graphql_name='kShotLimit')
+
+
+class DatabaseTable(sgqlc.types.Type):
+    __schema__ = schema
+    __field_names__ = ('table_name',)
+    table_name = sgqlc.types.Field(sgqlc.types.non_null(String), graphql_name='tableName')
 
 
 class Dataset(sgqlc.types.Type):
@@ -901,7 +941,7 @@ class MaxUser(sgqlc.types.Type):
 
 class Mutation(sgqlc.types.Type):
     __schema__ = schema
-    __field_names__ = ('create_max_copilot_skill_chat_question', 'update_max_copilot_skill_chat_question', 'delete_max_copilot_skill_chat_question', 'create_max_copilot_question', 'update_max_copilot_question', 'delete_max_copilot_question', 'set_max_agent_workflow', 'import_copilot_skill_from_zip', 'reload_dataset', 'update_database_name', 'update_database_description', 'update_database_llm_description', 'update_database_mermaid_er_diagram', 'update_database_kshot_limit', 'update_dataset_name', 'update_dataset_description', 'update_dataset_date_range', 'update_dataset_data_interval', 'update_dataset_misc_info', 'update_dataset_source', 'update_dataset_query_row_limit', 'update_dataset_use_database_casing', 'update_dataset_kshot_limit', 'create_dataset', 'create_dimension', 'update_dimension', 'delete_dimension', 'create_metric', 'update_metric', 'delete_metric', 'update_chat_answer_payload', 'ask_chat_question', 'evaluate_chat_question', 'queue_chat_question', 'cancel_chat_question', 'create_chat_thread', 'add_feedback', 'set_skill_memory', 'share_thread', 'update_loading_message', 'create_chat_artifact', 'delete_chat_artifact')
+    __field_names__ = ('create_max_copilot_skill_chat_question', 'update_max_copilot_skill_chat_question', 'delete_max_copilot_skill_chat_question', 'create_max_copilot_question', 'update_max_copilot_question', 'delete_max_copilot_question', 'set_max_agent_workflow', 'import_copilot_skill_from_zip', 'reload_dataset', 'update_database_name', 'update_database_description', 'update_database_llm_description', 'update_database_mermaid_er_diagram', 'update_database_kshot_limit', 'update_dataset_name', 'update_dataset_description', 'update_dataset_date_range', 'update_dataset_data_interval', 'update_dataset_misc_info', 'update_dataset_source', 'update_dataset_query_row_limit', 'update_dataset_use_database_casing', 'update_dataset_kshot_limit', 'create_dataset', 'create_dataset_from_table', 'create_dimension', 'update_dimension', 'delete_dimension', 'create_metric', 'update_metric', 'delete_metric', 'update_chat_answer_payload', 'ask_chat_question', 'evaluate_chat_question', 'queue_chat_question', 'cancel_chat_question', 'create_chat_thread', 'add_feedback', 'set_skill_memory', 'share_thread', 'update_loading_message', 'create_chat_artifact', 'delete_chat_artifact')
     create_max_copilot_skill_chat_question = sgqlc.types.Field(sgqlc.types.non_null(CreateMaxCopilotSkillChatQuestionResponse), graphql_name='createMaxCopilotSkillChatQuestion', args=sgqlc.types.ArgDict((
         ('copilot_id', sgqlc.types.Arg(sgqlc.types.non_null(UUID), graphql_name='copilotId', default=None)),
         ('copilot_skill_id', sgqlc.types.Arg(sgqlc.types.non_null(UUID), graphql_name='copilotSkillId', default=None)),
@@ -1032,6 +1072,11 @@ class Mutation(sgqlc.types.Type):
         ('dataset', sgqlc.types.Arg(sgqlc.types.non_null(JSON), graphql_name='dataset', default=None)),
 ))
     )
+    create_dataset_from_table = sgqlc.types.Field(sgqlc.types.non_null(CreateDatasetFromTableResponse), graphql_name='createDatasetFromTable', args=sgqlc.types.ArgDict((
+        ('database_id', sgqlc.types.Arg(sgqlc.types.non_null(UUID), graphql_name='databaseId', default=None)),
+        ('table_name', sgqlc.types.Arg(sgqlc.types.non_null(String), graphql_name='tableName', default=None)),
+))
+    )
     create_dimension = sgqlc.types.Field(sgqlc.types.non_null(MaxMutationResponse), graphql_name='createDimension', args=sgqlc.types.ArgDict((
         ('dataset_id', sgqlc.types.Arg(sgqlc.types.non_null(UUID), graphql_name='datasetId', default=None)),
         ('dimension', sgqlc.types.Arg(sgqlc.types.non_null(JSON), graphql_name='dimension', default=None)),
@@ -1144,6 +1189,27 @@ class PagedChatArtifacts(sgqlc.types.Type):
     rows = sgqlc.types.Field(sgqlc.types.non_null(sgqlc.types.list_of(sgqlc.types.non_null(ChatArtifact))), graphql_name='rows')
 
 
+class PagedDatabaseTables(sgqlc.types.Type):
+    __schema__ = schema
+    __field_names__ = ('total_rows', 'rows')
+    total_rows = sgqlc.types.Field(sgqlc.types.non_null(Int), graphql_name='totalRows')
+    rows = sgqlc.types.Field(sgqlc.types.non_null(sgqlc.types.list_of(sgqlc.types.non_null(DatabaseTable))), graphql_name='rows')
+
+
+class PagedDatabases(sgqlc.types.Type):
+    __schema__ = schema
+    __field_names__ = ('total_rows', 'rows')
+    total_rows = sgqlc.types.Field(sgqlc.types.non_null(Int), graphql_name='totalRows')
+    rows = sgqlc.types.Field(sgqlc.types.non_null(sgqlc.types.list_of(sgqlc.types.non_null(Database))), graphql_name='rows')
+
+
+class PagedDatasets(sgqlc.types.Type):
+    __schema__ = schema
+    __field_names__ = ('total_rows', 'rows')
+    total_rows = sgqlc.types.Field(sgqlc.types.non_null(Int), graphql_name='totalRows')
+    rows = sgqlc.types.Field(sgqlc.types.non_null(sgqlc.types.list_of(sgqlc.types.non_null(Dataset))), graphql_name='rows')
+
+
 class ParameterDefinition(sgqlc.types.Type):
     __schema__ = schema
     __field_names__ = ('constraints', 'key', 'multi', 'type')
@@ -1162,7 +1228,7 @@ class PredicateVocabItem(sgqlc.types.Type):
 
 class Query(sgqlc.types.Type):
     __schema__ = schema
-    __field_names__ = ('ping', 'current_user', 'get_copilot_skill_artifact_by_path', 'get_copilots', 'get_copilot_info', 'get_copilot_skill', 'run_copilot_skill', 'get_skill_components', 'get_copilot_hydrated_reports', 'get_max_agent_workflow', 'execute_sql_query', 'execute_rql_query', 'get_database', 'get_dataset_id', 'get_dataset', 'get_dataset2', 'get_domain_object', 'get_domain_object_by_name', 'get_grounded_value', 'run_max_sql_gen', 'run_sql_ai', 'generate_visualization', 'llmapi_config_for_sdk', 'get_max_llm_prompt', 'user_chat_threads', 'user_chat_entries', 'chat_thread', 'chat_entry', 'user', 'all_chat_entries', 'skill_memory', 'chat_completion', 'narrative_completion', 'narrative_completion_with_prompt', 'sql_completion', 'research_completion', 'get_chat_artifact', 'get_chat_artifacts')
+    __field_names__ = ('ping', 'current_user', 'get_copilot_skill_artifact_by_path', 'get_copilots', 'get_copilot_info', 'get_copilot_skill', 'run_copilot_skill', 'get_skill_components', 'get_copilot_hydrated_reports', 'get_max_agent_workflow', 'execute_sql_query', 'execute_rql_query', 'get_databases', 'get_database', 'get_database_tables', 'get_dataset_id', 'get_dataset', 'get_dataset2', 'get_datasets', 'get_domain_object', 'get_domain_object_by_name', 'get_grounded_value', 'run_max_sql_gen', 'run_sql_ai', 'generate_visualization', 'llmapi_config_for_sdk', 'get_max_llm_prompt', 'user_chat_threads', 'user_chat_entries', 'chat_thread', 'chat_entry', 'user', 'all_chat_entries', 'skill_memory', 'chat_completion', 'narrative_completion', 'narrative_completion_with_prompt', 'sql_completion', 'research_completion', 'get_chat_artifact', 'get_chat_artifacts')
     ping = sgqlc.types.Field(String, graphql_name='ping')
     current_user = sgqlc.types.Field(MaxUser, graphql_name='currentUser')
     get_copilot_skill_artifact_by_path = sgqlc.types.Field(CopilotSkillArtifact, graphql_name='getCopilotSkillArtifactByPath', args=sgqlc.types.ArgDict((
@@ -1218,8 +1284,19 @@ class Query(sgqlc.types.Type):
         ('copilot_skill_id', sgqlc.types.Arg(UUID, graphql_name='copilotSkillId', default=None)),
 ))
     )
+    get_databases = sgqlc.types.Field(sgqlc.types.non_null(PagedDatabases), graphql_name='getDatabases', args=sgqlc.types.ArgDict((
+        ('search_input', sgqlc.types.Arg(sgqlc.types.non_null(DatabaseSearchInput), graphql_name='searchInput', default=None)),
+        ('paging', sgqlc.types.Arg(sgqlc.types.non_null(PagingInput), graphql_name='paging', default=None)),
+))
+    )
     get_database = sgqlc.types.Field(Database, graphql_name='getDatabase', args=sgqlc.types.ArgDict((
         ('database_id', sgqlc.types.Arg(sgqlc.types.non_null(UUID), graphql_name='databaseId', default=None)),
+))
+    )
+    get_database_tables = sgqlc.types.Field(sgqlc.types.non_null(PagedDatabaseTables), graphql_name='getDatabaseTables', args=sgqlc.types.ArgDict((
+        ('database_id', sgqlc.types.Arg(sgqlc.types.non_null(UUID), graphql_name='databaseId', default=None)),
+        ('search_input', sgqlc.types.Arg(sgqlc.types.non_null(DatabaseTableSearchInput), graphql_name='searchInput', default=None)),
+        ('paging', sgqlc.types.Arg(sgqlc.types.non_null(PagingInput), graphql_name='paging', default=None)),
 ))
     )
     get_dataset_id = sgqlc.types.Field(UUID, graphql_name='getDatasetId', args=sgqlc.types.ArgDict((
@@ -1233,6 +1310,11 @@ class Query(sgqlc.types.Type):
     )
     get_dataset2 = sgqlc.types.Field(Dataset, graphql_name='getDataset2', args=sgqlc.types.ArgDict((
         ('dataset_id', sgqlc.types.Arg(sgqlc.types.non_null(UUID), graphql_name='datasetId', default=None)),
+))
+    )
+    get_datasets = sgqlc.types.Field(sgqlc.types.non_null(PagedDatasets), graphql_name='getDatasets', args=sgqlc.types.ArgDict((
+        ('search_input', sgqlc.types.Arg(sgqlc.types.non_null(DatasetSearchInput), graphql_name='searchInput', default=None)),
+        ('paging', sgqlc.types.Arg(sgqlc.types.non_null(PagingInput), graphql_name='paging', default=None)),
 ))
     )
     get_domain_object = sgqlc.types.Field(DomainObjectResponse, graphql_name='getDomainObject', args=sgqlc.types.ArgDict((

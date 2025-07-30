@@ -29,10 +29,35 @@ query GetDatabase(
   ) {
     databaseId
     name
+    dbms
     description
     llmDescription
     mermaidErDiagram
     kShotLimit
+  }
+}
+
+query GetDatabases($searchInput: DatabaseSearchInput!, $paging: PagingInput!) {
+  getDatabases(searchInput: $searchInput, paging: $paging) {
+    totalRows
+    rows {
+      databaseId
+      name
+      dbms
+      description
+      llmDescription
+      mermaidErDiagram
+      kShotLimit
+    }
+  }
+}
+
+query GetDatabaseTables($databaseId: UUID!, $searchInput: DatabaseTableSearchInput!, $paging: PagingInput!) {
+  getDatabaseTables(databaseId: $databaseId, searchInput: $searchInput, paging: $paging) {
+    totalRows
+    rows {
+      tableName
+    }
   }
 }
 
@@ -57,6 +82,18 @@ query GetDataset2(
     queryRowLimit
     useDatabaseCasing
     kShotLimit
+  }
+}
+
+query GetDatasets($searchInput: DatasetSearchInput!, $paging: PagingInput!) {
+  getDatasets(searchInput: $searchInput, paging: $paging) {
+    totalRows
+    rows {
+      datasetId
+      databaseId
+      name
+      description
+    }
   }
 }
 
@@ -138,6 +175,20 @@ mutation CreateDataset(
   ) {
     success
     code
+    error
+  }
+}
+
+mutation CreateDatasetFromTable(
+  $databaseId: UUID!
+  $tableName: String!
+) {
+  createDatasetFromTable(
+    databaseId: $databaseId
+    tableName: $tableName
+  ) {
+    datasetId
+    queuedTaskGuid
     error
   }
 }

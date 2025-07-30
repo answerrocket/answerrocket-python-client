@@ -165,6 +165,15 @@ def mutation_create_dataset():
     return _op
 
 
+def mutation_create_dataset_from_table():
+    _op = sgqlc.operation.Operation(_schema_root.mutation_type, name='CreateDatasetFromTable', variables=dict(databaseId=sgqlc.types.Arg(sgqlc.types.non_null(_schema.UUID)), tableName=sgqlc.types.Arg(sgqlc.types.non_null(_schema.String))))
+    _op_create_dataset_from_table = _op.create_dataset_from_table(database_id=sgqlc.types.Variable('databaseId'), table_name=sgqlc.types.Variable('tableName'))
+    _op_create_dataset_from_table.dataset_id()
+    _op_create_dataset_from_table.queued_task_guid()
+    _op_create_dataset_from_table.error()
+    return _op
+
+
 def mutation_update_dataset_name():
     _op = sgqlc.operation.Operation(_schema_root.mutation_type, name='UpdateDatasetName', variables=dict(datasetId=sgqlc.types.Arg(sgqlc.types.non_null(_schema.UUID)), name=sgqlc.types.Arg(sgqlc.types.non_null(_schema.String))))
     _op_update_dataset_name = _op.update_dataset_name(dataset_id=sgqlc.types.Variable('datasetId'), name=sgqlc.types.Variable('name'))
@@ -313,6 +322,7 @@ class Mutation:
     create_chat_artifact = mutation_create_chat_artifact()
     create_chat_thread = mutation_create_chat_thread()
     create_dataset = mutation_create_dataset()
+    create_dataset_from_table = mutation_create_dataset_from_table()
     create_dimension = mutation_create_dimension()
     create_metric = mutation_create_metric()
     delete_chat_artifact = mutation_delete_chat_artifact()
@@ -624,10 +634,35 @@ def query_get_database():
     _op_get_database = _op.get_database(database_id=sgqlc.types.Variable('databaseId'))
     _op_get_database.database_id()
     _op_get_database.name()
+    _op_get_database.dbms()
     _op_get_database.description()
     _op_get_database.llm_description()
     _op_get_database.mermaid_er_diagram()
     _op_get_database.k_shot_limit()
+    return _op
+
+
+def query_get_databases():
+    _op = sgqlc.operation.Operation(_schema_root.query_type, name='GetDatabases', variables=dict(searchInput=sgqlc.types.Arg(sgqlc.types.non_null(_schema.DatabaseSearchInput)), paging=sgqlc.types.Arg(sgqlc.types.non_null(_schema.PagingInput))))
+    _op_get_databases = _op.get_databases(search_input=sgqlc.types.Variable('searchInput'), paging=sgqlc.types.Variable('paging'))
+    _op_get_databases.total_rows()
+    _op_get_databases_rows = _op_get_databases.rows()
+    _op_get_databases_rows.database_id()
+    _op_get_databases_rows.name()
+    _op_get_databases_rows.dbms()
+    _op_get_databases_rows.description()
+    _op_get_databases_rows.llm_description()
+    _op_get_databases_rows.mermaid_er_diagram()
+    _op_get_databases_rows.k_shot_limit()
+    return _op
+
+
+def query_get_database_tables():
+    _op = sgqlc.operation.Operation(_schema_root.query_type, name='GetDatabaseTables', variables=dict(databaseId=sgqlc.types.Arg(sgqlc.types.non_null(_schema.UUID)), searchInput=sgqlc.types.Arg(sgqlc.types.non_null(_schema.DatabaseTableSearchInput)), paging=sgqlc.types.Arg(sgqlc.types.non_null(_schema.PagingInput))))
+    _op_get_database_tables = _op.get_database_tables(database_id=sgqlc.types.Variable('databaseId'), search_input=sgqlc.types.Variable('searchInput'), paging=sgqlc.types.Variable('paging'))
+    _op_get_database_tables.total_rows()
+    _op_get_database_tables_rows = _op_get_database_tables.rows()
+    _op_get_database_tables_rows.table_name()
     return _op
 
 
@@ -649,6 +684,18 @@ def query_get_dataset2():
     _op_get_dataset2.query_row_limit()
     _op_get_dataset2.use_database_casing()
     _op_get_dataset2.k_shot_limit()
+    return _op
+
+
+def query_get_datasets():
+    _op = sgqlc.operation.Operation(_schema_root.query_type, name='GetDatasets', variables=dict(searchInput=sgqlc.types.Arg(sgqlc.types.non_null(_schema.DatasetSearchInput)), paging=sgqlc.types.Arg(sgqlc.types.non_null(_schema.PagingInput))))
+    _op_get_datasets = _op.get_datasets(search_input=sgqlc.types.Variable('searchInput'), paging=sgqlc.types.Variable('paging'))
+    _op_get_datasets.total_rows()
+    _op_get_datasets_rows = _op_get_datasets.rows()
+    _op_get_datasets_rows.dataset_id()
+    _op_get_datasets_rows.database_id()
+    _op_get_datasets_rows.name()
+    _op_get_datasets_rows.description()
     return _op
 
 
@@ -695,7 +742,10 @@ class Query:
     get_copilot_skill = query_get_copilot_skill()
     get_copilots = query_get_copilots()
     get_database = query_get_database()
+    get_database_tables = query_get_database_tables()
+    get_databases = query_get_databases()
     get_dataset2 = query_get_dataset2()
+    get_datasets = query_get_datasets()
     get_grounded_value = query_get_grounded_value()
     get_max_agent_workflow = query_get_max_agent_workflow()
     get_max_llm_prompt = query_get_max_llm_prompt()
