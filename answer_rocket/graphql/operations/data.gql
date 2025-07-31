@@ -451,11 +451,83 @@ mutation CreateDatabaseKShot(
   }
 }
 
-mutation UpdateDatabaseKShot(
-  $databaseKShot: JSON!
+mutation UpdateDatabaseKShotQuestion(
+  $databaseKShotId: UUID!
+  $question: String!
 ) {
-  updateDatabaseKShot(
-    databaseKShot: $databaseKShot
+  updateDatabaseKShotQuestion(
+    databaseKShotId: $databaseKShotId
+    question: $question
+  ) {
+    success
+    code
+    error
+  }
+}
+
+mutation UpdateDatabaseKShotRenderedPrompt(
+  $databaseKShotId: UUID!
+  $renderedPrompt: String
+) {
+  updateDatabaseKShotRenderedPrompt(
+    databaseKShotId: $databaseKShotId
+    renderedPrompt: $renderedPrompt
+  ) {
+    success
+    code
+    error
+  }
+}
+
+mutation UpdateDatabaseKShotExplanation(
+  $databaseKShotId: UUID!
+  $explanation: String
+) {
+  updateDatabaseKShotExplanation(
+    databaseKShotId: $databaseKShotId
+    explanation: $explanation
+  ) {
+    success
+    code
+    error
+  }
+}
+
+mutation UpdateDatabaseKShotSql(
+  $databaseKShotId: UUID!
+  $sql: String
+) {
+  updateDatabaseKShotSql(
+    databaseKShotId: $databaseKShotId
+    sql: $sql
+  ) {
+    success
+    code
+    error
+  }
+}
+
+mutation UpdateDatabaseKShotTitle(
+  $databaseKShotId: UUID!
+  $title: String
+) {
+  updateDatabaseKShotTitle(
+    databaseKShotId: $databaseKShotId
+    title: $title
+  ) {
+    success
+    code
+    error
+  }
+}
+
+mutation UpdateDatabaseKShotVisualization(
+  $databaseKShotId: UUID!
+  $visualization: JSON
+) {
+  updateDatabaseKShotVisualization(
+    databaseKShotId: $databaseKShotId
+    visualization: $visualization
   ) {
     success
     code

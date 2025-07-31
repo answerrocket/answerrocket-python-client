@@ -1991,3 +1991,159 @@ class Data:
         result = self._gql_client.submit(op, mutation_args)
 
         return result.delete_database_kshot
+
+    def update_database_kshot_question(self, database_kshot_id: UUID, question: str) -> MaxMutationResponse:
+        """
+        Update the question of a database k-shot.
+
+        Parameters
+        ----------
+        database_kshot_id : UUID
+            The unique identifier of the database k-shot to be updated.
+        question : str
+            The new question to assign to the database k-shot.
+
+        Returns
+        -------
+        MaxMutationResponse
+            The result of the GraphQL mutation containing the updated question.
+        """
+        mutation_args = {
+            'databaseKShotId': str(database_kshot_id),
+            'question': question,
+        }
+
+        op = Operations.mutation.update_database_kshot_question
+        result = self._gql_client.submit(op, mutation_args)
+
+        return result.update_database_kshot_question
+
+    def update_database_kshot_rendered_prompt(self, database_kshot_id: UUID, rendered_prompt: Optional[str]) -> MaxMutationResponse:
+        """
+        Update the rendered prompt of a database k-shot.
+
+        Parameters
+        ----------
+        database_kshot_id : UUID
+            The unique identifier of the database k-shot to be updated.
+        rendered_prompt : Optional[str]
+            The new rendered prompt to assign to the database k-shot.
+
+        Returns
+        -------
+        MaxMutationResponse
+            The result of the GraphQL mutation containing the updated rendered prompt.
+        """
+        mutation_args = {
+            'databaseKShotId': str(database_kshot_id),
+            'renderedPrompt': rendered_prompt,
+        }
+
+        op = Operations.mutation.update_database_kshot_rendered_prompt
+        result = self._gql_client.submit(op, mutation_args)
+
+        return result.update_database_kshot_rendered_prompt
+
+    def update_database_kshot_explanation(self, database_kshot_id: UUID, explanation: Optional[str]) -> MaxMutationResponse:
+        """
+        Update the explanation of a database k-shot.
+
+        Parameters
+        ----------
+        database_kshot_id : UUID
+            The unique identifier of the database k-shot to be updated.
+        explanation : Optional[str]
+            The new explanation to assign to the database k-shot.
+
+        Returns
+        -------
+        MaxMutationResponse
+            The result of the GraphQL mutation containing the updated explanation.
+        """
+        mutation_args = {
+            'databaseKShotId': str(database_kshot_id),
+            'explanation': explanation,
+        }
+
+        op = Operations.mutation.update_database_kshot_explanation
+        result = self._gql_client.submit(op, mutation_args)
+
+        return result.update_database_kshot_explanation
+
+    def update_database_kshot_sql(self, database_kshot_id: UUID, sql: Optional[str]) -> MaxMutationResponse:
+        """
+        Update the SQL of a database k-shot.
+
+        Parameters
+        ----------
+        database_kshot_id : UUID
+            The unique identifier of the database k-shot to be updated.
+        sql : Optional[str]
+            The new SQL to assign to the database k-shot.
+
+        Returns
+        -------
+        MaxMutationResponse
+            The result of the GraphQL mutation containing the updated SQL.
+        """
+        mutation_args = {
+            'databaseKShotId': str(database_kshot_id),
+            'sql': sql,
+        }
+
+        op = Operations.mutation.update_database_kshot_sql
+        result = self._gql_client.submit(op, mutation_args)
+
+        return result.update_database_kshot_sql
+
+    def update_database_kshot_title(self, database_kshot_id: UUID, title: Optional[str]) -> MaxMutationResponse:
+        """
+        Update the title of a database k-shot.
+
+        Parameters
+        ----------
+        database_kshot_id : UUID
+            The unique identifier of the database k-shot to be updated.
+        title : Optional[str]
+            The new title to assign to the database k-shot.
+
+        Returns
+        -------
+        MaxMutationResponse
+            The result of the GraphQL mutation containing the updated title.
+        """
+        mutation_args = {
+            'databaseKShotId': str(database_kshot_id),
+            'title': title,
+        }
+
+        op = Operations.mutation.update_database_kshot_title
+        result = self._gql_client.submit(op, mutation_args)
+
+        return result.update_database_kshot_title
+
+    def update_database_kshot_visualization(self, database_kshot_id: UUID, visualization: Optional[Dict]) -> MaxMutationResponse:
+        """
+        Update the visualization of a database k-shot.
+
+        Parameters
+        ----------
+        database_kshot_id : UUID
+            The unique identifier of the database k-shot to be updated.
+        visualization : Optional[Dict]
+            The new visualization JSON to assign to the database k-shot.
+
+        Returns
+        -------
+        MaxMutationResponse
+            The result of the GraphQL mutation containing the updated visualization.
+        """
+        mutation_args = {
+            'databaseKShotId': str(database_kshot_id),
+            'visualization': visualization,
+        }
+
+        op = Operations.mutation.update_database_kshot_visualization
+        result = self._gql_client.submit(op, mutation_args)
+
+        return result.update_database_kshot_visualization

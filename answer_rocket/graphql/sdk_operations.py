@@ -319,12 +319,57 @@ def mutation_create_database_kshot():
     return _op
 
 
-def mutation_update_database_kshot():
-    _op = sgqlc.operation.Operation(_schema_root.mutation_type, name='UpdateDatabaseKShot', variables=dict(databaseKShot=sgqlc.types.Arg(sgqlc.types.non_null(_schema.JSON))))
-    _op_update_database_kshot = _op.update_database_kshot(database_kshot=sgqlc.types.Variable('databaseKShot'))
-    _op_update_database_kshot.success()
-    _op_update_database_kshot.code()
-    _op_update_database_kshot.error()
+def mutation_update_database_kshot_question():
+    _op = sgqlc.operation.Operation(_schema_root.mutation_type, name='UpdateDatabaseKShotQuestion', variables=dict(databaseKShotId=sgqlc.types.Arg(sgqlc.types.non_null(_schema.UUID)), question=sgqlc.types.Arg(sgqlc.types.non_null(_schema.String))))
+    _op_update_database_kshot_question = _op.update_database_kshot_question(database_kshot_id=sgqlc.types.Variable('databaseKShotId'), question=sgqlc.types.Variable('question'))
+    _op_update_database_kshot_question.success()
+    _op_update_database_kshot_question.code()
+    _op_update_database_kshot_question.error()
+    return _op
+
+
+def mutation_update_database_kshot_rendered_prompt():
+    _op = sgqlc.operation.Operation(_schema_root.mutation_type, name='UpdateDatabaseKShotRenderedPrompt', variables=dict(databaseKShotId=sgqlc.types.Arg(sgqlc.types.non_null(_schema.UUID)), renderedPrompt=sgqlc.types.Arg(_schema.String)))
+    _op_update_database_kshot_rendered_prompt = _op.update_database_kshot_rendered_prompt(database_kshot_id=sgqlc.types.Variable('databaseKShotId'), rendered_prompt=sgqlc.types.Variable('renderedPrompt'))
+    _op_update_database_kshot_rendered_prompt.success()
+    _op_update_database_kshot_rendered_prompt.code()
+    _op_update_database_kshot_rendered_prompt.error()
+    return _op
+
+
+def mutation_update_database_kshot_explanation():
+    _op = sgqlc.operation.Operation(_schema_root.mutation_type, name='UpdateDatabaseKShotExplanation', variables=dict(databaseKShotId=sgqlc.types.Arg(sgqlc.types.non_null(_schema.UUID)), explanation=sgqlc.types.Arg(_schema.String)))
+    _op_update_database_kshot_explanation = _op.update_database_kshot_explanation(database_kshot_id=sgqlc.types.Variable('databaseKShotId'), explanation=sgqlc.types.Variable('explanation'))
+    _op_update_database_kshot_explanation.success()
+    _op_update_database_kshot_explanation.code()
+    _op_update_database_kshot_explanation.error()
+    return _op
+
+
+def mutation_update_database_kshot_sql():
+    _op = sgqlc.operation.Operation(_schema_root.mutation_type, name='UpdateDatabaseKShotSql', variables=dict(databaseKShotId=sgqlc.types.Arg(sgqlc.types.non_null(_schema.UUID)), sql=sgqlc.types.Arg(_schema.String)))
+    _op_update_database_kshot_sql = _op.update_database_kshot_sql(database_kshot_id=sgqlc.types.Variable('databaseKShotId'), sql=sgqlc.types.Variable('sql'))
+    _op_update_database_kshot_sql.success()
+    _op_update_database_kshot_sql.code()
+    _op_update_database_kshot_sql.error()
+    return _op
+
+
+def mutation_update_database_kshot_title():
+    _op = sgqlc.operation.Operation(_schema_root.mutation_type, name='UpdateDatabaseKShotTitle', variables=dict(databaseKShotId=sgqlc.types.Arg(sgqlc.types.non_null(_schema.UUID)), title=sgqlc.types.Arg(_schema.String)))
+    _op_update_database_kshot_title = _op.update_database_kshot_title(database_kshot_id=sgqlc.types.Variable('databaseKShotId'), title=sgqlc.types.Variable('title'))
+    _op_update_database_kshot_title.success()
+    _op_update_database_kshot_title.code()
+    _op_update_database_kshot_title.error()
+    return _op
+
+
+def mutation_update_database_kshot_visualization():
+    _op = sgqlc.operation.Operation(_schema_root.mutation_type, name='UpdateDatabaseKShotVisualization', variables=dict(databaseKShotId=sgqlc.types.Arg(sgqlc.types.non_null(_schema.UUID)), visualization=sgqlc.types.Arg(_schema.JSON)))
+    _op_update_database_kshot_visualization = _op.update_database_kshot_visualization(database_kshot_id=sgqlc.types.Variable('databaseKShotId'), visualization=sgqlc.types.Variable('visualization'))
+    _op_update_database_kshot_visualization.success()
+    _op_update_database_kshot_visualization.code()
+    _op_update_database_kshot_visualization.error()
     return _op
 
 
@@ -363,8 +408,13 @@ class Mutation:
     set_max_agent_workflow = mutation_set_max_agent_workflow()
     set_skill_memory = mutation_set_skill_memory()
     update_database_description = mutation_update_database_description()
-    update_database_kshot = mutation_update_database_kshot()
+    update_database_kshot_explanation = mutation_update_database_kshot_explanation()
     update_database_kshot_limit = mutation_update_database_kshot_limit()
+    update_database_kshot_question = mutation_update_database_kshot_question()
+    update_database_kshot_rendered_prompt = mutation_update_database_kshot_rendered_prompt()
+    update_database_kshot_sql = mutation_update_database_kshot_sql()
+    update_database_kshot_title = mutation_update_database_kshot_title()
+    update_database_kshot_visualization = mutation_update_database_kshot_visualization()
     update_database_llm_description = mutation_update_database_llm_description()
     update_database_mermaid_er_diagram = mutation_update_database_mermaid_er_diagram()
     update_database_name = mutation_update_database_name()
