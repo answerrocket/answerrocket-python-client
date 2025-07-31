@@ -581,6 +581,24 @@ class Chat:
         op = Operations.mutation.test_run_copilot_skill
         result = self.gql_client.submit(op, test_run_copilot_skill_args)
         return result.test_run_copilot_skill
+    
+    def get_test_run_output(self, answer_id: str):
+        """
+        TODO: This is meant to be temprorary, used for skill builder and should be removed or reworked once builder is moved internal
+        Gets the output of a test run.
+        :param answer_id: the id of the answer to get the output for
+        :return: the output of the test run
+        """
+        if answer_id is None:
+            logger.warning("No answer id provided, aborting.")
+            return None
+        
+        get_test_run_output_args = {
+            'answerId': UUID(answer_id),
+        }
+        op = Operations.mutation.get_test_run_output
+        result = self.gql_client.submit(op, get_test_run_output_args)
+        return result.get_test_run_output
 
     def get_dataframes_for_entry(self, entry_id: str) -> [pd.DataFrame]:
         """

@@ -211,5 +211,17 @@ mutation TestRunCopilotSkill(
     skillName: $skillName
     nl: $nl
     parameters: $parameters
-  )
+  ) {
+    success
+    error
+    payload
+  }
+}
+
+mutation GetTestRunOutput($answerId: UUID!) {
+  getTestRunOutput(answerId: $answerId) {
+    success
+    error
+    payload
+  }
 }

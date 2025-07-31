@@ -113,7 +113,19 @@ def mutation_sync_max_skill_repository():
 
 def mutation_test_run_copilot_skill():
     _op = sgqlc.operation.Operation(_schema_root.mutation_type, name='TestRunCopilotSkill', variables=dict(copilotId=sgqlc.types.Arg(sgqlc.types.non_null(_schema.UUID)), skillName=sgqlc.types.Arg(sgqlc.types.non_null(_schema.String)), nl=sgqlc.types.Arg(sgqlc.types.non_null(_schema.String)), parameters=sgqlc.types.Arg(_schema.JSON)))
-    _op.test_run_copilot_skill(copilot_id=sgqlc.types.Variable('copilotId'), skill_name=sgqlc.types.Variable('skillName'), nl=sgqlc.types.Variable('nl'), parameters=sgqlc.types.Variable('parameters'))
+    _op_test_run_copilot_skill = _op.test_run_copilot_skill(copilot_id=sgqlc.types.Variable('copilotId'), skill_name=sgqlc.types.Variable('skillName'), nl=sgqlc.types.Variable('nl'), parameters=sgqlc.types.Variable('parameters'))
+    _op_test_run_copilot_skill.success()
+    _op_test_run_copilot_skill.error()
+    _op_test_run_copilot_skill.payload()
+    return _op
+
+
+def mutation_get_test_run_output():
+    _op = sgqlc.operation.Operation(_schema_root.mutation_type, name='GetTestRunOutput', variables=dict(answerId=sgqlc.types.Arg(sgqlc.types.non_null(_schema.UUID))))
+    _op_get_test_run_output = _op.get_test_run_output(answer_id=sgqlc.types.Variable('answerId'))
+    _op_get_test_run_output.success()
+    _op_get_test_run_output.error()
+    _op_get_test_run_output.payload()
     return _op
 
 
@@ -322,6 +334,7 @@ class Mutation:
     create_metric = mutation_create_metric()
     delete_dimension = mutation_delete_dimension()
     delete_metric = mutation_delete_metric()
+    get_test_run_output = mutation_get_test_run_output()
     import_copilot_skill_from_zip = mutation_import_copilot_skill_from_zip()
     import_skill_from_repo = mutation_import_skill_from_repo()
     queue_chat_question = mutation_queue_chat_question()
