@@ -17,7 +17,8 @@ from answer_rocket.graphql.schema import UUID as GQL_UUID, GenerateVisualization
     MaxPrimaryAttribute, MaxReferenceAttribute, MaxCalculatedMetric, MaxDataset, MaxCalculatedAttribute, \
     MaxMutationResponse, JSON, RunSqlAiResponse, GroundedValueResponse, Dimension, \
     Metric, Dataset, DatasetDataInterval, Database, DatabaseSearchInput, PagingInput, PagedDatabases, \
-    DatabaseTableSearchInput, PagedDatabaseTables, CreateDatasetFromTableResponse, DatasetSearchInput, PagedDatasets
+    DatabaseTableSearchInput, PagedDatabaseTables, CreateDatasetFromTableResponse, DatasetSearchInput, PagedDatasets, \
+    DatabaseKShotSearchInput, PagedDatabaseKShots, DatabaseKShot, CreateDatabaseKShotResponse
 from answer_rocket.graphql.sdk_operations import Operations
 from answer_rocket.types import MaxResult, RESULT_EXCEPTION_CODE
 
@@ -382,6 +383,84 @@ class Data:
             return result.get_database_tables
         except Exception as e:
             return PagedDatabaseTables()
+
+    def get_database_kshots(self, database_id: UUID, search_input: Optional[DatabaseKShotSearchInput]=None, paging: Optional[PagingInput]=None) -> PagedDatabaseKShots:
+        """
+        Retrieve database k-shots based on optional search and paging criteria.
+
+        If no `search_input` or `paging` is provided, default values will be used.
+
+        Parameters
+        ----------
+        database_id : UUID
+            The database_id that contains the k-shots
+        search_input : DatabaseKShotSearchInput, optional
+            An object specifying the search criteria for the k-shots.
+            If None, no filters are applied
+        paging : PagingInput, optional
+            An object specifying pagination details such as page number and page size.
+            If None, defaults to page 1 with a page size of 100.
+
+        Returns
+        -------
+        PagedDatabaseKShots
+            A paged collection of database k-shots. Returns an empty `PagedDatabaseKShots` instance if an error occurs during retrieval.
+
+        Notes
+        -----
+        This method uses a GraphQL client to submit a query to fetch the data.
+        """
+        if not search_input:
+            search_input = DatabaseKShotSearchInput(
+                question_contains=None,
+                include_inactive=None,
+            )
+
+        if not paging:
+            paging = PagingInput(
+                page_num=1,
+                page_size=100
+            )
+
+        query_args = {
+            'databaseId': str(database_id),
+            'searchInput': search_input.__to_json_value__(),
+            'paging': paging.__to_json_value__()
+        }
+
+        op = Operations.query.get_database_kshots
+
+        result = self._gql_client.submit(op, query_args)
+
+        return result.get_database_kshots
+
+    def get_database_kshot_by_id(self, database_kshot_id: UUID) -> Optional[DatabaseKShot]:
+        """
+        Retrieve a database k-shot by its ID.
+
+        This method queries the backend for a database k-shot using the given unique identifier.
+        If the k-shot is found, it is returned as a `DatabaseKShot` object. If not found or
+        if an error occurs during the query, `None` is returned.
+
+        Parameters
+        ----------
+        database_kshot_id : UUID
+            The unique identifier of the database k-shot to retrieve.
+
+        Returns
+        -------
+        DatabaseKShot or None
+            The database k-shot object if found, or `None` if not found or if an error occurs.
+        """
+        query_args = {
+            'databaseKShotId': str(database_kshot_id),
+        }
+
+        op = Operations.query.get_database_kshot_by_id
+
+        result = self._gql_client.submit(op, query_args)
+
+        return result.get_database_kshot_by_id
 
     def get_datasets(self, search_input: Optional[DatasetSearchInput]=None, paging: Optional[PagingInput]=None) -> PagedDatasets:
         """
@@ -1824,3 +1903,91 @@ class Data:
         result = self._gql_client.submit(op, mutation_args)
 
         return result.delete_metric
+
+    def create_database_kshot(self, database_kshot: Dict) -> CreateDatabaseKShotResponse:
+        """
+        Create a new database k-shot.
+
+        Parameters
+        ----------
+        database_kshot : Dict
+            The database k-shot dictionary containing all necessary metadata and configuration.
+            Must follow the DatabaseKShot type definition with fields:
+            - databaseId: UUID (required)
+            - question: str (required)
+            - renderedPrompt: str (optional)
+            - explanation: str (optional)
+            - sql: str (optional)
+            - title: str (optional)
+            - visualization: JSON (optional)
+            - isActive: bool (optional)
+
+        Returns
+        -------
+        CreateDatabaseKShotResponse
+            The result of the GraphQL mutation containing the created k-shot details.
+        """
+        mutation_args = {
+            'databaseKShot': database_kshot,
+        }
+
+        op = Operations.mutation.create_database_kshot
+        result = self._gql_client.submit(op, mutation_args)
+
+        return result.create_database_kshot
+
+    def update_database_kshot(self, database_kshot: Dict) -> MaxMutationResponse:
+        """
+        Update an existing database k-shot.
+
+        Parameters
+        ----------
+        database_kshot : Dict
+            The database k-shot dictionary containing the updated configuration and metadata.
+            Must follow the DatabaseKShot type definition and include:
+            - databaseKShotId: UUID (required) - identifies which k-shot to update
+            - databaseId: UUID (required)
+            - question: str (required)
+            - renderedPrompt: str (optional)
+            - explanation: str (optional)
+            - sql: str (optional)
+            - title: str (optional)
+            - visualization: JSON (optional)
+            - isActive: bool (optional)
+
+        Returns
+        -------
+        MaxMutationResponse
+            The result of the update operation.
+        """
+        mutation_args = {
+            'databaseKShot': database_kshot,
+        }
+
+        op = Operations.mutation.update_database_kshot
+        result = self._gql_client.submit(op, mutation_args)
+
+        return result.update_database_kshot
+
+    def delete_database_kshot(self, database_kshot_id: UUID) -> MaxMutationResponse:
+        """
+        Delete a database k-shot.
+
+        Parameters
+        ----------
+        database_kshot_id : UUID
+            The UUID of the database k-shot to delete.
+
+        Returns
+        -------
+        MaxMutationResponse
+            The result of the delete operation.
+        """
+        mutation_args = {
+            'databaseKShotId': str(database_kshot_id),
+        }
+
+        op = Operations.mutation.delete_database_kshot
+        result = self._gql_client.submit(op, mutation_args)
+
+        return result.delete_database_kshot

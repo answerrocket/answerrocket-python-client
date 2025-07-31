@@ -61,6 +61,35 @@ query GetDatabaseTables($databaseId: UUID!, $searchInput: DatabaseTableSearchInp
   }
 }
 
+query GetDatabaseKShots($databaseId: UUID!, $searchInput: DatabaseKShotSearchInput!, $paging: PagingInput!) {
+  getDatabaseKShots(databaseId: $databaseId, searchInput: $searchInput, paging: $paging) {
+    totalRows
+    rows {
+      databaseKShotId
+      question
+      renderedPrompt
+      explanation
+      sql
+      title
+      visualization
+      isActive
+    }
+  }
+}
+
+query GetDatabaseKShotById($databaseKShotId: UUID!) {
+  getDatabaseKShotById(databaseKShotId: $databaseKShotId) {
+    databaseKShotId
+    question
+    renderedPrompt
+    explanation
+    sql
+    title
+    visualization
+    isActive
+  }
+}
+
 query GetDataset2(
   $datasetId: UUID!
 ) {
@@ -402,6 +431,43 @@ mutation DeleteMetric(
   deleteMetric(
     datasetId: $datasetId
     metricId: $metricId
+  ) {
+    success
+    code
+    error
+  }
+}
+
+mutation CreateDatabaseKShot(
+  $databaseKShot: JSON!
+) {
+  createDatabaseKShot(
+    databaseKShot: $databaseKShot
+  ) {
+    databaseKShotId
+    success
+    code
+    error
+  }
+}
+
+mutation UpdateDatabaseKShot(
+  $databaseKShot: JSON!
+) {
+  updateDatabaseKShot(
+    databaseKShot: $databaseKShot
+  ) {
+    success
+    code
+    error
+  }
+}
+
+mutation DeleteDatabaseKShot(
+  $databaseKShotId: UUID!
+) {
+  deleteDatabaseKShot(
+    databaseKShotId: $databaseKShotId
   ) {
     success
     code
