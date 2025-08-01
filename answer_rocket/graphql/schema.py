@@ -506,8 +506,8 @@ class GroundedValueResponse(sgqlc.types.Type):
 class HydratedReport(sgqlc.types.Type):
     __schema__ = schema
     __field_names__ = ('copilot_id', 'copilot_skill_id', 'dataset_id', 'dataset_ids', 'detailed_description', 'key', 'name', 'package_name', 'parameters', 'scheduling_only', 'tool_description', 'tool_name', 'tool_type', 'type', 'use_predicate_filters', 'meta')
-    copilot_id = sgqlc.types.Field(sgqlc.types.non_null(String), graphql_name='copilotId')
-    copilot_skill_id = sgqlc.types.Field(sgqlc.types.non_null(String), graphql_name='copilotSkillId')
+    copilot_id = sgqlc.types.Field(sgqlc.types.non_null(UUID), graphql_name='copilotId')
+    copilot_skill_id = sgqlc.types.Field(sgqlc.types.non_null(UUID), graphql_name='copilotSkillId')
     dataset_id = sgqlc.types.Field(UUID, graphql_name='datasetId')
     dataset_ids = sgqlc.types.Field(sgqlc.types.list_of(sgqlc.types.non_null(String)), graphql_name='datasetIds')
     detailed_description = sgqlc.types.Field(sgqlc.types.non_null(String), graphql_name='detailedDescription')
