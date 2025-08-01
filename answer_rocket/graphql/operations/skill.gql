@@ -37,3 +37,19 @@ query ResearchCompletion(
 ) {
   researchCompletion(messages: $messages, modelSelection: $modelSelection)
 }
+
+query ChatCompletionWithPrompt(
+  $promptName: String!
+  $promptVariables: JSON
+  $messages: [LlmChatMessage!]
+) {
+  chatCompletionWithPrompt(promptName: $promptName, promptVariables: $promptVariables, messages: $messages)
+}
+
+query ResearchCompletionWithPrompt(
+  $promptName: String!
+  $promptVariables: JSON
+  $messages: [LlmChatMessage!]
+) {
+  researchCompletionWithPrompt(promptName: $promptName, promptVariables: $promptVariables, messages: $messages)
+}
