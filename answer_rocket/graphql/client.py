@@ -34,4 +34,3 @@ class GraphQlClient:
         if variables:
             return Operation(Mutation, variables=variables)
         return Operation(Mutation)
-    
