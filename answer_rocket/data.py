@@ -1904,7 +1904,7 @@ class Data:
 
         return result.delete_metric
 
-    def create_database_kshot(self, database_kshot: Dict) -> CreateDatabaseKShotResponse:
+    def create_database_kshot(self, database_kshot: dict) -> CreateDatabaseKShotResponse:
         """
         Create a new database k-shot.
 
