@@ -46,6 +46,10 @@ query GetCopilotSkill($copilotId: UUID!, $copilotSkillId: UUID!, $usePublishedVe
             lastModifiedUtc
             version
         }
+        capabilities
+        limitations
+        exampleQuestions
+        parameterGuidance
     }
 }
 
@@ -107,5 +111,61 @@ query GetCopilots {
         }
         databaseId
         datasetId
+    }
+}
+query GetCopilotHydratedReports($copilotId: UUID!, $overrideDatasetId: UUID, $loadAllSkills: Boolean) {
+    getCopilotHydratedReports(copilotId: $copilotId, overrideDatasetId: $overrideDatasetId, loadAllSkills: $loadAllSkills) {
+        copilotId
+        copilotSkillId
+        datasetId
+        datasetIds
+        detailedDescription
+        key
+        name
+        packageName
+        parameters {
+            constrainedValues
+            definition {
+                constraints
+                key
+                multi
+                type
+            }
+            description
+            isHidden
+            isMulti
+            isRequired
+            key
+            llmDescription
+            metadataField
+            skillParamDefKey
+            usePredicateFilters
+            value
+            defaultValue
+            additionalConstraints
+            datasetNames
+            meta
+            matchValues {
+                automaticDbWhitelist
+                constrainedValues
+                datasetId
+                defaultPerformanceMetric
+                inverseMap
+                phraseTemplate
+                popularValues
+                valueCollectionName
+                datasetDateDimensions
+                datasetDimensions
+                datasetMetrics
+                predicateVocab
+            }
+        }
+        schedulingOnly
+        toolDescription
+        toolName
+        toolType
+        type
+        usePredicateFilters
+        meta
     }
 }

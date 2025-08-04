@@ -1,4 +1,5 @@
 from __future__ import annotations
+
 from dataclasses import dataclass, field
 from typing import Optional, List, Dict
 from uuid import UUID
@@ -14,12 +15,31 @@ from answer_rocket.graphql.schema import UUID as GQL_UUID, GenerateVisualization
     MaxDimensionEntity, MaxFactEntity, \
     MaxNormalAttribute, \
     MaxPrimaryAttribute, MaxReferenceAttribute, MaxCalculatedMetric, MaxDataset, MaxCalculatedAttribute, \
-    MaxMutationResponse, DateTime, RunMaxSqlGenResponse, JSON, RunSqlAiResponse, GroundedValueResponse, Dimension, \
-    Metric, Dataset, DatasetDataInterval, Database
+    MaxMutationResponse, JSON, RunSqlAiResponse, GroundedValueResponse, Dimension, \
+    Metric, Dataset, DatasetDataInterval, Database, DatabaseSearchInput, PagingInput, PagedDatabases, \
+    DatabaseTableSearchInput, PagedDatabaseTables, CreateDatasetFromTableResponse, DatasetSearchInput, PagedDatasets, \
+    DatabaseKShotSearchInput, PagedDatabaseKShots, DatabaseKShot, CreateDatabaseKShotResponse
 from answer_rocket.graphql.sdk_operations import Operations
 from answer_rocket.types import MaxResult, RESULT_EXCEPTION_CODE
 
+
 def create_df_from_data(data: Dict[str, any]):
+    """
+    Create a pandas DataFrame from structured data dictionary.
+
+    Parameters
+    ----------
+    data : Dict[str, any]
+        A dictionary containing 'columns' and optionally 'rows' keys.
+        The 'columns' key should contain a list of column dictionaries with 'name' keys.
+        The 'rows' key should contain a list of row dictionaries with 'data' keys.
+
+    Returns
+    -------
+    DataFrame
+        A pandas DataFrame created from the input data. Returns an empty DataFrame
+        with the same columns if the only row contains all NaN values.
+    """
     columns = [column["name"] for column in data["columns"]]
     rows = [row["data"] for row in data["rows"]] if "rows" in data else []
 
@@ -146,14 +166,28 @@ class Data:
             return result
 
     def execute_rql_query(self, dataset_id: UUID, rql_query: str, row_limit: Optional[int] = None, copilot_id: Optional[UUID] = None, copilot_skill_id: Optional[UUID] = None) -> ExecuteRqlQueryResult:
+        """
+        Execute an RQL query against a dataset and return results.
+
+        Parameters
+        ----------
+        dataset_id : UUID
+            The UUID of the dataset to execute the query against.
+        rql_query : str
+            The RQL query string to execute.
+        row_limit : Optional[int], optional
+            Maximum number of rows to return in the query results.
+        copilot_id : Optional[UUID], optional
+            The UUID of the copilot. Defaults to the configured copilot_id.
+        copilot_skill_id : Optional[UUID], optional
+            The UUID of the copilot skill. Defaults to the configured copilot_skill_id.
+
+        Returns
+        -------
+        ExecuteRqlQueryResult
+            The result containing success status, error information, DataFrame, and RQL script response.
+        """
         try:
-            """
-            dataset_id: the dataset_id of the dataset to execute against.
-            rql_query: the RQL query to execute.
-            row_limit: the optional row limit of the query results.
-            copilot_id: the optional copilot ID.
-            
-            """
             query_args = {
                 'datasetId': dataset_id,
                 'rqlQuery': rql_query,
@@ -249,11 +283,252 @@ class Data:
         except Exception as e:
             return None
 
-    def get_dataset_id(self, dataset_name: str) -> Optional[UUID]:
+    def get_databases(self, search_input: Optional[DatabaseSearchInput]=None, paging: Optional[PagingInput]=None) -> PagedDatabases:
+        """
+        Retrieve databases based on optional search and paging criteria.
+
+        If no `search_input` or `paging` is provided, default values will be used.
+
+        Parameters
+        ----------
+        search_input : DatabaseSearchInput, optional
+            An object specifying the search criteria for databases.
+            If None, no filters are applied
+        paging : PagingInput, optional
+            An object specifying pagination details such as page number and page size.
+            If None, defaults to page 1 with a page size of 100.
+
+        Returns
+        -------
+        PagedDatabases
+            A paged collection of databases. Returns an empty `PagedDatabases` instance if an error occurs during retrieval.
+
+        Notes
+        -----
+        This method uses a GraphQL client to submit a query to fetch the data.
+        """
         try:
-            """
-            dataset_name: the name of the dataset
-            """
+            if not search_input:
+                search_input = DatabaseSearchInput(
+                    name_contains=None,
+                )
+
+            if not paging:
+                paging = PagingInput(
+                    page_num=1,
+                    page_size=100
+                )
+
+            query_args = {
+                'searchInput': search_input.__to_json_value__(),
+                'paging': paging.__to_json_value__()
+            }
+
+            op = Operations.query.get_databases
+
+            result = self._gql_client.submit(op, query_args)
+
+            return result.get_databases
+        except Exception as e:
+            return PagedDatabases()
+
+    def get_database_tables(self, database_id: UUID, search_input: Optional[DatabaseTableSearchInput]=None, paging: Optional[PagingInput]=None) -> PagedDatabaseTables:
+        """
+        Retrieve database tables based on optional search and paging criteria.
+
+        If no `search_input` or `paging` is provided, default values will be used.
+
+        Parameters
+        ----------
+        database_id : UUID
+            The database_id that contains the tables
+        search_input : DatabaseTableSearchInput, optional
+            An object specifying the search criteria for the tables.
+            If None, no filters are applied
+        paging : PagingInput, optional
+            An object specifying pagination details such as page number and page size.
+            If None, defaults to page 1 with a page size of 100.
+
+        Returns
+        -------
+        PagedDatabaseTables
+            A paged collection of database tables. Returns an empty `PagedDatabaseTables` instance if an error occurs during retrieval.
+
+        Notes
+        -----
+        This method uses a GraphQL client to submit a query to fetch the data.
+        """
+        try:
+            if not search_input:
+                search_input = DatabaseTableSearchInput(
+                    name_contains=None,
+                )
+
+            if not paging:
+                paging = PagingInput(
+                    page_num=1,
+                    page_size=100
+                )
+
+            query_args = {
+                'databaseId': str(database_id),
+                'searchInput': search_input.__to_json_value__(),
+                'paging': paging.__to_json_value__()
+            }
+
+            op = Operations.query.get_database_tables
+
+            result = self._gql_client.submit(op, query_args)
+
+            return result.get_database_tables
+        except Exception as e:
+            return PagedDatabaseTables()
+
+    def get_database_kshots(self, database_id: UUID, search_input: Optional[DatabaseKShotSearchInput]=None, paging: Optional[PagingInput]=None) -> PagedDatabaseKShots:
+        """
+        Retrieve database k-shots based on optional search and paging criteria.
+
+        If no `search_input` or `paging` is provided, default values will be used.
+
+        Parameters
+        ----------
+        database_id : UUID
+            The database_id that contains the k-shots
+        search_input : DatabaseKShotSearchInput, optional
+            An object specifying the search criteria for the k-shots.
+            If None, no filters are applied
+        paging : PagingInput, optional
+            An object specifying pagination details such as page number and page size.
+            If None, defaults to page 1 with a page size of 100.
+
+        Returns
+        -------
+        PagedDatabaseKShots
+            A paged collection of database k-shots. Returns an empty `PagedDatabaseKShots` instance if an error occurs during retrieval.
+
+        Notes
+        -----
+        This method uses a GraphQL client to submit a query to fetch the data.
+        """
+        if not search_input:
+            search_input = DatabaseKShotSearchInput(
+                question_contains=None,
+                include_inactive=None,
+            )
+
+        if not paging:
+            paging = PagingInput(
+                page_num=1,
+                page_size=100
+            )
+
+        query_args = {
+            'databaseId': str(database_id),
+            'searchInput': search_input.__to_json_value__(),
+            'paging': paging.__to_json_value__()
+        }
+
+        op = Operations.query.get_database_kshots
+
+        result = self._gql_client.submit(op, query_args)
+
+        return result.get_database_kshots
+
+    def get_database_kshot_by_id(self, database_kshot_id: UUID) -> Optional[DatabaseKShot]:
+        """
+        Retrieve a database k-shot by its ID.
+
+        This method queries the backend for a database k-shot using the given unique identifier.
+        If the k-shot is found, it is returned as a `DatabaseKShot` object. If not found or
+        if an error occurs during the query, `None` is returned.
+
+        Parameters
+        ----------
+        database_kshot_id : UUID
+            The unique identifier of the database k-shot to retrieve.
+
+        Returns
+        -------
+        DatabaseKShot or None
+            The database k-shot object if found, or `None` if not found or if an error occurs.
+        """
+        query_args = {
+            'databaseKShotId': str(database_kshot_id),
+        }
+
+        op = Operations.query.get_database_kshot_by_id
+
+        result = self._gql_client.submit(op, query_args)
+
+        return result.get_database_kshot_by_id
+
+    def get_datasets(self, search_input: Optional[DatasetSearchInput]=None, paging: Optional[PagingInput]=None) -> PagedDatasets:
+        """
+        Retrieve datasets based on optional search and paging criteria.
+
+        If no `search_input` or `paging` is provided, default values will be used.
+
+        Parameters
+        ----------
+        search_input : DatasetSearchInput, optional
+            An object specifying the search criteria for datasets.
+            If None, no filters are applied
+        paging : PagingInput, optional
+            An object specifying pagination details such as page number and page size.
+            If None, defaults to page 1 with a page size of 100.
+
+        Returns
+        -------
+        PagedDataset
+            A paged collection of datasets. Returns an empty `PagedDataset` instance if an error occurs during retrieval.
+
+        Notes
+        -----
+        This method uses a GraphQL client to submit a query to fetch the data.
+        """
+        try:
+            if not search_input:
+                search_input = DatasetSearchInput(
+                    name_contains=None,
+                )
+
+            if not paging:
+                paging = PagingInput(
+                    page_num=1,
+                    page_size=100
+                )
+
+            if hasattr(search_input, "database_id") and search_input.database_id:
+                search_input.database_id = str(search_input.database_id)
+
+            query_args = {
+                'searchInput': search_input.__to_json_value__(),
+                'paging': paging.__to_json_value__()
+            }
+
+            op = Operations.query.get_datasets
+
+            result = self._gql_client.submit(op, query_args)
+
+            return result.get_datasets
+        except Exception as e:
+            return PagedDatasets(0, [])
+
+    def get_dataset_id(self, dataset_name: str) -> Optional[UUID]:
+        """
+        Retrieve the UUID of a dataset by its name.
+
+        Parameters
+        ----------
+        dataset_name : str
+            The name of the dataset to look up.
+
+        Returns
+        -------
+        Optional[UUID]
+            The UUID of the dataset if found, otherwise None.
+        """
+        try:
             query_args = {
                 'datasetName': dataset_name,
             }
@@ -283,10 +558,24 @@ class Data:
             return execute_sql_query_result
 
     def get_dataset(self, dataset_id: UUID, copilot_id: Optional[UUID] = None, include_dim_values: bool = False) -> Optional[MaxDataset]:
+        """
+        Retrieve a dataset by its UUID with optional dimension values.
+
+        Parameters
+        ----------
+        dataset_id : UUID
+            The UUID of the dataset to retrieve.
+        copilot_id : Optional[UUID], optional
+            The UUID of the copilot. Defaults to the configured copilot_id.
+        include_dim_values : bool, optional
+            Whether to include dimension values in the response. Defaults to False.
+
+        Returns
+        -------
+        Optional[MaxDataset]
+            The dataset object if found, otherwise None.
+        """
         try:
-            """
-            dataset_id: the UUID of the dataset
-            """
             query_args = {
                 'datasetId': str(dataset_id),
                 'copilotId': str(copilot_id) if copilot_id else str(self.copilot_id) if self.copilot_id else None
@@ -380,11 +669,23 @@ class Data:
             return None
 
     def get_domain_object_by_name(self, dataset_id: UUID, rql_name: str) -> DomainObjectResult:
+        """
+        Retrieve a domain object by its RQL name within a dataset.
+
+        Parameters
+        ----------
+        dataset_id : UUID
+            The UUID of the dataset containing the domain object.
+        rql_name : str
+            The fully qualified RQL name of the domain object 
+            (e.g. 'transactions.sales', 'transactions', 'net_sales').
+
+        Returns
+        -------
+        DomainObjectResult
+            The result containing success status, error information, and the domain object if found.
+        """
         try:
-            """
-            dataset_id: the UUID of the dataset
-            rql_name: the fully qualified RQL name of the domain object (e.g. transactions.sales, transactions, net_sales)
-            """
             query_args = {
                 'datasetId': dataset_id,
                 'rqlName': rql_name
@@ -430,11 +731,22 @@ class Data:
             return domain_object_result
 
     def get_domain_object(self, dataset_id: UUID, domain_object_id: str) -> DomainObjectResult:
+        """
+        Retrieve a domain object by its ID within a dataset.
+
+        Parameters
+        ----------
+        dataset_id : UUID
+            The UUID of the dataset containing the domain object.
+        domain_object_id : str
+            The domain object ID (e.g. 'transactions__sales').
+
+        Returns
+        -------
+        DomainObjectResult
+            The result containing success status, error information, and the domain object if found.
+        """
         try:
-            """
-            dataset_id: the UUID of the dataset
-            domain_object_id: the domain object ID domain object (e.g. transactions__sales)
-            """
             query_args = {
                 'datasetId': dataset_id,
                 'domainObjectId': domain_object_id
@@ -973,10 +1285,24 @@ class Data:
         return result.update_database_kshot_limit
 
     def reload_dataset(self, dataset_id: Optional[UUID] = None, database_id: Optional[UUID] = None, table_names: Optional[List[str]] = None) -> MaxMutationResponse:
+        """
+        Reload a dataset to refresh its metadata and structure.
+
+        Parameters
+        ----------
+        dataset_id : Optional[UUID], optional
+            The UUID of the dataset to reload.
+        database_id : Optional[UUID], optional
+            The UUID of the database containing tables to reload.
+        table_names : Optional[List[str]], optional
+            List of specific table names to reload.
+
+        Returns
+        -------
+        MaxMutationResponse
+            The result of the reload operation, or None if an error occurs.
+        """
         try:
-            """
-            dataset_id: the UUID of the dataset
-            """
             mutation_args = {
                 'datasetId': str(dataset_id) if dataset_id is not None else None,
                 'databaseId': str(database_id) if database_id is not None else None,
@@ -1160,6 +1486,25 @@ class Data:
         return result.update_dataset_misc_info
 
     def update_dataset_source(self, dataset_id: UUID, source_table: str, source_sql: Optional[str] = None, derived_table_alias: Optional[str] = None) -> MaxMutationResponse:
+        """
+        Update the source table configuration for a dataset.
+
+        Parameters
+        ----------
+        dataset_id : UUID
+            The UUID of the dataset to update.
+        source_table : str
+            The name of the source table.
+        source_sql : Optional[str], optional
+            Custom SQL for the source table. Defaults to None.
+        derived_table_alias : Optional[str], optional
+            Alias for derived table queries. Defaults to None.
+
+        Returns
+        -------
+        MaxMutationResponse
+            The result of the update operation.
+        """
         mutation_args = {
             'datasetId': str(dataset_id),
             'sourceTable': source_table,
@@ -1354,7 +1699,46 @@ class Data:
 
         return result.create_dataset
 
+    def create_dataset_from_table(self, database_id: UUID, table_name: str) -> CreateDatasetFromTableResponse:
+        """
+        Create a new dataset from the specified table
+
+        Parameters
+        ----------
+        database_id : UUID
+            The database ID under which to create the dataset
+        table_name : str
+            The name of the database table from which to create the dataset
+
+        Returns
+        -------
+        CreateDatasetFromTableResponse
+            The result of the GraphQL mutation containing the created dataset details.
+        """
+        mutation_args = {
+            'databaseId': str(database_id),
+            'tableName': table_name
+        }
+
+        op = Operations.mutation.create_dataset_from_table
+        result = self._gql_client.submit(op, mutation_args)
+
+        return result.create_dataset_from_table
+
     def update_dataset(self, dataset: Dataset) -> MaxMutationResponse:
+        """
+        Update an existing dataset with new configuration.
+
+        Parameters
+        ----------
+        dataset : Dataset
+            The dataset object containing the updated configuration and metadata.
+
+        Returns
+        -------
+        MaxMutationResponse
+            The result of the update operation.
+        """
         mutation_args = {
             'dataset': dataset,
         }
@@ -1365,6 +1749,21 @@ class Data:
         return result.update_dataset
 
     def create_dimension(self, dataset_id: UUID, dimension: Dimension) -> MaxMutationResponse:
+        """
+        Create a new dimension within a dataset.
+
+        Parameters
+        ----------
+        dataset_id : UUID
+            The UUID of the dataset to add the dimension to.
+        dimension : Dimension
+            The dimension object containing the configuration and metadata.
+
+        Returns
+        -------
+        MaxMutationResponse
+            The result of the create operation.
+        """
         mutation_args = {
             'datasetId': str(dataset_id),
             'dimension': dimension,
@@ -1376,6 +1775,21 @@ class Data:
         return result.create_dimension
 
     def update_dimension(self, dataset_id: UUID, dimension: Dimension) -> MaxMutationResponse:
+        """
+        Update an existing dimension within a dataset.
+
+        Parameters
+        ----------
+        dataset_id : UUID
+            The UUID of the dataset containing the dimension.
+        dimension : Dimension
+            The dimension object containing the updated configuration and metadata.
+
+        Returns
+        -------
+        MaxMutationResponse
+            The result of the update operation.
+        """
         mutation_args = {
             'datasetId': str(dataset_id),
             'dimension': dimension,
@@ -1387,6 +1801,21 @@ class Data:
         return result.update_dimension
 
     def delete_dimension(self, dataset_id: UUID, dimension_id: str) -> MaxMutationResponse:
+        """
+        Delete a dimension from a dataset.
+
+        Parameters
+        ----------
+        dataset_id : UUID
+            The UUID of the dataset containing the dimension.
+        dimension_id : str
+            The ID of the dimension to delete.
+
+        Returns
+        -------
+        MaxMutationResponse
+            The result of the delete operation.
+        """
         mutation_args = {
             'datasetId': str(dataset_id),
             'dimensionId': dimension_id,
@@ -1398,6 +1827,21 @@ class Data:
         return result.delete_dimension
 
     def create_metric(self, dataset_id: UUID, metric: Metric) -> MaxMutationResponse:
+        """
+        Create a new metric within a dataset.
+
+        Parameters
+        ----------
+        dataset_id : UUID
+            The UUID of the dataset to add the metric to.
+        metric : Metric
+            The metric object containing the configuration and metadata.
+
+        Returns
+        -------
+        MaxMutationResponse
+            The result of the create operation.
+        """
         mutation_args = {
             'datasetId': str(dataset_id),
             'metric': metric,
@@ -1409,6 +1853,21 @@ class Data:
         return result.create_metric
 
     def update_metric(self, dataset_id: UUID, metric: Metric) -> MaxMutationResponse:
+        """
+        Update an existing metric within a dataset.
+
+        Parameters
+        ----------
+        dataset_id : UUID
+            The UUID of the dataset containing the metric.
+        metric : Metric
+            The metric object containing the updated configuration and metadata.
+
+        Returns
+        -------
+        MaxMutationResponse
+            The result of the update operation.
+        """
         mutation_args = {
             'datasetId': str(dataset_id),
             'metric': metric,
@@ -1420,6 +1879,21 @@ class Data:
         return result.update_metric
 
     def delete_metric(self, dataset_id: UUID, metric_id: str) -> MaxMutationResponse:
+        """
+        Delete a metric from a dataset.
+
+        Parameters
+        ----------
+        dataset_id : UUID
+            The UUID of the dataset containing the metric.
+        metric_id : str
+            The ID of the metric to delete.
+
+        Returns
+        -------
+        MaxMutationResponse
+            The result of the delete operation.
+        """
         mutation_args = {
             'datasetId': str(dataset_id),
             'metricId': metric_id,
@@ -1429,3 +1903,247 @@ class Data:
         result = self._gql_client.submit(op, mutation_args)
 
         return result.delete_metric
+
+    def create_database_kshot(self, database_kshot: dict[str, Any]) -> CreateDatabaseKShotResponse:
+        """
+        Create a new database k-shot.
+
+        Parameters
+        ----------
+        database_kshot : Dict
+            The database k-shot dictionary containing all necessary metadata and configuration.
+            Must follow the DatabaseKShot type definition with fields:
+            - databaseId: UUID (required)
+            - question: str (required)
+            - renderedPrompt: str (optional)
+            - explanation: str (optional)
+            - sql: str (optional)
+            - title: str (optional)
+            - visualization: JSON (optional)
+            - isActive: bool (optional)
+
+        Returns
+        -------
+        CreateDatabaseKShotResponse
+            The result of the GraphQL mutation containing the created k-shot details.
+        """
+        mutation_args = {
+            'databaseKShot': database_kshot,
+        }
+
+        op = Operations.mutation.create_database_kshot
+        result = self._gql_client.submit(op, mutation_args)
+
+        return result.create_database_kshot
+
+    def update_database_kshot(self, database_kshot: Dict) -> MaxMutationResponse:
+        """
+        Update an existing database k-shot.
+
+        Parameters
+        ----------
+        database_kshot : Dict
+            The database k-shot dictionary containing the updated configuration and metadata.
+            Must follow the DatabaseKShot type definition and include:
+            - databaseKShotId: UUID (required) - identifies which k-shot to update
+            - databaseId: UUID (required)
+            - question: str (required)
+            - renderedPrompt: str (optional)
+            - explanation: str (optional)
+            - sql: str (optional)
+            - title: str (optional)
+            - visualization: JSON (optional)
+            - isActive: bool (optional)
+
+        Returns
+        -------
+        MaxMutationResponse
+            The result of the update operation.
+        """
+        mutation_args = {
+            'databaseKShot': database_kshot,
+        }
+
+        op = Operations.mutation.update_database_kshot
+        result = self._gql_client.submit(op, mutation_args)
+
+        return result.update_database_kshot
+
+    def delete_database_kshot(self, database_kshot_id: UUID) -> MaxMutationResponse:
+        """
+        Delete a database k-shot.
+
+        Parameters
+        ----------
+        database_kshot_id : UUID
+            The UUID of the database k-shot to delete.
+
+        Returns
+        -------
+        MaxMutationResponse
+            The result of the delete operation.
+        """
+        mutation_args = {
+            'databaseKShotId': str(database_kshot_id),
+        }
+
+        op = Operations.mutation.delete_database_kshot
+        result = self._gql_client.submit(op, mutation_args)
+
+        return result.delete_database_kshot
+
+    def update_database_kshot_question(self, database_kshot_id: UUID, question: str) -> MaxMutationResponse:
+        """
+        Update the question of a database k-shot.
+
+        Parameters
+        ----------
+        database_kshot_id : UUID
+            The unique identifier of the database k-shot to be updated.
+        question : str
+            The new question to assign to the database k-shot.
+
+        Returns
+        -------
+        MaxMutationResponse
+            The result of the GraphQL mutation containing the updated question.
+        """
+        mutation_args = {
+            'databaseKShotId': str(database_kshot_id),
+            'question': question,
+        }
+
+        op = Operations.mutation.update_database_kshot_question
+        result = self._gql_client.submit(op, mutation_args)
+
+        return result.update_database_kshot_question
+
+    def update_database_kshot_rendered_prompt(self, database_kshot_id: UUID, rendered_prompt: Optional[str]) -> MaxMutationResponse:
+        """
+        Update the rendered prompt of a database k-shot.
+
+        Parameters
+        ----------
+        database_kshot_id : UUID
+            The unique identifier of the database k-shot to be updated.
+        rendered_prompt : Optional[str]
+            The new rendered prompt to assign to the database k-shot.
+
+        Returns
+        -------
+        MaxMutationResponse
+            The result of the GraphQL mutation containing the updated rendered prompt.
+        """
+        mutation_args = {
+            'databaseKShotId': str(database_kshot_id),
+            'renderedPrompt': rendered_prompt,
+        }
+
+        op = Operations.mutation.update_database_kshot_rendered_prompt
+        result = self._gql_client.submit(op, mutation_args)
+
+        return result.update_database_kshot_rendered_prompt
+
+    def update_database_kshot_explanation(self, database_kshot_id: UUID, explanation: Optional[str]) -> MaxMutationResponse:
+        """
+        Update the explanation of a database k-shot.
+
+        Parameters
+        ----------
+        database_kshot_id : UUID
+            The unique identifier of the database k-shot to be updated.
+        explanation : Optional[str]
+            The new explanation to assign to the database k-shot.
+
+        Returns
+        -------
+        MaxMutationResponse
+            The result of the GraphQL mutation containing the updated explanation.
+        """
+        mutation_args = {
+            'databaseKShotId': str(database_kshot_id),
+            'explanation': explanation,
+        }
+
+        op = Operations.mutation.update_database_kshot_explanation
+        result = self._gql_client.submit(op, mutation_args)
+
+        return result.update_database_kshot_explanation
+
+    def update_database_kshot_sql(self, database_kshot_id: UUID, sql: Optional[str]) -> MaxMutationResponse:
+        """
+        Update the SQL of a database k-shot.
+
+        Parameters
+        ----------
+        database_kshot_id : UUID
+            The unique identifier of the database k-shot to be updated.
+        sql : Optional[str]
+            The new SQL to assign to the database k-shot.
+
+        Returns
+        -------
+        MaxMutationResponse
+            The result of the GraphQL mutation containing the updated SQL.
+        """
+        mutation_args = {
+            'databaseKShotId': str(database_kshot_id),
+            'sql': sql,
+        }
+
+        op = Operations.mutation.update_database_kshot_sql
+        result = self._gql_client.submit(op, mutation_args)
+
+        return result.update_database_kshot_sql
+
+    def update_database_kshot_title(self, database_kshot_id: UUID, title: Optional[str]) -> MaxMutationResponse:
+        """
+        Update the title of a database k-shot.
+
+        Parameters
+        ----------
+        database_kshot_id : UUID
+            The unique identifier of the database k-shot to be updated.
+        title : Optional[str]
+            The new title to assign to the database k-shot.
+
+        Returns
+        -------
+        MaxMutationResponse
+            The result of the GraphQL mutation containing the updated title.
+        """
+        mutation_args = {
+            'databaseKShotId': str(database_kshot_id),
+            'title': title,
+        }
+
+        op = Operations.mutation.update_database_kshot_title
+        result = self._gql_client.submit(op, mutation_args)
+
+        return result.update_database_kshot_title
+
+    def update_database_kshot_visualization(self, database_kshot_id: UUID, visualization: Optional[Dict]) -> MaxMutationResponse:
+        """
+        Update the visualization of a database k-shot.
+
+        Parameters
+        ----------
+        database_kshot_id : UUID
+            The unique identifier of the database k-shot to be updated.
+        visualization : Optional[Dict]
+            The new visualization JSON to assign to the database k-shot.
+
+        Returns
+        -------
+        MaxMutationResponse
+            The result of the GraphQL mutation containing the updated visualization.
+        """
+        mutation_args = {
+            'databaseKShotId': str(database_kshot_id),
+            'visualization': visualization,
+        }
+
+        op = Operations.mutation.update_database_kshot_visualization
+        result = self._gql_client.submit(op, mutation_args)
+
+        return result.update_database_kshot_visualization

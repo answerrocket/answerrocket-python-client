@@ -225,3 +225,42 @@ mutation GetTestRunOutput($answerId: UUID!) {
     payload
   }
 }
+
+query GetChatArtifact($chatArtifactId: UUID!) {
+  getChatArtifact(chatArtifactId: $chatArtifactId) {
+    chatArtifactId
+    name
+    ownerUserId
+    chatEntryId
+    contentBlockId
+    blockData
+    miscInfo
+    createdUtc
+  }
+}
+
+query GetChatArtifacts(
+  $searchInput: ChatArtifactSearchInput!
+  $paging: PagingInput!
+) {
+  getChatArtifacts(searchInput: $searchInput, paging: $paging) {
+    totalRows
+    rows {
+      chatArtifactId
+      name
+      ownerUserId
+      chatEntryId
+      contentBlockId
+      miscInfo
+      createdUtc
+    }
+  }
+}
+
+mutation CreateChatArtifact($chatArtifact: JSON!) {
+  createChatArtifact(chatArtifact: $chatArtifact)
+}
+
+mutation DeleteChatArtifact($chatArtifactId: UUID!) {
+  deleteChatArtifact(chatArtifactId: $chatArtifactId)
+}

@@ -38,6 +38,25 @@ class Llm:
         gql_response = self.gql_client.submit(op, args)
         return gql_response.chat_completion
 
+    def chat_completion_with_prompt(self, prompt_name: str, prompt_variables: dict,
+                                    model_override: str | None = None):
+        """
+        Call an LLM API's chat completion endpoint with the provided prompt.
+        :param prompt_name: the name of the prompt to use
+        :param prompt_variables: a dictionary of variables to pass to the prompt
+        :param model_override: a model name or id to use instead of a configured default
+        :return: the raw response from the model api
+        """
+        op = Operations.query.chat_completion_with_prompt
+        args = {
+            'promptName': prompt_name,
+            'promptVariables': prompt_variables,
+            'modelSelection': {
+                'assistantId': self.config.copilot_id,
+                'modelOverride': model_override
+            }
+        }
+
     def narrative_completion(self, prompt: str, model_override: str | None = None):
         """
         Call an LLM API's completion endpoint with the provided prompt.
@@ -109,3 +128,20 @@ class Llm:
         }
         gql_response = self.gql_client.submit(op, args)
         return gql_response.research_completion
+
+    def research_completion_with_prompt(self, prompt_name: str, prompt_variables: dict,
+                                        model_override: str | None = None):
+        """
+        Call an LLM API's chat completion endpoint with the provided prompt -- will utilize the environment's configured 'Research' model.
+        """
+        op = Operations.query.research_completion_with_prompt
+        args = {
+            'promptName': prompt_name,
+            'promptVariables': prompt_variables,
+            'modelSelection': {
+                'assistantId': self.config.copilot_id,
+                'modelOverride': model_override
+            }
+        }
+        gql_response = self.gql_client.submit(op, args)
+        return gql_response.research_completion_with_prompt
