@@ -113,7 +113,6 @@ query GetCopilots {
         datasetId
     }
 }
-
 query GetCopilotHydratedReports($copilotId: UUID!, $overrideDatasetId: UUID, $loadAllSkills: Boolean) {
     getCopilotHydratedReports(copilotId: $copilotId, overrideDatasetId: $overrideDatasetId, loadAllSkills: $loadAllSkills) {
         copilotId
@@ -135,14 +134,22 @@ query GetCopilotHydratedReports($copilotId: UUID!, $overrideDatasetId: UUID, $lo
             description
             isHidden
             isMulti
+            isRequired
             key
             llmDescription
             metadataField
             skillParamDefKey
+            usePredicateFilters
             value
+            defaultValue
+            additionalConstraints
+            datasetNames
+            meta
             matchValues {
                 automaticDbWhitelist
+                constrainedValues
                 datasetId
+                defaultPerformanceMetric
                 inverseMap
                 phraseTemplate
                 popularValues
@@ -156,7 +163,9 @@ query GetCopilotHydratedReports($copilotId: UUID!, $overrideDatasetId: UUID, $lo
         schedulingOnly
         toolDescription
         toolName
+        toolType
         type
         usePredicateFilters
+        meta
     }
 }
