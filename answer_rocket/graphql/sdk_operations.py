@@ -672,14 +672,22 @@ def query_get_copilot_hydrated_reports():
     _op_get_copilot_hydrated_reports_parameters.description()
     _op_get_copilot_hydrated_reports_parameters.is_hidden()
     _op_get_copilot_hydrated_reports_parameters.is_multi()
+    _op_get_copilot_hydrated_reports_parameters.is_required()
     _op_get_copilot_hydrated_reports_parameters.key()
     _op_get_copilot_hydrated_reports_parameters.llm_description()
     _op_get_copilot_hydrated_reports_parameters.metadata_field()
     _op_get_copilot_hydrated_reports_parameters.skill_param_def_key()
+    _op_get_copilot_hydrated_reports_parameters.use_predicate_filters()
     _op_get_copilot_hydrated_reports_parameters.value()
+    _op_get_copilot_hydrated_reports_parameters.default_value()
+    _op_get_copilot_hydrated_reports_parameters.additional_constraints()
+    _op_get_copilot_hydrated_reports_parameters.dataset_names()
+    _op_get_copilot_hydrated_reports_parameters.meta()
     _op_get_copilot_hydrated_reports_parameters_match_values = _op_get_copilot_hydrated_reports_parameters.match_values()
     _op_get_copilot_hydrated_reports_parameters_match_values.automatic_db_whitelist()
+    _op_get_copilot_hydrated_reports_parameters_match_values.constrained_values()
     _op_get_copilot_hydrated_reports_parameters_match_values.dataset_id()
+    _op_get_copilot_hydrated_reports_parameters_match_values.default_performance_metric()
     _op_get_copilot_hydrated_reports_parameters_match_values.inverse_map()
     _op_get_copilot_hydrated_reports_parameters_match_values.phrase_template()
     _op_get_copilot_hydrated_reports_parameters_match_values.popular_values()
@@ -691,8 +699,10 @@ def query_get_copilot_hydrated_reports():
     _op_get_copilot_hydrated_reports.scheduling_only()
     _op_get_copilot_hydrated_reports.tool_description()
     _op_get_copilot_hydrated_reports.tool_name()
+    _op_get_copilot_hydrated_reports.tool_type()
     _op_get_copilot_hydrated_reports.type()
     _op_get_copilot_hydrated_reports.use_predicate_filters()
+    _op_get_copilot_hydrated_reports.meta()
     return _op
 
 
@@ -840,9 +850,22 @@ def query_research_completion():
     return _op
 
 
+def query_chat_completion_with_prompt():
+    _op = sgqlc.operation.Operation(_schema_root.query_type, name='ChatCompletionWithPrompt', variables=dict(promptName=sgqlc.types.Arg(sgqlc.types.non_null(_schema.String)), promptVariables=sgqlc.types.Arg(_schema.JSON), messages=sgqlc.types.Arg(sgqlc.types.list_of(sgqlc.types.non_null(_schema.LlmChatMessage)))))
+    _op.chat_completion_with_prompt(prompt_name=sgqlc.types.Variable('promptName'), prompt_variables=sgqlc.types.Variable('promptVariables'), messages=sgqlc.types.Variable('messages'))
+    return _op
+
+
+def query_research_completion_with_prompt():
+    _op = sgqlc.operation.Operation(_schema_root.query_type, name='ResearchCompletionWithPrompt', variables=dict(promptName=sgqlc.types.Arg(sgqlc.types.non_null(_schema.String)), promptVariables=sgqlc.types.Arg(_schema.JSON), messages=sgqlc.types.Arg(sgqlc.types.list_of(sgqlc.types.non_null(_schema.LlmChatMessage)))))
+    _op.research_completion_with_prompt(prompt_name=sgqlc.types.Variable('promptName'), prompt_variables=sgqlc.types.Variable('promptVariables'), messages=sgqlc.types.Variable('messages'))
+    return _op
+
+
 class Query:
     all_chat_entries = query_all_chat_entries()
     chat_completion = query_chat_completion()
+    chat_completion_with_prompt = query_chat_completion_with_prompt()
     chat_entry = query_chat_entry()
     chat_thread = query_chat_thread()
     dataframes_for_entry = query_dataframes_for_entry()
@@ -865,6 +888,7 @@ class Query:
     narrative_completion = query_narrative_completion()
     narrative_completion_with_prompt = query_narrative_completion_with_prompt()
     research_completion = query_research_completion()
+    research_completion_with_prompt = query_research_completion_with_prompt()
     skill_memory = query_skill_memory()
     sql_completion = query_sql_completion()
 
