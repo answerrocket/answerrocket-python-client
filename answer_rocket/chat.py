@@ -480,17 +480,17 @@ class Chat:
         result = self.gql_client.submit(op, get_agent_workflow_args)
         return result.get_max_agent_workflow
     
-    def import_copilot_skill_from_zip(self, entry_id: str, skill_name: str):
+    def import_copilot_skill_from_zip(self, copilot_id: str, skill_name: str):
         """
         TODO: This is meant to be temprorary, used for skill builder and should be removed or reworked once builder is moved internal
         Imports an agent workflow from a zip file.
-        :param entry_id: the id of the chat entry
+        :param copilot_id: the id of the copilot to import to
         :param skill_name: the name of the skill to import the workflow for
         :return: True if the workflow was imported successfully, False otherwise
         """
 
-        if entry_id is None:
-            logger.warning("No entry id provided, aborting.")
+        if copilot_id is None:
+            logger.warning("No copilot id provided, aborting.")
             return None
         
         if skill_name is None:
@@ -498,12 +498,109 @@ class Chat:
             return None
 
         import_copilot_skill_from_zip_args = {
-            'entryId': UUID(entry_id),
+            'copilotId': UUID(copilot_id),
             'skillName': skill_name,
         }
         op = Operations.mutation.import_copilot_skill_from_zip
         result = self.gql_client.submit(op, import_copilot_skill_from_zip_args)
         return result.import_copilot_skill_from_zip
+    
+    def import_skill_from_repo(self, copilot_id: str, skill_name: str, repository_id: str):
+        """
+        TODO: This is meant to be temprorary, used for skill builder and should be removed or reworked once builder is moved internal
+        Imports an agent workflow from a repository.
+        :param copilot_id: the id of the copilot
+        :param skill_name: the name of the skill to import the workflow for
+
+        :param repository_id: the id of the repository to import from
+        :return: True if the workflow was imported successfully, False otherwise
+        """
+
+        if copilot_id is None:
+            logger.warning("No copilot id provided, aborting.")
+            return None
+        
+        if skill_name is None:
+            logger.warning("No skill name provided, aborting.")
+            return None
+        
+        if repository_id is None:
+            logger.warning("No repository id provided, aborting.")
+            return None 
+        
+        import_skill_from_repo_args = {
+            'copilotId': UUID(copilot_id),
+            'skillName': skill_name,
+            'repositoryId': UUID(repository_id),
+        }
+        op = Operations.mutation.import_skill_from_repo
+        result = self.gql_client.submit(op, import_skill_from_repo_args)
+        return result.import_skill_from_repo
+    
+    def sync_max_skill_repository(self, repository_id: str):
+        """
+        TODO: This is meant to be temprorary, used for skill builder and should be removed or reworked once builder is moved internal
+        Syncs a repository.
+        :param repository_id: the id of the repository to sync
+        :return: True if the repository was synced successfully, False otherwise
+        """
+
+        if repository_id is None:
+            logger.warning("No repository id provided, aborting.")
+            return None
+
+        sync_max_skill_repository_args = {
+            'id': UUID(repository_id),
+        }
+        op = Operations.mutation.sync_max_skill_repository
+        result = self.gql_client.submit(op, sync_max_skill_repository_args)
+        return result.sync_max_skill_repository
+    
+    def test_run_copilot_skill(self, copilot_id: str, skill_name: str, nl: str = None, parameters: dict = None):
+        """
+        TODO: This is meant to be temprorary, used for skill builder and should be removed or reworked once builder is moved internal
+        Test runs a copilot skill.
+        :param copilot_id: the id of the copilot    
+        :param skill_name: the name of the skill to test run
+        :param nl: the natural language query to test run
+        :param parameters: the parameters to pass to the skill
+        :return: True if the test run was successful, False otherwise
+        """
+        if copilot_id is None:
+            logger.warning("No copilot id provided, aborting.")
+            return None
+        
+        if skill_name is None:
+            logger.warning("No skill name provided, aborting.")
+            return None
+        
+        test_run_copilot_skill_args = {
+            'copilotId': UUID(copilot_id),
+            'skillName': skill_name,
+            'nl': nl if nl is not None else "",
+            'parameters': parameters,
+        }
+        op = Operations.mutation.test_run_copilot_skill
+        result = self.gql_client.submit(op, test_run_copilot_skill_args)
+        return result.test_run_copilot_skill
+    
+    def get_test_run_output(self, answer_id: str):
+        """
+        TODO: This is meant to be temprorary, used for skill builder and should be removed or reworked once builder is moved internal
+        Gets the output of a test run.
+        :param answer_id: the id of the answer to get the output for
+        :return: the output of the test run
+        """
+        if answer_id is None:
+            logger.warning("No answer id provided, aborting.")
+            return None
+        
+        get_test_run_output_args = {
+            'answerId': UUID(answer_id),
+        }
+        op = Operations.mutation.get_test_run_output
+        result = self.gql_client.submit(op, get_test_run_output_args)
+        return result.get_test_run_output
 
     def get_dataframes_for_entry(self, entry_id: str) -> [pd.DataFrame]:
         """
