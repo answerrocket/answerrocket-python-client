@@ -480,17 +480,17 @@ class Chat:
         result = self.gql_client.submit(op, get_agent_workflow_args)
         return result.get_max_agent_workflow
     
-    def import_copilot_skill_from_zip(self, entry_id: str, skill_name: str):
+    def import_copilot_skill_from_zip(self, copilot_id: str, skill_name: str):
         """
         TODO: This is meant to be temprorary, used for skill builder and should be removed or reworked once builder is moved internal
         Imports an agent workflow from a zip file.
-        :param entry_id: the id of the chat entry
+        :param copilot_id: the id of the copilot to import to
         :param skill_name: the name of the skill to import the workflow for
         :return: True if the workflow was imported successfully, False otherwise
         """
 
-        if entry_id is None:
-            logger.warning("No entry id provided, aborting.")
+        if copilot_id is None:
+            logger.warning("No copilot id provided, aborting.")
             return None
         
         if skill_name is None:
@@ -498,7 +498,7 @@ class Chat:
             return None
 
         import_copilot_skill_from_zip_args = {
-            'entryId': UUID(entry_id),
+            'copilotId': UUID(copilot_id),
             'skillName': skill_name,
         }
         op = Operations.mutation.import_copilot_skill_from_zip

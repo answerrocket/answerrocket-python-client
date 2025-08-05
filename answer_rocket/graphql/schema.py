@@ -1027,7 +1027,7 @@ class Mutation(sgqlc.types.Type):
 ))
     )
     import_copilot_skill_from_zip = sgqlc.types.Field(sgqlc.types.non_null(MaxMutationResponse), graphql_name='importCopilotSkillFromZip', args=sgqlc.types.ArgDict((
-        ('entry_id', sgqlc.types.Arg(sgqlc.types.non_null(UUID), graphql_name='entryId', default=None)),
+        ('copilot_id', sgqlc.types.Arg(sgqlc.types.non_null(UUID), graphql_name='copilotId', default=None)),
         ('skill_name', sgqlc.types.Arg(sgqlc.types.non_null(String), graphql_name='skillName', default=None)),
 ))
     )
