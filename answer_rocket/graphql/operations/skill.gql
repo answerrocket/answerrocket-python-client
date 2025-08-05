@@ -5,51 +5,58 @@ mutation UpdateLoadingMessage($answerId: UUID!, $message: String!) {
 query ChatCompletion(
   $messages: [LlmChatMessage!]!
   $modelSelection: LlmModelSelection
+  $llmMeta: LlmMeta
 ) {
-  chatCompletion(messages: $messages, modelSelection: $modelSelection)
+  chatCompletion(messages: $messages, modelSelection: $modelSelection, llmMeta: $llmMeta)
 }
 
 query NarrativeCompletion(
   $prompt: String!
   $modelSelection: LlmModelSelection
+  $llmMeta: LlmMeta
 ) {
-  narrativeCompletion(prompt: $prompt, modelSelection: $modelSelection)
+  narrativeCompletion(prompt: $prompt, modelSelection: $modelSelection, llmMeta: $llmMeta)
 }
 
 query NarrativeCompletionWithPrompt(
   $promptName: String!
   $promptVariables: JSON
   $modelSelection: LlmModelSelection
+  $llmMeta: LlmMeta
 ) {
-  narrativeCompletionWithPrompt(promptName: $promptName, promptVariables: $promptVariables, modelSelection: $modelSelection)
+  narrativeCompletionWithPrompt(promptName: $promptName, promptVariables: $promptVariables, modelSelection: $modelSelection, llmMeta: $llmMeta)
 }
 
 query SqlCompletion(
   $messages: [LlmChatMessage!]!
   $modelSelection: LlmModelSelection
+  $llmMeta: LlmMeta
 ) {
-  sqlCompletion(messages: $messages, modelSelection: $modelSelection)
+  sqlCompletion(messages: $messages, modelSelection: $modelSelection, llmMeta: $llmMeta)
 }
 
 query ResearchCompletion(
   $messages: [LlmChatMessage!]!
   $modelSelection: LlmModelSelection
+  $llmMeta: LlmMeta
 ) {
-  researchCompletion(messages: $messages, modelSelection: $modelSelection)
+  researchCompletion(messages: $messages, modelSelection: $modelSelection, llmMeta: $llmMeta)
 }
 
 query ChatCompletionWithPrompt(
   $promptName: String!
   $promptVariables: JSON
   $messages: [LlmChatMessage!]
+  $llmMeta: LlmMeta
 ) {
-  chatCompletionWithPrompt(promptName: $promptName, promptVariables: $promptVariables, messages: $messages)
+  chatCompletionWithPrompt(promptName: $promptName, promptVariables: $promptVariables, messages: $messages, llmMeta: $llmMeta)
 }
 
 query ResearchCompletionWithPrompt(
   $promptName: String!
   $promptVariables: JSON
   $messages: [LlmChatMessage!]
+  $llmMeta: LlmMeta
 ) {
-  researchCompletionWithPrompt(promptName: $promptName, promptVariables: $promptVariables, messages: $messages)
+  researchCompletionWithPrompt(promptName: $promptName, promptVariables: $promptVariables, messages: $messages, llmMeta: $llmMeta)
 }

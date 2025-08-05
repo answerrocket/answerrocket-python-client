@@ -145,6 +145,15 @@ class LlmChatMessage(sgqlc.types.Input):
     content = sgqlc.types.Field(String, graphql_name='content')
 
 
+class LlmMeta(sgqlc.types.Input):
+    __schema__ = schema
+    __field_names__ = ('answer_id', 'thread_id', 'copilot_id', 'skill_id')
+    answer_id = sgqlc.types.Field(UUID, graphql_name='answerId')
+    thread_id = sgqlc.types.Field(UUID, graphql_name='threadId')
+    copilot_id = sgqlc.types.Field(UUID, graphql_name='copilotId')
+    skill_id = sgqlc.types.Field(UUID, graphql_name='skillId')
+
+
 class LlmModelSelection(sgqlc.types.Input):
     __schema__ = schema
     __field_names__ = ('assistant_id', 'model_override')
@@ -1485,39 +1494,46 @@ class Query(sgqlc.types.Type):
     chat_completion = sgqlc.types.Field(LlmResponse, graphql_name='chatCompletion', args=sgqlc.types.ArgDict((
         ('messages', sgqlc.types.Arg(sgqlc.types.non_null(sgqlc.types.list_of(sgqlc.types.non_null(LlmChatMessage))), graphql_name='messages', default=None)),
         ('model_selection', sgqlc.types.Arg(LlmModelSelection, graphql_name='modelSelection', default=None)),
+        ('llm_meta', sgqlc.types.Arg(LlmMeta, graphql_name='llmMeta', default=None)),
 ))
     )
     narrative_completion = sgqlc.types.Field(LlmResponse, graphql_name='narrativeCompletion', args=sgqlc.types.ArgDict((
         ('prompt', sgqlc.types.Arg(sgqlc.types.non_null(String), graphql_name='prompt', default=None)),
         ('model_selection', sgqlc.types.Arg(LlmModelSelection, graphql_name='modelSelection', default=None)),
+        ('llm_meta', sgqlc.types.Arg(LlmMeta, graphql_name='llmMeta', default=None)),
 ))
     )
     narrative_completion_with_prompt = sgqlc.types.Field(LlmResponse, graphql_name='narrativeCompletionWithPrompt', args=sgqlc.types.ArgDict((
         ('prompt_name', sgqlc.types.Arg(sgqlc.types.non_null(String), graphql_name='promptName', default=None)),
         ('prompt_variables', sgqlc.types.Arg(JSON, graphql_name='promptVariables', default=None)),
         ('model_selection', sgqlc.types.Arg(LlmModelSelection, graphql_name='modelSelection', default=None)),
+        ('llm_meta', sgqlc.types.Arg(LlmMeta, graphql_name='llmMeta', default=None)),
 ))
     )
     sql_completion = sgqlc.types.Field(LlmResponse, graphql_name='sqlCompletion', args=sgqlc.types.ArgDict((
         ('messages', sgqlc.types.Arg(sgqlc.types.non_null(sgqlc.types.list_of(sgqlc.types.non_null(LlmChatMessage))), graphql_name='messages', default=None)),
         ('model_selection', sgqlc.types.Arg(LlmModelSelection, graphql_name='modelSelection', default=None)),
+        ('llm_meta', sgqlc.types.Arg(LlmMeta, graphql_name='llmMeta', default=None)),
 ))
     )
     research_completion = sgqlc.types.Field(LlmResponse, graphql_name='researchCompletion', args=sgqlc.types.ArgDict((
         ('messages', sgqlc.types.Arg(sgqlc.types.non_null(sgqlc.types.list_of(sgqlc.types.non_null(LlmChatMessage))), graphql_name='messages', default=None)),
         ('model_selection', sgqlc.types.Arg(LlmModelSelection, graphql_name='modelSelection', default=None)),
+        ('llm_meta', sgqlc.types.Arg(LlmMeta, graphql_name='llmMeta', default=None)),
 ))
     )
     chat_completion_with_prompt = sgqlc.types.Field(LlmResponse, graphql_name='chatCompletionWithPrompt', args=sgqlc.types.ArgDict((
         ('prompt_name', sgqlc.types.Arg(sgqlc.types.non_null(String), graphql_name='promptName', default=None)),
         ('prompt_variables', sgqlc.types.Arg(JSON, graphql_name='promptVariables', default=None)),
         ('messages', sgqlc.types.Arg(sgqlc.types.list_of(sgqlc.types.non_null(LlmChatMessage)), graphql_name='messages', default=None)),
+        ('llm_meta', sgqlc.types.Arg(LlmMeta, graphql_name='llmMeta', default=None)),
 ))
     )
     research_completion_with_prompt = sgqlc.types.Field(LlmResponse, graphql_name='researchCompletionWithPrompt', args=sgqlc.types.ArgDict((
         ('prompt_name', sgqlc.types.Arg(sgqlc.types.non_null(String), graphql_name='promptName', default=None)),
         ('prompt_variables', sgqlc.types.Arg(JSON, graphql_name='promptVariables', default=None)),
         ('messages', sgqlc.types.Arg(sgqlc.types.list_of(sgqlc.types.non_null(LlmChatMessage)), graphql_name='messages', default=None)),
+        ('llm_meta', sgqlc.types.Arg(LlmMeta, graphql_name='llmMeta', default=None)),
 ))
     )
     get_chat_artifact = sgqlc.types.Field(ChatArtifact, graphql_name='getChatArtifact', args=sgqlc.types.ArgDict((
