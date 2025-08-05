@@ -39,6 +39,15 @@ class Config:
             return artifact_file.read()
 
     def _get_artifact_from_server(self, artifact_path: str) -> Optional[dict]:
+        """
+        Retrieve an artifact
+
+        Args:
+            artifact_path (str): The path to the artifact relative to the project root.
+
+        Returns:
+            Optional[dict]: The artifact data if found, None otherwise.
+        """
         if not self.copilot_id or not self.copilot_skill_id:
             return None
         artifact_query_args = {
@@ -79,6 +88,16 @@ class Config:
             return []
         
     def get_copilot(self, use_published_version: bool = True, copilot_id: str = None) -> MaxCopilot:
+        """
+        Retrieve information about a specific copilot.
+
+        Args:
+            use_published_version (bool, optional): Whether to use the published version. Defaults to True.
+            copilot_id (str, optional): The ID of the copilot. If None, uses the configured copilot ID.
+
+        Returns:
+            MaxCopilot: The copilot information, or None if an error occurs.
+        """
         try:
             query_args = {
                 'copilotId': copilot_id or self.copilot_id,
@@ -107,6 +126,17 @@ class Config:
             return None
 
     def get_copilot_skill(self, use_published_version: bool = True, copilot_id: str = None, copilot_skill_id: str = None) -> MaxCopilotSkill:
+        """
+        Retrieve information about a specific copilot skill.
+
+        Args:
+            use_published_version (bool, optional): Whether to use the published version. Defaults to True.
+            copilot_id (str, optional): The ID of the copilot. If None, uses the configured copilot ID.
+            copilot_skill_id (str, optional): The ID of the copilot skill. If None, uses the configured skill ID.
+
+        Returns:
+            MaxCopilotSkill: The copilot skill information, or None if an error occurs.
+        """
         try:
             query_args = {
                 'copilotId': copilot_id or self.copilot_id,
@@ -123,6 +153,12 @@ class Config:
             return None
 
     def get_skill_components(self) -> [MaxSkillComponent]:
+        """
+        Retrieve all available skill components.
+
+        Returns:
+            list[MaxSkillComponent]: A list of skill components, or None if an error occurs.
+        """
         try:
             query_args = {
             }
@@ -177,6 +213,16 @@ class Config:
             return None
         
     def create_copilot_skill_chat_question(self, question: str, expected_completion_response: str) -> CreateMaxCopilotSkillChatQuestionResponse:
+        """
+        Create a new chat question for a copilot skill.
+
+        Args:
+            question (str): The question text.
+            expected_completion_response (str): The expected completion response.
+
+        Returns:
+            CreateMaxCopilotSkillChatQuestionResponse: The response containing the created question, or None if an error occurs.
+        """
         try:
             mutation_args = {
                 'copilotId': self.copilot_id,
@@ -211,6 +257,17 @@ class Config:
 
     def update_copilot_skill_chat_question(self, copilot_skill_chat_question_id: UUID,
                                            question: str, expected_completion_response: str) -> MaxMutationResponse:
+        """
+        Update an existing copilot skill chat question.
+
+        Args:
+            copilot_skill_chat_question_id (UUID): The ID of the chat question to update.
+            question (str): The updated question text.
+            expected_completion_response (str): The updated expected completion response.
+
+        Returns:
+            MaxMutationResponse: The mutation response, or None if an error occurs.
+        """
         try:
             mutation_args = {
                 'copilotId': self.copilot_id,
@@ -247,6 +304,15 @@ class Config:
             return None
 
     def delete_copilot_skill_chat_question(self, copilot_skill_chat_question_id: UUID) -> MaxMutationResponse:
+        """
+        Delete a copilot skill chat question.
+
+        Args:
+            copilot_skill_chat_question_id (UUID): The ID of the chat question to delete.
+
+        Returns:
+            MaxMutationResponse: The mutation response, or None if an error occurs.
+        """
         try:
             mutation_args = {
                 'copilotId': self.copilot_id,
@@ -277,6 +343,18 @@ class Config:
             return None
 
     def create_copilot_question(self, nl: str, skill_id: UUID = None, hint: str = None, parameters = None) -> MaxCreateCopilotQuestionResponse:
+        """
+        Create a new copilot question.
+
+        Args:
+            nl (str): The natural language question.
+            skill_id (UUID, optional): The ID of the skill to associate with the question.
+            hint (str, optional): A hint for the question.
+            parameters: Additional parameters for the question.
+
+        Returns:
+            MaxCreateCopilotQuestionResponse: The response containing the created question, or None if an error occurs.
+        """
         try:
             mutation_args = {
                 'copilotId': self.copilot_id,
@@ -309,6 +387,19 @@ class Config:
             return None
 
     def update_copilot_question(self, copilot_question_id: UUID, nl: str = None, skill_id: UUID = None, hint: str = None, parameters = None) -> MaxMutationResponse:
+        """
+        Update an existing copilot question.
+
+        Args:
+            copilot_question_id (UUID): The ID of the question to update.
+            nl (str, optional): The updated natural language question.
+            skill_id (UUID, optional): The updated skill ID.
+            hint (str, optional): The updated hint.
+            parameters: The updated parameters.
+
+        Returns:
+            MaxMutationResponse: The mutation response, or None if an error occurs.
+        """
         try:
             mutation_args = {
                 'copilotId': self.copilot_id,
@@ -344,6 +435,15 @@ class Config:
             return None
 
     def delete_copilot_chat_question(self, copilot_question_id: UUID) -> MaxMutationResponse:
+        """
+        Delete a copilot question.
+
+        Args:
+            copilot_question_id (UUID): The ID of the question to delete.
+
+        Returns:
+            MaxMutationResponse: The mutation response, or None if an error occurs.
+        """
         try:
             mutation_args = {
                 'copilotId': self.copilot_id,
@@ -371,6 +471,12 @@ class Config:
             return None
 
     def get_current_user(self) -> MaxUser:
+        """
+        Retrieve information about the current authenticated user.
+
+        Returns:
+            MaxUser: The current user information, or None if an error occurs.
+        """
         try:
             query_args = {
             }
@@ -396,6 +502,17 @@ class Config:
             template_vars: Dict[str, Any],
             k_shot_match: str,
         ) -> MaxLLmPrompt:
+        """
+        Retrieve an LLM prompt with template variables and k-shot matching.
+
+        Args:
+            llm_prompt_id (UUID): The ID of the LLM prompt to retrieve.
+            template_vars (Dict[str, Any]): Template variables to substitute in the prompt.
+            k_shot_match (str): The k-shot matching criteria.
+
+        Returns:
+            MaxLLmPrompt: The LLM prompt with substitutions applied, or None if an error occurs.
+        """
         try:
             query_args = {
                 'llmPromptId': str(llm_prompt_id),
