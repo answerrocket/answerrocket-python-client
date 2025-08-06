@@ -855,44 +855,44 @@ def query_get_datasets():
 
 
 def query_chat_completion():
-    _op = sgqlc.operation.Operation(_schema_root.query_type, name='ChatCompletion', variables=dict(messages=sgqlc.types.Arg(sgqlc.types.non_null(sgqlc.types.list_of(sgqlc.types.non_null(_schema.LlmChatMessage)))), modelSelection=sgqlc.types.Arg(_schema.LlmModelSelection)))
-    _op.chat_completion(messages=sgqlc.types.Variable('messages'), model_selection=sgqlc.types.Variable('modelSelection'))
+    _op = sgqlc.operation.Operation(_schema_root.query_type, name='ChatCompletion', variables=dict(messages=sgqlc.types.Arg(sgqlc.types.non_null(sgqlc.types.list_of(sgqlc.types.non_null(_schema.LlmChatMessage)))), modelSelection=sgqlc.types.Arg(_schema.LlmModelSelection), llmMeta=sgqlc.types.Arg(_schema.LlmMeta)))
+    _op.chat_completion(messages=sgqlc.types.Variable('messages'), model_selection=sgqlc.types.Variable('modelSelection'), llm_meta=sgqlc.types.Variable('llmMeta'))
     return _op
 
 
 def query_narrative_completion():
-    _op = sgqlc.operation.Operation(_schema_root.query_type, name='NarrativeCompletion', variables=dict(prompt=sgqlc.types.Arg(sgqlc.types.non_null(_schema.String)), modelSelection=sgqlc.types.Arg(_schema.LlmModelSelection)))
-    _op.narrative_completion(prompt=sgqlc.types.Variable('prompt'), model_selection=sgqlc.types.Variable('modelSelection'))
+    _op = sgqlc.operation.Operation(_schema_root.query_type, name='NarrativeCompletion', variables=dict(prompt=sgqlc.types.Arg(sgqlc.types.non_null(_schema.String)), modelSelection=sgqlc.types.Arg(_schema.LlmModelSelection), llmMeta=sgqlc.types.Arg(_schema.LlmMeta)))
+    _op.narrative_completion(prompt=sgqlc.types.Variable('prompt'), model_selection=sgqlc.types.Variable('modelSelection'), llm_meta=sgqlc.types.Variable('llmMeta'))
     return _op
 
 
 def query_narrative_completion_with_prompt():
-    _op = sgqlc.operation.Operation(_schema_root.query_type, name='NarrativeCompletionWithPrompt', variables=dict(promptName=sgqlc.types.Arg(sgqlc.types.non_null(_schema.String)), promptVariables=sgqlc.types.Arg(_schema.JSON), modelSelection=sgqlc.types.Arg(_schema.LlmModelSelection)))
-    _op.narrative_completion_with_prompt(prompt_name=sgqlc.types.Variable('promptName'), prompt_variables=sgqlc.types.Variable('promptVariables'), model_selection=sgqlc.types.Variable('modelSelection'))
+    _op = sgqlc.operation.Operation(_schema_root.query_type, name='NarrativeCompletionWithPrompt', variables=dict(promptName=sgqlc.types.Arg(sgqlc.types.non_null(_schema.String)), promptVariables=sgqlc.types.Arg(_schema.JSON), modelSelection=sgqlc.types.Arg(_schema.LlmModelSelection), llmMeta=sgqlc.types.Arg(_schema.LlmMeta)))
+    _op.narrative_completion_with_prompt(prompt_name=sgqlc.types.Variable('promptName'), prompt_variables=sgqlc.types.Variable('promptVariables'), model_selection=sgqlc.types.Variable('modelSelection'), llm_meta=sgqlc.types.Variable('llmMeta'))
     return _op
 
 
 def query_sql_completion():
-    _op = sgqlc.operation.Operation(_schema_root.query_type, name='SqlCompletion', variables=dict(messages=sgqlc.types.Arg(sgqlc.types.non_null(sgqlc.types.list_of(sgqlc.types.non_null(_schema.LlmChatMessage)))), modelSelection=sgqlc.types.Arg(_schema.LlmModelSelection)))
-    _op.sql_completion(messages=sgqlc.types.Variable('messages'), model_selection=sgqlc.types.Variable('modelSelection'))
+    _op = sgqlc.operation.Operation(_schema_root.query_type, name='SqlCompletion', variables=dict(messages=sgqlc.types.Arg(sgqlc.types.non_null(sgqlc.types.list_of(sgqlc.types.non_null(_schema.LlmChatMessage)))), modelSelection=sgqlc.types.Arg(_schema.LlmModelSelection), llmMeta=sgqlc.types.Arg(_schema.LlmMeta)))
+    _op.sql_completion(messages=sgqlc.types.Variable('messages'), model_selection=sgqlc.types.Variable('modelSelection'), llm_meta=sgqlc.types.Variable('llmMeta'))
     return _op
 
 
 def query_research_completion():
-    _op = sgqlc.operation.Operation(_schema_root.query_type, name='ResearchCompletion', variables=dict(messages=sgqlc.types.Arg(sgqlc.types.non_null(sgqlc.types.list_of(sgqlc.types.non_null(_schema.LlmChatMessage)))), modelSelection=sgqlc.types.Arg(_schema.LlmModelSelection)))
-    _op.research_completion(messages=sgqlc.types.Variable('messages'), model_selection=sgqlc.types.Variable('modelSelection'))
+    _op = sgqlc.operation.Operation(_schema_root.query_type, name='ResearchCompletion', variables=dict(messages=sgqlc.types.Arg(sgqlc.types.non_null(sgqlc.types.list_of(sgqlc.types.non_null(_schema.LlmChatMessage)))), modelSelection=sgqlc.types.Arg(_schema.LlmModelSelection), llmMeta=sgqlc.types.Arg(_schema.LlmMeta)))
+    _op.research_completion(messages=sgqlc.types.Variable('messages'), model_selection=sgqlc.types.Variable('modelSelection'), llm_meta=sgqlc.types.Variable('llmMeta'))
     return _op
 
 
 def query_chat_completion_with_prompt():
-    _op = sgqlc.operation.Operation(_schema_root.query_type, name='ChatCompletionWithPrompt', variables=dict(promptName=sgqlc.types.Arg(sgqlc.types.non_null(_schema.String)), promptVariables=sgqlc.types.Arg(_schema.JSON), messages=sgqlc.types.Arg(sgqlc.types.list_of(sgqlc.types.non_null(_schema.LlmChatMessage)))))
-    _op.chat_completion_with_prompt(prompt_name=sgqlc.types.Variable('promptName'), prompt_variables=sgqlc.types.Variable('promptVariables'), messages=sgqlc.types.Variable('messages'))
+    _op = sgqlc.operation.Operation(_schema_root.query_type, name='ChatCompletionWithPrompt', variables=dict(promptName=sgqlc.types.Arg(sgqlc.types.non_null(_schema.String)), promptVariables=sgqlc.types.Arg(_schema.JSON), messages=sgqlc.types.Arg(sgqlc.types.list_of(sgqlc.types.non_null(_schema.LlmChatMessage))), llmMeta=sgqlc.types.Arg(_schema.LlmMeta)))
+    _op.chat_completion_with_prompt(prompt_name=sgqlc.types.Variable('promptName'), prompt_variables=sgqlc.types.Variable('promptVariables'), messages=sgqlc.types.Variable('messages'), llm_meta=sgqlc.types.Variable('llmMeta'))
     return _op
 
 
 def query_research_completion_with_prompt():
-    _op = sgqlc.operation.Operation(_schema_root.query_type, name='ResearchCompletionWithPrompt', variables=dict(promptName=sgqlc.types.Arg(sgqlc.types.non_null(_schema.String)), promptVariables=sgqlc.types.Arg(_schema.JSON), messages=sgqlc.types.Arg(sgqlc.types.list_of(sgqlc.types.non_null(_schema.LlmChatMessage)))))
-    _op.research_completion_with_prompt(prompt_name=sgqlc.types.Variable('promptName'), prompt_variables=sgqlc.types.Variable('promptVariables'), messages=sgqlc.types.Variable('messages'))
+    _op = sgqlc.operation.Operation(_schema_root.query_type, name='ResearchCompletionWithPrompt', variables=dict(promptName=sgqlc.types.Arg(sgqlc.types.non_null(_schema.String)), promptVariables=sgqlc.types.Arg(_schema.JSON), messages=sgqlc.types.Arg(sgqlc.types.list_of(sgqlc.types.non_null(_schema.LlmChatMessage))), llmMeta=sgqlc.types.Arg(_schema.LlmMeta)))
+    _op.research_completion_with_prompt(prompt_name=sgqlc.types.Variable('promptName'), prompt_variables=sgqlc.types.Variable('promptVariables'), messages=sgqlc.types.Variable('messages'), llm_meta=sgqlc.types.Variable('llmMeta'))
     return _op
 
 
