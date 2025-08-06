@@ -1,5 +1,7 @@
 from typing import TypedDict
 
+from answer_rocket.client_config import ClientConfig
+
 from answer_rocket.graphql.sdk_operations import Operations
 
 
@@ -16,7 +18,7 @@ class LlmChatMessage(TypedDict):
 
 class Llm:
 
-    def __init__(self, config, gql_client):
+    def __init__(self, config: ClientConfig, gql_client):
         self.config = config
         self.gql_client = gql_client
 
@@ -33,6 +35,12 @@ class Llm:
             'modelSelection': {
                 'assistantId': self.config.copilot_id,
                 'modelOverride': model_override
+            },
+            'llmMeta': {
+                'answerId': self.config.answer_id,
+                'threadId': self.config.thread_id,
+                'copilotId': self.config.copilot_id,
+                'skillId': self.config.copilot_skill_id,
             }
         }
         gql_response = self.gql_client.submit(op, args)
@@ -54,8 +62,17 @@ class Llm:
             'modelSelection': {
                 'assistantId': self.config.copilot_id,
                 'modelOverride': model_override
+            },
+            'llmMeta': {
+                'answerId': self.config.answer_id,
+                'threadId': self.config.thread_id,
+                'copilotId': self.config.copilot_id,
+                'skillId': self.config.copilot_skill_id,
             }
         }
+
+        gql_response = self.gql_client.submit(op, args)
+        return gql_response.narrative_completion
 
     def narrative_completion(self, prompt: str, model_override: str | None = None):
         """
@@ -70,6 +87,12 @@ class Llm:
             'modelSelection': {
                 'assistantId': self.config.copilot_id,
                 'modelOverride': model_override
+            },
+            'llmMeta': {
+                'answerId': self.config.answer_id,
+                'threadId': self.config.thread_id,
+                'copilotId': self.config.copilot_id,
+                'skillId': self.config.copilot_skill_id,
             }
         }
         gql_response = self.gql_client.submit(op, args)
@@ -91,6 +114,12 @@ class Llm:
             'modelSelection': {
                 'assistantId': self.config.copilot_id,
                 'modelOverride': model_override
+            },
+            'llmMeta': {
+                'answerId': self.config.answer_id,
+                'threadId': self.config.thread_id,
+                'copilotId': self.config.copilot_id,
+                'skillId': self.config.copilot_skill_id,
             }
         }
         gql_response = self.gql_client.submit(op, args)
@@ -109,6 +138,12 @@ class Llm:
             'modelSelection': {
                 'assistantId': self.config.copilot_id,
                 'modelOverride': model_override
+            },
+            'llmMeta': {
+                'answerId': self.config.answer_id,
+                'threadId': self.config.thread_id,
+                'copilotId': self.config.copilot_id,
+                'skillId': self.config.copilot_skill_id,
             }
         }
         gql_response = self.gql_client.submit(op, args)
@@ -124,6 +159,12 @@ class Llm:
             'modelSelection': {
                 'assistantId': self.config.copilot_id,
                 'modelOverride': model_override
+            },
+            'llmMeta': {
+                'answerId': self.config.answer_id,
+                'threadId': self.config.thread_id,
+                'copilotId': self.config.copilot_id,
+                'skillId': self.config.copilot_skill_id,
             }
         }
         gql_response = self.gql_client.submit(op, args)
@@ -141,6 +182,12 @@ class Llm:
             'modelSelection': {
                 'assistantId': self.config.copilot_id,
                 'modelOverride': model_override
+            },
+            'llmMeta': {
+                'answerId': self.config.answer_id,
+                'threadId': self.config.thread_id,
+                'copilotId': self.config.copilot_id,
+                'skillId': self.config.copilot_skill_id,
             }
         }
         gql_response = self.gql_client.submit(op, args)
