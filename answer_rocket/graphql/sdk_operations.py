@@ -94,8 +94,38 @@ def mutation_set_max_agent_workflow():
 
 
 def mutation_import_copilot_skill_from_zip():
-    _op = sgqlc.operation.Operation(_schema_root.mutation_type, name='ImportCopilotSkillFromZip', variables=dict(entryId=sgqlc.types.Arg(sgqlc.types.non_null(_schema.UUID)), skillName=sgqlc.types.Arg(sgqlc.types.non_null(_schema.String))))
-    _op.import_copilot_skill_from_zip(entry_id=sgqlc.types.Variable('entryId'), skill_name=sgqlc.types.Variable('skillName'))
+    _op = sgqlc.operation.Operation(_schema_root.mutation_type, name='ImportCopilotSkillFromZip', variables=dict(copilotId=sgqlc.types.Arg(sgqlc.types.non_null(_schema.UUID)), skillName=sgqlc.types.Arg(sgqlc.types.non_null(_schema.String))))
+    _op.import_copilot_skill_from_zip(copilot_id=sgqlc.types.Variable('copilotId'), skill_name=sgqlc.types.Variable('skillName'))
+    return _op
+
+
+def mutation_import_skill_from_repo():
+    _op = sgqlc.operation.Operation(_schema_root.mutation_type, name='ImportSkillFromRepo', variables=dict(copilotId=sgqlc.types.Arg(sgqlc.types.non_null(_schema.UUID)), skillName=sgqlc.types.Arg(sgqlc.types.non_null(_schema.String)), repositoryId=sgqlc.types.Arg(sgqlc.types.non_null(_schema.UUID))))
+    _op.import_skill_from_repo(copilot_id=sgqlc.types.Variable('copilotId'), skill_name=sgqlc.types.Variable('skillName'), repository_id=sgqlc.types.Variable('repositoryId'))
+    return _op
+
+
+def mutation_sync_max_skill_repository():
+    _op = sgqlc.operation.Operation(_schema_root.mutation_type, name='SyncMaxSkillRepository', variables=dict(id=sgqlc.types.Arg(sgqlc.types.non_null(_schema.UUID))))
+    _op.sync_max_skill_repository(id=sgqlc.types.Variable('id'))
+    return _op
+
+
+def mutation_test_run_copilot_skill():
+    _op = sgqlc.operation.Operation(_schema_root.mutation_type, name='TestRunCopilotSkill', variables=dict(copilotId=sgqlc.types.Arg(sgqlc.types.non_null(_schema.UUID)), skillName=sgqlc.types.Arg(sgqlc.types.non_null(_schema.String)), nl=sgqlc.types.Arg(sgqlc.types.non_null(_schema.String)), parameters=sgqlc.types.Arg(_schema.JSON)))
+    _op_test_run_copilot_skill = _op.test_run_copilot_skill(copilot_id=sgqlc.types.Variable('copilotId'), skill_name=sgqlc.types.Variable('skillName'), nl=sgqlc.types.Variable('nl'), parameters=sgqlc.types.Variable('parameters'))
+    _op_test_run_copilot_skill.success()
+    _op_test_run_copilot_skill.error()
+    _op_test_run_copilot_skill.payload()
+    return _op
+
+
+def mutation_get_test_run_output():
+    _op = sgqlc.operation.Operation(_schema_root.mutation_type, name='GetTestRunOutput', variables=dict(answerId=sgqlc.types.Arg(sgqlc.types.non_null(_schema.UUID))))
+    _op_get_test_run_output = _op.get_test_run_output(answer_id=sgqlc.types.Variable('answerId'))
+    _op_get_test_run_output.success()
+    _op_get_test_run_output.error()
+    _op_get_test_run_output.payload()
     return _op
 
 
@@ -309,6 +339,79 @@ def mutation_delete_metric():
     return _op
 
 
+def mutation_create_database_kshot():
+    _op = sgqlc.operation.Operation(_schema_root.mutation_type, name='CreateDatabaseKShot', variables=dict(databaseKShot=sgqlc.types.Arg(sgqlc.types.non_null(_schema.JSON))))
+    _op_create_database_kshot = _op.create_database_kshot(database_kshot=sgqlc.types.Variable('databaseKShot'))
+    _op_create_database_kshot.database_kshot_id()
+    _op_create_database_kshot.success()
+    _op_create_database_kshot.code()
+    _op_create_database_kshot.error()
+    return _op
+
+
+def mutation_update_database_kshot_question():
+    _op = sgqlc.operation.Operation(_schema_root.mutation_type, name='UpdateDatabaseKShotQuestion', variables=dict(databaseKShotId=sgqlc.types.Arg(sgqlc.types.non_null(_schema.UUID)), question=sgqlc.types.Arg(sgqlc.types.non_null(_schema.String))))
+    _op_update_database_kshot_question = _op.update_database_kshot_question(database_kshot_id=sgqlc.types.Variable('databaseKShotId'), question=sgqlc.types.Variable('question'))
+    _op_update_database_kshot_question.success()
+    _op_update_database_kshot_question.code()
+    _op_update_database_kshot_question.error()
+    return _op
+
+
+def mutation_update_database_kshot_rendered_prompt():
+    _op = sgqlc.operation.Operation(_schema_root.mutation_type, name='UpdateDatabaseKShotRenderedPrompt', variables=dict(databaseKShotId=sgqlc.types.Arg(sgqlc.types.non_null(_schema.UUID)), renderedPrompt=sgqlc.types.Arg(_schema.String)))
+    _op_update_database_kshot_rendered_prompt = _op.update_database_kshot_rendered_prompt(database_kshot_id=sgqlc.types.Variable('databaseKShotId'), rendered_prompt=sgqlc.types.Variable('renderedPrompt'))
+    _op_update_database_kshot_rendered_prompt.success()
+    _op_update_database_kshot_rendered_prompt.code()
+    _op_update_database_kshot_rendered_prompt.error()
+    return _op
+
+
+def mutation_update_database_kshot_explanation():
+    _op = sgqlc.operation.Operation(_schema_root.mutation_type, name='UpdateDatabaseKShotExplanation', variables=dict(databaseKShotId=sgqlc.types.Arg(sgqlc.types.non_null(_schema.UUID)), explanation=sgqlc.types.Arg(_schema.String)))
+    _op_update_database_kshot_explanation = _op.update_database_kshot_explanation(database_kshot_id=sgqlc.types.Variable('databaseKShotId'), explanation=sgqlc.types.Variable('explanation'))
+    _op_update_database_kshot_explanation.success()
+    _op_update_database_kshot_explanation.code()
+    _op_update_database_kshot_explanation.error()
+    return _op
+
+
+def mutation_update_database_kshot_sql():
+    _op = sgqlc.operation.Operation(_schema_root.mutation_type, name='UpdateDatabaseKShotSql', variables=dict(databaseKShotId=sgqlc.types.Arg(sgqlc.types.non_null(_schema.UUID)), sql=sgqlc.types.Arg(_schema.String)))
+    _op_update_database_kshot_sql = _op.update_database_kshot_sql(database_kshot_id=sgqlc.types.Variable('databaseKShotId'), sql=sgqlc.types.Variable('sql'))
+    _op_update_database_kshot_sql.success()
+    _op_update_database_kshot_sql.code()
+    _op_update_database_kshot_sql.error()
+    return _op
+
+
+def mutation_update_database_kshot_title():
+    _op = sgqlc.operation.Operation(_schema_root.mutation_type, name='UpdateDatabaseKShotTitle', variables=dict(databaseKShotId=sgqlc.types.Arg(sgqlc.types.non_null(_schema.UUID)), title=sgqlc.types.Arg(_schema.String)))
+    _op_update_database_kshot_title = _op.update_database_kshot_title(database_kshot_id=sgqlc.types.Variable('databaseKShotId'), title=sgqlc.types.Variable('title'))
+    _op_update_database_kshot_title.success()
+    _op_update_database_kshot_title.code()
+    _op_update_database_kshot_title.error()
+    return _op
+
+
+def mutation_update_database_kshot_visualization():
+    _op = sgqlc.operation.Operation(_schema_root.mutation_type, name='UpdateDatabaseKShotVisualization', variables=dict(databaseKShotId=sgqlc.types.Arg(sgqlc.types.non_null(_schema.UUID)), visualization=sgqlc.types.Arg(_schema.JSON)))
+    _op_update_database_kshot_visualization = _op.update_database_kshot_visualization(database_kshot_id=sgqlc.types.Variable('databaseKShotId'), visualization=sgqlc.types.Variable('visualization'))
+    _op_update_database_kshot_visualization.success()
+    _op_update_database_kshot_visualization.code()
+    _op_update_database_kshot_visualization.error()
+    return _op
+
+
+def mutation_delete_database_kshot():
+    _op = sgqlc.operation.Operation(_schema_root.mutation_type, name='DeleteDatabaseKShot', variables=dict(databaseKShotId=sgqlc.types.Arg(sgqlc.types.non_null(_schema.UUID))))
+    _op_delete_database_kshot = _op.delete_database_kshot(database_kshot_id=sgqlc.types.Variable('databaseKShotId'))
+    _op_delete_database_kshot.success()
+    _op_delete_database_kshot.code()
+    _op_delete_database_kshot.error()
+    return _op
+
+
 def mutation_update_loading_message():
     _op = sgqlc.operation.Operation(_schema_root.mutation_type, name='UpdateLoadingMessage', variables=dict(answerId=sgqlc.types.Arg(sgqlc.types.non_null(_schema.UUID)), message=sgqlc.types.Arg(sgqlc.types.non_null(_schema.String))))
     _op.update_loading_message(answer_id=sgqlc.types.Variable('answerId'), message=sgqlc.types.Variable('message'))
@@ -321,19 +424,31 @@ class Mutation:
     cancel_chat_question = mutation_cancel_chat_question()
     create_chat_artifact = mutation_create_chat_artifact()
     create_chat_thread = mutation_create_chat_thread()
+    create_database_kshot = mutation_create_database_kshot()
     create_dataset = mutation_create_dataset()
     create_dataset_from_table = mutation_create_dataset_from_table()
     create_dimension = mutation_create_dimension()
     create_metric = mutation_create_metric()
     delete_chat_artifact = mutation_delete_chat_artifact()
+    delete_database_kshot = mutation_delete_database_kshot()
     delete_dimension = mutation_delete_dimension()
     delete_metric = mutation_delete_metric()
+    get_test_run_output = mutation_get_test_run_output()
     import_copilot_skill_from_zip = mutation_import_copilot_skill_from_zip()
+    import_skill_from_repo = mutation_import_skill_from_repo()
     queue_chat_question = mutation_queue_chat_question()
     set_max_agent_workflow = mutation_set_max_agent_workflow()
     set_skill_memory = mutation_set_skill_memory()
+    sync_max_skill_repository = mutation_sync_max_skill_repository()
+    test_run_copilot_skill = mutation_test_run_copilot_skill()
     update_database_description = mutation_update_database_description()
+    update_database_kshot_explanation = mutation_update_database_kshot_explanation()
     update_database_kshot_limit = mutation_update_database_kshot_limit()
+    update_database_kshot_question = mutation_update_database_kshot_question()
+    update_database_kshot_rendered_prompt = mutation_update_database_kshot_rendered_prompt()
+    update_database_kshot_sql = mutation_update_database_kshot_sql()
+    update_database_kshot_title = mutation_update_database_kshot_title()
+    update_database_kshot_visualization = mutation_update_database_kshot_visualization()
     update_database_llm_description = mutation_update_database_llm_description()
     update_database_mermaid_er_diagram = mutation_update_database_mermaid_er_diagram()
     update_database_name = mutation_update_database_name()
@@ -676,6 +791,36 @@ def query_get_database_tables():
     return _op
 
 
+def query_get_database_kshots():
+    _op = sgqlc.operation.Operation(_schema_root.query_type, name='GetDatabaseKShots', variables=dict(databaseId=sgqlc.types.Arg(sgqlc.types.non_null(_schema.UUID)), searchInput=sgqlc.types.Arg(sgqlc.types.non_null(_schema.DatabaseKShotSearchInput)), paging=sgqlc.types.Arg(sgqlc.types.non_null(_schema.PagingInput))))
+    _op_get_database_kshots = _op.get_database_kshots(database_id=sgqlc.types.Variable('databaseId'), search_input=sgqlc.types.Variable('searchInput'), paging=sgqlc.types.Variable('paging'))
+    _op_get_database_kshots.total_rows()
+    _op_get_database_kshots_rows = _op_get_database_kshots.rows()
+    _op_get_database_kshots_rows.database_kshot_id()
+    _op_get_database_kshots_rows.question()
+    _op_get_database_kshots_rows.rendered_prompt()
+    _op_get_database_kshots_rows.explanation()
+    _op_get_database_kshots_rows.sql()
+    _op_get_database_kshots_rows.title()
+    _op_get_database_kshots_rows.visualization()
+    _op_get_database_kshots_rows.is_active()
+    return _op
+
+
+def query_get_database_kshot_by_id():
+    _op = sgqlc.operation.Operation(_schema_root.query_type, name='GetDatabaseKShotById', variables=dict(databaseKShotId=sgqlc.types.Arg(sgqlc.types.non_null(_schema.UUID))))
+    _op_get_database_kshot_by_id = _op.get_database_kshot_by_id(database_kshot_id=sgqlc.types.Variable('databaseKShotId'))
+    _op_get_database_kshot_by_id.database_kshot_id()
+    _op_get_database_kshot_by_id.question()
+    _op_get_database_kshot_by_id.rendered_prompt()
+    _op_get_database_kshot_by_id.explanation()
+    _op_get_database_kshot_by_id.sql()
+    _op_get_database_kshot_by_id.title()
+    _op_get_database_kshot_by_id.visualization()
+    _op_get_database_kshot_by_id.is_active()
+    return _op
+
+
 def query_get_dataset2():
     _op = sgqlc.operation.Operation(_schema_root.query_type, name='GetDataset2', variables=dict(datasetId=sgqlc.types.Arg(sgqlc.types.non_null(_schema.UUID))))
     _op_get_dataset2 = _op.get_dataset2(dataset_id=sgqlc.types.Variable('datasetId'))
@@ -765,6 +910,8 @@ class Query:
     get_copilot_skill = query_get_copilot_skill()
     get_copilots = query_get_copilots()
     get_database = query_get_database()
+    get_database_kshot_by_id = query_get_database_kshot_by_id()
+    get_database_kshots = query_get_database_kshots()
     get_database_tables = query_get_database_tables()
     get_databases = query_get_databases()
     get_dataset2 = query_get_dataset2()
