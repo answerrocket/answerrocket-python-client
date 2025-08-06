@@ -181,6 +181,15 @@ class Chat:
         return result.evaluate_chat_question
 
     def share_chat_thread(self, original_thread_id: str) -> SharedThread:
+        """
+        Share a chat thread by its ID.
+
+        Args:
+            original_thread_id: The ID of the original thread to share
+
+        Returns:
+            SharedThread: The shared thread object
+        """
         mutation_args = {
             'originalThreadId': original_thread_id
         }
@@ -199,6 +208,15 @@ class Chat:
         return result.share_thread
 
     def get_chat_entry(self, entry_id: str) -> MaxChatEntry:
+        """
+        Retrieve a chat entry by its ID.
+
+        Args:
+            entry_id: The ID of the chat entry to retrieve
+
+        Returns:
+            MaxChatEntry: The chat entry object
+        """
         get_chat_entry_args = {
             'id': UUID(entry_id),
         }
@@ -208,6 +226,15 @@ class Chat:
         return result.chat_entry
 
     def get_chat_thread(self, thread_id: str) -> MaxChatThread:
+        """
+        Retrieve a chat thread by its ID.
+
+        Args:
+            thread_id: The ID of the chat thread to retrieve
+
+        Returns:
+            MaxChatThread: The chat thread object
+        """
         get_chat_thread_args = {
             'id': UUID(thread_id),
         }
@@ -217,6 +244,15 @@ class Chat:
         return result.chat_thread
 
     def create_new_thread(self, copilot_id: str) -> MaxChatThread:
+        """
+        Create a new chat thread for the specified agent.
+
+        Args:
+            copilot_id: The ID of the agent to create the thread for
+
+        Returns:
+            MaxChatThread: The newly created chat thread object
+        """
         create_chat_thread_args = {
             'copilotId': copilot_id,
         }
