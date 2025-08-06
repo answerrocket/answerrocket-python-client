@@ -180,8 +180,50 @@ query GetMaxAgentWorkflow($agentWorkflowId: UUID!, $version: Int) {
   getMaxAgentWorkflow(agentWorkflowId: $agentWorkflowId, version: $version)
 }
 
-mutation ImportCopilotSkillFromZip($entryId: UUID!, $skillName: String!) {
-  importCopilotSkillFromZip(entryId: $entryId, skillName: $skillName)
+mutation ImportCopilotSkillFromZip($copilotId: UUID!, $skillName: String!) {
+  importCopilotSkillFromZip(copilotId: $copilotId, skillName: $skillName)
+}
+
+mutation ImportSkillFromRepo(
+  $copilotId: UUID!
+  $skillName: String!
+  $repositoryId: UUID!
+) {
+  importSkillFromRepo(
+    copilotId: $copilotId
+    skillName: $skillName
+    repositoryId: $repositoryId
+  )
+}
+
+mutation SyncMaxSkillRepository($id: UUID!) {
+  syncMaxSkillRepository(id: $id)
+}
+
+mutation TestRunCopilotSkill(
+  $copilotId: UUID!
+  $skillName: String!
+  $nl: String!
+  $parameters: JSON
+) {
+  testRunCopilotSkill(
+    copilotId: $copilotId
+    skillName: $skillName
+    nl: $nl
+    parameters: $parameters
+  ) {
+    success
+    error
+    payload
+  }
+}
+
+mutation GetTestRunOutput($answerId: UUID!) {
+  getTestRunOutput(answerId: $answerId) {
+    success
+    error
+    payload
+  }
 }
 
 query GetChatArtifact($chatArtifactId: UUID!) {
@@ -197,7 +239,10 @@ query GetChatArtifact($chatArtifactId: UUID!) {
   }
 }
 
-query GetChatArtifacts($searchInput: ChatArtifactSearchInput!, $paging: PagingInput!) {
+query GetChatArtifacts(
+  $searchInput: ChatArtifactSearchInput!
+  $paging: PagingInput!
+) {
   getChatArtifacts(searchInput: $searchInput, paging: $paging) {
     totalRows
     rows {
