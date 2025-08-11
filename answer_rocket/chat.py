@@ -653,7 +653,7 @@ class Chat:
         df_dicts = result.chat_entry.answer.report_results[0].gzipped_dataframes_and_metadata
 
         def transform_df(df_dict: dict):
-            df = pd.read_csv(io.StringIO(df_dict.get("df")), compression='gzip')
+            df = pd.read_csv(io.StringIO(df_dict.get("df")))
             df.max_metadata.hydrate(df_dict.get("metadata", {}))
             return {**df_dict, "df": df}
 
