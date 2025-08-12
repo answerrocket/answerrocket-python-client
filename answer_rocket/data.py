@@ -7,7 +7,7 @@ from uuid import UUID
 import pandas as pd
 from pandas import DataFrame
 from sgqlc.operation import Fragment
-from sgqlc.types import Variable, Arg, non_null, String, Int, list_of
+from sgqlc.types import Variable, Arg, non_null, String, Int, list_of, Boolean
 
 from answer_rocket.client_config import ClientConfig
 from answer_rocket.graphql.client import GraphQlClient
@@ -820,14 +820,15 @@ class Data:
         except Exception as e:
             return None
 
-    def run_max_sql_gen(self, dataset_id: UUID, pre_query_object: Dict[str, any], copilot_id: Optional[UUID] = None) -> RunMaxSqlGenResult:
+    def run_max_sql_gen(self, dataset_id: UUID, pre_query_object: Dict[str, any], copilot_id: UUID | None = None, execute_sql: bool | None = True) -> RunMaxSqlGenResult:
         """
         Runs the SQL generation logic using the provided dataset and query object.
 
         Args:
             dataset_id (UUID): The UUID of the dataset.
             pre_query_object (Dict[str, any]): The pre-query object that describes the query.
-            copilot_id (Optional[UUID], optional): The UUID of the copilot. Defaults to None.
+            copilot_id (UUID | None, optional): The UUID of the copilot. Defaults to None.
+            execute_sql (bool | None, optional): Indicates if the generated SQL should be executed. Defaults to True.
 
         Returns:
             RunMaxSqlGenResult: The result of the SQL generation process.
@@ -839,13 +840,15 @@ class Data:
             query_args = {
                 'datasetId': str(dataset_id),
                 'preQueryObject': pre_query_object,
-                'copilotId': str(copilot_id) if copilot_id else str(self.copilot_id) if self.copilot_id else None
+                'copilotId': str(copilot_id) if copilot_id else str(self.copilot_id) if self.copilot_id else None,
+                'executeSql': execute_sql
             }
 
             query_vars = {
                 'dataset_id': Arg(non_null(GQL_UUID)),
                 'pre_query_object': Arg(non_null(JSON)),
                 'copilot_id': Arg(GQL_UUID),
+                'execute_sql': Arg(Boolean)
             }
 
             operation = self._gql_client.query(variables=query_vars)
@@ -854,6 +857,7 @@ class Data:
                 dataset_id=Variable('dataset_id'),
                 pre_query_object=Variable('pre_query_object'),
                 copilot_id=Variable('copilot_id'),
+                execute_sql=Variable('execute_sql')
             )
 
             gql_query.success()

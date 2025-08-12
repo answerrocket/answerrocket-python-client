@@ -1461,6 +1461,7 @@ class Query(sgqlc.types.Type):
         ('dataset_id', sgqlc.types.Arg(sgqlc.types.non_null(UUID), graphql_name='datasetId', default=None)),
         ('pre_query_object', sgqlc.types.Arg(JSON, graphql_name='preQueryObject', default=None)),
         ('copilot_id', sgqlc.types.Arg(UUID, graphql_name='copilotId', default=None)),
+        ('execute_sql', sgqlc.types.Arg(Boolean, graphql_name='executeSql', default=None)),
 ))
     )
     run_sql_ai = sgqlc.types.Field(sgqlc.types.non_null('RunSqlAiResponse'), graphql_name='runSqlAi', args=sgqlc.types.ArgDict((
