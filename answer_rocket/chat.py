@@ -1,18 +1,17 @@
 import io
 import logging
+import pandas as pd
 import uuid
 from datetime import datetime
+from sgqlc.types import Variable, non_null, String, Arg, list_of
 from typing import Literal, Optional
 
-import pandas as pd
-from sgqlc.types import Variable, non_null, String, Arg, list_of
-
+from answer_rocket.client_config import ClientConfig
 from answer_rocket.graphql.client import GraphQlClient
 from answer_rocket.graphql.schema import (UUID, Int, DateTime, ChatDryRunType, MaxChatEntry, MaxChatThread,
                                           SharedThread, MaxChatUser, ChatArtifact, MaxMutationResponse,
                                           ChatArtifactSearchInput, PagingInput, PagedChatArtifacts)
 from answer_rocket.graphql.sdk_operations import Operations
-from answer_rocket.client_config import ClientConfig
 
 logger = logging.getLogger(__name__)
 
@@ -243,18 +242,20 @@ class Chat:
         result = self.gql_client.submit(op, get_chat_thread_args)
         return result.chat_thread
 
-    def create_new_thread(self, copilot_id: str) -> MaxChatThread:
+    def create_new_thread(self, copilot_id: str, thread_type: ThreadType = "CHAT") -> MaxChatThread:
         """
         Create a new chat thread for the specified agent.
 
         Args:
             copilot_id: The ID of the agent to create the thread for
+            thread_type: The type of thread to create, defaults to CHAT. For most purposes CHAT is the only type needed.
 
         Returns:
             MaxChatThread: The newly created chat thread object
         """
         create_chat_thread_args = {
             'copilotId': copilot_id,
+            'threadType': thread_type
         }
 
         op = Operations.mutation.create_chat_thread

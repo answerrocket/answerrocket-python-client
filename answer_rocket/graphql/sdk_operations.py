@@ -68,8 +68,8 @@ def mutation_cancel_chat_question():
 
 
 def mutation_create_chat_thread():
-    _op = sgqlc.operation.Operation(_schema_root.mutation_type, name='CreateChatThread', variables=dict(copilotId=sgqlc.types.Arg(sgqlc.types.non_null(_schema.UUID))))
-    _op_create_chat_thread = _op.create_chat_thread(copilot_id=sgqlc.types.Variable('copilotId'))
+    _op = sgqlc.operation.Operation(_schema_root.mutation_type, name='CreateChatThread', variables=dict(copilotId=sgqlc.types.Arg(sgqlc.types.non_null(_schema.UUID)), threadType=sgqlc.types.Arg(_schema.ThreadType)))
+    _op_create_chat_thread = _op.create_chat_thread(copilot_id=sgqlc.types.Variable('copilotId'), thread_type=sgqlc.types.Variable('threadType'))
     _op_create_chat_thread.id()
     _op_create_chat_thread.copilot_id()
     return _op
