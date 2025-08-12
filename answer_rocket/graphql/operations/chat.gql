@@ -149,11 +149,11 @@ query AllChatEntries($offset: Int, $limit: Int, $filters: JSON) {
   }
 }
 
-mutation CreateChatThread($copilotId: UUID!) {
-  createChatThread(copilotId: $copilotId) {
-    id
-    copilotId
-  }
+mutation CreateChatThread($copilotId: UUID!, $threadType: ThreadType) {
+    createChatThread(copilotId: $copilotId, threadType: $threadType) {
+        id
+        copilotId
+    }
 }
 
 mutation AddFeedback(
