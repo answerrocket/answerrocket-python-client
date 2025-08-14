@@ -9,7 +9,7 @@ from sgqlc.types import Variable, Arg, non_null, String
 from answer_rocket.graphql.client import GraphQlClient
 from answer_rocket.graphql.schema import UUID as GQL_UUID, MaxCopilotSkill, MaxCopilot, \
     MaxMutationResponse, MaxCopilotQuestionInput, \
-    MaxCreateCopilotQuestionResponse, MaxUser, MaxSkillComponent, MaxLLmPrompt, Boolean, HydratedReport
+    MaxCreateCopilotQuestionResponse, MaxUser, MaxSkillComponent, MaxLLmPrompt, Boolean
 
 
 class Config:
@@ -179,7 +179,7 @@ class Config:
         except Exception as e:
             return None
 
-    def get_copilot_hydrated_reports(self, copilot_id: Optional[str] = None, override_dataset_id: Optional[str] = None, load_all_skills: bool = False) -> [HydratedReport]:
+    def get_copilot_hydrated_reports(self, copilot_id: Optional[str] = None, override_dataset_id: Optional[str] = None, load_all_skills: bool = False):
         """
         Get hydrated reports for a copilot.
 
@@ -187,7 +187,7 @@ class Config:
         :param override_dataset_id: Optional dataset ID to override the copilot's default dataset
         :param load_all_skills: Whether to load all skills or just active ones (defaults to False)
 
-        :returns List of hydrated report objects
+        returns JSON of hydrated reports
         """
         try:
             effective_copilot_id = copilot_id or self.copilot_id
@@ -210,6 +210,7 @@ class Config:
 
             return result.get_copilot_hydrated_reports
         except Exception as e:
+            print(e)
             return None
 
     def create_copilot_question(self, nl: str, skill_id: UUID = None, hint: str = None, parameters = None) -> MaxCreateCopilotQuestionResponse:
