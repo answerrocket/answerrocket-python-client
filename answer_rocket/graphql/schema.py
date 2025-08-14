@@ -687,11 +687,11 @@ class MaxContentBlock(sgqlc.types.Type):
 
 class MaxCopilot(sgqlc.types.Type):
     __schema__ = schema
-    __field_names__ = ('copilot_id', 'name', 'description', 'description_text', 'system_prompt', 'beta_yaml', 'global_python_code', 'copilot_questions', 'connection_datasets', 'copilot_skill_ids', 'copilot_topics', 'database_id', 'dataset_id')
+    __field_names__ = ('copilot_id', 'name', 'description', 'landing_page', 'system_prompt', 'beta_yaml', 'global_python_code', 'copilot_questions', 'connection_datasets', 'copilot_skill_ids', 'copilot_topics', 'database_id', 'dataset_id')
     copilot_id = sgqlc.types.Field(sgqlc.types.non_null(UUID), graphql_name='copilotId')
     name = sgqlc.types.Field(sgqlc.types.non_null(String), graphql_name='name')
     description = sgqlc.types.Field(String, graphql_name='description')
-    description_text = sgqlc.types.Field(String, graphql_name='descriptionText')
+    landing_page = sgqlc.types.Field(String, graphql_name='landingPage')
     system_prompt = sgqlc.types.Field(String, graphql_name='systemPrompt')
     beta_yaml = sgqlc.types.Field(String, graphql_name='betaYaml')
     global_python_code = sgqlc.types.Field(String, graphql_name='globalPythonCode')
