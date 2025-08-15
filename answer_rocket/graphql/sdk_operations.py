@@ -32,6 +32,7 @@ def fragment_chat_result_fragment():
     _frag_report_results_content_blocks.id()
     _frag_report_results_content_blocks.title()
     _frag_report_results_content_blocks.layout_json()
+    _frag_report_results.preview()
     _frag_report_results.final_message()
     _frag.thread_id()
     _frag.user_id()

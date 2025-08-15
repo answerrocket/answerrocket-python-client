@@ -76,7 +76,8 @@ fragment ChatResultFragment on MaxChatResult {
       title
       layoutJson
     }
-      finalMessage
+    preview
+    finalMessage
   }
   threadId
   userId
