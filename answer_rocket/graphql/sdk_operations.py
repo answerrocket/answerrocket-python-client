@@ -33,6 +33,7 @@ def fragment_chat_result_fragment():
     _frag_report_results_content_blocks.title()
     _frag_report_results_content_blocks.layout_json()
     _frag_report_results.preview()
+    _frag_report_results.final_message()
     _frag.thread_id()
     _frag.user_id()
     return _frag
@@ -632,6 +633,7 @@ def query_get_copilot_info():
     _op_get_copilot_info.copilot_id()
     _op_get_copilot_info.name()
     _op_get_copilot_info.description()
+    _op_get_copilot_info.landing_page()
     _op_get_copilot_info.system_prompt()
     _op_get_copilot_info.beta_yaml()
     _op_get_copilot_info.global_python_code()
@@ -648,6 +650,7 @@ def query_get_copilots():
     _op_get_copilots.copilot_id()
     _op_get_copilots.name()
     _op_get_copilots.description()
+    _op_get_copilots.landing_page()
     _op_get_copilots.system_prompt()
     _op_get_copilots.beta_yaml()
     _op_get_copilots.global_python_code()

@@ -687,11 +687,11 @@ class MaxContentBlock(sgqlc.types.Type):
 
 class MaxCopilot(sgqlc.types.Type):
     __schema__ = schema
-    __field_names__ = ('copilot_id', 'name', 'description', 'description_text', 'system_prompt', 'beta_yaml', 'global_python_code', 'copilot_questions', 'connection_datasets', 'copilot_skill_ids', 'copilot_topics', 'database_id', 'dataset_id')
+    __field_names__ = ('copilot_id', 'name', 'description', 'landing_page', 'system_prompt', 'beta_yaml', 'global_python_code', 'copilot_questions', 'connection_datasets', 'copilot_skill_ids', 'copilot_topics', 'database_id', 'dataset_id')
     copilot_id = sgqlc.types.Field(sgqlc.types.non_null(UUID), graphql_name='copilotId')
     name = sgqlc.types.Field(sgqlc.types.non_null(String), graphql_name='name')
     description = sgqlc.types.Field(String, graphql_name='description')
-    description_text = sgqlc.types.Field(String, graphql_name='descriptionText')
+    landing_page = sgqlc.types.Field(String, graphql_name='landingPage')
     system_prompt = sgqlc.types.Field(String, graphql_name='systemPrompt')
     beta_yaml = sgqlc.types.Field(String, graphql_name='betaYaml')
     global_python_code = sgqlc.types.Field(String, graphql_name='globalPythonCode')
@@ -904,7 +904,7 @@ class MaxReportParamsAndValues(sgqlc.types.Type):
 
 class MaxReportResult(sgqlc.types.Type):
     __schema__ = schema
-    __field_names__ = ('title', 'report_name', 'parameters', 'custom_payload', 'content_blocks', 'gzipped_dataframes_and_metadata', 'preview')
+    __field_names__ = ('title', 'report_name', 'parameters', 'custom_payload', 'content_blocks', 'gzipped_dataframes_and_metadata', 'preview', 'final_message')
     title = sgqlc.types.Field(String, graphql_name='title')
     report_name = sgqlc.types.Field(sgqlc.types.non_null(String), graphql_name='reportName')
     parameters = sgqlc.types.Field(sgqlc.types.list_of(sgqlc.types.non_null(MaxReportParamsAndValues)), graphql_name='parameters')
@@ -912,6 +912,7 @@ class MaxReportResult(sgqlc.types.Type):
     content_blocks = sgqlc.types.Field(sgqlc.types.list_of(sgqlc.types.non_null(MaxContentBlock)), graphql_name='contentBlocks')
     gzipped_dataframes_and_metadata = sgqlc.types.Field(sgqlc.types.list_of(JSON), graphql_name='gzippedDataframesAndMetadata')
     preview = sgqlc.types.Field(String, graphql_name='preview')
+    final_message = sgqlc.types.Field(String, graphql_name='finalMessage')
 
 
 class MaxSkillComponent(sgqlc.types.Type):
@@ -1369,7 +1370,6 @@ class Query(sgqlc.types.Type):
         ('parameters', sgqlc.types.Arg(JSON, graphql_name='parameters', default=None)),
         ('use_published_version', sgqlc.types.Arg(Boolean, graphql_name='usePublishedVersion', default=None)),
         ('validate_parameters', sgqlc.types.Arg(Boolean, graphql_name='validateParameters', default=None)),
-        ('tool_definition', sgqlc.types.Arg(JSON, graphql_name='toolDefinition', default=None)),
 ))
     )
     get_skill_components = sgqlc.types.Field(sgqlc.types.non_null(sgqlc.types.list_of(sgqlc.types.non_null(MaxSkillComponent))), graphql_name='getSkillComponents')
