@@ -6,8 +6,9 @@ query ChatCompletion(
   $messages: [LlmChatMessage!]!
   $modelSelection: LlmModelSelection
   $llmMeta: LlmMeta
+  $functions: [LlmFunction!]
 ) {
-  chatCompletion(messages: $messages, modelSelection: $modelSelection, llmMeta: $llmMeta)
+  chatCompletion(messages: $messages, modelSelection: $modelSelection, llmMeta: $llmMeta, functions: $functions)
 }
 
 query NarrativeCompletion(
@@ -31,16 +32,18 @@ query SqlCompletion(
   $messages: [LlmChatMessage!]!
   $modelSelection: LlmModelSelection
   $llmMeta: LlmMeta
+  $functions: [LlmFunction!]
 ) {
-  sqlCompletion(messages: $messages, modelSelection: $modelSelection, llmMeta: $llmMeta)
+  sqlCompletion(messages: $messages, modelSelection: $modelSelection, llmMeta: $llmMeta, functions: $functions)
 }
 
 query ResearchCompletion(
   $messages: [LlmChatMessage!]!
   $modelSelection: LlmModelSelection
   $llmMeta: LlmMeta
+  $functions: [LlmFunction!]
 ) {
-  researchCompletion(messages: $messages, modelSelection: $modelSelection, llmMeta: $llmMeta)
+  researchCompletion(messages: $messages, modelSelection: $modelSelection, llmMeta: $llmMeta, functions: $functions)
 }
 
 query ChatCompletionWithPrompt(
@@ -48,8 +51,9 @@ query ChatCompletionWithPrompt(
   $promptVariables: JSON
   $messages: [LlmChatMessage!]
   $llmMeta: LlmMeta
+  $functions: [LlmFunction!]
 ) {
-  chatCompletionWithPrompt(promptName: $promptName, promptVariables: $promptVariables, messages: $messages, llmMeta: $llmMeta)
+  chatCompletionWithPrompt(promptName: $promptName, promptVariables: $promptVariables, messages: $messages, llmMeta: $llmMeta, functions: $functions)
 }
 
 query ResearchCompletionWithPrompt(
@@ -57,6 +61,7 @@ query ResearchCompletionWithPrompt(
   $promptVariables: JSON
   $messages: [LlmChatMessage!]
   $llmMeta: LlmMeta
+  $functions: [LlmFunction!]
 ) {
-  researchCompletionWithPrompt(promptName: $promptName, promptVariables: $promptVariables, messages: $messages, llmMeta: $llmMeta)
+  researchCompletionWithPrompt(promptName: $promptName, promptVariables: $promptVariables, messages: $messages, llmMeta: $llmMeta, functions: $functions)
 }

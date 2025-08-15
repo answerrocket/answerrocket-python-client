@@ -16,22 +16,42 @@ class LlmChatMessage(TypedDict):
     content: str
 
 
+class LlmFunctionProperty(TypedDict):
+    type: str
+    description: str
+
+
+class LlmFunctionParameters(TypedDict):
+    type: str
+    properties: dict[str, LlmFunctionProperty]
+    required: list[str]
+
+
+class LlmFunction(TypedDict):
+    name: str
+    description: str
+    parameters: LlmFunctionParameters
+
+
 class Llm:
 
     def __init__(self, config: ClientConfig, gql_client):
         self.config = config
         self.gql_client = gql_client
 
-    def chat_completion(self, messages: list[LlmChatMessage], model_override: str | None = None):
+    def chat_completion(self, messages: list[LlmChatMessage], model_override: str | None = None,
+                        functions: list[LlmFunction] | None = None):
         """
         Call an LLM API's chat completion endpoint with the provided messages.
         :param messages: a list of dictionaries describing each message in the chat, { "role": str, "content": str }
         :param model_override: a model name or id to use instead of a configured default
+        :param functions: available functions/tools to send to the language model
         :return: the raw response from the model api
         """
         op = Operations.query.chat_completion
         args = {
             'messages': messages,
+            'functions': functions,
             'modelSelection': {
                 'assistantId': self.config.copilot_id,
                 'modelOverride': model_override
@@ -47,7 +67,8 @@ class Llm:
         return gql_response.chat_completion
 
     def chat_completion_with_prompt(self, prompt_name: str, prompt_variables: dict,
-                                    model_override: str | None = None):
+                                    model_override: str | None = None,
+                                    functions: list[LlmFunction] | None = None):
         """
         Call an LLM API's chat completion endpoint with the provided prompt.
         :param prompt_name: the name of the prompt to use
@@ -59,6 +80,7 @@ class Llm:
         args = {
             'promptName': prompt_name,
             'promptVariables': prompt_variables,
+            'functions': functions,
             'modelSelection': {
                 'assistantId': self.config.copilot_id,
                 'modelOverride': model_override
@@ -124,17 +146,20 @@ class Llm:
         }
         gql_response = self.gql_client.submit(op, args)
         return gql_response.narrative_completion_with_prompt
-    
-    def sql_completion(self, messages: list[LlmChatMessage], model_override: str | None = None):
+
+    def sql_completion(self, messages: list[LlmChatMessage], model_override: str | None = None,
+                       functions: list[LlmFunction] | None = None):
         """
         Call an LLM API's chat completion endpoint with the provided messages -- will utilize the environment's configured 'SQL' model.
         :param messages: a list of dictionaries describing each message in the chat, { "role": str, "content": str }
         :param model_override: a model name or id to use instead of a configured default
+        :param functions: available functions/tools to send to the language model
         :return: the raw response from the model api
         """
         op = Operations.query.sql_completion
         args = {
             'messages': messages,
+            'functions': functions,
             'modelSelection': {
                 'assistantId': self.config.copilot_id,
                 'modelOverride': model_override
@@ -148,14 +173,16 @@ class Llm:
         }
         gql_response = self.gql_client.submit(op, args)
         return gql_response.sql_completion
-    
-    def research_completion(self, messages: list[LlmChatMessage], model_override: str | None = None):
+
+    def research_completion(self, messages: list[LlmChatMessage], model_override: str | None = None,
+                            functions: list[LlmFunction] | None = None):
         """
         Call an LLM API's chat completion endpoint with the provided messages -- will utilize the environment's configured 'Research' model.
         """
         op = Operations.query.research_completion
         args = {
             'messages': messages,
+            'functions': functions,
             'modelSelection': {
                 'assistantId': self.config.copilot_id,
                 'modelOverride': model_override
@@ -171,7 +198,8 @@ class Llm:
         return gql_response.research_completion
 
     def research_completion_with_prompt(self, prompt_name: str, prompt_variables: dict,
-                                        model_override: str | None = None):
+                                        model_override: str | None = None,
+                                        functions: list[LlmFunction] | None = None):
         """
         Call an LLM API's chat completion endpoint with the provided prompt -- will utilize the environment's configured 'Research' model.
         """
@@ -179,6 +207,7 @@ class Llm:
         args = {
             'promptName': prompt_name,
             'promptVariables': prompt_variables,
+            'functions': LlmFunction,
             'modelSelection': {
                 'assistantId': self.config.copilot_id,
                 'modelOverride': model_override
