@@ -58,6 +58,7 @@ query GetCopilotInfo($copilotId: UUID!, $usePublishedVersion: Boolean) {
         copilotId
         name
         description
+        landingPage
         systemPrompt
         betaYaml
         globalPythonCode
@@ -73,6 +74,7 @@ query GetCopilots {
         copilotId
         name
         description
+        landingPage
         systemPrompt
         betaYaml
         globalPythonCode
