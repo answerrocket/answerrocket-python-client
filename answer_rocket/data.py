@@ -1729,29 +1729,6 @@ class Data:
 
         return result.create_dataset_from_table
 
-    def update_dataset(self, dataset: Dataset) -> MaxMutationResponse:
-        """
-        Update an existing dataset with new configuration.
-
-        Parameters
-        ----------
-        dataset : Dataset
-            The dataset object containing the updated configuration and metadata.
-
-        Returns
-        -------
-        MaxMutationResponse
-            The result of the update operation.
-        """
-        mutation_args = {
-            'dataset': dataset,
-        }
-
-        op = Operations.mutation.update_dataset
-        result = self._gql_client.submit(op, mutation_args)
-
-        return result.update_dataset
-
     def create_dimension(self, dataset_id: UUID, dimension: Dimension) -> MaxMutationResponse:
         """
         Create a new dimension within a dataset.
