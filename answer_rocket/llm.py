@@ -207,7 +207,7 @@ class Llm:
         args = {
             'promptName': prompt_name,
             'promptVariables': prompt_variables,
-            'functions': LlmFunction,
+            'functions': functions,
             'modelSelection': {
                 'assistantId': self.config.copilot_id,
                 'modelOverride': model_override
