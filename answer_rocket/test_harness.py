@@ -1,6 +1,5 @@
 import os
 from functools import wraps
-from pydantic import TypeAdapter
 
 from answer_rocket import AnswerRocketClient
 from answer_rocket.config import Config
@@ -22,7 +21,7 @@ class TestHarness:
 
     run_with_cache = True
     delete_cache = False
-    lazy_loading = TypeAdapter(bool).validate_python(os.getenv('LAZY_LOADING', 'true'))
+    lazy_loading = os.getenv('LAZY_LOADING', 'true') == 'true'
     cache_manager: TestHarnessCacheManager = TestHarnessCacheManager()
      
     def wrapper(self, method):
