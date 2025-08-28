@@ -1,0 +1,161 @@
+query GetDatasetKShots($datasetId: UUID!, $searchInput: DatasetKShotSearchInput!, $paging: PagingInput!) {
+  getDatasetKShots(datasetId: $datasetId, searchInput: $searchInput, paging: $paging) {
+    totalRows
+    rows {
+      datasetKShotId
+      datasetId
+      question
+      renderedPrompt
+      explanation
+      sql
+      sampleData {
+        datasetKShotId
+        columns {
+          name
+          jdbcType
+        }
+        rows {
+          rowNum
+          data
+        }
+      }
+      title
+      visualization
+      isActive
+    }
+  }
+}
+
+query GetDatasetKShotById($datasetKShotId: UUID!) {
+  getDatasetKShotById(datasetKShotId: $datasetKShotId) {
+    datasetKShotId
+    datasetId
+    question
+    renderedPrompt
+    explanation
+    sql
+    sampleData {
+      datasetKShotId
+      columns {
+        name
+        jdbcType
+      }
+      rows {
+        rowNum
+        data
+      }
+    }
+    title
+    visualization
+    isActive
+  }
+}
+
+mutation CreateDatasetKShot(
+  $datasetKShot: JSON!
+) {
+  createDatasetKShot(
+    datasetKShot: $datasetKShot
+  ) {
+    datasetKShotId
+    success
+    code
+    error
+  }
+}
+
+mutation UpdateDatasetKShotQuestion(
+  $datasetKShotId: UUID!
+  $question: String!
+) {
+  updateDatasetKShotQuestion(
+    datasetKShotId: $datasetKShotId
+    question: $question
+  ) {
+    success
+    code
+    error
+  }
+}
+
+mutation UpdateDatasetKShotRenderedPrompt(
+  $datasetKShotId: UUID!
+  $renderedPrompt: String
+) {
+  updateDatasetKShotRenderedPrompt(
+    datasetKShotId: $datasetKShotId
+    renderedPrompt: $renderedPrompt
+  ) {
+    success
+    code
+    error
+  }
+}
+
+mutation UpdateDatasetKShotExplanation(
+  $datasetKShotId: UUID!
+  $explanation: String
+) {
+  updateDatasetKShotExplanation(
+    datasetKShotId: $datasetKShotId
+    explanation: $explanation
+  ) {
+    success
+    code
+    error
+  }
+}
+
+mutation UpdateDatasetKShotSql(
+  $datasetKShotId: UUID!
+  $sql: String
+) {
+  updateDatasetKShotSql(
+    datasetKShotId: $datasetKShotId
+    sql: $sql
+  ) {
+    success
+    code
+    error
+  }
+}
+
+mutation UpdateDatasetKShotTitle(
+  $datasetKShotId: UUID!
+  $title: String
+) {
+  updateDatasetKShotTitle(
+    datasetKShotId: $datasetKShotId
+    title: $title
+  ) {
+    success
+    code
+    error
+  }
+}
+
+mutation UpdateDatasetKShotVisualization(
+  $datasetKShotId: UUID!
+  $visualization: JSON
+) {
+  updateDatasetKShotVisualization(
+    datasetKShotId: $datasetKShotId
+    visualization: $visualization
+  ) {
+    success
+    code
+    error
+  }
+}
+
+mutation DeleteDatasetKShot(
+  $datasetKShotId: UUID!
+) {
+  deleteDatasetKShot(
+    datasetKShotId: $datasetKShotId
+  ) {
+    success
+    code
+    error
+  }
+}
