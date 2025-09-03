@@ -930,20 +930,6 @@ class MaxReportResult(sgqlc.types.Type):
     preview = sgqlc.types.Field(String, graphql_name='preview')
     final_message = sgqlc.types.Field(String, graphql_name='finalMessage')
 
-
-class MaxSkillComponent(sgqlc.types.Type):
-    __schema__ = schema
-    __field_names__ = ('skill_component_id', 'node_type', 'organization', 'name', 'description', 'input_properties', 'output_properties', 'component_data')
-    skill_component_id = sgqlc.types.Field(sgqlc.types.non_null(UUID), graphql_name='skillComponentId')
-    node_type = sgqlc.types.Field(sgqlc.types.non_null(String), graphql_name='nodeType')
-    organization = sgqlc.types.Field(sgqlc.types.non_null(String), graphql_name='organization')
-    name = sgqlc.types.Field(sgqlc.types.non_null(String), graphql_name='name')
-    description = sgqlc.types.Field(String, graphql_name='description')
-    input_properties = sgqlc.types.Field(sgqlc.types.non_null(sgqlc.types.list_of(sgqlc.types.non_null('MaxSkillComponentInputProperty'))), graphql_name='inputProperties')
-    output_properties = sgqlc.types.Field(sgqlc.types.non_null(sgqlc.types.list_of(sgqlc.types.non_null('MaxSkillComponentOutputProperty'))), graphql_name='outputProperties')
-    component_data = sgqlc.types.Field(sgqlc.types.non_null(JSON), graphql_name='componentData')
-
-
 class MaxSkillComponentInputProperty(sgqlc.types.Type):
     __schema__ = schema
     __field_names__ = ('name', 'label', 'description', 'type', 'is_required', 'is_list', 'can_wire_from_output')
@@ -1389,7 +1375,7 @@ class Query(sgqlc.types.Type):
         ('tool_definition', sgqlc.types.Arg(JSON, graphql_name='toolDefinition', default=None)),
 ))
     )
-    get_skill_components = sgqlc.types.Field(sgqlc.types.non_null(sgqlc.types.list_of(sgqlc.types.non_null(MaxSkillComponent))), graphql_name='getSkillComponents')
+
     get_copilot_hydrated_reports = sgqlc.types.Field(sgqlc.types.non_null(sgqlc.types.list_of(sgqlc.types.non_null(HydratedReport))), graphql_name='getCopilotHydratedReports', args=sgqlc.types.ArgDict((
         ('copilot_id', sgqlc.types.Arg(sgqlc.types.non_null(UUID), graphql_name='copilotId', default=None)),
         ('override_dataset_id', sgqlc.types.Arg(UUID, graphql_name='overrideDatasetId', default=None)),
