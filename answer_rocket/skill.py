@@ -24,7 +24,7 @@ class Skill:
         self._config = config
         self._gql_client = gql_client
 
-    def run(self, copilot_id: str, skill_name: str, parameters: dict | None = None, validate_parameters: bool = False) -> RunSkillResult:
+    def run(self, copilot_id: str, skill_name: str, parameters: dict | None = None, validate_parameters: bool = False, try_get_from_cache: bool = False) -> RunSkillResult:
         """
         Runs a skill and returns its full output (does not stream intermediate skill output).
 
@@ -33,6 +33,7 @@ class Skill:
         :param parameters: a dict of parameters to pass to the skill where keys are the param keys and values are the values
          to populate them with
         :param validate_parameters: boolean switch which applies guardrails to the parameters before the skill is run
+        :param try_get_from_cache: boolean switch which tries to fetch the result of the skill from cache, and if not available, runs the skill
 
         :return the full output object of the skill
         """
@@ -44,6 +45,7 @@ class Skill:
             "skillName": skill_name,
             'parameters': parameters or {},
             'validateParameters': validate_parameters,
+            'tryGetFromCache': try_get_from_cache,
         }
 
         preview_query_vars = {
@@ -51,6 +53,7 @@ class Skill:
             'skill_name': Arg(non_null(String)),
             'parameters': Arg(JSON),
             'validate_parameters': Arg(Boolean),
+            'try_get_from_cache': Arg(Boolean),
         }
 
         operation = self._gql_client.query(variables=preview_query_vars)
@@ -60,6 +63,7 @@ class Skill:
             skill_name=Variable('skill_name'),
             parameters=Variable('parameters'),
             validate_parameters=Variable('validate_parameters'),
+            try_get_from_cache=Variable('try_get_from_cache'),
         )
 
         try:

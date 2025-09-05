@@ -581,7 +581,7 @@ class HydratedReport(sgqlc.types.Type):
 
 class MatchValues(sgqlc.types.Type):
     __schema__ = schema
-    __field_names__ = ('automatic_db_whitelist', 'constrained_values', 'dataset_id', 'default_performance_metric', 'inverse_map', 'phrase_template', 'popular_values', 'value_collection_name', 'dataset_date_dimensions', 'dataset_dimensions', 'dataset_metrics', 'predicate_vocab')
+    __field_names__ = ('automatic_db_whitelist', 'constrained_values', 'dataset_id', 'default_performance_metric', 'inverse_map', 'phrase_template', 'popular_values', 'value_collection_name', 'dataset_date_dimensions', 'dataset_dimensions', 'dataset_metrics', 'predicate_vocab', 'defer_predicate_vocab_loading')
     automatic_db_whitelist = sgqlc.types.Field(sgqlc.types.list_of(sgqlc.types.non_null(String)), graphql_name='automaticDbWhitelist')
     constrained_values = sgqlc.types.Field(sgqlc.types.list_of(sgqlc.types.non_null(String)), graphql_name='constrainedValues')
     dataset_id = sgqlc.types.Field(String, graphql_name='datasetId')
@@ -594,6 +594,7 @@ class MatchValues(sgqlc.types.Type):
     dataset_dimensions = sgqlc.types.Field(sgqlc.types.list_of(sgqlc.types.non_null(String)), graphql_name='datasetDimensions')
     dataset_metrics = sgqlc.types.Field(sgqlc.types.list_of(sgqlc.types.non_null(String)), graphql_name='datasetMetrics')
     predicate_vocab = sgqlc.types.Field(JSON, graphql_name='predicateVocab')
+    defer_predicate_vocab_loading = sgqlc.types.Field(Boolean, graphql_name='deferPredicateVocabLoading')
 
 
 class MaxAgentWorkflow(sgqlc.types.Type):
@@ -920,15 +921,15 @@ class MaxReportParamsAndValues(sgqlc.types.Type):
 
 class MaxReportResult(sgqlc.types.Type):
     __schema__ = schema
-    __field_names__ = ('title', 'report_name', 'parameters', 'custom_payload', 'content_blocks', 'gzipped_dataframes_and_metadata', 'preview', 'final_message')
+    __field_names__ = ('title', 'report_name', 'parameters', 'custom_payload', 'content_blocks', 'gzipped_dataframes_and_metadata', 'final_message', 'preview')
     title = sgqlc.types.Field(String, graphql_name='title')
     report_name = sgqlc.types.Field(sgqlc.types.non_null(String), graphql_name='reportName')
     parameters = sgqlc.types.Field(sgqlc.types.list_of(sgqlc.types.non_null(MaxReportParamsAndValues)), graphql_name='parameters')
     custom_payload = sgqlc.types.Field(JSON, graphql_name='customPayload')
     content_blocks = sgqlc.types.Field(sgqlc.types.list_of(sgqlc.types.non_null(MaxContentBlock)), graphql_name='contentBlocks')
     gzipped_dataframes_and_metadata = sgqlc.types.Field(sgqlc.types.list_of(JSON), graphql_name='gzippedDataframesAndMetadata')
-    preview = sgqlc.types.Field(String, graphql_name='preview')
     final_message = sgqlc.types.Field(String, graphql_name='finalMessage')
+    preview = sgqlc.types.Field(String, graphql_name='preview')
 
 
 class MaxSkillComponent(sgqlc.types.Type):
@@ -1386,7 +1387,7 @@ class Query(sgqlc.types.Type):
         ('parameters', sgqlc.types.Arg(JSON, graphql_name='parameters', default=None)),
         ('use_published_version', sgqlc.types.Arg(Boolean, graphql_name='usePublishedVersion', default=None)),
         ('validate_parameters', sgqlc.types.Arg(Boolean, graphql_name='validateParameters', default=None)),
-        ('tool_definition', sgqlc.types.Arg(JSON, graphql_name='toolDefinition', default=None)),
+        ('try_get_from_cache', sgqlc.types.Arg(Boolean, graphql_name='tryGetFromCache', default=None)),
 ))
     )
     get_skill_components = sgqlc.types.Field(sgqlc.types.non_null(sgqlc.types.list_of(sgqlc.types.non_null(MaxSkillComponent))), graphql_name='getSkillComponents')
