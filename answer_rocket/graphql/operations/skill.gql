@@ -71,14 +71,12 @@ mutation RunCopilotSkillAsync(
   $skillName: String!
   $parameters: JSON
   $usePublishedVersion: Boolean
-  $validateParameters: Boolean
 ) {
   runCopilotSkillAsync(
     copilotId: $copilotId
     skillName: $skillName
     parameters: $parameters
     usePublishedVersion: $usePublishedVersion
-    validateParameters: $validateParameters
   ) {
     executionId
     success

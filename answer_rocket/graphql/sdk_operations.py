@@ -421,8 +421,8 @@ def mutation_update_loading_message():
 
 
 def mutation_run_copilot_skill_async():
-    _op = sgqlc.operation.Operation(_schema_root.mutation_type, name='RunCopilotSkillAsync', variables=dict(copilotId=sgqlc.types.Arg(sgqlc.types.non_null(_schema.UUID)), skillName=sgqlc.types.Arg(sgqlc.types.non_null(_schema.String)), parameters=sgqlc.types.Arg(_schema.JSON), usePublishedVersion=sgqlc.types.Arg(_schema.Boolean), validateParameters=sgqlc.types.Arg(_schema.Boolean)))
-    _op_run_copilot_skill_async = _op.run_copilot_skill_async(copilot_id=sgqlc.types.Variable('copilotId'), skill_name=sgqlc.types.Variable('skillName'), parameters=sgqlc.types.Variable('parameters'), use_published_version=sgqlc.types.Variable('usePublishedVersion'), validate_parameters=sgqlc.types.Variable('validateParameters'))
+    _op = sgqlc.operation.Operation(_schema_root.mutation_type, name='RunCopilotSkillAsync', variables=dict(copilotId=sgqlc.types.Arg(sgqlc.types.non_null(_schema.UUID)), skillName=sgqlc.types.Arg(sgqlc.types.non_null(_schema.String)), parameters=sgqlc.types.Arg(_schema.JSON), usePublishedVersion=sgqlc.types.Arg(_schema.Boolean)))
+    _op_run_copilot_skill_async = _op.run_copilot_skill_async(copilot_id=sgqlc.types.Variable('copilotId'), skill_name=sgqlc.types.Variable('skillName'), parameters=sgqlc.types.Variable('parameters'), use_published_version=sgqlc.types.Variable('usePublishedVersion'))
     _op_run_copilot_skill_async.execution_id()
     _op_run_copilot_skill_async.success()
     _op_run_copilot_skill_async.code()

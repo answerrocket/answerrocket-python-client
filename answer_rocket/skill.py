@@ -100,7 +100,7 @@ class Skill:
 
         return final_result
 
-    def run_async(self, copilot_id: str, skill_name: str, parameters: dict | None = None, validate_parameters: bool = False) -> AsyncSkillRunResult:
+    def run_async(self, copilot_id: str, skill_name: str, parameters: dict | None = None) -> AsyncSkillRunResult:
         """
         Starts a skill execution asynchronously and returns an execution ID immediately.
 
@@ -108,7 +108,6 @@ class Skill:
         :param skill_name: the name of the skill to execute
         :param parameters: a dict of parameters to pass to the skill where keys are the param keys and values are the values
          to populate them with
-        :param validate_parameters: boolean switch which applies guardrails to the parameters before the skill is run
 
         :return AsyncSkillRunResult with execution_id if successful
         """
@@ -116,8 +115,7 @@ class Skill:
             async_query_args = {
                 "copilotId": UUID(copilot_id),
                 "skillName": skill_name,
-                'parameters': parameters or {},
-                'validateParameters': validate_parameters,
+                'parameters': parameters or {}
             }
 
             op = Operations.mutation.run_copilot_skill_async
