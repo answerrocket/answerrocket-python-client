@@ -143,6 +143,14 @@ def mutation_delete_chat_artifact():
     return _op
 
 
+def mutation_clear_copilot_cache():
+    _op = sgqlc.operation.Operation(_schema_root.mutation_type, name='ClearCopilotCache', variables=dict(copilotId=sgqlc.types.Arg(sgqlc.types.non_null(_schema.UUID))))
+    _op_clear_copilot_cache = _op.clear_copilot_cache(copilot_id=sgqlc.types.Variable('copilotId'))
+    _op_clear_copilot_cache.success()
+    _op_clear_copilot_cache.error()
+    return _op
+
+
 def mutation_update_database_name():
     _op = sgqlc.operation.Operation(_schema_root.mutation_type, name='UpdateDatabaseName', variables=dict(databaseId=sgqlc.types.Arg(sgqlc.types.non_null(_schema.UUID)), name=sgqlc.types.Arg(sgqlc.types.non_null(_schema.String))))
     _op_update_database_name = _op.update_database_name(database_id=sgqlc.types.Variable('databaseId'), name=sgqlc.types.Variable('name'))
@@ -434,6 +442,7 @@ class Mutation:
     add_feedback = mutation_add_feedback()
     ask_chat_question = mutation_ask_chat_question()
     cancel_chat_question = mutation_cancel_chat_question()
+    clear_copilot_cache = mutation_clear_copilot_cache()
     create_chat_artifact = mutation_create_chat_artifact()
     create_chat_thread = mutation_create_chat_thread()
     create_database_kshot = mutation_create_database_kshot()
