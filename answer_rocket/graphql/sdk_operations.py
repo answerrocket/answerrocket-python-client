@@ -143,6 +143,14 @@ def mutation_delete_chat_artifact():
     return _op
 
 
+def mutation_clear_copilot_cache():
+    _op = sgqlc.operation.Operation(_schema_root.mutation_type, name='ClearCopilotCache', variables=dict(copilotId=sgqlc.types.Arg(sgqlc.types.non_null(_schema.UUID))))
+    _op_clear_copilot_cache = _op.clear_copilot_cache(copilot_id=sgqlc.types.Variable('copilotId'))
+    _op_clear_copilot_cache.success()
+    _op_clear_copilot_cache.error()
+    return _op
+
+
 def mutation_update_database_name():
     _op = sgqlc.operation.Operation(_schema_root.mutation_type, name='UpdateDatabaseName', variables=dict(databaseId=sgqlc.types.Arg(sgqlc.types.non_null(_schema.UUID)), name=sgqlc.types.Arg(sgqlc.types.non_null(_schema.String))))
     _op_update_database_name = _op.update_database_name(database_id=sgqlc.types.Variable('databaseId'), name=sgqlc.types.Variable('name'))
@@ -493,10 +501,21 @@ def mutation_update_loading_message():
     return _op
 
 
+def mutation_run_copilot_skill_async():
+    _op = sgqlc.operation.Operation(_schema_root.mutation_type, name='RunCopilotSkillAsync', variables=dict(copilotId=sgqlc.types.Arg(sgqlc.types.non_null(_schema.UUID)), skillName=sgqlc.types.Arg(sgqlc.types.non_null(_schema.String)), parameters=sgqlc.types.Arg(_schema.JSON), usePublishedVersion=sgqlc.types.Arg(_schema.Boolean)))
+    _op_run_copilot_skill_async = _op.run_copilot_skill_async(copilot_id=sgqlc.types.Variable('copilotId'), skill_name=sgqlc.types.Variable('skillName'), parameters=sgqlc.types.Variable('parameters'), use_published_version=sgqlc.types.Variable('usePublishedVersion'))
+    _op_run_copilot_skill_async.execution_id()
+    _op_run_copilot_skill_async.success()
+    _op_run_copilot_skill_async.code()
+    _op_run_copilot_skill_async.error()
+    return _op
+
+
 class Mutation:
     add_feedback = mutation_add_feedback()
     ask_chat_question = mutation_ask_chat_question()
     cancel_chat_question = mutation_cancel_chat_question()
+    clear_copilot_cache = mutation_clear_copilot_cache()
     create_chat_artifact = mutation_create_chat_artifact()
     create_chat_thread = mutation_create_chat_thread()
     create_database_kshot = mutation_create_database_kshot()
@@ -514,6 +533,7 @@ class Mutation:
     import_copilot_skill_from_zip = mutation_import_copilot_skill_from_zip()
     import_skill_from_repo = mutation_import_skill_from_repo()
     queue_chat_question = mutation_queue_chat_question()
+    run_copilot_skill_async = mutation_run_copilot_skill_async()
     set_max_agent_workflow = mutation_set_max_agent_workflow()
     set_skill_memory = mutation_set_skill_memory()
     sync_max_skill_repository = mutation_sync_max_skill_repository()
@@ -1029,6 +1049,15 @@ def query_research_completion_with_prompt():
     return _op
 
 
+def query_get_async_skill_run_status():
+    _op = sgqlc.operation.Operation(_schema_root.query_type, name='GetAsyncSkillRunStatus', variables=dict(executionId=sgqlc.types.Arg(sgqlc.types.non_null(_schema.String))))
+    _op_get_async_skill_run_status = _op.get_async_skill_run_status(execution_id=sgqlc.types.Variable('executionId'))
+    _op_get_async_skill_run_status.status()
+    _op_get_async_skill_run_status.data()
+    _op_get_async_skill_run_status.error()
+    return _op
+
+
 class Query:
     all_chat_entries = query_all_chat_entries()
     chat_completion = query_chat_completion()
@@ -1036,6 +1065,7 @@ class Query:
     chat_entry = query_chat_entry()
     chat_thread = query_chat_thread()
     dataframes_for_entry = query_dataframes_for_entry()
+    get_async_skill_run_status = query_get_async_skill_run_status()
     get_chat_artifact = query_get_chat_artifact()
     get_chat_artifacts = query_get_chat_artifacts()
     get_copilot_hydrated_reports = query_get_copilot_hydrated_reports()

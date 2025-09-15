@@ -65,3 +65,30 @@ query ResearchCompletionWithPrompt(
 ) {
   researchCompletionWithPrompt(promptName: $promptName, promptVariables: $promptVariables, messages: $messages, llmMeta: $llmMeta, functions: $functions)
 }
+
+mutation RunCopilotSkillAsync(
+  $copilotId: UUID!
+  $skillName: String!
+  $parameters: JSON
+  $usePublishedVersion: Boolean
+) {
+  runCopilotSkillAsync(
+    copilotId: $copilotId
+    skillName: $skillName
+    parameters: $parameters
+    usePublishedVersion: $usePublishedVersion
+  ) {
+    executionId
+    success
+    code
+    error
+  }
+}
+
+query GetAsyncSkillRunStatus($executionId: String!) {
+  getAsyncSkillRunStatus(executionId: $executionId) {
+    status
+    data
+    error
+  }
+}

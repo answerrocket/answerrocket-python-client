@@ -398,6 +398,41 @@ class Config:
         except Exception as e:
             return None
 
+    def clear_copilot_cache(self, copilot_id: UUID = None) -> MaxMutationResponse:
+        """
+        Clear the cache for a copilot.
+
+        Parameters
+        ----------
+        copilot_id : UUID, optional
+            The ID of the copilot to clear cache for. If None, uses the configured copilot ID.
+
+        Returns
+        -------
+        MaxMutationResponse
+            The response from the clear cache operation, or None if an error occurs.
+        """
+        try:
+            mutation_args = {
+                'copilotId': str(copilot_id) if copilot_id else self.copilot_id,
+            }
+
+            mutation_vars = {
+                'copilot_id': Arg(non_null(GQL_UUID)),
+            }
+
+            operation = self._gql_client.mutation(variables=mutation_vars)
+
+            operation.clear_copilot_cache(
+                copilot_id=Variable('copilot_id')
+            )
+
+            result = self._gql_client.submit(operation, mutation_args)
+
+            return result.clear_copilot_cache
+        except Exception as e:
+            return None
+
 
 def _complete_artifact_path(artifact_path: str, resource_base_path=None) -> str:
     """

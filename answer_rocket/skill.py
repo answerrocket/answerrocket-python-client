@@ -3,7 +3,7 @@ from dataclasses import dataclass
 from sgqlc.types import Arg, non_null, Variable
 from answer_rocket.client_config import ClientConfig
 from answer_rocket.graphql.client import GraphQlClient
-from answer_rocket.graphql.schema import JSON, String, UUID, Boolean
+from answer_rocket.graphql.schema import JSON, String, UUID, Boolean, AsyncSkillStatusResponse
 from answer_rocket.graphql.sdk_operations import Operations
 from answer_rocket.output import ChatReportOutput
 from answer_rocket.graphql.schema import UUID as GQL_UUID
@@ -13,6 +13,19 @@ from answer_rocket.types import MaxResult, RESULT_EXCEPTION_CODE
 @dataclass
 class RunSkillResult(MaxResult):
     data: ChatReportOutput | None = None
+
+    def __init__(self, success: bool = False, **kwargs):
+        super().__init__(success, **kwargs)
+        self.data = kwargs.get('data')
+
+
+@dataclass
+class AsyncSkillRunResult(MaxResult):
+    execution_id: str | None = None
+
+    def __init__(self, success: bool = False, **kwargs):
+        super().__init__(success, **kwargs)
+        self.execution_id = kwargs.get('execution_id')
 
 
 class Skill:
@@ -86,6 +99,67 @@ class Skill:
             final_result.code = RESULT_EXCEPTION_CODE
 
         return final_result
+
+    def run_async(self, copilot_id: str, skill_name: str, parameters: dict | None = None) -> AsyncSkillRunResult:
+        """
+        Starts a skill execution asynchronously and returns an execution ID immediately.
+
+        :param copilot_id: the id of the copilot to run the skill on
+        :param skill_name: the name of the skill to execute
+        :param parameters: a dict of parameters to pass to the skill where keys are the param keys and values are the values
+         to populate them with
+
+        :return AsyncSkillRunResult with execution_id if successful
+        """
+        try:
+            async_query_args = {
+                "copilotId": UUID(copilot_id),
+                "skillName": skill_name,
+                'parameters': parameters or {}
+            }
+
+            op = Operations.mutation.run_copilot_skill_async
+
+            result = self._gql_client.submit(op, async_query_args)
+
+            skill_run_result = result.run_copilot_skill_async
+
+            final_result = AsyncSkillRunResult()
+            final_result.success = skill_run_result.success
+            final_result.error = skill_run_result.error
+            final_result.code = skill_run_result.code
+            final_result.execution_id = skill_run_result.execution_id
+
+            return final_result
+        except Exception as e:
+            final_result = AsyncSkillRunResult()
+            final_result.success = False
+            final_result.error = str(e)
+            final_result.code = RESULT_EXCEPTION_CODE
+            return final_result
+
+    def get_async_status(self, execution_id: str) -> AsyncSkillStatusResponse:
+        """
+        Gets the status and result of an async skill execution.
+
+        :param execution_id: the execution ID returned from run_async
+
+        :return AsyncSkillStatusResult with status and data if completed
+        """
+        try:
+
+            status_query_args = {
+                "executionId": execution_id,
+            }
+
+            op = Operations.query.get_async_skill_run_status
+
+            result = self._gql_client.submit(op, status_query_args)
+
+            return result.get_async_skill_run_status
+        except Exception as e:
+            print(e)
+            return None
 
     def update_loading_message(self, message: str):
         if self._config.entry_answer_id:
