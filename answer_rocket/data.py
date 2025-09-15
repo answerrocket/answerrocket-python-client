@@ -18,7 +18,8 @@ from answer_rocket.graphql.schema import UUID as GQL_UUID, GenerateVisualization
     MaxMutationResponse, JSON, RunSqlAiResponse, GroundedValueResponse, Dimension, \
     Metric, Dataset, DatasetDataInterval, Database, DatabaseSearchInput, PagingInput, PagedDatabases, \
     DatabaseTableSearchInput, PagedDatabaseTables, CreateDatasetFromTableResponse, DatasetSearchInput, PagedDatasets, \
-    DatabaseKShotSearchInput, PagedDatabaseKShots, DatabaseKShot, CreateDatabaseKShotResponse
+    DatabaseKShotSearchInput, PagedDatabaseKShots, DatabaseKShot, CreateDatabaseKShotResponse, \
+    DatasetKShotSearchInput, PagedDatasetKShots, DatasetKShot, CreateDatasetKShotResponse
 from answer_rocket.graphql.sdk_operations import Operations
 from answer_rocket.types import MaxResult, RESULT_EXCEPTION_CODE
 
@@ -2128,3 +2129,293 @@ class Data:
         result = self._gql_client.submit(op, mutation_args)
 
         return result.update_database_kshot_visualization
+
+    # Dataset K-shots methods
+    def get_dataset_kshots(self, dataset_id: UUID, search_input: Optional[DatasetKShotSearchInput]=None, paging: Optional[PagingInput]=None) -> PagedDatasetKShots:
+        """
+        Retrieve dataset k-shots based on optional search and paging criteria.
+
+        If no `search_input` or `paging` is provided, default values will be used.
+
+        Parameters
+        ----------
+        dataset_id : UUID
+            The dataset_id that contains the k-shots
+        search_input : DatasetKShotSearchInput, optional
+            An object specifying the search criteria for the k-shots.
+            If None, no filters are applied
+        paging : PagingInput, optional
+            An object specifying pagination details such as page number and page size.
+            If None, defaults to page 1 with a page size of 100.
+
+        Returns
+        -------
+        PagedDatasetKShots
+            A paged collection of dataset k-shots. Returns an empty `PagedDatasetKShots` instance if an error occurs during retrieval.
+
+        Notes
+        -----
+        This method uses a GraphQL client to submit a query to fetch the data.
+        """
+        if not search_input:
+            search_input = DatasetKShotSearchInput(
+                question_contains=None,
+                include_inactive=None,
+            )
+
+        if not paging:
+            paging = PagingInput(
+                page_num=1,
+                page_size=100
+            )
+
+        query_args = {
+            'datasetId': str(dataset_id),
+            'searchInput': search_input.__to_json_value__(),
+            'paging': paging.__to_json_value__()
+        }
+
+        op = Operations.query.get_dataset_kshots
+
+        result = self._gql_client.submit(op, query_args)
+
+        return result.get_dataset_kshots
+
+    def get_dataset_kshot_by_id(self, dataset_kshot_id: UUID) -> Optional[DatasetKShot]:
+        """
+        Retrieve a dataset k-shot by its ID.
+
+        This method queries the backend for a dataset k-shot using the given unique identifier.
+        If the k-shot is found, it is returned as a `DatasetKShot` object. If not found or
+        if an error occurs during the query, `None` is returned.
+
+        Parameters
+        ----------
+        dataset_kshot_id : UUID
+            The unique identifier of the dataset k-shot to retrieve.
+
+        Returns
+        -------
+        DatasetKShot or None
+            The dataset k-shot object if found, or `None` if not found or if an error occurs.
+        """
+        query_args = {
+            'datasetKShotId': str(dataset_kshot_id),
+        }
+
+        op = Operations.query.get_dataset_kshot_by_id
+
+        result = self._gql_client.submit(op, query_args)
+
+        return result.get_dataset_kshot_by_id
+
+    def create_dataset_kshot(self, dataset_kshot: dict[str, Any]) -> CreateDatasetKShotResponse:
+        """
+        Create a new dataset k-shot.
+
+        Parameters
+        ----------
+        dataset_kshot : Dict
+            The dataset k-shot dictionary containing all necessary metadata and configuration.
+            Must follow the DatasetKShot type definition with fields:
+            - datasetId: UUID (required)
+            - question: str (required)
+            - renderedPrompt: str (optional)
+            - explanation: str (optional)
+            - sql: str (optional)
+            - title: str (optional)
+            - visualization: JSON (optional)
+            - isActive: bool (optional)
+
+        Returns
+        -------
+        CreateDatasetKShotResponse
+            The result of the GraphQL mutation containing the created k-shot details.
+        """
+        mutation_args = {
+            'datasetKShot': dataset_kshot,
+        }
+
+        op = Operations.mutation.create_dataset_kshot
+        result = self._gql_client.submit(op, mutation_args)
+
+        return result.create_dataset_kshot
+
+    def delete_dataset_kshot(self, dataset_kshot_id: UUID) -> MaxMutationResponse:
+        """
+        Delete a dataset k-shot.
+
+        Parameters
+        ----------
+        dataset_kshot_id : UUID
+            The unique identifier of the dataset k-shot to be deleted.
+
+        Returns
+        -------
+        MaxMutationResponse
+            The result of the GraphQL mutation containing the deletion details.
+        """
+        mutation_args = {
+            'datasetKShotId': str(dataset_kshot_id),
+        }
+
+        op = Operations.mutation.delete_dataset_kshot
+        result = self._gql_client.submit(op, mutation_args)
+
+        return result.delete_dataset_kshot
+
+    def update_dataset_kshot_question(self, dataset_kshot_id: UUID, question: str) -> MaxMutationResponse:
+        """
+        Update the question of a dataset k-shot.
+
+        Parameters
+        ----------
+        dataset_kshot_id : UUID
+            The unique identifier of the dataset k-shot to be updated.
+        question : str
+            The new question to assign to the dataset k-shot.
+
+        Returns
+        -------
+        MaxMutationResponse
+            The result of the GraphQL mutation containing the updated question.
+        """
+        mutation_args = {
+            'datasetKShotId': str(dataset_kshot_id),
+            'question': question,
+        }
+
+        op = Operations.mutation.update_dataset_kshot_question
+        result = self._gql_client.submit(op, mutation_args)
+
+        return result.update_dataset_kshot_question
+
+    def update_dataset_kshot_rendered_prompt(self, dataset_kshot_id: UUID, rendered_prompt: Optional[str]) -> MaxMutationResponse:
+        """
+        Update the rendered prompt of a dataset k-shot.
+
+        Parameters
+        ----------
+        dataset_kshot_id : UUID
+            The unique identifier of the dataset k-shot to be updated.
+        rendered_prompt : Optional[str]
+            The new rendered prompt to assign to the dataset k-shot.
+
+        Returns
+        -------
+        MaxMutationResponse
+            The result of the GraphQL mutation containing the updated rendered prompt.
+        """
+        mutation_args = {
+            'datasetKShotId': str(dataset_kshot_id),
+            'renderedPrompt': rendered_prompt,
+        }
+
+        op = Operations.mutation.update_dataset_kshot_rendered_prompt
+        result = self._gql_client.submit(op, mutation_args)
+
+        return result.update_dataset_kshot_rendered_prompt
+
+    def update_dataset_kshot_explanation(self, dataset_kshot_id: UUID, explanation: Optional[str]) -> MaxMutationResponse:
+        """
+        Update the explanation of a dataset k-shot.
+
+        Parameters
+        ----------
+        dataset_kshot_id : UUID
+            The unique identifier of the dataset k-shot to be updated.
+        explanation : Optional[str]
+            The new explanation to assign to the dataset k-shot.
+
+        Returns
+        -------
+        MaxMutationResponse
+            The result of the GraphQL mutation containing the updated explanation.
+        """
+        mutation_args = {
+            'datasetKShotId': str(dataset_kshot_id),
+            'explanation': explanation,
+        }
+
+        op = Operations.mutation.update_dataset_kshot_explanation
+        result = self._gql_client.submit(op, mutation_args)
+
+        return result.update_dataset_kshot_explanation
+
+    def update_dataset_kshot_sql(self, dataset_kshot_id: UUID, sql: Optional[str]) -> MaxMutationResponse:
+        """
+        Update the SQL of a dataset k-shot.
+
+        Parameters
+        ----------
+        dataset_kshot_id : UUID
+            The unique identifier of the dataset k-shot to be updated.
+        sql : Optional[str]
+            The new SQL to assign to the dataset k-shot.
+
+        Returns
+        -------
+        MaxMutationResponse
+            The result of the GraphQL mutation containing the updated SQL.
+        """
+        mutation_args = {
+            'datasetKShotId': str(dataset_kshot_id),
+            'sql': sql,
+        }
+
+        op = Operations.mutation.update_dataset_kshot_sql
+        result = self._gql_client.submit(op, mutation_args)
+
+        return result.update_dataset_kshot_sql
+
+    def update_dataset_kshot_title(self, dataset_kshot_id: UUID, title: Optional[str]) -> MaxMutationResponse:
+        """
+        Update the title of a dataset k-shot.
+
+        Parameters
+        ----------
+        dataset_kshot_id : UUID
+            The unique identifier of the dataset k-shot to be updated.
+        title : Optional[str]
+            The new title to assign to the dataset k-shot.
+
+        Returns
+        -------
+        MaxMutationResponse
+            The result of the GraphQL mutation containing the updated title.
+        """
+        mutation_args = {
+            'datasetKShotId': str(dataset_kshot_id),
+            'title': title,
+        }
+
+        op = Operations.mutation.update_dataset_kshot_title
+        result = self._gql_client.submit(op, mutation_args)
+
+        return result.update_dataset_kshot_title
+
+    def update_dataset_kshot_visualization(self, dataset_kshot_id: UUID, visualization: Optional[Dict]) -> MaxMutationResponse:
+        """
+        Update the visualization of a dataset k-shot.
+
+        Parameters
+        ----------
+        dataset_kshot_id : UUID
+            The unique identifier of the dataset k-shot to be updated.
+        visualization : Optional[Dict]
+            The new visualization JSON to assign to the dataset k-shot.
+
+        Returns
+        -------
+        MaxMutationResponse
+            The result of the GraphQL mutation containing the updated visualization.
+        """
+        mutation_args = {
+            'datasetKShotId': str(dataset_kshot_id),
+            'visualization': visualization,
+        }
+
+        op = Operations.mutation.update_dataset_kshot_visualization
+        result = self._gql_client.submit(op, mutation_args)
+
+        return result.update_dataset_kshot_visualization
