@@ -53,20 +53,62 @@ def create_df_from_data(data: Dict[str, any]):
 
 @dataclass
 class ExecuteSqlQueryResult(MaxResult):
+    """
+    Result object for SQL query execution operations.
+
+    Attributes
+    ----------
+    df : DataFrame | None
+        The result of the SQL query as a pandas DataFrame.
+    data : deprecated
+        Deprecated field. Use df instead for DataFrame results.
+    """
     df: DataFrame | None = None
     data = None     # deprecated -- use df instead
 
 @dataclass
 class ExecuteRqlQueryResult(MaxResult):
+    """
+    Result object for RQL query execution operations.
+
+    Attributes
+    ----------
+    df : DataFrame | None
+        The result of the RQL query as a pandas DataFrame.
+    rql_script_response : Any | None
+        The RQL script response containing processing information.
+    """
     df = None
     rql_script_response = None
 
 @dataclass
 class DomainObjectResult(MaxResult):
+    """
+    Result object for domain object retrieval operations.
+
+    Attributes
+    ----------
+    domain_object : Any | None
+        The domain object retrieved from the dataset.
+    """
     domain_object = None
 
 @dataclass
 class RunMaxSqlGenResult(MaxResult):
+    """
+    Result object for Max SQL generation operations.
+
+    Attributes
+    ----------
+    sql : str | None
+        The generated SQL query string.
+    df : DataFrame | None
+        The result of executing the generated SQL as a pandas DataFrame.
+    row_limit : int | None
+        The row limit applied to the SQL query.
+    data : deprecated
+        Deprecated field. Use df instead for DataFrame results.
+    """
     sql: str | None = None
     df: DataFrame | None = None
     row_limit: int | None = None
@@ -74,6 +116,30 @@ class RunMaxSqlGenResult(MaxResult):
 
 @dataclass
 class RunSqlAiResult(MaxResult):
+    """
+    Result object for SQL AI generation operations.
+
+    Attributes
+    ----------
+    sql : str | None
+        The generated SQL query string.
+    df : DataFrame | None
+        The result of executing the generated SQL as a pandas DataFrame.
+    rendered_prompt : str | None
+        The rendered prompt used for the AI generation.
+    column_metadata_map : Dict[str, any] | None
+        Metadata mapping for columns in the result.
+    title : str | None
+        The generated title for the query result.
+    explanation : str | None
+        An explanation of the generated SQL query.
+    data : deprecated
+        Deprecated field. Use df instead for DataFrame results.
+    timing_info : Dict[str, any] | None
+        Performance timing information for the operation.
+    prior_runs : List[RunSqlAiResult]
+        List of prior runs for comparison or iteration tracking.
+    """
     sql: str | None = None
     df: DataFrame | None = None
     rendered_prompt: str | None = None
@@ -1033,6 +1099,16 @@ class Data:
             return None
 
     def _create_domain_object_query(self, domain_object, include_dim_values: bool = False):
+        """
+        Create a GraphQL query for domain objects with appropriate fragments.
+
+        Parameters
+        ----------
+        domain_object : GraphQL object
+            The domain object query to build fragments for.
+        include_dim_values : bool, optional
+            Whether to include dimension values in the query. Defaults to False.
+        """
         # domain_object_frag = Fragment(MaxDomainObject, 'MaxDomainObjectFragment')
         # gql_query.domain_object.__fragment__(domain_object_frag)
 
