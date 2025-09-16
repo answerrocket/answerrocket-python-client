@@ -33,6 +33,23 @@ class ClientConfig:
 
 
 def load_client_config(url=None, token=None, tenant: str = None):
+    """
+    Load client configuration from parameters and environment variables.
+
+    Parameters
+    ----------
+    url : str, optional
+        The AnswerRocket instance URL. Falls back to AR_URL environment variable.
+    token : str, optional
+        Authentication token. Falls back to AR_TOKEN environment variable.
+    tenant : str, optional
+        Tenant identifier. Falls back to AR_TENANT_ID environment variable.
+
+    Returns
+    -------
+    ClientConfig
+        Configured client configuration object with all settings populated.
+    """
     token = token or os.getenv('AR_TOKEN')
     url = url or os.getenv('AR_URL')
     effective_tenant = tenant if tenant else os.getenv('AR_TENANT_ID')

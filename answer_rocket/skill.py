@@ -12,6 +12,14 @@ from answer_rocket.types import MaxResult, RESULT_EXCEPTION_CODE
 
 @dataclass
 class RunSkillResult(MaxResult):
+    """
+    Result object for synchronous skill execution.
+
+    Attributes
+    ----------
+    data : ChatReportOutput | None
+        The output data from the skill execution.
+    """
     data: ChatReportOutput | None = None
 
     def __init__(self, success: bool = False, **kwargs):
@@ -21,6 +29,14 @@ class RunSkillResult(MaxResult):
 
 @dataclass
 class AsyncSkillRunResult(MaxResult):
+    """
+    Result object for asynchronous skill execution.
+
+    Attributes
+    ----------
+    execution_id : str | None
+        The unique execution ID for tracking the async skill run.
+    """
     execution_id: str | None = None
 
     def __init__(self, success: bool = False, **kwargs):
@@ -34,20 +50,40 @@ class Skill:
     """
 
     def __init__(self, config: ClientConfig, gql_client: GraphQlClient):
+        """
+        Initialize the Skill client.
+
+        Parameters
+        ----------
+        config : ClientConfig
+            The client configuration.
+        gql_client : GraphQlClient
+            The GraphQL client for API communication.
+        """
         self._config = config
         self._gql_client = gql_client
 
     def run(self, copilot_id: str, skill_name: str, parameters: dict | None = None, validate_parameters: bool = False) -> RunSkillResult:
         """
-        Runs a skill and returns its full output (does not stream intermediate skill output).
+        Run a skill synchronously and return its full output.
 
-        :param copilot_id: the id of the copilot to run the skill on
-        :param skill_name: the name of the skill to execute
-        :param parameters: a dict of parameters to pass to the skill where keys are the param keys and values are the values
-         to populate them with
-        :param validate_parameters: boolean switch which applies guardrails to the parameters before the skill is run
+        Does not stream intermediate skill output.
 
-        :return the full output object of the skill
+        Parameters
+        ----------
+        copilot_id : str
+            The ID of the copilot to run the skill on.
+        skill_name : str
+            The name of the skill to execute.
+        parameters : dict | None, optional
+            Dictionary of parameters to pass to the skill.
+        validate_parameters : bool, optional
+            Whether to apply guardrails to parameters before execution. Defaults to False.
+
+        Returns
+        -------
+        RunSkillResult
+            The full output object of the skill execution.
         """
 
         final_result = RunSkillResult(None)
@@ -102,14 +138,21 @@ class Skill:
 
     def run_async(self, copilot_id: str, skill_name: str, parameters: dict | None = None) -> AsyncSkillRunResult:
         """
-        Starts a skill execution asynchronously and returns an execution ID immediately.
+        Start a skill execution asynchronously and return an execution ID immediately.
 
-        :param copilot_id: the id of the copilot to run the skill on
-        :param skill_name: the name of the skill to execute
-        :param parameters: a dict of parameters to pass to the skill where keys are the param keys and values are the values
-         to populate them with
+        Parameters
+        ----------
+        copilot_id : str
+            The ID of the copilot to run the skill on.
+        skill_name : str
+            The name of the skill to execute.
+        parameters : dict | None, optional
+            Dictionary of parameters to pass to the skill.
 
-        :return AsyncSkillRunResult with execution_id if successful
+        Returns
+        -------
+        AsyncSkillRunResult
+            Result containing execution_id if successful.
         """
         try:
             async_query_args = {
@@ -140,11 +183,17 @@ class Skill:
 
     def get_async_status(self, execution_id: str) -> AsyncSkillStatusResponse:
         """
-        Gets the status and result of an async skill execution.
+        Get the status and result of an async skill execution.
 
-        :param execution_id: the execution ID returned from run_async
+        Parameters
+        ----------
+        execution_id : str
+            The execution ID returned from run_async.
 
-        :return AsyncSkillStatusResult with status and data if completed
+        Returns
+        -------
+        AsyncSkillStatusResponse
+            Result with status and data if completed, None if error occurs.
         """
         try:
 
@@ -162,6 +211,14 @@ class Skill:
             return None
 
     def update_loading_message(self, message: str):
+        """
+        Update the loading message for the current skill execution.
+
+        Parameters
+        ----------
+        message : str
+            The loading message to display to the user.
+        """
         if self._config.entry_answer_id:
             args = {
                 'answerId': self._config.entry_answer_id,

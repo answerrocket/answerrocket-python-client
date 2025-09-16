@@ -18,6 +18,16 @@ class Config:
     """
 
     def __init__(self, config: ClientConfig, gql_client: GraphQlClient) -> None:
+        """
+        Initialize the Config helper.
+
+        Parameters
+        ----------
+        config : ClientConfig
+            The client configuration containing copilot and connection details.
+        gql_client : GraphQlClient
+            The GraphQL client for making server requests.
+        """
         self._gql_client = gql_client
         self._config = config
         self.copilot_id = self._config.copilot_id
