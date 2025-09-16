@@ -1918,39 +1918,6 @@ class Data:
 
         return result.create_database_kshot
 
-    def update_database_kshot(self, database_kshot: Dict) -> MaxMutationResponse:
-        """
-        Update an existing database k-shot.
-
-        Parameters
-        ----------
-        database_kshot : Dict
-            The database k-shot dictionary containing the updated configuration and metadata.
-            Must follow the DatabaseKShot type definition and include:
-            - databaseKShotId: UUID (required) - identifies which k-shot to update
-            - databaseId: UUID (required)
-            - question: str (required)
-            - renderedPrompt: str (optional)
-            - explanation: str (optional)
-            - sql: str (optional)
-            - title: str (optional)
-            - visualization: JSON (optional)
-            - isActive: bool (optional)
-
-        Returns
-        -------
-        MaxMutationResponse
-            The result of the update operation.
-        """
-        mutation_args = {
-            'databaseKShot': database_kshot,
-        }
-
-        op = Operations.mutation.update_database_kshot
-        result = self._gql_client.submit(op, mutation_args)
-
-        return result.update_database_kshot
-
     def delete_database_kshot(self, database_kshot_id: UUID) -> MaxMutationResponse:
         """
         Delete a database k-shot.
