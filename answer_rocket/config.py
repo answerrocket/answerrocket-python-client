@@ -18,6 +18,16 @@ class Config:
     """
 
     def __init__(self, config: ClientConfig, gql_client: GraphQlClient) -> None:
+        """
+        Initialize the Config helper.
+
+        Parameters
+        ----------
+        config : ClientConfig
+            The client configuration containing copilot and connection details.
+        gql_client : GraphQlClient
+            The GraphQL client for making server requests.
+        """
         self._gql_client = gql_client
         self._config = config
         self.copilot_id = self._config.copilot_id
@@ -40,13 +50,17 @@ class Config:
 
     def _get_artifact_from_server(self, artifact_path: str) -> Optional[dict]:
         """
-        Retrieve an artifact
+        Retrieve an artifact from the server.
 
-        Args:
-            artifact_path (str): The path to the artifact relative to the project root.
+        Parameters
+        ----------
+        artifact_path : str
+            The path to the artifact relative to the project root.
 
-        Returns:
-            Optional[dict]: The artifact data if found, None otherwise.
+        Returns
+        -------
+        dict | None
+            The artifact data if found, None otherwise.
         """
         if not self.copilot_id or not self.copilot_skill_id:
             return None
@@ -73,10 +87,12 @@ class Config:
 
     def get_copilots(self) -> list[MaxCopilot]:
         """
-        Retrieves all copilots available to the user with their metadata.
+        Retrieve all copilots available to the user with their metadata.
 
-        Returns:
-            list[MaxCopilot]: A list of MaxCopilot objects.
+        Returns
+        -------
+        list[MaxCopilot]
+            A list of MaxCopilot objects.
         """
         try:
             op = Operations.query.get_copilots
@@ -91,12 +107,17 @@ class Config:
         """
         Retrieve information about a specific copilot.
 
-        Args:
-            use_published_version (bool, optional): Whether to use the published version. Defaults to True.
-            copilot_id (str, optional): The ID of the copilot. If None, uses the configured copilot ID.
+        Parameters
+        ----------
+        use_published_version : bool, optional
+            Whether to use the published version. Defaults to True.
+        copilot_id : str, optional
+            The ID of the copilot. If None, uses the configured copilot ID.
 
-        Returns:
-            MaxCopilot: The copilot information, or None if an error occurs.
+        Returns
+        -------
+        MaxCopilot | None
+            The copilot information, or None if an error occurs.
         """
         try:
             query_args = {
@@ -129,13 +150,19 @@ class Config:
         """
         Retrieve information about a specific copilot skill.
 
-        Args:
-            use_published_version (bool, optional): Whether to use the published version. Defaults to True.
-            copilot_id (str, optional): The ID of the copilot. If None, uses the configured copilot ID.
-            copilot_skill_id (str, optional): The ID of the copilot skill. If None, uses the configured skill ID.
+        Parameters
+        ----------
+        use_published_version : bool, optional
+            Whether to use the published version. Defaults to True.
+        copilot_id : str, optional
+            The ID of the copilot. If None, uses the configured copilot ID.
+        copilot_skill_id : str, optional
+            The ID of the copilot skill. If None, uses the configured skill ID.
 
-        Returns:
-            MaxCopilotSkill: The copilot skill information, or None if an error occurs.
+        Returns
+        -------
+        MaxCopilotSkill | None
+            The copilot skill information, or None if an error occurs.
         """
         try:
             query_args = {
@@ -156,8 +183,10 @@ class Config:
         """
         Retrieve all available skill components.
 
-        Returns:
-            list[MaxSkillComponent]: A list of skill components, or None if an error occurs.
+        Returns
+        -------
+        list[MaxSkillComponent] | None
+            A list of skill components, or None if an error occurs.
         """
         try:
             query_args = {
@@ -183,11 +212,19 @@ class Config:
         """
         Get hydrated reports for a copilot.
 
-        :param copilot_id: The copilot ID (defaults to the configured copilot_id)
-        :param override_dataset_id: Optional dataset ID to override the copilot's default dataset
-        :param load_all_skills: Whether to load all skills or just active ones (defaults to False)
+        Parameters
+        ----------
+        copilot_id : str, optional
+            The copilot ID. Defaults to the configured copilot_id.
+        override_dataset_id : str, optional
+            Optional dataset ID to override the copilot's default dataset.
+        load_all_skills : bool, optional
+            Whether to load all skills or just active ones. Defaults to False.
 
-        :returns List of hydrated report objects
+        Returns
+        -------
+        list[HydratedReport] | None
+            List of hydrated report objects, or None if an error occurs.
         """
         try:
             effective_copilot_id = copilot_id or self.copilot_id
@@ -216,14 +253,21 @@ class Config:
         """
         Create a new copilot question.
 
-        Args:
-            nl (str): The natural language question.
-            skill_id (UUID, optional): The ID of the skill to associate with the question.
-            hint (str, optional): A hint for the question.
-            parameters: Additional parameters for the question.
+        Parameters
+        ----------
+        nl : str
+            The natural language question.
+        skill_id : UUID, optional
+            The ID of the skill to associate with the question.
+        hint : str, optional
+            A hint for the question.
+        parameters : Any, optional
+            Additional parameters for the question.
 
-        Returns:
-            MaxCreateCopilotQuestionResponse: The response containing the created question, or None if an error occurs.
+        Returns
+        -------
+        MaxCreateCopilotQuestionResponse | None
+            The response containing the created question, or None if an error occurs.
         """
         try:
             mutation_args = {
@@ -260,15 +304,23 @@ class Config:
         """
         Update an existing copilot question.
 
-        Args:
-            copilot_question_id (UUID): The ID of the question to update.
-            nl (str, optional): The updated natural language question.
-            skill_id (UUID, optional): The updated skill ID.
-            hint (str, optional): The updated hint.
-            parameters: The updated parameters.
+        Parameters
+        ----------
+        copilot_question_id : UUID
+            The ID of the question to update.
+        nl : str, optional
+            The updated natural language question.
+        skill_id : UUID, optional
+            The updated skill ID.
+        hint : str, optional
+            The updated hint.
+        parameters : Any, optional
+            The updated parameters.
 
-        Returns:
-            MaxMutationResponse: The mutation response, or None if an error occurs.
+        Returns
+        -------
+        MaxMutationResponse | None
+            The mutation response, or None if an error occurs.
         """
         try:
             mutation_args = {
@@ -308,11 +360,15 @@ class Config:
         """
         Delete a copilot question.
 
-        Args:
-            copilot_question_id (UUID): The ID of the question to delete.
+        Parameters
+        ----------
+        copilot_question_id : UUID
+            The ID of the question to delete.
 
-        Returns:
-            MaxMutationResponse: The mutation response, or None if an error occurs.
+        Returns
+        -------
+        MaxMutationResponse | None
+            The mutation response, or None if an error occurs.
         """
         try:
             mutation_args = {
@@ -344,8 +400,10 @@ class Config:
         """
         Retrieve information about the current authenticated user.
 
-        Returns:
-            MaxUser: The current user information, or None if an error occurs.
+        Returns
+        -------
+        MaxUser | None
+            The current user information, or None if an error occurs.
         """
         try:
             query_args = {
@@ -375,13 +433,19 @@ class Config:
         """
         Retrieve an LLM prompt with template variables and k-shot matching.
 
-        Args:
-            llm_prompt_id (UUID): The ID of the LLM prompt to retrieve.
-            template_vars (Dict[str, Any]): Template variables to substitute in the prompt.
-            k_shot_match (str): The k-shot matching criteria.
+        Parameters
+        ----------
+        llm_prompt_id : UUID
+            The ID of the LLM prompt to retrieve.
+        template_vars : Dict[str, Any]
+            Template variables to substitute in the prompt.
+        k_shot_match : str
+            The k-shot matching criteria.
 
-        Returns:
-            MaxLLmPrompt: The LLM prompt with substitutions applied, or None if an error occurs.
+        Returns
+        -------
+        MaxLLmPrompt | None
+            The LLM prompt with substitutions applied, or None if an error occurs.
         """
         try:
             query_args = {

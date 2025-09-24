@@ -53,20 +53,62 @@ def create_df_from_data(data: Dict[str, any]):
 
 @dataclass
 class ExecuteSqlQueryResult(MaxResult):
+    """
+    Result object for SQL query execution operations.
+
+    Attributes
+    ----------
+    df : DataFrame | None
+        The result of the SQL query as a pandas DataFrame.
+    data : deprecated
+        Deprecated field. Use df instead for DataFrame results.
+    """
     df: DataFrame | None = None
     data = None     # deprecated -- use df instead
 
 @dataclass
 class ExecuteRqlQueryResult(MaxResult):
+    """
+    Result object for RQL query execution operations.
+
+    Attributes
+    ----------
+    df : DataFrame | None
+        The result of the RQL query as a pandas DataFrame.
+    rql_script_response : Any | None
+        The RQL script response containing processing information.
+    """
     df = None
     rql_script_response = None
 
 @dataclass
 class DomainObjectResult(MaxResult):
+    """
+    Result object for domain object retrieval operations.
+
+    Attributes
+    ----------
+    domain_object : Any | None
+        The domain object retrieved from the dataset.
+    """
     domain_object = None
 
 @dataclass
 class RunMaxSqlGenResult(MaxResult):
+    """
+    Result object for Max SQL generation operations.
+
+    Attributes
+    ----------
+    sql : str | None
+        The generated SQL query string.
+    df : DataFrame | None
+        The result of executing the generated SQL as a pandas DataFrame.
+    row_limit : int | None
+        The row limit applied to the SQL query.
+    data : deprecated
+        Deprecated field. Use df instead for DataFrame results.
+    """
     sql: str | None = None
     df: DataFrame | None = None
     row_limit: int | None = None
@@ -74,6 +116,30 @@ class RunMaxSqlGenResult(MaxResult):
 
 @dataclass
 class RunSqlAiResult(MaxResult):
+    """
+    Result object for SQL AI generation operations.
+
+    Attributes
+    ----------
+    sql : str | None
+        The generated SQL query string.
+    df : DataFrame | None
+        The result of executing the generated SQL as a pandas DataFrame.
+    rendered_prompt : str | None
+        The rendered prompt used for the AI generation.
+    column_metadata_map : Dict[str, any] | None
+        Metadata mapping for columns in the result.
+    title : str | None
+        The generated title for the query result.
+    explanation : str | None
+        An explanation of the generated SQL query.
+    data : deprecated
+        Deprecated field. Use df instead for DataFrame results.
+    timing_info : Dict[str, any] | None
+        Performance timing information for the operation.
+    prior_runs : List[RunSqlAiResult]
+        List of prior runs for comparison or iteration tracking.
+    """
     sql: str | None = None
     df: DataFrame | None = None
     rendered_prompt: str | None = None
@@ -98,16 +164,25 @@ class Data:
 
     def execute_sql_query(self, database_id: UUID, sql_query: str, row_limit: Optional[int] = None, copilot_id: Optional[UUID] = None, copilot_skill_id: Optional[UUID] = None) -> ExecuteSqlQueryResult:
         """
-        Executes a SQL query against the provided database, and returns a dataframe
+        Execute a SQL query against the provided database and return a dataframe.
 
-        Args:
-            database_id (UUID): The UUID of the database.
-            sql_query (str): The SQL query to execute.
-            row_limit (Optional[int]: An optional row limit to apply to the SQL query.
-            copilot_id (Optional[UUID], optional): The UUID of the copilot. Defaults to None.
+        Parameters
+        ----------
+        database_id : UUID
+            The UUID of the database.
+        sql_query : str
+            The SQL query to execute.
+        row_limit : int, optional
+            An optional row limit to apply to the SQL query.
+        copilot_id : UUID, optional
+            The UUID of the copilot. Defaults to the configured copilot_id.
+        copilot_skill_id : UUID, optional
+            The UUID of the copilot skill. Defaults to the configured copilot_skill_id.
 
-        Returns:
-            ExecuteSqlQueryResult: The result of the SQL execution process.
+        Returns
+        -------
+        ExecuteSqlQueryResult
+            The result of the SQL execution process.
         """
 
         result = ExecuteSqlQueryResult()
@@ -794,16 +869,24 @@ class Data:
 
     def get_grounded_value(self, dataset_id: UUID, value: str, domain_entity: Optional[str] = None, copilot_id: Optional[UUID] = None) -> GroundedValueResponse:
         """
-        Gets grounded values for fuzzy matching against domain values.
+        Get grounded values for fuzzy matching against domain values.
 
-        Args:
-            dataset_id (UUID): The UUID of the dataset.
-            value (str): The value to ground (single string).
-            domain_entity (Optional[str], optional): The domain entity to search within. Can be "metrics", "dimensions", a specific domain attribute name, or None to search all. Defaults to None.
-            copilot_id (Optional[UUID], optional): The UUID of the copilot. Defaults to None.
+        Parameters
+        ----------
+        dataset_id : UUID
+            The UUID of the dataset.
+        value : str
+            The value to ground (single string).
+        domain_entity : str, optional
+            The domain entity to search within. Can be "metrics", "dimensions",
+            a specific domain attribute name, or None to search all. Defaults to None.
+        copilot_id : UUID, optional
+            The UUID of the copilot. Defaults to the configured copilot_id.
 
-        Returns:
-            GroundedValueResponse: The grounded value response from the GraphQL schema.
+        Returns
+        -------
+        GroundedValueResponse
+            The grounded value response from the GraphQL schema.
         """
         
         try:
@@ -823,16 +906,23 @@ class Data:
 
     def run_max_sql_gen(self, dataset_id: UUID, pre_query_object: Dict[str, any], copilot_id: UUID | None = None, execute_sql: bool | None = True) -> RunMaxSqlGenResult:
         """
-        Runs the SQL generation logic using the provided dataset and query object.
+        Run the SQL generation logic using the provided dataset and query object.
 
-        Args:
-            dataset_id (UUID): The UUID of the dataset.
-            pre_query_object (Dict[str, any]): The pre-query object that describes the query.
-            copilot_id (UUID | None, optional): The UUID of the copilot. Defaults to None.
-            execute_sql (bool | None, optional): Indicates if the generated SQL should be executed. Defaults to True.
+        Parameters
+        ----------
+        dataset_id : UUID
+            The UUID of the dataset.
+        pre_query_object : Dict[str, any]
+            The pre-query object that describes the query.
+        copilot_id : UUID, optional
+            The UUID of the copilot. Defaults to the configured copilot_id.
+        execute_sql : bool, optional
+            Whether the generated SQL should be executed. Defaults to True.
 
-        Returns:
-            RunMaxSqlGenResult: The result of the SQL generation process.
+        Returns
+        -------
+        RunMaxSqlGenResult
+            The result of the SQL generation process.
         """
 
         result = RunMaxSqlGenResult()
@@ -878,7 +968,7 @@ class Data:
 
             if result.success:
                 result.sql = run_max_sql_gen_response.sql
-                result.df = create_df_from_data(run_max_sql_gen_response.data)
+                result.df = create_df_from_data(run_max_sql_gen_response.data) if execute_sql else None
                 result.row_limit = run_max_sql_gen_response.row_limit
                 result.data = run_max_sql_gen_response.data
 
@@ -900,17 +990,27 @@ class Data:
             database_id: Optional[str | UUID] = None
     ) -> RunSqlAiResult:
         """
-        Runs the SQL AI generation logic using the provided dataset and natural language question.
+        Run the SQL AI generation logic using the provided dataset and natural language question.
 
-        Args:
-            dataset_id (Optional[str | UUID]): The UUID of the dataset.
-            question (str): The natural language question.
-            model_override (Optional[str], optional): Optional LLM model override. Defaults to None.
-            copilot_id (Optional[UUID], optional): The UUID of the copilot. Defaults to None.
-            dataset_ids (Optional[list[str | UUID]]): The UUIDs of the datasets.
-            database_id (Optional[str | UUID]): The UUID of the database.
-        Returns:
-            RunSqlAiResult: The result of the SQL AI generation process.
+        Parameters
+        ----------
+        dataset_id : str | UUID, optional
+            The UUID of the dataset.
+        question : str
+            The natural language question. Defaults to empty string.
+        model_override : str, optional
+            Optional LLM model override. Defaults to None.
+        copilot_id : UUID, optional
+            The UUID of the copilot. Defaults to the configured copilot_id.
+        dataset_ids : list[str | UUID], optional
+            The UUIDs of multiple datasets.
+        database_id : str | UUID, optional
+            The UUID of the database.
+
+        Returns
+        -------
+        RunSqlAiResult
+            The result of the SQL AI generation process.
         """
 
         result = RunSqlAiResult()
@@ -994,13 +1094,21 @@ class Data:
 
     def generate_visualization(self, data: Dict, column_metadata_map: Dict) -> Optional[GenerateVisualizationResponse]:
         """
-        Generates a HighchartsChart dynamic vis layout component based on provided data and metadata.
+        Generate a HighchartsChart dynamic vis layout component based on provided data and metadata.
 
-        data: The data to be visualized, can pass directly from the data result of run_sql_ai (the services expects a 'rows' key and a 'columns' key)
-        column_metadata_map: The column metadata map from the run_sql_ai response
+        Parameters
+        ----------
+        data : Dict
+            The data to be visualized. Can pass directly from the data result of run_sql_ai.
+            The service expects a 'rows' key and a 'columns' key.
+        column_metadata_map : Dict
+            The column metadata map from the run_sql_ai response.
 
-        Returns:
+        Returns
+        -------
+        GenerateVisualizationResponse | None
             A HighchartsChart dynamic vis layout component based on provided data and metadata.
+            Returns None if an error occurs.
         """
         try:
             query_args = {
@@ -1033,6 +1141,16 @@ class Data:
             return None
 
     def _create_domain_object_query(self, domain_object, include_dim_values: bool = False):
+        """
+        Create a GraphQL query for domain objects with appropriate fragments.
+
+        Parameters
+        ----------
+        domain_object : GraphQL object
+            The domain object query to build fragments for.
+        include_dim_values : bool, optional
+            Whether to include dimension values in the query. Defaults to False.
+        """
         # domain_object_frag = Fragment(MaxDomainObject, 'MaxDomainObjectFragment')
         # gql_query.domain_object.__fragment__(domain_object_frag)
 
