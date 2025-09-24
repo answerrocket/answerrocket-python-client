@@ -968,7 +968,7 @@ class Data:
 
             if result.success:
                 result.sql = run_max_sql_gen_response.sql
-                result.df = create_df_from_data(run_max_sql_gen_response.data)
+                result.df = create_df_from_data(run_max_sql_gen_response.data) if execute_sql else None
                 result.row_limit = run_max_sql_gen_response.row_limit
                 result.data = run_max_sql_gen_response.data
 
