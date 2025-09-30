@@ -1058,12 +1058,25 @@ def query_get_async_skill_run_status():
     return _op
 
 
+def query_current_user():
+    _op = sgqlc.operation.Operation(_schema_root.query_type, name='CurrentUser')
+    _op_current_user = _op.current_user()
+    _op_current_user.first_name()
+    _op_current_user.last_name()
+    _op_current_user.email_address()
+    _op_current_user_user_groups = _op_current_user.user_groups()
+    _op_current_user_user_groups.user_group_id()
+    _op_current_user_user_groups.name()
+    return _op
+
+
 class Query:
     all_chat_entries = query_all_chat_entries()
     chat_completion = query_chat_completion()
     chat_completion_with_prompt = query_chat_completion_with_prompt()
     chat_entry = query_chat_entry()
     chat_thread = query_chat_thread()
+    current_user = query_current_user()
     dataframes_for_entry = query_dataframes_for_entry()
     get_async_skill_run_status = query_get_async_skill_run_status()
     get_chat_artifact = query_get_chat_artifact()

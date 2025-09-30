@@ -406,21 +406,13 @@ class Config:
             The current user information, or None if an error occurs.
         """
         try:
-            query_args = {
-            }
+            query_args = {}
 
-            query_vars = {
-            }
+            op = Operations.query.current_user
 
-            operation = self._gql_client.query(variables=query_vars)
+            result = self._gql_client.submit(op, query_args)
 
-            operation.current_user()
-
-            result = self._gql_client.submit(operation, query_args)
-
-            max_user = result.current_user
-
-            return max_user
+            return result.current_user
         except Exception as e:
             return None
 

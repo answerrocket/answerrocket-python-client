@@ -1076,10 +1076,11 @@ class MaxToolCallResponse(sgqlc.types.Type):
 
 class MaxUser(sgqlc.types.Type):
     __schema__ = schema
-    __field_names__ = ('first_name', 'last_name', 'email_address')
+    __field_names__ = ('first_name', 'last_name', 'email_address', 'user_groups')
     first_name = sgqlc.types.Field(String, graphql_name='firstName')
     last_name = sgqlc.types.Field(String, graphql_name='lastName')
     email_address = sgqlc.types.Field(String, graphql_name='emailAddress')
+    user_groups = sgqlc.types.Field(sgqlc.types.non_null(sgqlc.types.list_of(sgqlc.types.non_null('UserGroup'))), graphql_name='userGroups')
 
 
 class Mutation(sgqlc.types.Type):
@@ -1806,6 +1807,13 @@ class SkillParameter(sgqlc.types.Type):
     dataset_names = sgqlc.types.Field(sgqlc.types.list_of(sgqlc.types.non_null(String)), graphql_name='datasetNames')
     meta = sgqlc.types.Field(JSON, graphql_name='meta')
     match_values = sgqlc.types.Field(MatchValues, graphql_name='matchValues')
+
+
+class UserGroup(sgqlc.types.Type):
+    __schema__ = schema
+    __field_names__ = ('user_group_id', 'name')
+    user_group_id = sgqlc.types.Field(sgqlc.types.non_null(UUID), graphql_name='userGroupId')
+    name = sgqlc.types.Field(sgqlc.types.non_null(String), graphql_name='name')
 
 
 class AzureOpenaiCompletionLLMApiConfig(sgqlc.types.Type, LLMApiConfig):
