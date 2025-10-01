@@ -143,6 +143,14 @@ def mutation_delete_chat_artifact():
     return _op
 
 
+def mutation_clear_copilot_cache():
+    _op = sgqlc.operation.Operation(_schema_root.mutation_type, name='ClearCopilotCache', variables=dict(copilotId=sgqlc.types.Arg(sgqlc.types.non_null(_schema.UUID))))
+    _op_clear_copilot_cache = _op.clear_copilot_cache(copilot_id=sgqlc.types.Variable('copilotId'))
+    _op_clear_copilot_cache.success()
+    _op_clear_copilot_cache.error()
+    return _op
+
+
 def mutation_update_database_name():
     _op = sgqlc.operation.Operation(_schema_root.mutation_type, name='UpdateDatabaseName', variables=dict(databaseId=sgqlc.types.Arg(sgqlc.types.non_null(_schema.UUID)), name=sgqlc.types.Arg(sgqlc.types.non_null(_schema.String))))
     _op_update_database_name = _op.update_database_name(database_id=sgqlc.types.Variable('databaseId'), name=sgqlc.types.Variable('name'))
@@ -414,9 +422,92 @@ def mutation_delete_database_kshot():
     return _op
 
 
+def mutation_create_dataset_kshot():
+    _op = sgqlc.operation.Operation(_schema_root.mutation_type, name='CreateDatasetKShot', variables=dict(datasetKShot=sgqlc.types.Arg(sgqlc.types.non_null(_schema.JSON))))
+    _op_create_dataset_kshot = _op.create_dataset_kshot(dataset_kshot=sgqlc.types.Variable('datasetKShot'))
+    _op_create_dataset_kshot.dataset_kshot_id()
+    _op_create_dataset_kshot.success()
+    _op_create_dataset_kshot.code()
+    _op_create_dataset_kshot.error()
+    return _op
+
+
+def mutation_update_dataset_kshot_question():
+    _op = sgqlc.operation.Operation(_schema_root.mutation_type, name='UpdateDatasetKShotQuestion', variables=dict(datasetKShotId=sgqlc.types.Arg(sgqlc.types.non_null(_schema.UUID)), question=sgqlc.types.Arg(sgqlc.types.non_null(_schema.String))))
+    _op_update_dataset_kshot_question = _op.update_dataset_kshot_question(dataset_kshot_id=sgqlc.types.Variable('datasetKShotId'), question=sgqlc.types.Variable('question'))
+    _op_update_dataset_kshot_question.success()
+    _op_update_dataset_kshot_question.code()
+    _op_update_dataset_kshot_question.error()
+    return _op
+
+
+def mutation_update_dataset_kshot_rendered_prompt():
+    _op = sgqlc.operation.Operation(_schema_root.mutation_type, name='UpdateDatasetKShotRenderedPrompt', variables=dict(datasetKShotId=sgqlc.types.Arg(sgqlc.types.non_null(_schema.UUID)), renderedPrompt=sgqlc.types.Arg(_schema.String)))
+    _op_update_dataset_kshot_rendered_prompt = _op.update_dataset_kshot_rendered_prompt(dataset_kshot_id=sgqlc.types.Variable('datasetKShotId'), rendered_prompt=sgqlc.types.Variable('renderedPrompt'))
+    _op_update_dataset_kshot_rendered_prompt.success()
+    _op_update_dataset_kshot_rendered_prompt.code()
+    _op_update_dataset_kshot_rendered_prompt.error()
+    return _op
+
+
+def mutation_update_dataset_kshot_explanation():
+    _op = sgqlc.operation.Operation(_schema_root.mutation_type, name='UpdateDatasetKShotExplanation', variables=dict(datasetKShotId=sgqlc.types.Arg(sgqlc.types.non_null(_schema.UUID)), explanation=sgqlc.types.Arg(_schema.String)))
+    _op_update_dataset_kshot_explanation = _op.update_dataset_kshot_explanation(dataset_kshot_id=sgqlc.types.Variable('datasetKShotId'), explanation=sgqlc.types.Variable('explanation'))
+    _op_update_dataset_kshot_explanation.success()
+    _op_update_dataset_kshot_explanation.code()
+    _op_update_dataset_kshot_explanation.error()
+    return _op
+
+
+def mutation_update_dataset_kshot_sql():
+    _op = sgqlc.operation.Operation(_schema_root.mutation_type, name='UpdateDatasetKShotSql', variables=dict(datasetKShotId=sgqlc.types.Arg(sgqlc.types.non_null(_schema.UUID)), sql=sgqlc.types.Arg(_schema.String)))
+    _op_update_dataset_kshot_sql = _op.update_dataset_kshot_sql(dataset_kshot_id=sgqlc.types.Variable('datasetKShotId'), sql=sgqlc.types.Variable('sql'))
+    _op_update_dataset_kshot_sql.success()
+    _op_update_dataset_kshot_sql.code()
+    _op_update_dataset_kshot_sql.error()
+    return _op
+
+
+def mutation_update_dataset_kshot_title():
+    _op = sgqlc.operation.Operation(_schema_root.mutation_type, name='UpdateDatasetKShotTitle', variables=dict(datasetKShotId=sgqlc.types.Arg(sgqlc.types.non_null(_schema.UUID)), title=sgqlc.types.Arg(_schema.String)))
+    _op_update_dataset_kshot_title = _op.update_dataset_kshot_title(dataset_kshot_id=sgqlc.types.Variable('datasetKShotId'), title=sgqlc.types.Variable('title'))
+    _op_update_dataset_kshot_title.success()
+    _op_update_dataset_kshot_title.code()
+    _op_update_dataset_kshot_title.error()
+    return _op
+
+
+def mutation_update_dataset_kshot_visualization():
+    _op = sgqlc.operation.Operation(_schema_root.mutation_type, name='UpdateDatasetKShotVisualization', variables=dict(datasetKShotId=sgqlc.types.Arg(sgqlc.types.non_null(_schema.UUID)), visualization=sgqlc.types.Arg(_schema.JSON)))
+    _op_update_dataset_kshot_visualization = _op.update_dataset_kshot_visualization(dataset_kshot_id=sgqlc.types.Variable('datasetKShotId'), visualization=sgqlc.types.Variable('visualization'))
+    _op_update_dataset_kshot_visualization.success()
+    _op_update_dataset_kshot_visualization.code()
+    _op_update_dataset_kshot_visualization.error()
+    return _op
+
+
+def mutation_delete_dataset_kshot():
+    _op = sgqlc.operation.Operation(_schema_root.mutation_type, name='DeleteDatasetKShot', variables=dict(datasetKShotId=sgqlc.types.Arg(sgqlc.types.non_null(_schema.UUID))))
+    _op_delete_dataset_kshot = _op.delete_dataset_kshot(dataset_kshot_id=sgqlc.types.Variable('datasetKShotId'))
+    _op_delete_dataset_kshot.success()
+    _op_delete_dataset_kshot.code()
+    _op_delete_dataset_kshot.error()
+    return _op
+
+
 def mutation_update_loading_message():
     _op = sgqlc.operation.Operation(_schema_root.mutation_type, name='UpdateLoadingMessage', variables=dict(answerId=sgqlc.types.Arg(sgqlc.types.non_null(_schema.UUID)), message=sgqlc.types.Arg(sgqlc.types.non_null(_schema.String))))
     _op.update_loading_message(answer_id=sgqlc.types.Variable('answerId'), message=sgqlc.types.Variable('message'))
+    return _op
+
+
+def mutation_run_copilot_skill_async():
+    _op = sgqlc.operation.Operation(_schema_root.mutation_type, name='RunCopilotSkillAsync', variables=dict(copilotId=sgqlc.types.Arg(sgqlc.types.non_null(_schema.UUID)), skillName=sgqlc.types.Arg(sgqlc.types.non_null(_schema.String)), parameters=sgqlc.types.Arg(_schema.JSON), usePublishedVersion=sgqlc.types.Arg(_schema.Boolean)))
+    _op_run_copilot_skill_async = _op.run_copilot_skill_async(copilot_id=sgqlc.types.Variable('copilotId'), skill_name=sgqlc.types.Variable('skillName'), parameters=sgqlc.types.Variable('parameters'), use_published_version=sgqlc.types.Variable('usePublishedVersion'))
+    _op_run_copilot_skill_async.execution_id()
+    _op_run_copilot_skill_async.success()
+    _op_run_copilot_skill_async.code()
+    _op_run_copilot_skill_async.error()
     return _op
 
 
@@ -424,21 +515,25 @@ class Mutation:
     add_feedback = mutation_add_feedback()
     ask_chat_question = mutation_ask_chat_question()
     cancel_chat_question = mutation_cancel_chat_question()
+    clear_copilot_cache = mutation_clear_copilot_cache()
     create_chat_artifact = mutation_create_chat_artifact()
     create_chat_thread = mutation_create_chat_thread()
     create_database_kshot = mutation_create_database_kshot()
     create_dataset = mutation_create_dataset()
     create_dataset_from_table = mutation_create_dataset_from_table()
+    create_dataset_kshot = mutation_create_dataset_kshot()
     create_dimension = mutation_create_dimension()
     create_metric = mutation_create_metric()
     delete_chat_artifact = mutation_delete_chat_artifact()
     delete_database_kshot = mutation_delete_database_kshot()
+    delete_dataset_kshot = mutation_delete_dataset_kshot()
     delete_dimension = mutation_delete_dimension()
     delete_metric = mutation_delete_metric()
     get_test_run_output = mutation_get_test_run_output()
     import_copilot_skill_from_zip = mutation_import_copilot_skill_from_zip()
     import_skill_from_repo = mutation_import_skill_from_repo()
     queue_chat_question = mutation_queue_chat_question()
+    run_copilot_skill_async = mutation_run_copilot_skill_async()
     set_max_agent_workflow = mutation_set_max_agent_workflow()
     set_skill_memory = mutation_set_skill_memory()
     sync_max_skill_repository = mutation_sync_max_skill_repository()
@@ -457,7 +552,13 @@ class Mutation:
     update_dataset_data_interval = mutation_update_dataset_data_interval()
     update_dataset_date_range = mutation_update_dataset_date_range()
     update_dataset_description = mutation_update_dataset_description()
+    update_dataset_kshot_explanation = mutation_update_dataset_kshot_explanation()
     update_dataset_kshot_limit = mutation_update_dataset_kshot_limit()
+    update_dataset_kshot_question = mutation_update_dataset_kshot_question()
+    update_dataset_kshot_rendered_prompt = mutation_update_dataset_kshot_rendered_prompt()
+    update_dataset_kshot_sql = mutation_update_dataset_kshot_sql()
+    update_dataset_kshot_title = mutation_update_dataset_kshot_title()
+    update_dataset_kshot_visualization = mutation_update_dataset_kshot_visualization()
     update_dataset_misc_info = mutation_update_dataset_misc_info()
     update_dataset_name = mutation_update_dataset_name()
     update_dataset_query_row_limit = mutation_update_dataset_query_row_limit()
@@ -795,36 +896,6 @@ def query_get_database_tables():
     return _op
 
 
-def query_get_database_kshots():
-    _op = sgqlc.operation.Operation(_schema_root.query_type, name='GetDatabaseKShots', variables=dict(databaseId=sgqlc.types.Arg(sgqlc.types.non_null(_schema.UUID)), searchInput=sgqlc.types.Arg(sgqlc.types.non_null(_schema.DatabaseKShotSearchInput)), paging=sgqlc.types.Arg(sgqlc.types.non_null(_schema.PagingInput))))
-    _op_get_database_kshots = _op.get_database_kshots(database_id=sgqlc.types.Variable('databaseId'), search_input=sgqlc.types.Variable('searchInput'), paging=sgqlc.types.Variable('paging'))
-    _op_get_database_kshots.total_rows()
-    _op_get_database_kshots_rows = _op_get_database_kshots.rows()
-    _op_get_database_kshots_rows.database_kshot_id()
-    _op_get_database_kshots_rows.question()
-    _op_get_database_kshots_rows.rendered_prompt()
-    _op_get_database_kshots_rows.explanation()
-    _op_get_database_kshots_rows.sql()
-    _op_get_database_kshots_rows.title()
-    _op_get_database_kshots_rows.visualization()
-    _op_get_database_kshots_rows.is_active()
-    return _op
-
-
-def query_get_database_kshot_by_id():
-    _op = sgqlc.operation.Operation(_schema_root.query_type, name='GetDatabaseKShotById', variables=dict(databaseKShotId=sgqlc.types.Arg(sgqlc.types.non_null(_schema.UUID))))
-    _op_get_database_kshot_by_id = _op.get_database_kshot_by_id(database_kshot_id=sgqlc.types.Variable('databaseKShotId'))
-    _op_get_database_kshot_by_id.database_kshot_id()
-    _op_get_database_kshot_by_id.question()
-    _op_get_database_kshot_by_id.rendered_prompt()
-    _op_get_database_kshot_by_id.explanation()
-    _op_get_database_kshot_by_id.sql()
-    _op_get_database_kshot_by_id.title()
-    _op_get_database_kshot_by_id.visualization()
-    _op_get_database_kshot_by_id.is_active()
-    return _op
-
-
 def query_get_dataset2():
     _op = sgqlc.operation.Operation(_schema_root.query_type, name='GetDataset2', variables=dict(datasetId=sgqlc.types.Arg(sgqlc.types.non_null(_schema.UUID))))
     _op_get_dataset2 = _op.get_dataset2(dataset_id=sgqlc.types.Variable('datasetId'))
@@ -855,6 +926,84 @@ def query_get_datasets():
     _op_get_datasets_rows.database_id()
     _op_get_datasets_rows.name()
     _op_get_datasets_rows.description()
+    return _op
+
+
+def query_get_database_kshots():
+    _op = sgqlc.operation.Operation(_schema_root.query_type, name='GetDatabaseKShots', variables=dict(databaseId=sgqlc.types.Arg(sgqlc.types.non_null(_schema.UUID)), searchInput=sgqlc.types.Arg(sgqlc.types.non_null(_schema.DatabaseKShotSearchInput)), paging=sgqlc.types.Arg(sgqlc.types.non_null(_schema.PagingInput))))
+    _op_get_database_kshots = _op.get_database_kshots(database_id=sgqlc.types.Variable('databaseId'), search_input=sgqlc.types.Variable('searchInput'), paging=sgqlc.types.Variable('paging'))
+    _op_get_database_kshots.total_rows()
+    _op_get_database_kshots_rows = _op_get_database_kshots.rows()
+    _op_get_database_kshots_rows.database_kshot_id()
+    _op_get_database_kshots_rows.question()
+    _op_get_database_kshots_rows.rendered_prompt()
+    _op_get_database_kshots_rows.explanation()
+    _op_get_database_kshots_rows.sql()
+    _op_get_database_kshots_rows.title()
+    _op_get_database_kshots_rows.visualization()
+    _op_get_database_kshots_rows.is_active()
+    return _op
+
+
+def query_get_database_kshot_by_id():
+    _op = sgqlc.operation.Operation(_schema_root.query_type, name='GetDatabaseKShotById', variables=dict(databaseKShotId=sgqlc.types.Arg(sgqlc.types.non_null(_schema.UUID))))
+    _op_get_database_kshot_by_id = _op.get_database_kshot_by_id(database_kshot_id=sgqlc.types.Variable('databaseKShotId'))
+    _op_get_database_kshot_by_id.database_kshot_id()
+    _op_get_database_kshot_by_id.question()
+    _op_get_database_kshot_by_id.rendered_prompt()
+    _op_get_database_kshot_by_id.explanation()
+    _op_get_database_kshot_by_id.sql()
+    _op_get_database_kshot_by_id.title()
+    _op_get_database_kshot_by_id.visualization()
+    _op_get_database_kshot_by_id.is_active()
+    return _op
+
+
+def query_get_dataset_kshots():
+    _op = sgqlc.operation.Operation(_schema_root.query_type, name='GetDatasetKShots', variables=dict(datasetId=sgqlc.types.Arg(sgqlc.types.non_null(_schema.UUID)), searchInput=sgqlc.types.Arg(sgqlc.types.non_null(_schema.DatasetKShotSearchInput)), paging=sgqlc.types.Arg(sgqlc.types.non_null(_schema.PagingInput))))
+    _op_get_dataset_kshots = _op.get_dataset_kshots(dataset_id=sgqlc.types.Variable('datasetId'), search_input=sgqlc.types.Variable('searchInput'), paging=sgqlc.types.Variable('paging'))
+    _op_get_dataset_kshots.total_rows()
+    _op_get_dataset_kshots_rows = _op_get_dataset_kshots.rows()
+    _op_get_dataset_kshots_rows.dataset_kshot_id()
+    _op_get_dataset_kshots_rows.dataset_id()
+    _op_get_dataset_kshots_rows.question()
+    _op_get_dataset_kshots_rows.rendered_prompt()
+    _op_get_dataset_kshots_rows.explanation()
+    _op_get_dataset_kshots_rows.sql()
+    _op_get_dataset_kshots_rows_sample_data = _op_get_dataset_kshots_rows.sample_data()
+    _op_get_dataset_kshots_rows_sample_data.dataset_kshot_id()
+    _op_get_dataset_kshots_rows_sample_data_columns = _op_get_dataset_kshots_rows_sample_data.columns()
+    _op_get_dataset_kshots_rows_sample_data_columns.name()
+    _op_get_dataset_kshots_rows_sample_data_columns.jdbc_type()
+    _op_get_dataset_kshots_rows_sample_data_rows = _op_get_dataset_kshots_rows_sample_data.rows()
+    _op_get_dataset_kshots_rows_sample_data_rows.row_num()
+    _op_get_dataset_kshots_rows_sample_data_rows.data()
+    _op_get_dataset_kshots_rows.title()
+    _op_get_dataset_kshots_rows.visualization()
+    _op_get_dataset_kshots_rows.is_active()
+    return _op
+
+
+def query_get_dataset_kshot_by_id():
+    _op = sgqlc.operation.Operation(_schema_root.query_type, name='GetDatasetKShotById', variables=dict(datasetKShotId=sgqlc.types.Arg(sgqlc.types.non_null(_schema.UUID))))
+    _op_get_dataset_kshot_by_id = _op.get_dataset_kshot_by_id(dataset_kshot_id=sgqlc.types.Variable('datasetKShotId'))
+    _op_get_dataset_kshot_by_id.dataset_kshot_id()
+    _op_get_dataset_kshot_by_id.dataset_id()
+    _op_get_dataset_kshot_by_id.question()
+    _op_get_dataset_kshot_by_id.rendered_prompt()
+    _op_get_dataset_kshot_by_id.explanation()
+    _op_get_dataset_kshot_by_id.sql()
+    _op_get_dataset_kshot_by_id_sample_data = _op_get_dataset_kshot_by_id.sample_data()
+    _op_get_dataset_kshot_by_id_sample_data.dataset_kshot_id()
+    _op_get_dataset_kshot_by_id_sample_data_columns = _op_get_dataset_kshot_by_id_sample_data.columns()
+    _op_get_dataset_kshot_by_id_sample_data_columns.name()
+    _op_get_dataset_kshot_by_id_sample_data_columns.jdbc_type()
+    _op_get_dataset_kshot_by_id_sample_data_rows = _op_get_dataset_kshot_by_id_sample_data.rows()
+    _op_get_dataset_kshot_by_id_sample_data_rows.row_num()
+    _op_get_dataset_kshot_by_id_sample_data_rows.data()
+    _op_get_dataset_kshot_by_id.title()
+    _op_get_dataset_kshot_by_id.visualization()
+    _op_get_dataset_kshot_by_id.is_active()
     return _op
 
 
@@ -900,13 +1049,36 @@ def query_research_completion_with_prompt():
     return _op
 
 
+def query_get_async_skill_run_status():
+    _op = sgqlc.operation.Operation(_schema_root.query_type, name='GetAsyncSkillRunStatus', variables=dict(executionId=sgqlc.types.Arg(sgqlc.types.non_null(_schema.String))))
+    _op_get_async_skill_run_status = _op.get_async_skill_run_status(execution_id=sgqlc.types.Variable('executionId'))
+    _op_get_async_skill_run_status.status()
+    _op_get_async_skill_run_status.data()
+    _op_get_async_skill_run_status.error()
+    return _op
+
+
+def query_current_user():
+    _op = sgqlc.operation.Operation(_schema_root.query_type, name='CurrentUser')
+    _op_current_user = _op.current_user()
+    _op_current_user.first_name()
+    _op_current_user.last_name()
+    _op_current_user.email_address()
+    _op_current_user_user_groups = _op_current_user.user_groups()
+    _op_current_user_user_groups.user_group_id()
+    _op_current_user_user_groups.name()
+    return _op
+
+
 class Query:
     all_chat_entries = query_all_chat_entries()
     chat_completion = query_chat_completion()
     chat_completion_with_prompt = query_chat_completion_with_prompt()
     chat_entry = query_chat_entry()
     chat_thread = query_chat_thread()
+    current_user = query_current_user()
     dataframes_for_entry = query_dataframes_for_entry()
+    get_async_skill_run_status = query_get_async_skill_run_status()
     get_chat_artifact = query_get_chat_artifact()
     get_chat_artifacts = query_get_chat_artifacts()
     get_copilot_hydrated_reports = query_get_copilot_hydrated_reports()
@@ -919,6 +1091,8 @@ class Query:
     get_database_tables = query_get_database_tables()
     get_databases = query_get_databases()
     get_dataset2 = query_get_dataset2()
+    get_dataset_kshot_by_id = query_get_dataset_kshot_by_id()
+    get_dataset_kshots = query_get_dataset_kshots()
     get_datasets = query_get_datasets()
     get_grounded_value = query_get_grounded_value()
     get_max_agent_workflow = query_get_max_agent_workflow()
