@@ -9,7 +9,7 @@ from sgqlc.types import Variable, Arg, non_null, String
 from answer_rocket.graphql.client import GraphQlClient
 from answer_rocket.graphql.schema import UUID as GQL_UUID, MaxCopilotSkill, MaxCopilot, \
     MaxMutationResponse, MaxCopilotQuestionInput, \
-    MaxCreateCopilotQuestionResponse, MaxUser, MaxSkillComponent, MaxLLmPrompt, Boolean, HydratedReport
+    MaxCreateCopilotQuestionResponse, MaxUser, MaxLLmPrompt, Boolean, HydratedReport
 
 
 class Config:
@@ -176,35 +176,6 @@ class Config:
             result = self._gql_client.submit(op, query_args)
 
             return result.get_copilot_skill
-        except Exception as e:
-            return None
-
-    def get_skill_components(self) -> [MaxSkillComponent]:
-        """
-        Retrieve all available skill components.
-
-        Returns
-        -------
-        list[MaxSkillComponent] | None
-            A list of skill components, or None if an error occurs.
-        """
-        try:
-            query_args = {
-            }
-
-            query_vars = {
-            }
-
-            operation = self._gql_client.query(variables=query_vars)
-
-            gql_query = operation.get_skill_components(
-            )
-
-            result = self._gql_client.submit(operation, query_args)
-
-            skill_components = result.get_skill_components
-
-            return skill_components
         except Exception as e:
             return None
 

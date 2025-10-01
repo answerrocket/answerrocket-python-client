@@ -65,23 +65,7 @@ class ExecuteSqlQueryResult(MaxResult):
     """
     df: DataFrame | None = None
     data = None     # deprecated -- use df instead
-
-@dataclass
-class ExecuteRqlQueryResult(MaxResult):
-    """
-    Result object for RQL query execution operations.
-
-    Attributes
-    ----------
-    df : DataFrame | None
-        The result of the RQL query as a pandas DataFrame.
-    rql_script_response : Any | None
-        The RQL script response containing processing information.
-    """
-    df = None
-    rql_script_response = None
-
-@dataclass
+    
 class DomainObjectResult(MaxResult):
     """
     Result object for domain object retrieval operations.
@@ -240,93 +224,6 @@ class Data:
             result.error = str(e)
 
             return result
-
-    def execute_rql_query(self, dataset_id: UUID, rql_query: str, row_limit: Optional[int] = None, copilot_id: Optional[UUID] = None, copilot_skill_id: Optional[UUID] = None) -> ExecuteRqlQueryResult:
-        """
-        Execute an RQL query against a dataset and return results.
-
-        Parameters
-        ----------
-        dataset_id : UUID
-            The UUID of the dataset to execute the query against.
-        rql_query : str
-            The RQL query string to execute.
-        row_limit : Optional[int], optional
-            Maximum number of rows to return in the query results.
-        copilot_id : Optional[UUID], optional
-            The UUID of the copilot. Defaults to the configured copilot_id.
-        copilot_skill_id : Optional[UUID], optional
-            The UUID of the copilot skill. Defaults to the configured copilot_skill_id.
-
-        Returns
-        -------
-        ExecuteRqlQueryResult
-            The result containing success status, error information, DataFrame, and RQL script response.
-        """
-        try:
-            query_args = {
-                'datasetId': dataset_id,
-                'rqlQuery': rql_query,
-                'rowLimit': row_limit,
-                'copilotId': copilot_id or self.copilot_id,
-                'copilotSkillId': copilot_skill_id or self.copilot_skill_id,
-            }
-
-            query_vars = {
-                'dataset_id': Arg(non_null(GQL_UUID)),
-                'rql_query': Arg(non_null(String)),
-                'row_limit': Arg(Int),
-                'copilot_id': Arg(GQL_UUID),
-                'copilot_skill_id': Arg(GQL_UUID),
-            }
-
-            operation = self._gql_client.query(variables=query_vars)
-
-            execute_rql_query = operation.execute_rql_query(
-                dataset_id=Variable('dataset_id'),
-                rql_query=Variable('rql_query'),
-                row_limit=Variable('row_limit'),
-                copilot_id=Variable('copilot_id'),
-                copilot_skill_id=Variable('copilot_skill_id'),
-            )
-
-            execute_rql_query.success()
-            execute_rql_query.code()
-            execute_rql_query.error()
-            execute_rql_query.data()
-            execute_rql_query.process_rql_script_response()
-
-            result = self._gql_client.submit(operation, query_args)
-
-            execute_rql_query_response = result.execute_rql_query
-
-            execute_rql_query_result = ExecuteRqlQueryResult()
-
-            execute_rql_query_result.success = execute_rql_query_response.success
-            execute_rql_query_result.error = execute_rql_query_response.error
-            execute_rql_query_result.code = execute_rql_query_response.code
-
-            if execute_rql_query_response.success:
-                data = execute_rql_query_response.data
-
-                columns = [column["name"] for column in data["columns"]]
-                rows = [row["data"] for row in data["rows"]] if "rows" in data else []
-
-                df = pd.DataFrame(rows, columns=columns)
-
-                execute_rql_query_result.df = df
-
-            execute_rql_query_result.rql_script_response = execute_rql_query_response.process_rql_script_response
-
-            return execute_rql_query_result
-        except Exception as e:
-            execute_rql_query_result = ExecuteRqlQueryResult()
-
-            execute_rql_query_result.success = False
-            execute_rql_query_result.error = e
-            execute_rql_query_result.code = RESULT_EXCEPTION_CODE
-
-            return execute_rql_query_result
 
     def get_database(self, database_id: UUID) -> Optional[Database]:
         """
