@@ -6,9 +6,9 @@
 
 #### Methods
 
-##### `__init__(self, gql_client: GraphQlClient, config: [[API-Types#clientconfig|ClientConfig]])`
+##### `__init__(self, gql_client: GraphQlClient, config: [[API-Types|ClientConfig]])`
 
-##### `ask_question(self, copilot_id: str, question: str, thread_id: str, skip_report_cache: bool, dry_run_type: str, model_overrides: dict, indicated_skills: list[str], history: list[dict], question_type: [[API-Types#questiontype|QuestionType]], thread_type: [[API-Types#threadtype|ThreadType]]) -> [[API-Types#maxchatentry|MaxChatEntry]]`
+##### `ask_question(self, copilot_id: str, question: str, thread_id: str, skip_report_cache: bool, dry_run_type: str, model_overrides: dict, indicated_skills: list[str], history: list[dict], question_type: [[API-Types|QuestionType]], thread_type: [[API-Types|ThreadType]]) -> [[API-Types|MaxChatEntry]]`
 
 
 Calls the Max chat pipeline to answer a natural language question and receive analysis and insights
@@ -25,15 +25,15 @@ in response.
 - **model_overrides** (`dict`, optional): A dictionary of model types to model names to override the LLM model used. Model type options are 'CHAT', 'EMBEDDINGS', 'NARRATIVE'.
 - **indicated_skills** (`list[str]`, optional): A list of skill names that the copilot will be limited to choosing from. If only 1 skill is provided the copilot will be guaranteed to execute that skill.
 - **history** (`list[dict]`, optional): A list of messages to be used as the conversation history for the question.
-- **question_type** (`[[API-Types#questiontype|QuestionType]]`, optional): The type of question being asked. This is used to categorize the question and can determine how the UI chooses to display it.
-- **thread_type** (`[[API-Types#threadtype|ThreadType]]`, optional): The type of thread being created. This is used to categorize the thread and can determine how the UI chooses to display it.
+- **question_type** (`[[API-Types|QuestionType]]`, optional): The type of question being asked. This is used to categorize the question and can determine how the UI chooses to display it.
+- **thread_type** (`[[API-Types|ThreadType]]`, optional): The type of thread being created. This is used to categorize the thread and can determine how the UI chooses to display it.
 
 
 **Returns:**
 
-`[[API-Types#maxchatentry|MaxChatEntry]]` - The ChatEntry response object associated with the answer from the pipeline.
+`[[API-Types|MaxChatEntry]]` - The ChatEntry response object associated with the answer from the pipeline.
 
-##### `add_feedback(self, entry_id: str, feedback_type: [[API-Types#feedbacktype|FeedbackType]], feedback_text: str) -> bool`
+##### `add_feedback(self, entry_id: str, feedback_type: [[API-Types|FeedbackType]], feedback_text: str) -> bool`
 
 
 This adds feedback to a chat entry.
@@ -42,7 +42,7 @@ This adds feedback to a chat entry.
 **Parameters:**
 
 - **entry_id** (`str`): The id of the chat entry.
-- **feedback_type** (`[[API-Types#feedbacktype|FeedbackType]]`): The type of feedback to add.
+- **feedback_type** (`[[API-Types|FeedbackType]]`): The type of feedback to add.
 - **feedback_text** (`str`, optional): The text of the feedback.
 
 
@@ -50,7 +50,7 @@ This adds feedback to a chat entry.
 
 `bool` - True if the feedback was added successfully, False otherwise.
 
-##### `get_threads(self, copilot_id: str, start_date: datetime, end_date: datetime) -> list[[[API-Types#maxchatthread|MaxChatThread]]]`
+##### `get_threads(self, copilot_id: str, start_date: datetime, end_date: datetime) -> list[[[API-Types|MaxChatThread]]]`
 
 
 Fetches all threads for a given copilot and date range.
@@ -65,9 +65,9 @@ Fetches all threads for a given copilot and date range.
 
 **Returns:**
 
-`list[[[API-Types#maxchatthread|MaxChatThread]]]` - A list of ChatThread objects.
+`list[[[API-Types|MaxChatThread]]]` - A list of ChatThread objects.
 
-##### `get_entries(self, thread_id: str, offset: int, limit: int) -> list[[[API-Types#maxchatentry|MaxChatEntry]]]`
+##### `get_entries(self, thread_id: str, offset: int, limit: int) -> list[[[API-Types|MaxChatEntry]]]`
 
 
 Fetches all entries for a given thread.
@@ -82,9 +82,9 @@ Fetches all entries for a given thread.
 
 **Returns:**
 
-`list[[[API-Types#maxchatentry|MaxChatEntry]]]` - A list of ChatEntry objects.
+`list[[[API-Types|MaxChatEntry]]]` - A list of ChatEntry objects.
 
-##### `evaluate_entry(self, entry_id: str, evals: list[str]) -> [[API-Types#evaluatechatquestionresponse|EvaluateChatQuestionResponse]]`
+##### `evaluate_entry(self, entry_id: str, evals: list[str]) -> [[API-Types|EvaluateChatQuestionResponse]]`
 
 
 Runs and fetches the inputted evaluations for a given entry.
@@ -98,9 +98,9 @@ Runs and fetches the inputted evaluations for a given entry.
 
 **Returns:**
 
-`[[API-Types#evaluatechatquestionresponse|EvaluateChatQuestionResponse]]` - The evaluation response object containing evaluation results.
+`[[API-Types|EvaluateChatQuestionResponse]]` - The evaluation response object containing evaluation results.
 
-##### `share_chat_thread(self, original_thread_id: str) -> [[API-Types#sharedthread|SharedThread]]`
+##### `share_chat_thread(self, original_thread_id: str) -> [[API-Types|SharedThread]]`
 
 
 Share a chat thread by its ID.
@@ -113,9 +113,9 @@ Share a chat thread by its ID.
 
 **Returns:**
 
-`[[API-Types#sharedthread|SharedThread]]` - The shared thread object.
+`[[API-Types|SharedThread]]` - The shared thread object.
 
-##### `get_chat_entry(self, entry_id: str) -> [[API-Types#maxchatentry|MaxChatEntry]]`
+##### `get_chat_entry(self, entry_id: str) -> [[API-Types|MaxChatEntry]]`
 
 
 Retrieve a chat entry by its ID.
@@ -128,9 +128,9 @@ Retrieve a chat entry by its ID.
 
 **Returns:**
 
-`[[API-Types#maxchatentry|MaxChatEntry]]` - The chat entry object.
+`[[API-Types|MaxChatEntry]]` - The chat entry object.
 
-##### `get_chat_thread(self, thread_id: str) -> [[API-Types#maxchatthread|MaxChatThread]]`
+##### `get_chat_thread(self, thread_id: str) -> [[API-Types|MaxChatThread]]`
 
 
 Retrieve a chat thread by its ID.
@@ -143,9 +143,9 @@ Retrieve a chat thread by its ID.
 
 **Returns:**
 
-`[[API-Types#maxchatthread|MaxChatThread]]` - The chat thread object.
+`[[API-Types|MaxChatThread]]` - The chat thread object.
 
-##### `create_new_thread(self, copilot_id: str, thread_type: [[API-Types#threadtype|ThreadType]]) -> [[API-Types#maxchatthread|MaxChatThread]]`
+##### `create_new_thread(self, copilot_id: str, thread_type: [[API-Types|ThreadType]]) -> [[API-Types|MaxChatThread]]`
 
 
 Create a new chat thread for the specified agent.
@@ -154,14 +154,14 @@ Create a new chat thread for the specified agent.
 **Parameters:**
 
 - **copilot_id** (`str`): The ID of the agent to create the thread for.
-- **thread_type** (`[[API-Types#threadtype|ThreadType]]`, optional): The type of thread to create. Defaults to CHAT. For most purposes CHAT is the only type needed.
+- **thread_type** (`[[API-Types|ThreadType]]`, optional): The type of thread to create. Defaults to CHAT. For most purposes CHAT is the only type needed.
 
 
 **Returns:**
 
-`[[API-Types#maxchatthread|MaxChatThread]]` - The newly created chat thread object.
+`[[API-Types|MaxChatThread]]` - The newly created chat thread object.
 
-##### `queue_chat_question(self, question: str, thread_id: str, skip_cache: bool, model_overrides: dict, indicated_skills: list[str], history: list[dict]) -> [[API-Types#maxchatentry|MaxChatEntry]]`
+##### `queue_chat_question(self, question: str, thread_id: str, skip_cache: bool, model_overrides: dict, indicated_skills: list[str], history: list[dict]) -> [[API-Types|MaxChatEntry]]`
 
 
 This queues up a question for processing. Unlike ask_question, this will not wait for the processing to
@@ -180,9 +180,9 @@ complete. It will immediately return a shell entry with an id you can use to que
 
 **Returns:**
 
-`[[API-Types#maxchatentry|MaxChatEntry]]` - A shell entry with an id you can use to query for the results.
+`[[API-Types|MaxChatEntry]]` - A shell entry with an id you can use to query for the results.
 
-##### `cancel_chat_question(self, entry_id: str) -> [[API-Types#maxchatentry|MaxChatEntry]]`
+##### `cancel_chat_question(self, entry_id: str) -> [[API-Types|MaxChatEntry]]`
 
 
 This deletes the entry from its thread and attempts to abandon the question's processing if it is still ongoing.
@@ -195,9 +195,9 @@ This deletes the entry from its thread and attempts to abandon the question's pr
 
 **Returns:**
 
-`[[API-Types#maxchatentry|MaxChatEntry]]` - The deleted entry.
+`[[API-Types|MaxChatEntry]]` - The deleted entry.
 
-##### `get_user(self, user_id: str) -> [[API-Types#maxchatuser|MaxChatUser]]`
+##### `get_user(self, user_id: str) -> [[API-Types|MaxChatUser]]`
 
 
 This fetches a user by their ID.
@@ -210,9 +210,9 @@ This fetches a user by their ID.
 
 **Returns:**
 
-`[[API-Types#maxchatuser|MaxChatUser]]` - A [[API-Types#maxchatuser|MaxChatUser]] object.
+`[[API-Types|MaxChatUser]]` - A [[API-Types|MaxChatUser]] object.
 
-##### `get_all_chat_entries(self, offset, limit, filters) -> list[[[API-Types#maxchatentry|MaxChatEntry]]]`
+##### `get_all_chat_entries(self, offset, limit, filters) -> list[[[API-Types|MaxChatEntry]]]`
 
 
 Fetches all chat entries with optional filters.
@@ -227,7 +227,7 @@ Fetches all chat entries with optional filters.
 
 **Returns:**
 
-`list[[[API-Types#maxchatentry|MaxChatEntry]]]` - A list of ChatEntry objects.
+`list[[[API-Types|MaxChatEntry]]]` - A list of ChatEntry objects.
 
 ##### `get_skill_memory_payload(self, chat_entry_id: str) -> dict`
 
@@ -275,7 +275,7 @@ This fetches the dataframes (with metadata) for a given chat entry.
 
 `list[pd.DataFrame]` - A list of dataframes and metadata for the given chat entry.
 
-##### `get_chat_artifact(self, chat_artifact_id: UUID) -> Optional[[[API-Types#chatartifact|ChatArtifact]]]`
+##### `get_chat_artifact(self, chat_artifact_id: UUID) -> Optional[[[API-Types|ChatArtifact]]]`
 
 
 Retrieve a chat artifact by its ID.
@@ -292,9 +292,9 @@ if an error occurs during the query, `None` is returned.
 
 **Returns:**
 
-`[[API-Types#chatartifact|ChatArtifact]] or None` - The chat artifact object if found, or `None` if not found or if an error occurs.
+`[[API-Types|ChatArtifact]] or None` - The chat artifact object if found, or `None` if not found or if an error occurs.
 
-##### `get_chat_artifacts(self, search_input: Optional[ChatArtifactSearchInput], paging: Optional[PagingInput]) -> [[API-Types#pagedchatartifacts|PagedChatArtifacts]]`
+##### `get_chat_artifacts(self, search_input: Optional[ChatArtifactSearchInput], paging: Optional[PagingInput]) -> [[API-Types|PagedChatArtifacts]]`
 
 
 Retrieve paged chat artifacts based on optional search and paging criteria.
@@ -310,9 +310,9 @@ If no `search_input` or `paging` is provided, default values will be used.
 
 **Returns:**
 
-`[[API-Types#pagedchatartifacts|PagedChatArtifacts]]` - A paged collection of chat artifacts. Returns an empty `[[API-Types#pagedchatartifacts|PagedChatArtifacts]]` instance if an error occurs during retrieval.
+`[[API-Types|PagedChatArtifacts]]` - A paged collection of chat artifacts. Returns an empty `[[API-Types|PagedChatArtifacts]]` instance if an error occurs during retrieval.
 
-##### `create_chat_artifact(self, chat_artifact: [[API-Types#chatartifact|ChatArtifact]]) -> [[API-Types#maxmutationresponse|MaxMutationResponse]]`
+##### `create_chat_artifact(self, chat_artifact: [[API-Types|ChatArtifact]]) -> [[API-Types|MaxMutationResponse]]`
 
 
 Submits a GraphQL mutation to create a new chat artifact.
@@ -320,14 +320,14 @@ Submits a GraphQL mutation to create a new chat artifact.
 
 **Parameters:**
 
-- **chat_artifact** (`[[API-Types#chatartifact|ChatArtifact]]`): The chat artifact object containing the data to be created.
+- **chat_artifact** (`[[API-Types|ChatArtifact]]`): The chat artifact object containing the data to be created.
 
 
 **Returns:**
 
-`[[API-Types#maxmutationresponse|MaxMutationResponse]]` - The response object containing the result of the mutation, specifically the created chat artifact.
+`[[API-Types|MaxMutationResponse]]` - The response object containing the result of the mutation, specifically the created chat artifact.
 
-##### `delete_chat_artifact(self, chat_artifact_id: uuid) -> [[API-Types#maxmutationresponse|MaxMutationResponse]]`
+##### `delete_chat_artifact(self, chat_artifact_id: uuid) -> [[API-Types|MaxMutationResponse]]`
 
 
 Submits a GraphQL mutation to delete an existing chat artifact by its ID.
@@ -340,4 +340,4 @@ Submits a GraphQL mutation to delete an existing chat artifact by its ID.
 
 **Returns:**
 
-`[[API-Types#maxmutationresponse|MaxMutationResponse]]` - The response object containing the result of the deletion mutation.
+`[[API-Types|MaxMutationResponse]]` - The response object containing the result of the deletion mutation.

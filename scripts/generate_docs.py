@@ -29,14 +29,13 @@ def link_type_references(text: str) -> str:
     Convert type names to markdown links pointing to API-Types.md.
 
     Examples:
-    - MaxChatEntry -> [[API-Types#maxchatentry|MaxChatEntry]]
-    - list[MaxChatEntry] -> list[[[API-Types#maxchatentry|MaxChatEntry]]]
+    - MaxChatEntry -> [[API-Types|MaxChatEntry]]
+    - list[MaxChatEntry] -> list[[[API-Types|MaxChatEntry]]]
     """
     for type_name in SDK_TYPES:
-        # Create anchor link (lowercase, no special chars)
-        anchor = type_name.lower()
-        # GitHub Wiki uses [[Page Name#anchor|Display Text]] syntax for internal links with anchors
-        link = f"[[API-Types#{anchor}|{type_name}]]"
+        # GitHub Wiki uses [[Page Name|Display Text]] syntax for internal links
+        # Note: Anchor links (#section) are not reliably supported in GitHub Wiki
+        link = f"[[API-Types|{type_name}]]"
 
         # Replace standalone type name (not part of another word)
         # Use word boundaries but also handle cases like `Type` or `Type,`

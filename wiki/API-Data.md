@@ -43,7 +43,7 @@ Result object for SQL AI generation operations.
 - **explanation** (`str | None`): An explanation of the generated SQL query.
 - **data** (`deprecated`): Deprecated field. Use df instead for DataFrame results.
 - **timing_info** (`Dict[str, any] | None`): Performance timing information for the operation.
-- **prior_runs** (`List[[[API-Types#runsqlairesult|RunSqlAiResult]]]`): List of prior runs for comparison or iteration tracking.
+- **prior_runs** (`List[[[API-Types|RunSqlAiResult]]]`): List of prior runs for comparison or iteration tracking.
 
 ### `Data`
 
@@ -51,9 +51,9 @@ Helper for accessing data from the server.
 
 #### Methods
 
-##### `__init__(self, config: [[API-Types#clientconfig|ClientConfig]], gql_client: GraphQlClient) -> None`
+##### `__init__(self, config: [[API-Types|ClientConfig]], gql_client: GraphQlClient) -> None`
 
-##### `execute_sql_query(self, database_id: UUID, sql_query: str, row_limit: Optional[int], copilot_id: Optional[UUID], copilot_skill_id: Optional[UUID]) -> [[API-Types#executesqlqueryresult|ExecuteSqlQueryResult]]`
+##### `execute_sql_query(self, database_id: UUID, sql_query: str, row_limit: Optional[int], copilot_id: Optional[UUID], copilot_skill_id: Optional[UUID]) -> [[API-Types|ExecuteSqlQueryResult]]`
 
 
 Execute a SQL query against the provided database and return a dataframe.
@@ -70,7 +70,7 @@ Execute a SQL query against the provided database and return a dataframe.
 
 **Returns:**
 
-`[[API-Types#executesqlqueryresult|ExecuteSqlQueryResult]]` - The result of the SQL execution process.
+`[[API-Types|ExecuteSqlQueryResult]]` - The result of the SQL execution process.
 
 ##### `get_database(self, database_id: UUID) -> Optional[Database]`
 
@@ -235,7 +235,7 @@ if an error occurs during the query, `None` is returned.
 
 `Dataset or None` - The dataset object if found, or `None` if not found or if an error occurs.
 
-##### `get_domain_object_by_name(self, dataset_id: UUID, rql_name: str) -> [[API-Types#domainobjectresult|DomainObjectResult]]`
+##### `get_domain_object_by_name(self, dataset_id: UUID, rql_name: str) -> [[API-Types|DomainObjectResult]]`
 
 
 Retrieve a domain object by its RQL name within a dataset.
@@ -249,9 +249,9 @@ Retrieve a domain object by its RQL name within a dataset.
 
 **Returns:**
 
-`[[API-Types#domainobjectresult|DomainObjectResult]]` - The result containing success status, error information, and the domain object if found.
+`[[API-Types|DomainObjectResult]]` - The result containing success status, error information, and the domain object if found.
 
-##### `get_domain_object(self, dataset_id: UUID, domain_object_id: str) -> [[API-Types#domainobjectresult|DomainObjectResult]]`
+##### `get_domain_object(self, dataset_id: UUID, domain_object_id: str) -> [[API-Types|DomainObjectResult]]`
 
 
 Retrieve a domain object by its ID within a dataset.
@@ -265,7 +265,7 @@ Retrieve a domain object by its ID within a dataset.
 
 **Returns:**
 
-`[[API-Types#domainobjectresult|DomainObjectResult]]` - The result containing success status, error information, and the domain object if found.
+`[[API-Types|DomainObjectResult]]` - The result containing success status, error information, and the domain object if found.
 
 ##### `get_grounded_value(self, dataset_id: UUID, value: str, domain_entity: Optional[str], copilot_id: Optional[UUID]) -> GroundedValueResponse`
 
@@ -285,7 +285,7 @@ Get grounded values for fuzzy matching against domain values.
 
 `GroundedValueResponse` - The grounded value response from the GraphQL schema.
 
-##### `run_max_sql_gen(self, dataset_id: UUID, pre_query_object: Dict[(str, any)], copilot_id: UUID | None, execute_sql: bool | None) -> [[API-Types#runmaxsqlgenresult|RunMaxSqlGenResult]]`
+##### `run_max_sql_gen(self, dataset_id: UUID, pre_query_object: Dict[(str, any)], copilot_id: UUID | None, execute_sql: bool | None) -> [[API-Types|RunMaxSqlGenResult]]`
 
 
 Run the SQL generation logic using the provided dataset and query object.
@@ -301,9 +301,9 @@ Run the SQL generation logic using the provided dataset and query object.
 
 **Returns:**
 
-`[[API-Types#runmaxsqlgenresult|RunMaxSqlGenResult]]` - The result of the SQL generation process.
+`[[API-Types|RunMaxSqlGenResult]]` - The result of the SQL generation process.
 
-##### `run_sql_ai(self, dataset_id: Optional[str | UUID], question: str, model_override: Optional[str], copilot_id: Optional[UUID], dataset_ids: Optional[list[str | UUID]], database_id: Optional[str | UUID]) -> [[API-Types#runsqlairesult|RunSqlAiResult]]`
+##### `run_sql_ai(self, dataset_id: Optional[str | UUID], question: str, model_override: Optional[str], copilot_id: Optional[UUID], dataset_ids: Optional[list[str | UUID]], database_id: Optional[str | UUID]) -> [[API-Types|RunSqlAiResult]]`
 
 
 Run the SQL AI generation logic using the provided dataset and natural language question.
@@ -321,7 +321,7 @@ Run the SQL AI generation logic using the provided dataset and natural language 
 
 **Returns:**
 
-`[[API-Types#runsqlairesult|RunSqlAiResult]]` - The result of the SQL AI generation process.
+`[[API-Types|RunSqlAiResult]]` - The result of the SQL AI generation process.
 
 ##### `generate_visualization(self, data: Dict, column_metadata_map: Dict) -> Optional[GenerateVisualizationResponse]`
 
@@ -339,7 +339,7 @@ Generate a HighchartsChart dynamic vis layout component based on provided data a
 
 `GenerateVisualizationResponse | None` - A HighchartsChart dynamic vis layout component based on provided data and metadata. Returns None if an error occurs.
 
-##### `update_database_name(self, database_id: UUID, name: str) -> [[API-Types#maxmutationresponse|MaxMutationResponse]]`
+##### `update_database_name(self, database_id: UUID, name: str) -> [[API-Types|MaxMutationResponse]]`
 
 
 Update the name of a database.
@@ -353,9 +353,9 @@ Update the name of a database.
 
 **Returns:**
 
-`[[API-Types#maxmutationresponse|MaxMutationResponse]]` - The result of the GraphQL mutation containing the updated database name.
+`[[API-Types|MaxMutationResponse]]` - The result of the GraphQL mutation containing the updated database name.
 
-##### `update_database_description(self, database_id: UUID, description: Optional[str]) -> [[API-Types#maxmutationresponse|MaxMutationResponse]]`
+##### `update_database_description(self, database_id: UUID, description: Optional[str]) -> [[API-Types|MaxMutationResponse]]`
 
 
 Update the description of a database.
@@ -369,9 +369,9 @@ Update the description of a database.
 
 **Returns:**
 
-`[[API-Types#maxmutationresponse|MaxMutationResponse]]` - The result of the GraphQL mutation containing the updated database description.
+`[[API-Types|MaxMutationResponse]]` - The result of the GraphQL mutation containing the updated database description.
 
-##### `update_database_llm_description(self, database_id: UUID, llm_description: Optional[str]) -> [[API-Types#maxmutationresponse|MaxMutationResponse]]`
+##### `update_database_llm_description(self, database_id: UUID, llm_description: Optional[str]) -> [[API-Types|MaxMutationResponse]]`
 
 
 Update the LLM-specific description of a database.
@@ -388,9 +388,9 @@ large language models (LLMs), such as for query generation or schema understandi
 
 **Returns:**
 
-`[[API-Types#maxmutationresponse|MaxMutationResponse]]` - The result of the GraphQL mutation containing the updated LLM description.
+`[[API-Types|MaxMutationResponse]]` - The result of the GraphQL mutation containing the updated LLM description.
 
-##### `update_database_mermaid_er_diagram(self, database_id: UUID, mermaid_er_diagram: Optional[str]) -> [[API-Types#maxmutationresponse|MaxMutationResponse]]`
+##### `update_database_mermaid_er_diagram(self, database_id: UUID, mermaid_er_diagram: Optional[str]) -> [[API-Types|MaxMutationResponse]]`
 
 
 Update the Mermaid.js ER diagram representation for a database.
@@ -407,9 +407,9 @@ and is formatted using the Mermaid.js syntax.
 
 **Returns:**
 
-`[[API-Types#maxmutationresponse|MaxMutationResponse]]` - The result of the GraphQL mutation containing the updated ER diagram information.
+`[[API-Types|MaxMutationResponse]]` - The result of the GraphQL mutation containing the updated ER diagram information.
 
-##### `update_database_kshot_limit(self, database_id: UUID, kshot_limit: int) -> [[API-Types#maxmutationresponse|MaxMutationResponse]]`
+##### `update_database_kshot_limit(self, database_id: UUID, kshot_limit: int) -> [[API-Types|MaxMutationResponse]]`
 
 
 Update the k-shot limit for a database.
@@ -426,9 +426,9 @@ prompts, previews, or training examples involving this database.
 
 **Returns:**
 
-`[[API-Types#maxmutationresponse|MaxMutationResponse]]` - The result of the GraphQL mutation containing the updated k-shot limit.
+`[[API-Types|MaxMutationResponse]]` - The result of the GraphQL mutation containing the updated k-shot limit.
 
-##### `reload_dataset(self, dataset_id: Optional[UUID], database_id: Optional[UUID], table_names: Optional[List[str]]) -> [[API-Types#maxmutationresponse|MaxMutationResponse]]`
+##### `reload_dataset(self, dataset_id: Optional[UUID], database_id: Optional[UUID], table_names: Optional[List[str]]) -> [[API-Types|MaxMutationResponse]]`
 
 
 Reload a dataset to refresh its metadata and structure.
@@ -443,9 +443,9 @@ Reload a dataset to refresh its metadata and structure.
 
 **Returns:**
 
-`[[API-Types#maxmutationresponse|MaxMutationResponse]]` - The result of the reload operation, or None if an error occurs.
+`[[API-Types|MaxMutationResponse]]` - The result of the reload operation, or None if an error occurs.
 
-##### `update_dataset_name(self, dataset_id: UUID, name: str) -> [[API-Types#maxmutationresponse|MaxMutationResponse]]`
+##### `update_dataset_name(self, dataset_id: UUID, name: str) -> [[API-Types|MaxMutationResponse]]`
 
 
 Update the name of a dataset using its unique identifier.
@@ -459,9 +459,9 @@ Update the name of a dataset using its unique identifier.
 
 **Returns:**
 
-`[[API-Types#maxmutationresponse|MaxMutationResponse]]` - The result of the GraphQL mutation containing the updated dataset information.
+`[[API-Types|MaxMutationResponse]]` - The result of the GraphQL mutation containing the updated dataset information.
 
-##### `update_dataset_description(self, dataset_id: UUID, description: Optional[str]) -> [[API-Types#maxmutationresponse|MaxMutationResponse]]`
+##### `update_dataset_description(self, dataset_id: UUID, description: Optional[str]) -> [[API-Types|MaxMutationResponse]]`
 
 
 Update the description of a dataset using its unique identifier.
@@ -475,9 +475,9 @@ Update the description of a dataset using its unique identifier.
 
 **Returns:**
 
-`[[API-Types#maxmutationresponse|MaxMutationResponse]]` - The result of the GraphQL mutation containing the updated dataset information.
+`[[API-Types|MaxMutationResponse]]` - The result of the GraphQL mutation containing the updated dataset information.
 
-##### `update_dataset_date_range(self, dataset_id: UUID, min_date: Optional[str], max_date: Optional[str]) -> [[API-Types#maxmutationresponse|MaxMutationResponse]]`
+##### `update_dataset_date_range(self, dataset_id: UUID, min_date: Optional[str], max_date: Optional[str]) -> [[API-Types|MaxMutationResponse]]`
 
 
 Update the minimum and/or maximum date range for a dataset.
@@ -492,9 +492,9 @@ Update the minimum and/or maximum date range for a dataset.
 
 **Returns:**
 
-`[[API-Types#maxmutationresponse|MaxMutationResponse]]` - The result of the GraphQL mutation containing the updated dataset date range.
+`[[API-Types|MaxMutationResponse]]` - The result of the GraphQL mutation containing the updated dataset date range.
 
-##### `update_dataset_data_interval(self, dataset_id: UUID, data_interval: Optional[DatasetDataInterval]) -> [[API-Types#maxmutationresponse|MaxMutationResponse]]`
+##### `update_dataset_data_interval(self, dataset_id: UUID, data_interval: Optional[DatasetDataInterval]) -> [[API-Types|MaxMutationResponse]]`
 
 
 Update the data interval setting for a dataset.
@@ -508,9 +508,9 @@ Update the data interval setting for a dataset.
 
 **Returns:**
 
-`[[API-Types#maxmutationresponse|MaxMutationResponse]]` - The result of the GraphQL mutation containing the updated dataset data interval.
+`[[API-Types|MaxMutationResponse]]` - The result of the GraphQL mutation containing the updated dataset data interval.
 
-##### `update_dataset_misc_info(self, dataset_id: UUID, misc_info: Optional[str]) -> [[API-Types#maxmutationresponse|MaxMutationResponse]]`
+##### `update_dataset_misc_info(self, dataset_id: UUID, misc_info: Optional[str]) -> [[API-Types|MaxMutationResponse]]`
 
 
 Update the miscellaneous information associated with a dataset.
@@ -524,9 +524,9 @@ Update the miscellaneous information associated with a dataset.
 
 **Returns:**
 
-`[[API-Types#maxmutationresponse|MaxMutationResponse]]` - The result of the GraphQL mutation containing the updated dataset information.
+`[[API-Types|MaxMutationResponse]]` - The result of the GraphQL mutation containing the updated dataset information.
 
-##### `update_dataset_source(self, dataset_id: UUID, source_table: str, source_sql: Optional[str], derived_table_alias: Optional[str]) -> [[API-Types#maxmutationresponse|MaxMutationResponse]]`
+##### `update_dataset_source(self, dataset_id: UUID, source_table: str, source_sql: Optional[str], derived_table_alias: Optional[str]) -> [[API-Types|MaxMutationResponse]]`
 
 
 Update the source table configuration for a dataset.
@@ -542,9 +542,9 @@ Update the source table configuration for a dataset.
 
 **Returns:**
 
-`[[API-Types#maxmutationresponse|MaxMutationResponse]]` - The result of the update operation.
+`[[API-Types|MaxMutationResponse]]` - The result of the update operation.
 
-##### `update_dataset_query_row_limit(self, dataset_id: UUID, query_row_limit: Optional[int]) -> [[API-Types#maxmutationresponse|MaxMutationResponse]]`
+##### `update_dataset_query_row_limit(self, dataset_id: UUID, query_row_limit: Optional[int]) -> [[API-Types|MaxMutationResponse]]`
 
 
 Update the maximum number of rows that can be returned in queries for a dataset.
@@ -558,9 +558,9 @@ Update the maximum number of rows that can be returned in queries for a dataset.
 
 **Returns:**
 
-`[[API-Types#maxmutationresponse|MaxMutationResponse]]` - The result of the GraphQL mutation containing the updated row limit setting.
+`[[API-Types|MaxMutationResponse]]` - The result of the GraphQL mutation containing the updated row limit setting.
 
-##### `update_dataset_use_database_casing(self, dataset_id: UUID, use_database_casing: bool) -> [[API-Types#maxmutationresponse|MaxMutationResponse]]`
+##### `update_dataset_use_database_casing(self, dataset_id: UUID, use_database_casing: bool) -> [[API-Types|MaxMutationResponse]]`
 
 
 Update whether the dataset should use the original database casing for field names.
@@ -574,9 +574,9 @@ Update whether the dataset should use the original database casing for field nam
 
 **Returns:**
 
-`[[API-Types#maxmutationresponse|MaxMutationResponse]]` - The result of the GraphQL mutation reflecting the updated casing preference.
+`[[API-Types|MaxMutationResponse]]` - The result of the GraphQL mutation reflecting the updated casing preference.
 
-##### `update_dataset_kshot_limit(self, dataset_id: UUID, kshot_limit: int) -> [[API-Types#maxmutationresponse|MaxMutationResponse]]`
+##### `update_dataset_kshot_limit(self, dataset_id: UUID, kshot_limit: int) -> [[API-Types|MaxMutationResponse]]`
 
 
 Update the k-shot limit for the dataset, which controls the number of example rows used for processing or training.
@@ -590,9 +590,9 @@ Update the k-shot limit for the dataset, which controls the number of example ro
 
 **Returns:**
 
-`[[API-Types#maxmutationresponse|MaxMutationResponse]]` - The result of the GraphQL mutation containing the updated k-shot limit.
+`[[API-Types|MaxMutationResponse]]` - The result of the GraphQL mutation containing the updated k-shot limit.
 
-##### `create_dataset(self, dataset: Dataset) -> [[API-Types#maxmutationresponse|MaxMutationResponse]]`
+##### `create_dataset(self, dataset: Dataset) -> [[API-Types|MaxMutationResponse]]`
 
 
 Create a new dataset with the specified configuration.
@@ -605,7 +605,7 @@ Create a new dataset with the specified configuration.
 
 **Returns:**
 
-`[[API-Types#maxmutationresponse|MaxMutationResponse]]` - The result of the GraphQL mutation containing the created dataset details.
+`[[API-Types|MaxMutationResponse]]` - The result of the GraphQL mutation containing the created dataset details.
 
 ##### `create_dataset_from_table(self, database_id: UUID, table_name: str) -> CreateDatasetFromTableResponse`
 
@@ -623,7 +623,7 @@ Create a new dataset from the specified table
 
 `CreateDatasetFromTableResponse` - The result of the GraphQL mutation containing the created dataset details.
 
-##### `create_dimension(self, dataset_id: UUID, dimension: Dimension) -> [[API-Types#maxmutationresponse|MaxMutationResponse]]`
+##### `create_dimension(self, dataset_id: UUID, dimension: Dimension) -> [[API-Types|MaxMutationResponse]]`
 
 
 Create a new dimension within a dataset.
@@ -637,9 +637,9 @@ Create a new dimension within a dataset.
 
 **Returns:**
 
-`[[API-Types#maxmutationresponse|MaxMutationResponse]]` - The result of the create operation.
+`[[API-Types|MaxMutationResponse]]` - The result of the create operation.
 
-##### `update_dimension(self, dataset_id: UUID, dimension: Dimension) -> [[API-Types#maxmutationresponse|MaxMutationResponse]]`
+##### `update_dimension(self, dataset_id: UUID, dimension: Dimension) -> [[API-Types|MaxMutationResponse]]`
 
 
 Update an existing dimension within a dataset.
@@ -653,9 +653,9 @@ Update an existing dimension within a dataset.
 
 **Returns:**
 
-`[[API-Types#maxmutationresponse|MaxMutationResponse]]` - The result of the update operation.
+`[[API-Types|MaxMutationResponse]]` - The result of the update operation.
 
-##### `delete_dimension(self, dataset_id: UUID, dimension_id: str) -> [[API-Types#maxmutationresponse|MaxMutationResponse]]`
+##### `delete_dimension(self, dataset_id: UUID, dimension_id: str) -> [[API-Types|MaxMutationResponse]]`
 
 
 Delete a dimension from a dataset.
@@ -669,9 +669,9 @@ Delete a dimension from a dataset.
 
 **Returns:**
 
-`[[API-Types#maxmutationresponse|MaxMutationResponse]]` - The result of the delete operation.
+`[[API-Types|MaxMutationResponse]]` - The result of the delete operation.
 
-##### `create_metric(self, dataset_id: UUID, metric: Metric) -> [[API-Types#maxmutationresponse|MaxMutationResponse]]`
+##### `create_metric(self, dataset_id: UUID, metric: Metric) -> [[API-Types|MaxMutationResponse]]`
 
 
 Create a new metric within a dataset.
@@ -685,9 +685,9 @@ Create a new metric within a dataset.
 
 **Returns:**
 
-`[[API-Types#maxmutationresponse|MaxMutationResponse]]` - The result of the create operation.
+`[[API-Types|MaxMutationResponse]]` - The result of the create operation.
 
-##### `update_metric(self, dataset_id: UUID, metric: Metric) -> [[API-Types#maxmutationresponse|MaxMutationResponse]]`
+##### `update_metric(self, dataset_id: UUID, metric: Metric) -> [[API-Types|MaxMutationResponse]]`
 
 
 Update an existing metric within a dataset.
@@ -701,9 +701,9 @@ Update an existing metric within a dataset.
 
 **Returns:**
 
-`[[API-Types#maxmutationresponse|MaxMutationResponse]]` - The result of the update operation.
+`[[API-Types|MaxMutationResponse]]` - The result of the update operation.
 
-##### `delete_metric(self, dataset_id: UUID, metric_id: str) -> [[API-Types#maxmutationresponse|MaxMutationResponse]]`
+##### `delete_metric(self, dataset_id: UUID, metric_id: str) -> [[API-Types|MaxMutationResponse]]`
 
 
 Delete a metric from a dataset.
@@ -717,7 +717,7 @@ Delete a metric from a dataset.
 
 **Returns:**
 
-`[[API-Types#maxmutationresponse|MaxMutationResponse]]` - The result of the delete operation.
+`[[API-Types|MaxMutationResponse]]` - The result of the delete operation.
 
 ##### `create_database_kshot(self, database_kshot: dict[(str, Any)]) -> CreateDatabaseKShotResponse`
 
@@ -734,7 +734,7 @@ Create a new database k-shot.
 
 `CreateDatabaseKShotResponse` - The result of the GraphQL mutation containing the created k-shot details.
 
-##### `delete_database_kshot(self, database_kshot_id: UUID) -> [[API-Types#maxmutationresponse|MaxMutationResponse]]`
+##### `delete_database_kshot(self, database_kshot_id: UUID) -> [[API-Types|MaxMutationResponse]]`
 
 
 Delete a database k-shot.
@@ -747,9 +747,9 @@ Delete a database k-shot.
 
 **Returns:**
 
-`[[API-Types#maxmutationresponse|MaxMutationResponse]]` - The result of the delete operation.
+`[[API-Types|MaxMutationResponse]]` - The result of the delete operation.
 
-##### `update_database_kshot_question(self, database_kshot_id: UUID, question: str) -> [[API-Types#maxmutationresponse|MaxMutationResponse]]`
+##### `update_database_kshot_question(self, database_kshot_id: UUID, question: str) -> [[API-Types|MaxMutationResponse]]`
 
 
 Update the question of a database k-shot.
@@ -763,9 +763,9 @@ Update the question of a database k-shot.
 
 **Returns:**
 
-`[[API-Types#maxmutationresponse|MaxMutationResponse]]` - The result of the GraphQL mutation containing the updated question.
+`[[API-Types|MaxMutationResponse]]` - The result of the GraphQL mutation containing the updated question.
 
-##### `update_database_kshot_rendered_prompt(self, database_kshot_id: UUID, rendered_prompt: Optional[str]) -> [[API-Types#maxmutationresponse|MaxMutationResponse]]`
+##### `update_database_kshot_rendered_prompt(self, database_kshot_id: UUID, rendered_prompt: Optional[str]) -> [[API-Types|MaxMutationResponse]]`
 
 
 Update the rendered prompt of a database k-shot.
@@ -779,9 +779,9 @@ Update the rendered prompt of a database k-shot.
 
 **Returns:**
 
-`[[API-Types#maxmutationresponse|MaxMutationResponse]]` - The result of the GraphQL mutation containing the updated rendered prompt.
+`[[API-Types|MaxMutationResponse]]` - The result of the GraphQL mutation containing the updated rendered prompt.
 
-##### `update_database_kshot_explanation(self, database_kshot_id: UUID, explanation: Optional[str]) -> [[API-Types#maxmutationresponse|MaxMutationResponse]]`
+##### `update_database_kshot_explanation(self, database_kshot_id: UUID, explanation: Optional[str]) -> [[API-Types|MaxMutationResponse]]`
 
 
 Update the explanation of a database k-shot.
@@ -795,9 +795,9 @@ Update the explanation of a database k-shot.
 
 **Returns:**
 
-`[[API-Types#maxmutationresponse|MaxMutationResponse]]` - The result of the GraphQL mutation containing the updated explanation.
+`[[API-Types|MaxMutationResponse]]` - The result of the GraphQL mutation containing the updated explanation.
 
-##### `update_database_kshot_sql(self, database_kshot_id: UUID, sql: Optional[str]) -> [[API-Types#maxmutationresponse|MaxMutationResponse]]`
+##### `update_database_kshot_sql(self, database_kshot_id: UUID, sql: Optional[str]) -> [[API-Types|MaxMutationResponse]]`
 
 
 Update the SQL of a database k-shot.
@@ -811,9 +811,9 @@ Update the SQL of a database k-shot.
 
 **Returns:**
 
-`[[API-Types#maxmutationresponse|MaxMutationResponse]]` - The result of the GraphQL mutation containing the updated SQL.
+`[[API-Types|MaxMutationResponse]]` - The result of the GraphQL mutation containing the updated SQL.
 
-##### `update_database_kshot_title(self, database_kshot_id: UUID, title: Optional[str]) -> [[API-Types#maxmutationresponse|MaxMutationResponse]]`
+##### `update_database_kshot_title(self, database_kshot_id: UUID, title: Optional[str]) -> [[API-Types|MaxMutationResponse]]`
 
 
 Update the title of a database k-shot.
@@ -827,9 +827,9 @@ Update the title of a database k-shot.
 
 **Returns:**
 
-`[[API-Types#maxmutationresponse|MaxMutationResponse]]` - The result of the GraphQL mutation containing the updated title.
+`[[API-Types|MaxMutationResponse]]` - The result of the GraphQL mutation containing the updated title.
 
-##### `update_database_kshot_visualization(self, database_kshot_id: UUID, visualization: Optional[Dict]) -> [[API-Types#maxmutationresponse|MaxMutationResponse]]`
+##### `update_database_kshot_visualization(self, database_kshot_id: UUID, visualization: Optional[Dict]) -> [[API-Types|MaxMutationResponse]]`
 
 
 Update the visualization of a database k-shot.
@@ -843,7 +843,7 @@ Update the visualization of a database k-shot.
 
 **Returns:**
 
-`[[API-Types#maxmutationresponse|MaxMutationResponse]]` - The result of the GraphQL mutation containing the updated visualization.
+`[[API-Types|MaxMutationResponse]]` - The result of the GraphQL mutation containing the updated visualization.
 
 ##### `get_dataset_kshots(self, dataset_id: UUID, search_input: Optional[DatasetKShotSearchInput], paging: Optional[PagingInput]) -> PagedDatasetKShots`
 
@@ -898,7 +898,7 @@ Create a new dataset k-shot.
 
 `CreateDatasetKShotResponse` - The result of the GraphQL mutation containing the created k-shot details.
 
-##### `delete_dataset_kshot(self, dataset_kshot_id: UUID) -> [[API-Types#maxmutationresponse|MaxMutationResponse]]`
+##### `delete_dataset_kshot(self, dataset_kshot_id: UUID) -> [[API-Types|MaxMutationResponse]]`
 
 
 Delete a dataset k-shot.
@@ -911,9 +911,9 @@ Delete a dataset k-shot.
 
 **Returns:**
 
-`[[API-Types#maxmutationresponse|MaxMutationResponse]]` - The result of the GraphQL mutation containing the deletion details.
+`[[API-Types|MaxMutationResponse]]` - The result of the GraphQL mutation containing the deletion details.
 
-##### `update_dataset_kshot_question(self, dataset_kshot_id: UUID, question: str) -> [[API-Types#maxmutationresponse|MaxMutationResponse]]`
+##### `update_dataset_kshot_question(self, dataset_kshot_id: UUID, question: str) -> [[API-Types|MaxMutationResponse]]`
 
 
 Update the question of a dataset k-shot.
@@ -927,9 +927,9 @@ Update the question of a dataset k-shot.
 
 **Returns:**
 
-`[[API-Types#maxmutationresponse|MaxMutationResponse]]` - The result of the GraphQL mutation containing the updated question.
+`[[API-Types|MaxMutationResponse]]` - The result of the GraphQL mutation containing the updated question.
 
-##### `update_dataset_kshot_rendered_prompt(self, dataset_kshot_id: UUID, rendered_prompt: Optional[str]) -> [[API-Types#maxmutationresponse|MaxMutationResponse]]`
+##### `update_dataset_kshot_rendered_prompt(self, dataset_kshot_id: UUID, rendered_prompt: Optional[str]) -> [[API-Types|MaxMutationResponse]]`
 
 
 Update the rendered prompt of a dataset k-shot.
@@ -943,9 +943,9 @@ Update the rendered prompt of a dataset k-shot.
 
 **Returns:**
 
-`[[API-Types#maxmutationresponse|MaxMutationResponse]]` - The result of the GraphQL mutation containing the updated rendered prompt.
+`[[API-Types|MaxMutationResponse]]` - The result of the GraphQL mutation containing the updated rendered prompt.
 
-##### `update_dataset_kshot_explanation(self, dataset_kshot_id: UUID, explanation: Optional[str]) -> [[API-Types#maxmutationresponse|MaxMutationResponse]]`
+##### `update_dataset_kshot_explanation(self, dataset_kshot_id: UUID, explanation: Optional[str]) -> [[API-Types|MaxMutationResponse]]`
 
 
 Update the explanation of a dataset k-shot.
@@ -959,9 +959,9 @@ Update the explanation of a dataset k-shot.
 
 **Returns:**
 
-`[[API-Types#maxmutationresponse|MaxMutationResponse]]` - The result of the GraphQL mutation containing the updated explanation.
+`[[API-Types|MaxMutationResponse]]` - The result of the GraphQL mutation containing the updated explanation.
 
-##### `update_dataset_kshot_sql(self, dataset_kshot_id: UUID, sql: Optional[str]) -> [[API-Types#maxmutationresponse|MaxMutationResponse]]`
+##### `update_dataset_kshot_sql(self, dataset_kshot_id: UUID, sql: Optional[str]) -> [[API-Types|MaxMutationResponse]]`
 
 
 Update the SQL of a dataset k-shot.
@@ -975,9 +975,9 @@ Update the SQL of a dataset k-shot.
 
 **Returns:**
 
-`[[API-Types#maxmutationresponse|MaxMutationResponse]]` - The result of the GraphQL mutation containing the updated SQL.
+`[[API-Types|MaxMutationResponse]]` - The result of the GraphQL mutation containing the updated SQL.
 
-##### `update_dataset_kshot_title(self, dataset_kshot_id: UUID, title: Optional[str]) -> [[API-Types#maxmutationresponse|MaxMutationResponse]]`
+##### `update_dataset_kshot_title(self, dataset_kshot_id: UUID, title: Optional[str]) -> [[API-Types|MaxMutationResponse]]`
 
 
 Update the title of a dataset k-shot.
@@ -991,9 +991,9 @@ Update the title of a dataset k-shot.
 
 **Returns:**
 
-`[[API-Types#maxmutationresponse|MaxMutationResponse]]` - The result of the GraphQL mutation containing the updated title.
+`[[API-Types|MaxMutationResponse]]` - The result of the GraphQL mutation containing the updated title.
 
-##### `update_dataset_kshot_visualization(self, dataset_kshot_id: UUID, visualization: Optional[Dict]) -> [[API-Types#maxmutationresponse|MaxMutationResponse]]`
+##### `update_dataset_kshot_visualization(self, dataset_kshot_id: UUID, visualization: Optional[Dict]) -> [[API-Types|MaxMutationResponse]]`
 
 
 Update the visualization of a dataset k-shot.
@@ -1007,7 +1007,7 @@ Update the visualization of a dataset k-shot.
 
 **Returns:**
 
-`[[API-Types#maxmutationresponse|MaxMutationResponse]]` - The result of the GraphQL mutation containing the updated visualization.
+`[[API-Types|MaxMutationResponse]]` - The result of the GraphQL mutation containing the updated visualization.
 
 ## Functions
 
