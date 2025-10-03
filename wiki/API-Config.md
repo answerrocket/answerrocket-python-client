@@ -8,7 +8,7 @@ Helper for accessing config, whether local or fetched from the configured server
 
 #### Methods
 
-##### `__init__(self, config: [[API-Types|ClientConfig]], gql_client: GraphQlClient) -> None`
+##### `__init__(self, config: [ClientConfig](API-Types), gql_client: GraphQlClient) -> None`
 
 
 Initialize the Config helper.
@@ -16,7 +16,7 @@ Initialize the Config helper.
 
 **Parameters:**
 
-- **config** (`[[API-Types|ClientConfig]]`): The client configuration containing copilot and connection details.
+- **config** (`[ClientConfig](API-Types)`): The client configuration containing copilot and connection details.
 - **gql_client** (`GraphQlClient`): The GraphQL client for making server requests.
 
 ##### `get_artifact(self, artifact_path: str) -> str`
@@ -103,7 +103,7 @@ Create a new copilot question.
 
 `MaxCreateCopilotQuestionResponse | None` - The response containing the created question, or None if an error occurs.
 
-##### `update_copilot_question(self, copilot_question_id: UUID, nl: str, skill_id: UUID, hint: str, parameters) -> [[API-Types|MaxMutationResponse]]`
+##### `update_copilot_question(self, copilot_question_id: UUID, nl: str, skill_id: UUID, hint: str, parameters) -> [MaxMutationResponse](API-Types)`
 
 
 Update an existing copilot question.
@@ -120,9 +120,9 @@ Update an existing copilot question.
 
 **Returns:**
 
-`[[API-Types|MaxMutationResponse]] | None` - The mutation response, or None if an error occurs.
+`[MaxMutationResponse](API-Types) | None` - The mutation response, or None if an error occurs.
 
-##### `delete_copilot_chat_question(self, copilot_question_id: UUID) -> [[API-Types|MaxMutationResponse]]`
+##### `delete_copilot_chat_question(self, copilot_question_id: UUID) -> [MaxMutationResponse](API-Types)`
 
 
 Delete a copilot question.
@@ -135,7 +135,7 @@ Delete a copilot question.
 
 **Returns:**
 
-`[[API-Types|MaxMutationResponse]] | None` - The mutation response, or None if an error occurs.
+`[MaxMutationResponse](API-Types) | None` - The mutation response, or None if an error occurs.
 
 ##### `get_current_user(self) -> MaxUser`
 
@@ -164,7 +164,7 @@ Retrieve an LLM prompt with template variables and k-shot matching.
 
 `MaxLLmPrompt | None` - The LLM prompt with substitutions applied, or None if an error occurs.
 
-##### `clear_copilot_cache(self, copilot_id: UUID) -> [[API-Types|MaxMutationResponse]]`
+##### `clear_copilot_cache(self, copilot_id: UUID) -> [MaxMutationResponse](API-Types)`
 
 
 Clear the cache for a copilot.
@@ -177,6 +177,6 @@ Clear the cache for a copilot.
 
 **Returns:**
 
-`[[API-Types|MaxMutationResponse]]` - The response from the clear cache operation, or None if an error occurs.
+`[MaxMutationResponse](API-Types)` - The response from the clear cache operation, or None if an error occurs.
 
 ## Functions
