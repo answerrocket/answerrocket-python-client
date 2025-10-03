@@ -18,9 +18,9 @@ Initialize the AnswerRocket client.
 
 **Parameters:**
 
-- **url** (`str`, optional): The URL of your AnswerRocket instance. Can also be set via AR_URL environment variable.
-- **token** (`str`, optional): A valid SDK token. Can also be set via AR_TOKEN environment variable.
-- **tenant** (`str`, optional): The tenant identifier for multi-tenant deployments.
+- **url** (str, optional): The URL of your AnswerRocket instance. Can also be set via AR_URL environment variable.
+- **token** (str, optional): A valid SDK token. Can also be set via AR_TOKEN environment variable.
+- **tenant** (str, optional): The tenant identifier for multi-tenant deployments.
 
 ##### `can_connect(self) -> bool`
 
@@ -30,4 +30,4 @@ Check if the client can connect to and authenticate with the server.
 
 **Returns:**
 
-`bool` - True if connection and authentication succeed, False otherwise.
+bool - True if connection and authentication succeed, False otherwise.

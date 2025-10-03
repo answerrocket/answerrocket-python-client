@@ -79,7 +79,7 @@ def format_numpy_params(section_text: str, is_returns: bool = False) -> str:
                 # Link type references in the type and description
                 linked_type = link_type_references(type_clean)
                 linked_desc = link_type_references(desc)
-                result.append(f"- **{current_param}** (`{linked_type}`{optional_note}): {linked_desc}")
+                result.append(f"- **{current_param}** ({linked_type}{optional_note}): {linked_desc}")
 
             # Parse new parameter
             param_part, type_part = stripped.split(' : ', 1)
@@ -105,18 +105,18 @@ def format_numpy_params(section_text: str, is_returns: bool = False) -> str:
     if current_param:
         desc = ' '.join(current_desc_lines).strip()
         if is_returns:
-            # Format for returns: `type` - description
+            # Format for returns: type - description (no backticks around linked types)
             # Link type references in the type and description
             linked_type = link_type_references(current_type)
             linked_desc = link_type_references(desc)
-            result.append(f"`{linked_type}` - {linked_desc}" if linked_desc else f"`{linked_type}`")
+            result.append(f"{linked_type} - {linked_desc}" if linked_desc else f"{linked_type}")
         else:
             optional_note = ', optional' if 'optional' in current_type.lower() else ''
             type_clean = current_type.replace(', optional', '').replace(' optional', '').strip()
             # Link type references in the type and description
             linked_type = link_type_references(type_clean)
             linked_desc = link_type_references(desc)
-            result.append(f"- **{current_param}** (`{linked_type}`{optional_note}): {linked_desc}")
+            result.append(f"- **{current_param}** ({linked_type}{optional_note}): {linked_desc}")
 
     return '\n'.join(result) if result else section_text
 

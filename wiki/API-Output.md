@@ -9,7 +9,7 @@ Describes the loading state of an object in chat.
 
 **Attributes:**
 
-- **message** (`str`): User-friendly message to describe the current loading step.
+- **message** (str): User-friendly message to describe the current loading step.
 
 ### `ContentBlock`
 
@@ -20,12 +20,12 @@ Blocks contain metadata as well as their final XML payload.
 
 **Attributes:**
 
-- **id** (`str`): Unique ID for the block.
-- **title** (`str | None`): The user-friendly name of the block that will be displayed on the frontend.
-- **loading_info** (`[ChatLoadingInfo](API-Types) | None`): Details around the block's current loading state.
-- **payload** (`str | None`): XML payload for the block to display, represented as a string.
-- **is_collapsible** (`bool | None`): Whether or not the block can be collapsed by the user.
-- **layout_json** (`str | None`): An alternative to payload, this is a JSON representation of the block's visual layout.
+- **id** (str): Unique ID for the block.
+- **title** (str | None): The user-friendly name of the block that will be displayed on the frontend.
+- **loading_info** ([ChatLoadingInfo](API-Types) | None): Details around the block's current loading state.
+- **payload** (str | None): XML payload for the block to display, represented as a string.
+- **is_collapsible** (bool | None): Whether or not the block can be collapsed by the user.
+- **layout_json** (str | None): An alternative to payload, this is a JSON representation of the block's visual layout.
 
 ### `ChatReportOutput`
 
@@ -34,12 +34,12 @@ Contains all the possible information a report can return to the chat pipeline.
 
 **Attributes:**
 
-- **payload** (`str | None`): The complete XML string for the entire report.
-- **content_blocks** (`List[[ContentBlock](API-Types)]`): List of content blocks to display.
-- **suggestions** (`List[str]`): List of suggested follow-up questions.
-- **interpretation_notes** (`List[str]`): List of notes about how the query was interpreted.
-- **final_message** (`str`): Final message to display to the user.
-- **info** (`Any | None`): Any additional information the skill wants to include, typically for debugging.
+- **payload** (str | None): The complete XML string for the entire report.
+- **content_blocks** (List[[ContentBlock](API-Types)]): List of content blocks to display.
+- **suggestions** (List[str]): List of suggested follow-up questions.
+- **interpretation_notes** (List[str]): List of notes about how the query was interpreted.
+- **final_message** (str): Final message to display to the user.
+- **info** (Any | None): Any additional information the skill wants to include, typically for debugging.
 
 ### `OutputBuilder`
 
@@ -57,8 +57,8 @@ Initialize the output builder.
 
 **Parameters:**
 
-- **config** (`[ClientConfig](API-Types)`): The client configuration.
-- **gql_client** (`GraphQlClient`): The GraphQL client for API communication.
+- **config** ([ClientConfig](API-Types)): The client configuration.
+- **gql_client** (GraphQlClient): The GraphQL client for API communication.
 
 ##### `add_block(self, title: str, loading_status: [ChatLoadingInfo](API-Types), xml: str, is_collapsible: bool, layout_json: str) -> str`
 
@@ -70,16 +70,16 @@ The newly added block becomes the default block for future updates until a new b
 
 **Parameters:**
 
-- **title** (`str`, optional): The user-friendly name of the block displayed on the frontend.
-- **loading_status** (`[ChatLoadingInfo](API-Types)`, optional): The loading state of the block.
-- **xml** (`str`, optional): XML payload for the block to display.
-- **is_collapsible** (`bool`, optional): Whether the block can be collapsed by the user. Defaults to True.
-- **layout_json** (`str`, optional): Alternative to xml, JSON representation of the block's visual layout.
+- **title** (str, optional): The user-friendly name of the block displayed on the frontend.
+- **loading_status** ([ChatLoadingInfo](API-Types), optional): The loading state of the block.
+- **xml** (str, optional): XML payload for the block to display.
+- **is_collapsible** (bool, optional): Whether the block can be collapsed by the user. Defaults to True.
+- **layout_json** (str, optional): Alternative to xml, JSON representation of the block's visual layout.
 
 
 **Returns:**
 
-`str` - The unique ID of the newly created block.
+str - The unique ID of the newly created block.
 
 ##### `remove_block(self, block_id: UUID) -> bool`
 
@@ -91,12 +91,12 @@ If no block_id is provided, the last block to be added will be removed.
 
 **Parameters:**
 
-- **block_id** (`UUID`, optional): The ID of the block to remove. If None, removes the last added block.
+- **block_id** (UUID, optional): The ID of the block to remove. If None, removes the last added block.
 
 
 **Returns:**
 
-`bool` - True if a block was removed, False otherwise.
+bool - True if a block was removed, False otherwise.
 
 ##### `update_block(self, block_id: UUID, title: str, loading_info: [ChatLoadingInfo](API-Types), xml: str, is_collapsible: bool, layout_json: str) -> [ContentBlock](API-Types)`
 
@@ -108,17 +108,17 @@ If no block_id is provided, the last block to be added will be updated.
 
 **Parameters:**
 
-- **block_id** (`UUID`, optional): The ID of the block to update. If None, updates the last added block.
-- **title** (`str`, optional): The user-friendly name of the block displayed on the frontend.
-- **loading_info** (`[ChatLoadingInfo](API-Types)`, optional): The loading state of the block.
-- **xml** (`str`, optional): XML payload for the block to display.
-- **is_collapsible** (`bool`, optional): Whether the block can be collapsed by the user.
-- **layout_json** (`str`, optional): Alternative to xml, JSON representation of the block's visual layout.
+- **block_id** (UUID, optional): The ID of the block to update. If None, updates the last added block.
+- **title** (str, optional): The user-friendly name of the block displayed on the frontend.
+- **loading_info** ([ChatLoadingInfo](API-Types), optional): The loading state of the block.
+- **xml** (str, optional): XML payload for the block to display.
+- **is_collapsible** (bool, optional): Whether the block can be collapsed by the user.
+- **layout_json** (str, optional): Alternative to xml, JSON representation of the block's visual layout.
 
 
 **Returns:**
 
-`[ContentBlock](API-Types)` - The updated content block.
+[ContentBlock](API-Types) - The updated content block.
 
 ##### `end_block(self, block_id: str) -> [ContentBlock](API-Types)`
 
@@ -130,12 +130,12 @@ If no block_id is provided, the last block to be added will be marked as complet
 
 **Parameters:**
 
-- **block_id** (`str`, optional): The ID of the block to mark as complete. If None, marks the last added block.
+- **block_id** (str, optional): The ID of the block to mark as complete. If None, marks the last added block.
 
 
 **Returns:**
 
-`[ContentBlock](API-Types)` - The updated content block.
+[ContentBlock](API-Types) - The updated content block.
 
 ##### `merge_output(self, changes: [ChatReportOutput](API-Types)) -> [ChatReportOutput](API-Types)`
 
@@ -145,9 +145,9 @@ Merge the provided changes into the current report output.
 
 **Parameters:**
 
-- **changes** (`[ChatReportOutput](API-Types)`): The changes to merge into the current output.
+- **changes** ([ChatReportOutput](API-Types)): The changes to merge into the current output.
 
 
 **Returns:**
 
-`[ChatReportOutput](API-Types)` - The updated report output.
+[ChatReportOutput](API-Types) - The updated report output.
