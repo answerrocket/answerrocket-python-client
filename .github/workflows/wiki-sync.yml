@@ -51,6 +51,9 @@ jobs:
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
 
+          # Check current branch
+          echo "Current branch: $(git branch --show-current)"
+
           # Add all changes
           git add .
 
@@ -60,9 +63,17 @@ jobs:
             exit 0
           fi
 
+          # Show what will be committed
+          echo "Files to be committed:"
+          git diff --staged --name-status
+
           # Commit and push
           git commit -m "Auto-update documentation from commit ${{ github.sha }}"
-          git push origin master
+
+          # Push to the correct branch (could be master or main)
+          BRANCH=$(git branch --show-current)
+          echo "Pushing to branch: $BRANCH"
+          git push origin "$BRANCH"
 
       - name: Summary
         run: |
