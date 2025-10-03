@@ -29,7 +29,9 @@ jobs:
       - name: Install dependencies
         run: |
           python -m pip install --upgrade pip
-          pip install -e .
+          # Note: We don't need to install the package itself since documentation
+          # generation uses AST parsing and doesn't import the modules
+          echo "Skipping package installation - using AST-based documentation generation"
 
       - name: Generate documentation
         run: |
