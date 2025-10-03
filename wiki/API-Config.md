@@ -103,7 +103,7 @@ Create a new copilot question.
 
 MaxCreateCopilotQuestionResponse | None - The response containing the created question, or None if an error occurs.
 
-##### `update_copilot_question(self, copilot_question_id: UUID, nl: str, skill_id: UUID, hint: str, parameters) -> [MaxMutationResponse](API-Types#maxmutationresponse)`
+##### `update_copilot_question(self, copilot_question_id: UUID, nl: str, skill_id: UUID, hint: str, parameters) -> MaxMutationResponse`
 
 
 Update an existing copilot question.
@@ -120,9 +120,9 @@ Update an existing copilot question.
 
 **Returns:**
 
-[MaxMutationResponse](API-Types#maxmutationresponse) | None - The mutation response, or None if an error occurs.
+MaxMutationResponse | None - The mutation response, or None if an error occurs.
 
-##### `delete_copilot_chat_question(self, copilot_question_id: UUID) -> [MaxMutationResponse](API-Types#maxmutationresponse)`
+##### `delete_copilot_chat_question(self, copilot_question_id: UUID) -> MaxMutationResponse`
 
 
 Delete a copilot question.
@@ -135,7 +135,7 @@ Delete a copilot question.
 
 **Returns:**
 
-[MaxMutationResponse](API-Types#maxmutationresponse) | None - The mutation response, or None if an error occurs.
+MaxMutationResponse | None - The mutation response, or None if an error occurs.
 
 ##### `get_current_user(self) -> MaxUser`
 
@@ -164,7 +164,7 @@ Retrieve an LLM prompt with template variables and k-shot matching.
 
 MaxLLmPrompt | None - The LLM prompt with substitutions applied, or None if an error occurs.
 
-##### `clear_copilot_cache(self, copilot_id: UUID) -> [MaxMutationResponse](API-Types#maxmutationresponse)`
+##### `clear_copilot_cache(self, copilot_id: UUID) -> MaxMutationResponse`
 
 
 Clear the cache for a copilot.
@@ -177,6 +177,6 @@ Clear the cache for a copilot.
 
 **Returns:**
 
-[MaxMutationResponse](API-Types#maxmutationresponse) - The response from the clear cache operation, or None if an error occurs.
+MaxMutationResponse - The response from the clear cache operation, or None if an error occurs.
 
 ## Functions

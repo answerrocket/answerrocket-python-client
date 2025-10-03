@@ -13,14 +13,15 @@ from typing import List, Tuple, get_type_hints, Any, Set
 import re
 
 # SDK types that should be linked to API-Types.md
+# Only includes types that are actually documented in API-Types.md
 SDK_TYPES = {
     'MaxResult', 'ExecuteSqlQueryResult', 'DomainObjectResult', 'RunMaxSqlGenResult',
     'RunSqlAiResult', 'RunSkillResult', 'AsyncSkillRunResult', 'ChatLoadingInfo',
     'ContentBlock', 'ChatReportOutput', 'LlmChatMessage', 'LlmFunctionProperty',
     'LlmFunctionParameters', 'LlmFunction', 'ClientConfig', 'FeedbackType',
-    'QuestionType', 'ThreadType', 'MaxChatEntry', 'MaxChatThread', 'MaxChatUser',
-    'SharedThread', 'ChatArtifact', 'PagedChatArtifacts', 'EvaluateChatQuestionResponse',
-    'MaxMutationResponse'
+    'QuestionType', 'ThreadType'
+    # Note: GraphQL schema types (MaxChatEntry, MaxChatThread, etc.) are not included
+    # as they are auto-generated and not documented in API-Types.md
 }
 
 
