@@ -1,0 +1,10 @@
+query getDynamicLayout($id: UUID!) {
+  getDynamicLayout(id: $id) {
+    id
+    name
+    layoutJson
+    inputVariables {
+      name
+    }
+  }
+}
