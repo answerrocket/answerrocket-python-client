@@ -1,6 +1,12 @@
 name: main build and publish workflow
 
-on: push
+on:
+  push:
+    paths:
+      - 'answer_rocket/**/*.py'
+      - 'test/**/*.py'
+      - 'pyproject.toml'
+      - '.github/workflows/publish-to-pypi.yml'
 
 jobs:
   build:
