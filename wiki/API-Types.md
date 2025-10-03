@@ -109,7 +109,7 @@ Result object for SQL AI generation operations.
 - **explanation** (`str | None`): An explanation of the generated SQL query.
 - **data** (`deprecated`): Deprecated field. Use df instead for DataFrame results.
 - **timing_info** (`Dict[str, any] | None`): Performance timing information for the operation.
-- **prior_runs** (`List[[RunSqlAiResult](API-Types.md#runsqlairesult)]`): List of prior runs for comparison or iteration tracking.
+- **prior_runs** (`List[[[API-Types#runsqlairesult|RunSqlAiResult]]]`): List of prior runs for comparison or iteration tracking.
 
 ### `RunSkillResult`
 
@@ -121,7 +121,7 @@ Result object for synchronous skill execution.
 
 **Attributes:**
 
-- **data** (`[ChatReportOutput](API-Types.md#chatreportoutput) | None`): The output data from the skill execution.
+- **data** (`[[API-Types#chatreportoutput|ChatReportOutput]] | None`): The output data from the skill execution.
 
 ### `AsyncSkillRunResult`
 
@@ -161,7 +161,7 @@ Blocks contain metadata as well as their final XML payload.
 
 - **id** (`str`): Unique ID for the block.
 - **title** (`str | None`): The user-friendly name of the block that will be displayed on the frontend.
-- **loading_info** (`[ChatLoadingInfo](API-Types.md#chatloadinginfo) | None`): Details around the block's current loading state.
+- **loading_info** (`[[API-Types#chatloadinginfo|ChatLoadingInfo]] | None`): Details around the block's current loading state.
 - **payload** (`str | None`): XML payload for the block to display, represented as a string.
 - **is_collapsible** (`bool | None`): Whether or not the block can be collapsed by the user.
 - **layout_json** (`str | None`): An alternative to payload, this is a JSON representation of the block's visual layout.
@@ -177,7 +177,7 @@ Contains all the possible information a report can return to the chat pipeline.
 **Attributes:**
 
 - **payload** (`str | None`): The complete XML string for the entire report.
-- **content_blocks** (`List[[ContentBlock](API-Types.md#contentblock)]`): List of content blocks to display.
+- **content_blocks** (`List[[[API-Types#contentblock|ContentBlock]]]`): List of content blocks to display.
 - **suggestions** (`List[str]`): List of suggested follow-up questions.
 - **interpretation_notes** (`List[str]`): List of notes about how the query was interpreted.
 - **final_message** (`str`): Final message to display to the user.
@@ -220,7 +220,7 @@ Parameters definition for an LLM function.
 **Attributes:**
 
 - **type** (`str`): The type of parameters (typically 'object').
-- **properties** (`dict[str, [LlmFunctionProperty](API-Types.md#llmfunctionproperty)]`): Dictionary of property definitions.
+- **properties** (`dict[str, [[API-Types#llmfunctionproperty|LlmFunctionProperty]]]`): Dictionary of property definitions.
 - **required** (`list[str]`): List of required property names.
 
 ### `LlmFunction`
@@ -235,7 +235,7 @@ Function definition for LLM tool calling.
 
 - **name** (`str`): The name of the function.
 - **description** (`str`): Description of what the function does.
-- **parameters** (`[LlmFunctionParameters](API-Types.md#llmfunctionparameters)`): Parameter definitions for the function.
+- **parameters** (`[[API-Types#llmfunctionparameters|LlmFunctionParameters]]`): Parameter definitions for the function.
 
 ### `ClientConfig`
 
