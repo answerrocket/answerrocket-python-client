@@ -7,10 +7,14 @@ from answer_rocket.graphql.sdk_operations import Operations
 
 class LlmChatMessage(TypedDict):
     """
-    A chat message for passing to an LLM API
-    Attributes:
-        role: the role of the participant in this chat
-        content: the chat message
+    A chat message for passing to an LLM API.
+
+    Attributes
+    ----------
+    role : str
+        The role of the participant in this chat.
+    content : str
+        The chat message.
     """
     role: str
     content: str

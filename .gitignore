@@ -3,7 +3,9 @@ schema.json
 requirements.txt
 .direnv
 
+.DS_Store
 .DS_store
+wiki/.DS_Store
 
 # below is from the github stock python gitignore
 

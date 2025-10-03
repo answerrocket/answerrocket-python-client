@@ -5,18 +5,34 @@ from dataclasses import dataclass
 @dataclass(frozen=True)
 class ClientConfig:
     """
-    Class that holds all client config.
-    Attributes:
-        url: environment url
-        token: an auth token
-        tenant: the tenant id, provided automatically
-        is_live_run: set when the client is used in a skill run (as opposed to someone running it locally)
-        answer_id: the skill run answer_id that any answer-updating calls will use
-        entry_answer_id: the answer_id for the chat entry being created
-        user_id: provided automatically or implicitly via the auth token
-        copilot_id: the copilot the skill is running within
-        copilot_skill_id: the id of the skill in the environment
-        resource_base_path: the base path to use for resources
+    Configuration object for AnswerRocket client initialization.
+
+    Attributes
+    ----------
+    url : str
+        Environment URL.
+    token : str | None
+        Authentication token.
+    tenant : str | None
+        Tenant ID, provided automatically.
+    is_live_run : bool
+        Set when the client is used in a skill run (as opposed to running locally).
+    answer_id : str | None
+        The skill run answer_id that any answer-updating calls will use.
+    entry_answer_id : str | None
+        The answer_id for the chat entry being created.
+    user_id : str | None
+        Provided automatically or implicitly via the auth token.
+    copilot_id : str | None
+        The copilot the skill is running within.
+    copilot_skill_id : str | None
+        The id of the skill in the environment.
+    resource_base_path : str | None
+        The base path to use for resources.
+    thread_id : str | None
+        The thread ID for chat interactions.
+    chat_entry_id : str | None
+        The chat entry ID for the current interaction.
     """
     url: str
     token: str | None

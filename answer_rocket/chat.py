@@ -10,7 +10,8 @@ from answer_rocket.client_config import ClientConfig
 from answer_rocket.graphql.client import GraphQlClient
 from answer_rocket.graphql.schema import (UUID, Int, DateTime, ChatDryRunType, MaxChatEntry, MaxChatThread,
                                           SharedThread, MaxChatUser, ChatArtifact, MaxMutationResponse,
-                                          ChatArtifactSearchInput, PagingInput, PagedChatArtifacts)
+                                          ChatArtifactSearchInput, PagingInput, PagedChatArtifacts,
+                                          EvaluateChatQuestionResponse)
 from answer_rocket.graphql.sdk_operations import Operations
 
 logger = logging.getLogger(__name__)
@@ -35,18 +36,39 @@ class Chat:
         """
         Calls the Max chat pipeline to answer a natural language question and receive analysis and insights
         in response.
-        :param copilot_id: the ID of the copilot to run the question against
-        :param question: The natural language question to ask the engine.
-        :param thread_id: (optional) ID of the thread/conversation to run the question on. The question and answer will
-         be added to the bottom of the thread.
-        :param skip_report_cache: Should the report cache be skipped for this question?
-        :param dry_run_type: If provided, run a dry run at the specified level: 'SKIP_SKILL_EXEC', 'SKIP_SKILL_NLG'
-        :param model_overrides: If provided, a dictionary of model types to model names to override the LLM model used. Model type options are 'CHAT', 'EMBEDDINGS', 'NARRATIVE'
-        :param indicated_skills: If provided, a list of skill names that the copilot will be limited to choosing from. If only 1 skill is provided the copilot will be guaranteed to execute that skill.
-        :param history: If provided, a list of messages to be used as the conversation history for the question
-        :param question_type: If provided, the type of question being asked. This is used to categorize the question and can determine how the UI chooses to display it.
-        :param thread_type: If provided, the type of thread being created. This is used to categorize the thread and can determine how the UI chooses to display it.
-        :return: the ChatEntry response object associate with the answer from the pipeline
+
+        Parameters
+        ----------
+        copilot_id : str
+            The ID of the copilot to run the question against.
+        question : str
+            The natural language question to ask the engine.
+        thread_id : str, optional
+            ID of the thread/conversation to run the question on. The question and answer will
+            be added to the bottom of the thread.
+        skip_report_cache : bool, optional
+            Should the report cache be skipped for this question? Defaults to False.
+        dry_run_type : str, optional
+            If provided, run a dry run at the specified level: 'SKIP_SKILL_EXEC', 'SKIP_SKILL_NLG'.
+        model_overrides : dict, optional
+            A dictionary of model types to model names to override the LLM model used. Model type
+            options are 'CHAT', 'EMBEDDINGS', 'NARRATIVE'.
+        indicated_skills : list[str], optional
+            A list of skill names that the copilot will be limited to choosing from. If only 1 skill
+            is provided the copilot will be guaranteed to execute that skill.
+        history : list[dict], optional
+            A list of messages to be used as the conversation history for the question.
+        question_type : QuestionType, optional
+            The type of question being asked. This is used to categorize the question and can
+            determine how the UI chooses to display it.
+        thread_type : ThreadType, optional
+            The type of thread being created. This is used to categorize the thread and can
+            determine how the UI chooses to display it.
+
+        Returns
+        -------
+        MaxChatEntry
+            The ChatEntry response object associated with the answer from the pipeline.
         """
         override_list = []
         if model_overrides:
@@ -74,10 +96,20 @@ class Chat:
     def add_feedback(self, entry_id: str, feedback_type: FeedbackType, feedback_text: str = None) -> bool:
         """
         This adds feedback to a chat entry.
-        :param entry_id: the id of the chat entry
-        :param feedback_type: the type of feedback to add
-        :param feedback_text: the text of the feedback
-        :return: True if the feedback was added successfully, False otherwise
+
+        Parameters
+        ----------
+        entry_id : str
+            The id of the chat entry.
+        feedback_type : FeedbackType
+            The type of feedback to add.
+        feedback_text : str, optional
+            The text of the feedback.
+
+        Returns
+        -------
+        bool
+            True if the feedback was added successfully, False otherwise.
         """
 
         add_feedback_mutation_args = {
@@ -90,13 +122,23 @@ class Chat:
 
         return result.add_feedback
 
-    def get_threads(self, copilot_id: str, start_date: datetime = None, end_date: datetime = None):
+    def get_threads(self, copilot_id: str, start_date: datetime = None, end_date: datetime = None) -> list[MaxChatThread]:
         """
         Fetches all threads for a given copilot and date range.
-        :param copilot_id: the ID of the copilot to fetch threads for
-        :param start_date: the start date of the range to fetch threads for
-        :param end_date: the end date of the range to fetch threads for
-        :return: a list of ChatThread IDs
+
+        Parameters
+        ----------
+        copilot_id : str
+            The ID of the copilot to fetch threads for.
+        start_date : datetime, optional
+            The start date of the range to fetch threads for.
+        end_date : datetime, optional
+            The end date of the range to fetch threads for.
+
+        Returns
+        -------
+        list[MaxChatThread]
+            A list of ChatThread objects.
         """
 
         def format_date(input_date: datetime):
@@ -125,13 +167,23 @@ class Chat:
 
         return result.user_chat_threads
 
-    def get_entries(self, thread_id: str, offset: int = None, limit: int = None):
+    def get_entries(self, thread_id: str, offset: int = None, limit: int = None) -> list[MaxChatEntry]:
         """
         Fetches all entries for a given thread.
-        :param thread_id: the ID of the thread to fetch entries for
-        :param offset: (optional) the offset to start fetching entries from
-        :param limit: (optional) the maximum number of entries to fetch
-        :return: a list of ChatEntry objects
+
+        Parameters
+        ----------
+        thread_id : str
+            The ID of the thread to fetch entries for.
+        offset : int, optional
+            The offset to start fetching entries from.
+        limit : int, optional
+            The maximum number of entries to fetch.
+
+        Returns
+        -------
+        list[MaxChatEntry]
+            A list of ChatEntry objects.
         """
         get_entries_query_args = {
             'threadId': UUID(thread_id),
@@ -154,12 +206,21 @@ class Chat:
 
         return result.user_chat_entries
     
-    def evaluate_entry(self, entry_id: str, evals: list[str]):
+    def evaluate_entry(self, entry_id: str, evals: list[str]) -> EvaluateChatQuestionResponse:
         """
         Runs and fetches the inputted evaluations for a given entry.
-        :param entry_id: the ID of the entry to fetch evaluation for
-        :param evals: a list of strings containing the evaluations to run on the entry
-        :return: a ChatEntryEvaluation object
+
+        Parameters
+        ----------
+        entry_id : str
+            The ID of the entry to fetch evaluation for.
+        evals : list[str]
+            A list of strings containing the evaluations to run on the entry.
+
+        Returns
+        -------
+        EvaluateChatQuestionResponse
+            The evaluation response object containing evaluation results.
         """
         evaluate_entry_mutation_args = {
             'entryId': UUID(entry_id),
@@ -183,11 +244,15 @@ class Chat:
         """
         Share a chat thread by its ID.
 
-        Args:
-            original_thread_id: The ID of the original thread to share
+        Parameters
+        ----------
+        original_thread_id : str
+            The ID of the original thread to share.
 
-        Returns:
-            SharedThread: The shared thread object
+        Returns
+        -------
+        SharedThread
+            The shared thread object.
         """
         mutation_args = {
             'originalThreadId': original_thread_id
@@ -210,11 +275,15 @@ class Chat:
         """
         Retrieve a chat entry by its ID.
 
-        Args:
-            entry_id: The ID of the chat entry to retrieve
+        Parameters
+        ----------
+        entry_id : str
+            The ID of the chat entry to retrieve.
 
-        Returns:
-            MaxChatEntry: The chat entry object
+        Returns
+        -------
+        MaxChatEntry
+            The chat entry object.
         """
         get_chat_entry_args = {
             'id': UUID(entry_id),
@@ -228,11 +297,15 @@ class Chat:
         """
         Retrieve a chat thread by its ID.
 
-        Args:
-            thread_id: The ID of the chat thread to retrieve
+        Parameters
+        ----------
+        thread_id : str
+            The ID of the chat thread to retrieve.
 
-        Returns:
-            MaxChatThread: The chat thread object
+        Returns
+        -------
+        MaxChatThread
+            The chat thread object.
         """
         get_chat_thread_args = {
             'id': UUID(thread_id),
@@ -246,12 +319,17 @@ class Chat:
         """
         Create a new chat thread for the specified agent.
 
-        Args:
-            copilot_id: The ID of the agent to create the thread for
-            thread_type: The type of thread to create, defaults to CHAT. For most purposes CHAT is the only type needed.
+        Parameters
+        ----------
+        copilot_id : str
+            The ID of the agent to create the thread for.
+        thread_type : ThreadType, optional
+            The type of thread to create. Defaults to CHAT. For most purposes CHAT is the only type needed.
 
-        Returns:
-            MaxChatThread: The newly created chat thread object
+        Returns
+        -------
+        MaxChatThread
+            The newly created chat thread object.
         """
         create_chat_thread_args = {
             'copilotId': copilot_id,
@@ -266,13 +344,26 @@ class Chat:
         """
         This queues up a question for processing. Unlike ask_question, this will not wait for the processing to
         complete. It will immediately return a shell entry with an id you can use to query for the results.
-        :param question: the text of the user's question
-        :param thread_id: id of the thread the question is being sent to.
-        :param skip_cache: Set to true to force a fresh run of the question, ignoring any existing skill result caches.
-        :param model_overrides: If provided, a dictionary of model types to model names to override the LLM model used. Model type options are 'CHAT', 'EMBEDDINGS', 'NARRATIVE'
-        :param indicated_skills: If provided, a list of skill names that the copilot will be limited to choosing from. If only 1 skill is provided the copilot will be guaranteed to execute that skill.
-        :param history: If provided, a list of messages to be used as the conversation history for the question
-        :return:
+
+        Parameters
+        ----------
+        question : str
+            The text of the user's question.
+        thread_id : str
+            ID of the thread the question is being sent to.
+        skip_cache : bool, optional
+            Set to true to force a fresh run of the question, ignoring any existing skill result caches. Defaults to False.
+        model_overrides : dict, optional
+            A dictionary of model types to model names to override the LLM model used. Model type options are 'CHAT', 'EMBEDDINGS', 'NARRATIVE'.
+        indicated_skills : list[str], optional
+            A list of skill names that the copilot will be limited to choosing from. If only 1 skill is provided the copilot will be guaranteed to execute that skill.
+        history : list[dict], optional
+            A list of messages to be used as the conversation history for the question.
+
+        Returns
+        -------
+        MaxChatEntry
+            A shell entry with an id you can use to query for the results.
         """
 
         override_list = []
@@ -298,8 +389,16 @@ class Chat:
     def cancel_chat_question(self, entry_id: str) -> MaxChatEntry:
         """
         This deletes the entry from its thread and attempts to abandon the question's processing if it is still ongoing.
-        :param entry_id: the id of the chat entry
-        :return: the deleted entry
+
+        Parameters
+        ----------
+        entry_id : str
+            The id of the chat entry.
+
+        Returns
+        -------
+        MaxChatEntry
+            The deleted entry.
         """
         cancel_chat_question_args = {
             'entryId': entry_id,
@@ -314,8 +413,16 @@ class Chat:
     def get_user(self, user_id: str) -> MaxChatUser:
         """
         This fetches a user by their ID.
-        :param user_id: the id of the user
-        :return: A MaxChatUser object
+
+        Parameters
+        ----------
+        user_id : str
+            The id of the user.
+
+        Returns
+        -------
+        MaxChatUser
+            A MaxChatUser object.
         """
 
         get_user_query_args = {
@@ -336,95 +443,105 @@ class Chat:
     def get_all_chat_entries(self, offset=0, limit=100, filters=None) -> list[MaxChatEntry]:
         """
         Fetches all chat entries with optional filters.
-        :param offset: the offset to start fetching entries from. Default is 0.
-        :param limit: the maximum number of entries to fetch. Default is 100.
-        :param filters: a dictionary of filters to apply to the query. Supports all filtering available in the query browser.
 
-        Example Filter after a date:
+        Parameters
+        ----------
+        offset : int, optional
+            The offset to start fetching entries from. Defaults to 0.
+        limit : int, optional
+            The maximum number of entries to fetch. Defaults to 100.
+        filters : dict, optional
+            A dictionary of filters to apply to the query. Supports all filtering available in the query browser.
 
-        {
-            "askedDate": {
-              "dateFrom": "2024-10-25 00:00:00",
-              "dateTo": None,
-              "filterType": "date",
-              "type": "askedAfter"
-            }
-        }
+        Returns
+        -------
+        list[MaxChatEntry]
+            A list of ChatEntry objects.
+
+        Examples
+        --------
+        Example filter after a date:
+
+        >>> {
+        ...     "askedDate": {
+        ...       "dateFrom": "2024-10-25 00:00:00",
+        ...       "dateTo": None,
+        ...       "filterType": "date",
+        ...       "type": "askedAfter"
+        ...     }
+        ... }
 
         Other available fields:
 
-        {
-            "askedDate": {
-              "dateFrom": "2024-10-25 00:00:00",
-              "dateTo": "2025-10-26 00:00:00",
-              "filterType": "date",
-              "type": "askedBetween"
-            },
-            "questionType": {
-              "values": [
-                "Test Runs",
-                "User Written"
-              ],
-              "filterType": "set"
-            },
-            "username": {
-              "values": ["someusername"],
-              "filterType": "set"
-            },
-            "lastName": {
-              "values": ["somelastname"],
-              "filterType": "set"
-            },
-            "firstName": {
-              "values": ["somefirstname"],
-              "filterType": "set"
-            },
-            "copilot": {
-              "values": [
-                "My Copilot"
-              ],
-              "filterType": "set"
-            },
-            "copilotSkillName": {
-              "values": [
-                "Dimension Breakout",
-                "globals test",
-                "Document Explorer",
-                "Trend Analysis"
-              ],
-              "filterType": "set"
-            },
-            "type": {
-              "values": [
-                "Positive"
-              ],
-              "filterType": "set"
-            },
-            "feedbackReviewed": {
-              "values": [
-                "Seen"
-              ],
-              "filterType": "set"
-            },
-            "adminFeedback": {
-              "values": [
-                "Negative"
-              ],
-              "filterType": "set"
-            },
-            "status": {
-              "values": [
-                "error",
-                "completed",
-                "canceled",
-                "processing"
-              ],
-              "filterType": "set"
-            }
-          }
-
-
-        :return: a list of ChatEntry objects
+        >>> {
+        ...     "askedDate": {
+        ...       "dateFrom": "2024-10-25 00:00:00",
+        ...       "dateTo": "2025-10-26 00:00:00",
+        ...       "filterType": "date",
+        ...       "type": "askedBetween"
+        ...     },
+        ...     "questionType": {
+        ...       "values": [
+        ...         "Test Runs",
+        ...         "User Written"
+        ...       ],
+        ...       "filterType": "set"
+        ...     },
+        ...     "username": {
+        ...       "values": ["someusername"],
+        ...       "filterType": "set"
+        ...     },
+        ...     "lastName": {
+        ...       "values": ["somelastname"],
+        ...       "filterType": "set"
+        ...     },
+        ...     "firstName": {
+        ...       "values": ["somefirstname"],
+        ...       "filterType": "set"
+        ...     },
+        ...     "copilot": {
+        ...       "values": [
+        ...         "My Copilot"
+        ...       ],
+        ...       "filterType": "set"
+        ...     },
+        ...     "copilotSkillName": {
+        ...       "values": [
+        ...         "Dimension Breakout",
+        ...         "globals test",
+        ...         "Document Explorer",
+        ...         "Trend Analysis"
+        ...       ],
+        ...       "filterType": "set"
+        ...     },
+        ...     "type": {
+        ...       "values": [
+        ...         "Positive"
+        ...       ],
+        ...       "filterType": "set"
+        ...     },
+        ...     "feedbackReviewed": {
+        ...       "values": [
+        ...         "Seen"
+        ...       ],
+        ...       "filterType": "set"
+        ...     },
+        ...     "adminFeedback": {
+        ...       "values": [
+        ...         "Negative"
+        ...       ],
+        ...       "filterType": "set"
+        ...     },
+        ...     "status": {
+        ...       "values": [
+        ...         "error",
+        ...         "completed",
+        ...         "canceled",
+        ...         "processing"
+        ...       ],
+        ...       "filterType": "set"
+        ...     }
+        ... }
         """
         get_all_chat_entries_query_args = {
             'offset': offset,
@@ -441,8 +558,16 @@ class Chat:
     def get_skill_memory_payload(self, chat_entry_id: str) -> dict:
         """
         Fetches the skill memory payload for a given chat entry.
-        :param chat_entry_id: the id of the chat entry
-        :return: the skill memory payload for the given chat entry
+
+        Parameters
+        ----------
+        chat_entry_id : str
+            The id of the chat entry.
+
+        Returns
+        -------
+        dict
+            The skill memory payload for the given chat entry.
         """
         skill_memory_args = {
             'entryId': UUID(chat_entry_id),
@@ -454,9 +579,18 @@ class Chat:
     def set_skill_memory_payload(self, skill_memory_payload: dict, chat_entry_id: str = None) -> bool:
         """
         Sets the skill memory payload for a given chat entry.
-        :param chat_entry_id: the id of the chat entry
-        :param skill_memory_payload: the skill memory payload to set -- must be JSON serializable
-        :return: True if the skill memory payload was set successfully, False otherwise
+
+        Parameters
+        ----------
+        skill_memory_payload : dict
+            The skill memory payload to set -- must be JSON serializable.
+        chat_entry_id : str, optional
+            The id of the chat entry.
+
+        Returns
+        -------
+        bool
+            True if the skill memory payload was set successfully, False otherwise.
         """
 
         if chat_entry_id is None:
@@ -477,9 +611,18 @@ class Chat:
         """
         TODO: This is meant to be temprorary, used for skill builder and should be removed once builder is moved internal
         Sets the agent_run_state to a workflow document.
-        :param chat_entry_id: the id of the chat entry
-        :param agent_run_state: the agent workflow state to set -- must be JSON serializable
-        :return: True if the agent_run_state was set successfully, False otherwise
+
+        Parameters
+        ----------
+        agent_run_state : list[dict]
+            The agent workflow state to set -- must be JSON serializable.
+        chat_entry_id : str
+            The id of the chat entry.
+
+        Returns
+        -------
+        bool
+            True if the agent_run_state was set successfully, False otherwise.
         """
 
         if chat_entry_id is None:
@@ -500,9 +643,18 @@ class Chat:
         """
         TODO: This is meant to be temprorary, used for skill builder and should be removed once builder is moved internal
         Gets the workflow document for a given workflow id and version.
-        :param workflow_id: the id of the workflow
-        :param version: the version of the workflow
-        :return: MaxAgentWorkflow object
+
+        Parameters
+        ----------
+        workflow_id : str
+            The id of the workflow.
+        version : int, optional
+            The version of the workflow.
+
+        Returns
+        -------
+        MaxAgentWorkflow
+            MaxAgentWorkflow object.
         """
 
         if workflow_id is None:
@@ -521,9 +673,18 @@ class Chat:
         """
         TODO: This is meant to be temprorary, used for skill builder and should be removed or reworked once builder is moved internal
         Imports an agent workflow from a zip file.
-        :param copilot_id: the id of the copilot to import to
-        :param skill_name: the name of the skill to import the workflow for
-        :return: True if the workflow was imported successfully, False otherwise
+
+        Parameters
+        ----------
+        copilot_id : str
+            The id of the copilot to import to.
+        skill_name : str
+            The name of the skill to import the workflow for.
+
+        Returns
+        -------
+        bool
+            True if the workflow was imported successfully, False otherwise.
         """
 
         if copilot_id is None:
@@ -546,11 +707,20 @@ class Chat:
         """
         TODO: This is meant to be temprorary, used for skill builder and should be removed or reworked once builder is moved internal
         Imports an agent workflow from a repository.
-        :param copilot_id: the id of the copilot
-        :param skill_name: the name of the skill to import the workflow for
 
-        :param repository_id: the id of the repository to import from
-        :return: True if the workflow was imported successfully, False otherwise
+        Parameters
+        ----------
+        copilot_id : str
+            The id of the copilot.
+        skill_name : str
+            The name of the skill to import the workflow for.
+        repository_id : str
+            The id of the repository to import from.
+
+        Returns
+        -------
+        bool
+            True if the workflow was imported successfully, False otherwise.
         """
 
         if copilot_id is None:
@@ -578,8 +748,16 @@ class Chat:
         """
         TODO: This is meant to be temprorary, used for skill builder and should be removed or reworked once builder is moved internal
         Syncs a repository.
-        :param repository_id: the id of the repository to sync
-        :return: True if the repository was synced successfully, False otherwise
+
+        Parameters
+        ----------
+        repository_id : str
+            The id of the repository to sync.
+
+        Returns
+        -------
+        bool
+            True if the repository was synced successfully, False otherwise.
         """
 
         if repository_id is None:
@@ -597,11 +775,22 @@ class Chat:
         """
         TODO: This is meant to be temprorary, used for skill builder and should be removed or reworked once builder is moved internal
         Test runs a copilot skill.
-        :param copilot_id: the id of the copilot    
-        :param skill_name: the name of the skill to test run
-        :param nl: the natural language query to test run
-        :param parameters: the parameters to pass to the skill
-        :return: True if the test run was successful, False otherwise
+
+        Parameters
+        ----------
+        copilot_id : str
+            The id of the copilot.
+        skill_name : str
+            The name of the skill to test run.
+        nl : str, optional
+            The natural language query to test run.
+        parameters : dict, optional
+            The parameters to pass to the skill.
+
+        Returns
+        -------
+        bool
+            True if the test run was successful, False otherwise.
         """
         if copilot_id is None:
             logger.warning("No copilot id provided, aborting.")
@@ -625,8 +814,16 @@ class Chat:
         """
         TODO: This is meant to be temprorary, used for skill builder and should be removed or reworked once builder is moved internal
         Gets the output of a test run.
-        :param answer_id: the id of the answer to get the output for
-        :return: the output of the test run
+
+        Parameters
+        ----------
+        answer_id : str
+            The id of the answer to get the output for.
+
+        Returns
+        -------
+        Any
+            The output of the test run.
         """
         if answer_id is None:
             logger.warning("No answer id provided, aborting.")
@@ -642,8 +839,16 @@ class Chat:
     def get_dataframes_for_entry(self, entry_id: str) -> [pd.DataFrame]:
         """
         This fetches the dataframes (with metadata) for a given chat entry.
-        :param entry_id: The answer entry to fetch dataframes for
-        :return: a list of dataframes and metadata for the given chat entry
+
+        Parameters
+        ----------
+        entry_id : str
+            The answer entry to fetch dataframes for.
+
+        Returns
+        -------
+        list[pd.DataFrame]
+            A list of dataframes and metadata for the given chat entry.
         """
         get_dataframes_for_entry_args = {
             'entryId': UUID(entry_id),

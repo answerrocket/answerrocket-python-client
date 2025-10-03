@@ -13,61 +13,70 @@ from answer_rocket.graphql.schema import JSON, UUID as GQL_UUID, UUID
 
 class ChatLoadingInfo(TypedDict):
     """
-    Describes the loading state of an object in chat
+    Describes the loading state of an object in chat.
+
+    Attributes
+    ----------
+    message : str
+        User-friendly message to describe the current loading step.
     """
     message: str
-    """
-    User-friendly messaged to describe the current loading step
-    """
 
 
 class ContentBlock(TypedDict):
     """
-    Represents a block of content that is produced by a skill and displayed to the user. Blocks contain metadata as
-    well as their final XML payload.
+    Represents a block of content that is produced by a skill and displayed to the user.
+
+    Blocks contain metadata as well as their final XML payload.
+
+    Attributes
+    ----------
+    id : str
+        Unique ID for the block.
+    title : str | None
+        The user-friendly name of the block that will be displayed on the frontend.
+    loading_info : ChatLoadingInfo | None
+        Details around the block's current loading state.
+    payload : str | None
+        XML payload for the block to display, represented as a string.
+    is_collapsible : bool | None
+        Whether or not the block can be collapsed by the user.
+    layout_json : str | None
+        An alternative to payload, this is a JSON representation of the block's visual layout.
     """
     id: str
-    """
-    Unique ID for the block
-    """
     title: str | None
-    """
-    The user-friendly name of the block that will be displayed on the frontend
-    """
     loading_info: ChatLoadingInfo | None
-    """
-    Details around the block's current loading state
-    """
     payload: str | None
-    """
-    XML payload for the block to display, represented as a string.
-    """
     is_collapsible: bool | None
-    """
-    Whether or not the block can be collapsed by the user
-    """
     layout_json: str | None
-    """
-    An alternative to payload, this is a JSON representation of the block's visual layout
-    """
 
 
 class ChatReportOutput(TypedDict, total=False):
     """
     Contains all the possible information a report can return to the chat pipeline.
+
+    Attributes
+    ----------
+    payload : str | None
+        The complete XML string for the entire report.
+    content_blocks : List[ContentBlock]
+        List of content blocks to display.
+    suggestions : List[str]
+        List of suggested follow-up questions.
+    interpretation_notes : List[str]
+        List of notes about how the query was interpreted.
+    final_message : str
+        Final message to display to the user.
+    info : Any | None
+        Any additional information the skill wants to include, typically for debugging.
     """
     payload: str | None
-    """
-    The complete XML string for the entire report.
-    """
     content_blocks: List[ContentBlock]
     suggestions: List[str]
     interpretation_notes: List[str]
     final_message: str
     info: Any | None
-    """
-    Any additional information the skill wants to include, typically to be used for debugging
-    """
 
 
 class OutputBuilder:
