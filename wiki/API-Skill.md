@@ -9,7 +9,7 @@ Result object for synchronous skill execution.
 
 **Attributes:**
 
-- **data** ([ChatReportOutput](API-Types) | None): The output data from the skill execution.
+- **data** ([ChatReportOutput](API-Types#chatreportoutput) | None): The output data from the skill execution.
 
 #### Methods
 
@@ -34,7 +34,7 @@ Provides tools to interact with copilot skills directly.
 
 #### Methods
 
-##### `__init__(self, config: [ClientConfig](API-Types), gql_client: GraphQlClient)`
+##### `__init__(self, config: [ClientConfig](API-Types#clientconfig), gql_client: GraphQlClient)`
 
 
 Initialize the Skill client.
@@ -42,10 +42,10 @@ Initialize the Skill client.
 
 **Parameters:**
 
-- **config** ([ClientConfig](API-Types)): The client configuration.
+- **config** ([ClientConfig](API-Types#clientconfig)): The client configuration.
 - **gql_client** (GraphQlClient): The GraphQL client for API communication.
 
-##### `run(self, copilot_id: str, skill_name: str, parameters: dict | None, validate_parameters: bool) -> [RunSkillResult](API-Types)`
+##### `run(self, copilot_id: str, skill_name: str, parameters: dict | None, validate_parameters: bool) -> [RunSkillResult](API-Types#runskillresult)`
 
 
 Run a skill synchronously and return its full output.
@@ -63,9 +63,9 @@ Does not stream intermediate skill output.
 
 **Returns:**
 
-[RunSkillResult](API-Types) - The full output object of the skill execution.
+[RunSkillResult](API-Types#runskillresult) - The full output object of the skill execution.
 
-##### `run_async(self, copilot_id: str, skill_name: str, parameters: dict | None) -> [AsyncSkillRunResult](API-Types)`
+##### `run_async(self, copilot_id: str, skill_name: str, parameters: dict | None) -> [AsyncSkillRunResult](API-Types#asyncskillrunresult)`
 
 
 Start a skill execution asynchronously and return an execution ID immediately.
@@ -80,7 +80,7 @@ Start a skill execution asynchronously and return an execution ID immediately.
 
 **Returns:**
 
-[AsyncSkillRunResult](API-Types) - Result containing execution_id if successful.
+[AsyncSkillRunResult](API-Types#asyncskillrunresult) - Result containing execution_id if successful.
 
 ##### `get_async_status(self, execution_id: str) -> AsyncSkillStatusResponse`
 
