@@ -1007,6 +1007,18 @@ def query_get_dataset_kshot_by_id():
     return _op
 
 
+def query_generate_embeddings():
+    _op = sgqlc.operation.Operation(_schema_root.query_type, name='GenerateEmbeddings', variables=dict(texts=sgqlc.types.Arg(sgqlc.types.non_null(sgqlc.types.list_of(sgqlc.types.non_null(_schema.String)))), modelOverride=sgqlc.types.Arg(_schema.String)))
+    _op_generate_embeddings = _op.generate_embeddings(texts=sgqlc.types.Variable('texts'), model_override=sgqlc.types.Variable('modelOverride'))
+    _op_generate_embeddings.success()
+    _op_generate_embeddings.code()
+    _op_generate_embeddings.error()
+    _op_generate_embeddings_embeddings = _op_generate_embeddings.embeddings()
+    _op_generate_embeddings_embeddings.text()
+    _op_generate_embeddings_embeddings.vector()
+    return _op
+
+
 def query_chat_completion():
     _op = sgqlc.operation.Operation(_schema_root.query_type, name='ChatCompletion', variables=dict(messages=sgqlc.types.Arg(sgqlc.types.non_null(sgqlc.types.list_of(sgqlc.types.non_null(_schema.LlmChatMessage)))), modelSelection=sgqlc.types.Arg(_schema.LlmModelSelection), llmMeta=sgqlc.types.Arg(_schema.LlmMeta), functions=sgqlc.types.Arg(sgqlc.types.list_of(sgqlc.types.non_null(_schema.LlmFunction)))))
     _op.chat_completion(messages=sgqlc.types.Variable('messages'), model_selection=sgqlc.types.Variable('modelSelection'), llm_meta=sgqlc.types.Variable('llmMeta'), functions=sgqlc.types.Variable('functions'))
@@ -1078,6 +1090,7 @@ class Query:
     chat_thread = query_chat_thread()
     current_user = query_current_user()
     dataframes_for_entry = query_dataframes_for_entry()
+    generate_embeddings = query_generate_embeddings()
     get_async_skill_run_status = query_get_async_skill_run_status()
     get_chat_artifact = query_get_chat_artifact()
     get_chat_artifacts = query_get_chat_artifacts()
