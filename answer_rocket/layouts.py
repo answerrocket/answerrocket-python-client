@@ -5,7 +5,7 @@ from answer_rocket.graphql.client import GraphQlClient
 from answer_rocket.graphql.schema import UUID as GQL_UUID
 
 
-class Layouts:
+class DynamicLayouts:
     """
     Helper for accessing config, whether local or fetched from the configured server.
     """

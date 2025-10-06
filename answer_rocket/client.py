@@ -8,6 +8,7 @@ from answer_rocket.chat import Chat
 from answer_rocket.output import OutputBuilder
 from answer_rocket.skill import Skill
 from answer_rocket.llm import Llm
+from answer_rocket.layouts import DynamicLayouts
 
 
 class AnswerRocketClient:
@@ -38,6 +39,7 @@ class AnswerRocketClient:
 		self.output = OutputBuilder(self._client_config, self._gql_client)
 		self.skill = Skill(self._client_config, self._gql_client)
 		self.llm = Llm(self._client_config, self._gql_client)
+		self.dynamic_layouts = DynamicLayouts(self._client_config, self._gql_client)
 
 	def can_connect(self) -> bool:
 		"""
