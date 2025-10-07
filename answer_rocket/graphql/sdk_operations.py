@@ -1007,6 +1007,17 @@ def query_get_dataset_kshot_by_id():
     return _op
 
 
+def query_get_dynamic_layout():
+    _op = sgqlc.operation.Operation(_schema_root.query_type, name='getDynamicLayout', variables=dict(id=sgqlc.types.Arg(sgqlc.types.non_null(_schema.UUID))))
+    _op_get_dynamic_layout = _op.get_dynamic_layout(id=sgqlc.types.Variable('id'))
+    _op_get_dynamic_layout.id()
+    _op_get_dynamic_layout.name()
+    _op_get_dynamic_layout.layout_json()
+    _op_get_dynamic_layout_input_variables = _op_get_dynamic_layout.input_variables()
+    _op_get_dynamic_layout_input_variables.name()
+    return _op
+
+
 def query_generate_embeddings():
     _op = sgqlc.operation.Operation(_schema_root.query_type, name='GenerateEmbeddings', variables=dict(texts=sgqlc.types.Arg(sgqlc.types.non_null(sgqlc.types.list_of(sgqlc.types.non_null(_schema.String)))), modelOverride=sgqlc.types.Arg(_schema.String)))
     _op_generate_embeddings = _op.generate_embeddings(texts=sgqlc.types.Variable('texts'), model_override=sgqlc.types.Variable('modelOverride'))
@@ -1107,6 +1118,7 @@ class Query:
     get_dataset_kshot_by_id = query_get_dataset_kshot_by_id()
     get_dataset_kshots = query_get_dataset_kshots()
     get_datasets = query_get_datasets()
+    get_dynamic_layout = query_get_dynamic_layout()
     get_grounded_value = query_get_grounded_value()
     get_max_agent_workflow = query_get_max_agent_workflow()
     get_max_llm_prompt = query_get_max_llm_prompt()
