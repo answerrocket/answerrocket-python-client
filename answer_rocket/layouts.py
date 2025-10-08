@@ -1,8 +1,5 @@
-from typing import Optional
-from sgqlc.types import Variable, Arg, non_null, String
 from answer_rocket.client_config import ClientConfig
 from answer_rocket.graphql.client import GraphQlClient
-from answer_rocket.graphql.schema import UUID as GQL_UUID
 
 
 class DynamicLayouts:
@@ -19,13 +16,15 @@ class DynamicLayouts:
     def get_dynamic_layout(self, id: str):
         """
         Get a dynamic layout by id.
-    
-        id : str
-            The UUID of the dynamic layout to retrieve.
-    
+
+        Args:
+            id (str): The UUID of the dynamic layout to retrieve.
+
+        Returns:
+            The dynamic layout data from the server.
         """
-        op = Operations.query.get_dynamic_layout
-        self._gql_client.submit(op, {
+        op = self._gql_client.query.get_dynamic_layout
+        result = self._gql_client.submit(op, {
             'id': id,
         })
 
