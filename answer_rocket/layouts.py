@@ -1,5 +1,6 @@
 from answer_rocket.client_config import ClientConfig
 from answer_rocket.graphql.client import GraphQlClient
+from answer_rocket.graphql.sdk_operations import Operations
 
 
 class DynamicLayouts:
@@ -24,7 +25,7 @@ class DynamicLayouts:
             The dynamic layout data from the server.
         """
         try:
-            op = self._gql_client.query.get_dynamic_layout
+            op = Operations.query.get_dynamic_layout
             result = self._gql_client.submit(op, {
                 'id': id,
             })
