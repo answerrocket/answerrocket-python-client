@@ -23,9 +23,13 @@ class DynamicLayouts:
         Returns:
             The dynamic layout data from the server.
         """
-        op = self._gql_client.query.get_dynamic_layout
-        result = self._gql_client.submit(op, {
-            'id': id,
-        })
+        try:
+            op = self._gql_client.query.get_dynamic_layout
+            result = self._gql_client.submit(op, {
+                'id': id,
+            })
 
-        return result.get_dynamic_layout
+            return result.get_dynamic_layout
+            
+        except Exception as e:
+            raise Exception(f"Failed to get dynamic layout: {e}")
