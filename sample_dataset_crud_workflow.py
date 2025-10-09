@@ -21,7 +21,7 @@ API_URL = "http://localhost:8080"
 
 # Your bearer token (get this from the Answer Rocket UI or API)
 # Format: "arc--<your-token-here>"
-BEARER_TOKEN = "arc--9ONjA6Ak80V_1BcUgf5GfCBacuiR8kt2x6eJfbJ7dU="
+BEARER_TOKEN = "arc--xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"
 
 # An existing database ID from your Answer Rocket instance
 # You can get this from the UI or by calling client.data.get_databases()
