@@ -964,12 +964,43 @@ class MaxDomainAttributeStatisticInfo(sgqlc.types.Type):
     distinct_count = sgqlc.types.Field(Int, graphql_name='distinctCount')
 
 
+class MaxDynamicLayout(sgqlc.types.Type):
+    __schema__ = schema
+    __field_names__ = ('id', 'name', 'layout_json', 'input_variables', 'available_elements', 'available_fields', 'owner_user_id')
+    id = sgqlc.types.Field(sgqlc.types.non_null(UUID), graphql_name='id')
+    name = sgqlc.types.Field(String, graphql_name='name')
+    layout_json = sgqlc.types.Field(String, graphql_name='layoutJson')
+    input_variables = sgqlc.types.Field(sgqlc.types.list_of(sgqlc.types.non_null('MaxDynamicLayoutInputVariable')), graphql_name='inputVariables')
+    available_elements = sgqlc.types.Field(sgqlc.types.list_of(sgqlc.types.non_null(String)), graphql_name='availableElements')
+    available_fields = sgqlc.types.Field(sgqlc.types.list_of(sgqlc.types.non_null(String)), graphql_name='availableFields', args=sgqlc.types.ArgDict((
+        ('element_name', sgqlc.types.Arg(String, graphql_name='elementName', default=None)),
+))
+    )
+    owner_user_id = sgqlc.types.Field(UUID, graphql_name='ownerUserId')
+
+
+class MaxDynamicLayoutInputVariable(sgqlc.types.Type):
+    __schema__ = schema
+    __field_names__ = ('name', 'is_required', 'default_value', 'targets')
+    name = sgqlc.types.Field(sgqlc.types.non_null(String), graphql_name='name')
+    is_required = sgqlc.types.Field(Boolean, graphql_name='isRequired')
+    default_value = sgqlc.types.Field(JSON, graphql_name='defaultValue')
+    targets = sgqlc.types.Field(sgqlc.types.list_of(sgqlc.types.non_null('MaxLayoutFieldPointer')), graphql_name='targets')
+
+
 class MaxLLmPrompt(sgqlc.types.Type):
     __schema__ = schema
     __field_names__ = ('llm_prompt_id', 'name', 'prompt_response')
     llm_prompt_id = sgqlc.types.Field(sgqlc.types.non_null(UUID), graphql_name='llmPromptId')
     name = sgqlc.types.Field(sgqlc.types.non_null(String), graphql_name='name')
     prompt_response = sgqlc.types.Field(JSON, graphql_name='promptResponse')
+
+
+class MaxLayoutFieldPointer(sgqlc.types.Type):
+    __schema__ = schema
+    __field_names__ = ('element_name', 'field_name')
+    element_name = sgqlc.types.Field(String, graphql_name='elementName')
+    field_name = sgqlc.types.Field(String, graphql_name='fieldName')
 
 
 class MaxMetricHierarchyNode(sgqlc.types.Type):
@@ -1506,7 +1537,7 @@ class ParameterDefinition(sgqlc.types.Type):
 
 class Query(sgqlc.types.Type):
     __schema__ = schema
-    __field_names__ = ('ping', 'current_user', 'get_copilot_skill_artifact_by_path', 'get_copilots', 'get_copilot_info', 'get_copilot_skill', 'run_copilot_skill', 'get_skill_components', 'get_copilot_hydrated_reports', 'get_async_skill_run_status', 'get_max_agent_workflow', 'execute_sql_query', 'execute_rql_query', 'get_databases', 'get_database', 'get_database_tables', 'get_dataset_id', 'get_dataset', 'get_dataset2', 'get_datasets', 'get_domain_object', 'get_domain_object_by_name', 'get_grounded_value', 'get_database_kshots', 'get_database_kshot_by_id', 'get_dataset_kshots', 'get_dataset_kshot_by_id', 'run_max_sql_gen', 'run_sql_ai', 'generate_visualization', 'llmapi_config_for_sdk', 'generate_embeddings', 'get_max_llm_prompt', 'user_chat_threads', 'user_chat_entries', 'chat_thread', 'chat_entry', 'user', 'all_chat_entries', 'skill_memory', 'chat_completion', 'narrative_completion', 'narrative_completion_with_prompt', 'sql_completion', 'research_completion', 'chat_completion_with_prompt', 'research_completion_with_prompt', 'get_chat_artifact', 'get_chat_artifacts')
+    __field_names__ = ('ping', 'current_user', 'get_copilot_skill_artifact_by_path', 'get_copilots', 'get_copilot_info', 'get_copilot_skill', 'run_copilot_skill', 'get_skill_components', 'get_copilot_hydrated_reports', 'get_async_skill_run_status', 'get_max_agent_workflow', 'execute_sql_query', 'execute_rql_query', 'get_databases', 'get_database', 'get_database_tables', 'get_dataset_id', 'get_dataset', 'get_dataset2', 'get_datasets', 'get_domain_object', 'get_domain_object_by_name', 'get_grounded_value', 'get_database_kshots', 'get_database_kshot_by_id', 'get_dataset_kshots', 'get_dataset_kshot_by_id', 'run_max_sql_gen', 'run_sql_ai', 'generate_visualization', 'llmapi_config_for_sdk', 'generate_embeddings', 'get_max_llm_prompt', 'user_chat_threads', 'user_chat_entries', 'chat_thread', 'chat_entry', 'user', 'all_chat_entries', 'skill_memory', 'chat_completion', 'narrative_completion', 'narrative_completion_with_prompt', 'sql_completion', 'research_completion', 'chat_completion_with_prompt', 'research_completion_with_prompt', 'get_chat_artifact', 'get_chat_artifacts', 'get_dynamic_layout')
     ping = sgqlc.types.Field(String, graphql_name='ping')
     current_user = sgqlc.types.Field(MaxUser, graphql_name='currentUser')
     get_copilot_skill_artifact_by_path = sgqlc.types.Field(CopilotSkillArtifact, graphql_name='getCopilotSkillArtifactByPath', args=sgqlc.types.ArgDict((
@@ -1764,6 +1795,10 @@ class Query(sgqlc.types.Type):
     get_chat_artifacts = sgqlc.types.Field(sgqlc.types.non_null(PagedChatArtifacts), graphql_name='getChatArtifacts', args=sgqlc.types.ArgDict((
         ('search_input', sgqlc.types.Arg(sgqlc.types.non_null(ChatArtifactSearchInput), graphql_name='searchInput', default=None)),
         ('paging', sgqlc.types.Arg(sgqlc.types.non_null(PagingInput), graphql_name='paging', default=None)),
+))
+    )
+    get_dynamic_layout = sgqlc.types.Field(MaxDynamicLayout, graphql_name='getDynamicLayout', args=sgqlc.types.ArgDict((
+        ('id', sgqlc.types.Arg(sgqlc.types.non_null(UUID), graphql_name='id', default=None)),
 ))
     )
 
