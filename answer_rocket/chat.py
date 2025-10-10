@@ -10,7 +10,7 @@ from answer_rocket.client_config import ClientConfig
 from answer_rocket.graphql.client import GraphQlClient
 from answer_rocket.graphql.schema import (UUID, Int, DateTime, ChatDryRunType, MaxChatEntry, MaxChatThread,
                                           SharedThread, MaxChatUser, ChatArtifact, MaxMutationResponse,
-                                          ChatArtifactSearchInput, PagingInput, PagedChatArtifacts)
+                                          ChatArtifactSearchInput, PagingInput, PagedChatArtifacts, PipelineType)
 from answer_rocket.graphql.sdk_operations import Operations
 
 logger = logging.getLogger(__name__)
@@ -31,7 +31,7 @@ class Chat:
         self.gql_client = gql_client
         self._config = config
 
-    def ask_question(self, copilot_id: str, question: str, thread_id: str = None, skip_report_cache: bool = False, dry_run_type: str = None, model_overrides: dict = None, indicated_skills: list[str] = None, history: list[dict] = None, question_type: QuestionType = None, thread_type: ThreadType = None, pipeline_type: str = None) -> MaxChatEntry:
+    def ask_question(self, copilot_id: str, question: str, thread_id: str = None, skip_report_cache: bool = False, dry_run_type: str = None, model_overrides: dict = None, indicated_skills: list[str] = None, history: list[dict] = None, question_type: QuestionType = None, thread_type: ThreadType = None, pipeline_type: PipelineType = None) -> MaxChatEntry:
         """
         Calls the Max chat pipeline to answer a natural language question and receive analysis and insights
         in response.
@@ -46,7 +46,7 @@ class Chat:
         :param history: If provided, a list of messages to be used as the conversation history for the question
         :param question_type: If provided, the type of question being asked. This is used to categorize the question and can determine how the UI chooses to display it.
         :param thread_type: If provided, the type of thread being created. This is used to categorize the thread and can determine how the UI chooses to display it.
-        :param pipeline_type: If provided, specifies which pipeline type to use for processing the question. Defaults to 'max' (the chat pipeline).
+        :param pipeline_type: If provided, specifies which pipeline type to use for processing the question. Options are 'MAX' (the chat pipeline) and 'RESEARCH' (the research pipeline). Defaults to 'MAX' if not specified.
         :return: the ChatEntry response object associate with the answer from the pipeline
         """
         override_list = []
@@ -264,7 +264,7 @@ class Chat:
         result = self.gql_client.submit(op, create_chat_thread_args)
         return result.create_chat_thread
 
-    def queue_chat_question(self, question: str, thread_id: str, skip_cache: bool = False, model_overrides: dict = None, indicated_skills: list[str] = None, history: list[dict] = None, pipeline_type: str = None) -> MaxChatEntry:
+    def queue_chat_question(self, question: str, thread_id: str, skip_cache: bool = False, model_overrides: dict = None, indicated_skills: list[str] = None, history: list[dict] = None, pipeline_type: PipelineType = None) -> MaxChatEntry:
         """
         This queues up a question for processing. Unlike ask_question, this will not wait for the processing to
         complete. It will immediately return a shell entry with an id you can use to query for the results.
@@ -274,7 +274,7 @@ class Chat:
         :param model_overrides: If provided, a dictionary of model types to model names to override the LLM model used. Model type options are 'CHAT', 'EMBEDDINGS', 'NARRATIVE'
         :param indicated_skills: If provided, a list of skill names that the copilot will be limited to choosing from. If only 1 skill is provided the copilot will be guaranteed to execute that skill.
         :param history: If provided, a list of messages to be used as the conversation history for the question
-        :param pipeline_type: If provided, specifies which pipeline type to use for processing the question. Defaults to 'max' (the chat pipeline).
+        :param pipeline_type: If provided, specifies which pipeline type to use for processing the question. Options are 'MAX' (the chat pipeline) and 'RESEARCH' (the research pipeline). Defaults to 'MAX' if not specified.
         :return:
         """
 

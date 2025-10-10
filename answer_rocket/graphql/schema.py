@@ -65,6 +65,11 @@ class ModelTypes(sgqlc.types.Enum):
     __choices__ = ('CHAT', 'EMBEDDINGS', 'NARRATIVE')
 
 
+class PipelineType(sgqlc.types.Enum):
+    __schema__ = schema
+    __choices__ = ('MAX', 'RESEARCH')
+
+
 class QuestionType(sgqlc.types.Enum):
     __schema__ = schema
     __choices__ = ('DRILLDOWN', 'EXAMPLE', 'FOLLOWUP', 'RESEARCHER_REPORT', 'SAVED', 'SCHEDULED', 'SHARED', 'SKILL_PREVIEW', 'TEST_RUN', 'USER_WRITTEN', 'XML_CALLBACK')
@@ -1425,7 +1430,7 @@ class Mutation(sgqlc.types.Type):
         ('history', sgqlc.types.Arg(sgqlc.types.list_of(sgqlc.types.non_null(MessageHistoryInput)), graphql_name='history', default=None)),
         ('question_type', sgqlc.types.Arg(QuestionType, graphql_name='questionType', default=None)),
         ('thread_type', sgqlc.types.Arg(ThreadType, graphql_name='threadType', default=None)),
-        ('pipeline_type', sgqlc.types.Arg(String, graphql_name='pipelineType', default=None)),
+        ('pipeline_type', sgqlc.types.Arg(PipelineType, graphql_name='pipelineType', default=None)),
 ))
     )
     evaluate_chat_question = sgqlc.types.Field(sgqlc.types.non_null(EvaluateChatQuestionResponse), graphql_name='evaluateChatQuestion', args=sgqlc.types.ArgDict((
@@ -1441,7 +1446,7 @@ class Mutation(sgqlc.types.Type):
         ('indicated_skills', sgqlc.types.Arg(sgqlc.types.list_of(String), graphql_name='indicatedSkills', default=None)),
         ('load_all_skills', sgqlc.types.Arg(Boolean, graphql_name='loadAllSkills', default=None)),
         ('history', sgqlc.types.Arg(sgqlc.types.list_of(sgqlc.types.non_null(MessageHistoryInput)), graphql_name='history', default=None)),
-        ('pipeline_type', sgqlc.types.Arg(String, graphql_name='pipelineType', default=None)),
+        ('pipeline_type', sgqlc.types.Arg(PipelineType, graphql_name='pipelineType', default=None)),
 ))
     )
     cancel_chat_question = sgqlc.types.Field(MaxChatEntry, graphql_name='cancelChatQuestion', args=sgqlc.types.ArgDict((

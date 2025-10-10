@@ -9,7 +9,7 @@ mutation AskChatQuestion(
   $history: [MessageHistoryInput!]
   $questionType: QuestionType
   $threadType: ThreadType
-  $pipelineType: String
+  $pipelineType: PipelineType
 ) {
   askChatQuestion(
     copilotId: $copilotId
@@ -39,7 +39,7 @@ mutation QueueChatQuestion(
   $modelOverrides: [ModelOverride]
   $indicatedSkills: [String]
   $history: [MessageHistoryInput!]
-  $pipelineType: String
+  $pipelineType: PipelineType
 ) {
   queueChatQuestion(
     threadId: $threadId
