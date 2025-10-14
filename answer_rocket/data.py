@@ -1745,7 +1745,7 @@ class Data:
 
         return result.create_dataset_from_table
 
-    def create_dimension(self, dataset_id: UUID, dimension: Dimension) -> MaxMutationResponse:
+    def create_dimension(self, dataset_id: UUID, dimension: Dimension | Dict) -> MaxMutationResponse:
         """
         Create a new dimension within a dataset.
 
@@ -1753,17 +1753,28 @@ class Data:
         ----------
         dataset_id : UUID
             The UUID of the dataset to add the dimension to.
-        dimension : Dimension
-            The dimension object containing the configuration and metadata.
+        dimension : Dimension | Dict
+            The dimension object or dictionary containing the configuration and metadata.
+            If a Dimension object is provided, it will be automatically converted to the correct format.
 
         Returns
         -------
         MaxMutationResponse
             The result of the create operation.
         """
+        # Convert Dimension object to dictionary if needed
+        if hasattr(dimension, '__to_json_value__'):
+            dimension_dict = dimension.__to_json_value__()
+        else:
+            dimension_dict = dimension
+
+        # Ensure dataType is lowercase
+        if 'dataType' in dimension_dict and isinstance(dimension_dict['dataType'], str):
+            dimension_dict['dataType'] = dimension_dict['dataType'].lower()
+
         mutation_args = {
             'datasetId': str(dataset_id),
-            'dimension': dimension,
+            'dimension': dimension_dict,
         }
 
         op = Operations.mutation.create_dimension
@@ -1771,7 +1782,7 @@ class Data:
 
         return result.create_dimension
 
-    def update_dimension(self, dataset_id: UUID, dimension: Dimension) -> MaxMutationResponse:
+    def update_dimension(self, dataset_id: UUID, dimension: Dimension | Dict) -> MaxMutationResponse:
         """
         Update an existing dimension within a dataset.
 
@@ -1779,17 +1790,28 @@ class Data:
         ----------
         dataset_id : UUID
             The UUID of the dataset containing the dimension.
-        dimension : Dimension
-            The dimension object containing the updated configuration and metadata.
+        dimension : Dimension | Dict
+            The dimension object or dictionary containing the updated configuration and metadata.
+            If a Dimension object is provided, it will be automatically converted to the correct format.
 
         Returns
         -------
         MaxMutationResponse
             The result of the update operation.
         """
+        # Convert Dimension object to dictionary if needed
+        if hasattr(dimension, '__to_json_value__'):
+            dimension_dict = dimension.__to_json_value__()
+        else:
+            dimension_dict = dimension
+
+        # Ensure dataType is lowercase
+        if 'dataType' in dimension_dict and isinstance(dimension_dict['dataType'], str):
+            dimension_dict['dataType'] = dimension_dict['dataType'].lower()
+
         mutation_args = {
             'datasetId': str(dataset_id),
-            'dimension': dimension,
+            'dimension': dimension_dict,
         }
 
         op = Operations.mutation.update_dimension
@@ -1823,7 +1845,7 @@ class Data:
 
         return result.delete_dimension
 
-    def create_metric(self, dataset_id: UUID, metric: Metric) -> MaxMutationResponse:
+    def create_metric(self, dataset_id: UUID, metric: Metric | Dict) -> MaxMutationResponse:
         """
         Create a new metric within a dataset.
 
@@ -1831,17 +1853,30 @@ class Data:
         ----------
         dataset_id : UUID
             The UUID of the dataset to add the metric to.
-        metric : Metric
-            The metric object containing the configuration and metadata.
+        metric : Metric | Dict
+            The metric object or dictionary containing the configuration and metadata.
+            If a Metric object is provided, it will be automatically converted to the correct format.
 
         Returns
         -------
         MaxMutationResponse
             The result of the create operation.
         """
+        # Convert Metric object to dictionary if needed
+        if hasattr(metric, '__to_json_value__'):
+            metric_dict = metric.__to_json_value__()
+        else:
+            metric_dict = metric
+
+        # Ensure enum fields are lowercase (API expects lowercase)
+        enum_fields = ['dataType', 'metricType', 'growthType']
+        for field in enum_fields:
+            if field in metric_dict and isinstance(metric_dict[field], str):
+                metric_dict[field] = metric_dict[field].lower()
+
         mutation_args = {
             'datasetId': str(dataset_id),
-            'metric': metric,
+            'metric': metric_dict,
         }
 
         op = Operations.mutation.create_metric
@@ -1849,7 +1884,7 @@ class Data:
 
         return result.create_metric
 
-    def update_metric(self, dataset_id: UUID, metric: Metric) -> MaxMutationResponse:
+    def update_metric(self, dataset_id: UUID, metric: Metric | Dict) -> MaxMutationResponse:
         """
         Update an existing metric within a dataset.
 
@@ -1857,17 +1892,30 @@ class Data:
         ----------
         dataset_id : UUID
             The UUID of the dataset containing the metric.
-        metric : Metric
-            The metric object containing the updated configuration and metadata.
+        metric : Metric | Dict
+            The metric object or dictionary containing the updated configuration and metadata.
+            If a Metric object is provided, it will be automatically converted to the correct format.
 
         Returns
         -------
         MaxMutationResponse
             The result of the update operation.
         """
+        # Convert Metric object to dictionary if needed
+        if hasattr(metric, '__to_json_value__'):
+            metric_dict = metric.__to_json_value__()
+        else:
+            metric_dict = metric
+
+        # Ensure enum fields are lowercase (API expects lowercase)
+        enum_fields = ['dataType', 'metricType', 'growthType']
+        for field in enum_fields:
+            if field in metric_dict and isinstance(metric_dict[field], str):
+                metric_dict[field] = metric_dict[field].lower()
+
         mutation_args = {
             'datasetId': str(dataset_id),
-            'metric': metric,
+            'metric': metric_dict,
         }
 
         op = Operations.mutation.update_metric
