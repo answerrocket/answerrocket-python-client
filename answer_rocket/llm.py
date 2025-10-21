@@ -94,7 +94,7 @@ class Llm:
         }
 
         gql_response = self.gql_client.submit(op, args)
-        return gql_response.narrative_completion
+        return gql_response.chat_completion_with_prompt
 
     def narrative_completion(self, prompt: str, model_override: str | None = None):
         """
