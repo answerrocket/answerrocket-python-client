@@ -171,3 +171,10 @@ query GetCopilotHydratedReports($copilotId: UUID!, $overrideDatasetId: UUID, $lo
         meta
     }
 }
+
+mutation ClearCopilotCache($copilotId: UUID!) {
+    clearCopilotCache(copilotId: $copilotId) {
+        success
+        error
+    }
+}

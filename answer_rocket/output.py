@@ -71,8 +71,23 @@ class ChatReportOutput(TypedDict, total=False):
 
 
 class OutputBuilder:
+    """
+    Builder for creating and managing chat report outputs.
+
+    Handles creating content blocks, updating their states, and managing the overall report output.
+    """
 
     def __init__(self, config: ClientConfig, gql_client: GraphQlClient):
+        """
+        Initialize the output builder.
+
+        Parameters
+        ----------
+        config : ClientConfig
+            The client configuration.
+        gql_client : GraphQlClient
+            The GraphQL client for API communication.
+        """
         self._gql_client = gql_client
         self._config = config
         self.answer_id = self._config.answer_id
@@ -114,14 +129,27 @@ class OutputBuilder:
     def add_block(self, title: str = None, loading_status: ChatLoadingInfo = None, xml: str = None,
                   is_collapsible: bool = True, layout_json: str = None) -> str:
         """
-        Adds a new content block to the report output. The newly added blocks becomes the default block for
-        future updates until a new block is added.
+        Add a new content block to the report output.
 
-        :param title: The user-friendly name of the block that will be displayed on the frontend
-        :param loading_status: The loading state of the block
-        :param xml: XML payload for the block to display, represented as a string.
-        :param is_collapsible: Whether the block can be collapsed by the user
-        :param layout_json: An alternative to xml, this is a JSON representation of the block's visual layout
+        The newly added block becomes the default block for future updates until a new block is added.
+
+        Parameters
+        ----------
+        title : str, optional
+            The user-friendly name of the block displayed on the frontend.
+        loading_status : ChatLoadingInfo, optional
+            The loading state of the block.
+        xml : str, optional
+            XML payload for the block to display.
+        is_collapsible : bool, optional
+            Whether the block can be collapsed by the user. Defaults to True.
+        layout_json : str, optional
+            Alternative to xml, JSON representation of the block's visual layout.
+
+        Returns
+        -------
+        str
+            The unique ID of the newly created block.
         """
         new_block = ContentBlock(id=str(uuid.uuid4()), title=title, loading_info=loading_status, payload=xml,
                                  is_collapsible=is_collapsible, layout_json=layout_json)
@@ -132,9 +160,19 @@ class OutputBuilder:
 
     def remove_block(self, block_id: UUID = None) -> bool:
         """
-        Removes the specified content block from the report output. If no block_id is provided, the last block to be
-        added will be removed.
-        param block_id: The id of the block to remove, if none is provided the last block to be added will be removed
+        Remove the specified content block from the report output.
+
+        If no block_id is provided, the last block to be added will be removed.
+
+        Parameters
+        ----------
+        block_id : UUID, optional
+            The ID of the block to remove. If None, removes the last added block.
+
+        Returns
+        -------
+        bool
+            True if a block was removed, False otherwise.
         """
         for b in self.current_output["content_blocks"]:
             if b['id'] == block_id:
@@ -147,15 +185,34 @@ class OutputBuilder:
     def update_block(self, block_id: UUID = None, title: str = None, loading_info: ChatLoadingInfo = None,
                      xml: str = None, is_collapsible: bool = None, layout_json: str = None) -> ContentBlock:
         """
-        Updates the specified content block with any or all of the provided parameters. If no block_id is provided,
-        the last block to be added will be updated.
+        Update the specified content block with provided parameters.
 
-        :param block_id: The id of the block to update, if none is provided the last block to be added will be updated
-        :param title: The user-friendly name of the block that will be displayed on the frontend, leave blank for no-update
-        :param loading_info: The loading state of the block, leave blank for no-update
-        :param xml: XML payload for the block to display, represented as a string, leave blank for no-update
-        :param is_collapsible: Whether the block can be collapsed by the user, leave blank for no-update
-        :param layout_json: An alternative to xml, this is a JSON representation of the block's visual layout
+        If no block_id is provided, the last block to be added will be updated.
+
+        Parameters
+        ----------
+        block_id : UUID, optional
+            The ID of the block to update. If None, updates the last added block.
+        title : str, optional
+            The user-friendly name of the block displayed on the frontend.
+        loading_info : ChatLoadingInfo, optional
+            The loading state of the block.
+        xml : str, optional
+            XML payload for the block to display.
+        is_collapsible : bool, optional
+            Whether the block can be collapsed by the user.
+        layout_json : str, optional
+            Alternative to xml, JSON representation of the block's visual layout.
+
+        Returns
+        -------
+        ContentBlock
+            The updated content block.
+
+        Raises
+        ------
+        Exception
+            If no blocks exist or the specified block ID is not found.
         """
 
         def get_updated_block(b: ContentBlock):
@@ -194,10 +251,24 @@ class OutputBuilder:
 
     def end_block(self, block_id: str = None) -> ContentBlock:
         """
-        Marks the specified content block as complete, removing its loading info.
+        Mark the specified content block as complete by removing its loading info.
+
         If no block_id is provided, the last block to be added will be marked as complete.
 
-        :param block_id: The id of the block to mark as complete, if none is provided the last block to be added will be marked as complete
+        Parameters
+        ----------
+        block_id : str, optional
+            The ID of the block to mark as complete. If None, marks the last added block.
+
+        Returns
+        -------
+        ContentBlock
+            The updated content block.
+
+        Raises
+        ------
+        Exception
+            If the specified block ID is not found.
         """
 
         if not block_id:
@@ -213,7 +284,17 @@ class OutputBuilder:
 
     def merge_output(self, changes: ChatReportOutput) -> ChatReportOutput:
         """
-        Merges the provided changes into the current report output.
+        Merge the provided changes into the current report output.
+
+        Parameters
+        ----------
+        changes : ChatReportOutput
+            The changes to merge into the current output.
+
+        Returns
+        -------
+        ChatReportOutput
+            The updated report output.
         """
         self.current_output.update(changes)
         self._update_answer()

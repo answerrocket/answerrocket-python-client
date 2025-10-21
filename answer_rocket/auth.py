@@ -20,8 +20,19 @@ class AuthHelper(abc.ABC):
 
 @dataclass
 class ExternalAuthHelper(AuthHelper):
+	"""
+	Authentication helper for external API access using bearer tokens.
+	"""
 
 	def headers(self) -> dict:
+		"""
+		Generate authentication headers for external API requests.
+
+		Returns
+		-------
+		dict
+			Dictionary containing Authorization header and optional Max-User/Max-Tenant headers.
+		"""
 		headers = {
 			'Authorization': f'Bearer {self.config.token}'
 		}
@@ -34,8 +45,19 @@ class ExternalAuthHelper(AuthHelper):
 
 @dataclass
 class InternalAuthHelper(AuthHelper):
+	"""
+	Authentication helper for internal service-to-service communication.
+	"""
 
 	def headers(self) -> dict:
+		"""
+		Generate authentication headers for internal service requests.
+
+		Returns
+		-------
+		dict
+			Dictionary containing Max-Internal authorization and optional Max-User/Max-Tenant headers.
+		"""
 		headers = {
 			'Max-Tenant': self.config.tenant,
 			'Authorization': 'Max-Internal',
@@ -46,6 +68,24 @@ class InternalAuthHelper(AuthHelper):
 	
 
 def init_auth_helper(config: ClientConfig) -> AuthHelper:
+	"""
+	Initialize the appropriate authentication helper based on configuration.
+
+	Parameters
+	----------
+	config : ClientConfig
+		The client configuration containing authentication details.
+
+	Returns
+	-------
+	AuthHelper
+		ExternalAuthHelper if token is provided, otherwise InternalAuthHelper.
+
+	Raises
+	------
+	AnswerRocketClientError
+		If no AnswerRocket URL is provided in the configuration.
+	"""
 	if not config.url:
 		raise AnswerRocketClientError('No AnswerRocket url provided')
 	if config.token:

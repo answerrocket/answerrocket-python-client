@@ -1,0 +1,11 @@
+query CurrentUser {
+  currentUser {
+    firstName
+    lastName
+    emailAddress
+    userGroups {
+      userGroupId
+      name
+    }
+  }
+}
