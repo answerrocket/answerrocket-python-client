@@ -33,57 +33,6 @@ class Config:
         self.copilot_id = self._config.copilot_id
         self.copilot_skill_id = self._config.copilot_skill_id
 
-    def get_artifact(self, artifact_path: str) -> str:
-        """
-        artifact path: this is the filepath to your artifact relative to the root of your project.
-        Server-side overrides are keyed on this path and will be fetched first when running inside AnswerRocket
-        """
-        if self._config.is_live_run:
-            server_artifact = self._get_artifact_from_server(artifact_path)
-            if server_artifact:
-                return server_artifact
-
-        # it is possible this could be put inside an else block if the above call were changed to get either the
-        # override or the base artifact if one does not exist
-        with open(_complete_artifact_path(artifact_path, self._config.resource_base_path)) as artifact_file:
-            return artifact_file.read()
-
-    def _get_artifact_from_server(self, artifact_path: str) -> Optional[dict]:
-        """
-        Retrieve an artifact from the server.
-
-        Parameters
-        ----------
-        artifact_path : str
-            The path to the artifact relative to the project root.
-
-        Returns
-        -------
-        dict | None
-            The artifact data if found, None otherwise.
-        """
-        if not self.copilot_id or not self.copilot_skill_id:
-            return None
-        artifact_query_args = {
-            'copilotId': self.copilot_id,
-            'copilotSkillId': self.copilot_skill_id,
-            'artifactPath': artifact_path,
-        }
-        artifact_query_vars = {
-            'copilot_id': Arg(non_null(GQL_UUID)),
-            'copilot_skill_id': Arg(non_null(GQL_UUID)),
-            'artifact_path': Arg(non_null(String)),
-        }
-        operation = self._gql_client.query(variables=artifact_query_vars)
-        copilot_query = operation.get_copilot_skill_artifact_by_path(
-            copilot_id=Variable('copilot_id'),
-            copilot_skill_id=Variable('copilot_skill_id'),
-            artifact_path=Variable('artifact_path'),
-        )
-        copilot_query.artifact()
-        result = self._gql_client.submit(operation, artifact_query_args)
-        if result.get_copilot_skill_artifact_by_path and result.get_copilot_skill_artifact_by_path.artifact:
-            return result.get_copilot_skill_artifact_by_path.artifact
 
     def get_copilots(self) -> list[MaxCopilot]:
         """
@@ -459,13 +408,3 @@ class Config:
             return result.clear_copilot_cache
         except Exception as e:
             return None
-
-
-def _complete_artifact_path(artifact_path: str, resource_base_path=None) -> str:
-    """
-    adjust the path according to the runtime env if needed.
-    a noop when running locally, and possibly something we can remove entirely in the future
-    """
-    if resource_base_path:
-        return os.path.join(resource_base_path, artifact_path)
-    return artifact_path
