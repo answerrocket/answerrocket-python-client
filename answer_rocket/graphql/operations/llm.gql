@@ -1,0 +1,14 @@
+query GenerateEmbeddings(
+    $texts: [String!]!,
+    $modelOverride: String
+) {
+    generateEmbeddings(texts: $texts, modelOverride: $modelOverride) {
+        success
+        code
+        error
+        embeddings {
+            text
+            vector
+        }
+    }
+}

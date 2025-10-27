@@ -163,7 +163,7 @@ class Llm:
         }
 
         gql_response = self.gql_client.submit(op, args)
-        return gql_response.narrative_completion
+        return gql_response.chat_completion_with_prompt
 
     def narrative_completion(self, prompt: str, model_override: str | None = None):
         """
@@ -355,3 +355,31 @@ class Llm:
         }
         gql_response = self.gql_client.submit(op, args)
         return gql_response.research_completion_with_prompt
+
+    def generate_embeddings(self, texts: list[str], model_override: str | None = None):
+        """
+        Generate embeddings for the provided texts.
+
+        Parameters
+        ----------
+        texts : list[str]
+            List of text strings to generate embeddings for.
+        model_override : str | None, optional
+            Model name or ID to use instead of configured default.
+
+        Returns
+        -------
+        dict
+            The response containing success status, error (if any), and embeddings.
+            Each embedding includes the original text and its vector representation.
+        """
+        query_args = {
+            'texts': texts,
+            'modelOverride': model_override,
+        }
+
+        op = Operations.query.generate_embeddings
+
+        result = self.gql_client.submit(op, query_args)
+
+        return result.generate_embeddings

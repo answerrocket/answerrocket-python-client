@@ -44,8 +44,8 @@ class Fragment:
 
 
 def mutation_ask_chat_question():
-    _op = sgqlc.operation.Operation(_schema_root.mutation_type, name='AskChatQuestion', variables=dict(copilotId=sgqlc.types.Arg(sgqlc.types.non_null(_schema.UUID)), question=sgqlc.types.Arg(sgqlc.types.non_null(_schema.String)), threadId=sgqlc.types.Arg(_schema.UUID), skipReportCache=sgqlc.types.Arg(_schema.Boolean), dryRunType=sgqlc.types.Arg(_schema.ChatDryRunType), modelOverrides=sgqlc.types.Arg(sgqlc.types.list_of(_schema.ModelOverride)), indicatedSkills=sgqlc.types.Arg(sgqlc.types.list_of(_schema.String)), history=sgqlc.types.Arg(sgqlc.types.list_of(sgqlc.types.non_null(_schema.MessageHistoryInput))), questionType=sgqlc.types.Arg(_schema.QuestionType), threadType=sgqlc.types.Arg(_schema.ThreadType)))
-    _op_ask_chat_question = _op.ask_chat_question(copilot_id=sgqlc.types.Variable('copilotId'), question=sgqlc.types.Variable('question'), thread_id=sgqlc.types.Variable('threadId'), skip_report_cache=sgqlc.types.Variable('skipReportCache'), dry_run_type=sgqlc.types.Variable('dryRunType'), model_overrides=sgqlc.types.Variable('modelOverrides'), indicated_skills=sgqlc.types.Variable('indicatedSkills'), history=sgqlc.types.Variable('history'), question_type=sgqlc.types.Variable('questionType'), thread_type=sgqlc.types.Variable('threadType'))
+    _op = sgqlc.operation.Operation(_schema_root.mutation_type, name='AskChatQuestion', variables=dict(copilotId=sgqlc.types.Arg(sgqlc.types.non_null(_schema.UUID)), question=sgqlc.types.Arg(sgqlc.types.non_null(_schema.String)), threadId=sgqlc.types.Arg(_schema.UUID), skipReportCache=sgqlc.types.Arg(_schema.Boolean), dryRunType=sgqlc.types.Arg(_schema.ChatDryRunType), modelOverrides=sgqlc.types.Arg(sgqlc.types.list_of(_schema.ModelOverride)), indicatedSkills=sgqlc.types.Arg(sgqlc.types.list_of(_schema.String)), history=sgqlc.types.Arg(sgqlc.types.list_of(sgqlc.types.non_null(_schema.MessageHistoryInput))), questionType=sgqlc.types.Arg(_schema.QuestionType), threadType=sgqlc.types.Arg(_schema.ThreadType), pipelineType=sgqlc.types.Arg(_schema.PipelineType)))
+    _op_ask_chat_question = _op.ask_chat_question(copilot_id=sgqlc.types.Variable('copilotId'), question=sgqlc.types.Variable('question'), thread_id=sgqlc.types.Variable('threadId'), skip_report_cache=sgqlc.types.Variable('skipReportCache'), dry_run_type=sgqlc.types.Variable('dryRunType'), model_overrides=sgqlc.types.Variable('modelOverrides'), indicated_skills=sgqlc.types.Variable('indicatedSkills'), history=sgqlc.types.Variable('history'), question_type=sgqlc.types.Variable('questionType'), thread_type=sgqlc.types.Variable('threadType'), pipeline_type=sgqlc.types.Variable('pipelineType'))
     _op_ask_chat_question.id()
     _op_ask_chat_question.thread_id()
     _op_ask_chat_question_answer = _op_ask_chat_question.answer()
@@ -54,8 +54,8 @@ def mutation_ask_chat_question():
 
 
 def mutation_queue_chat_question():
-    _op = sgqlc.operation.Operation(_schema_root.mutation_type, name='QueueChatQuestion', variables=dict(threadId=sgqlc.types.Arg(sgqlc.types.non_null(_schema.UUID)), question=sgqlc.types.Arg(sgqlc.types.non_null(_schema.String)), skipCache=sgqlc.types.Arg(_schema.Boolean), modelOverrides=sgqlc.types.Arg(sgqlc.types.list_of(_schema.ModelOverride)), indicatedSkills=sgqlc.types.Arg(sgqlc.types.list_of(_schema.String)), history=sgqlc.types.Arg(sgqlc.types.list_of(sgqlc.types.non_null(_schema.MessageHistoryInput)))))
-    _op_queue_chat_question = _op.queue_chat_question(thread_id=sgqlc.types.Variable('threadId'), question=sgqlc.types.Variable('question'), skip_cache=sgqlc.types.Variable('skipCache'), model_overrides=sgqlc.types.Variable('modelOverrides'), indicated_skills=sgqlc.types.Variable('indicatedSkills'), history=sgqlc.types.Variable('history'))
+    _op = sgqlc.operation.Operation(_schema_root.mutation_type, name='QueueChatQuestion', variables=dict(threadId=sgqlc.types.Arg(sgqlc.types.non_null(_schema.UUID)), question=sgqlc.types.Arg(sgqlc.types.non_null(_schema.String)), skipCache=sgqlc.types.Arg(_schema.Boolean), modelOverrides=sgqlc.types.Arg(sgqlc.types.list_of(_schema.ModelOverride)), indicatedSkills=sgqlc.types.Arg(sgqlc.types.list_of(_schema.String)), history=sgqlc.types.Arg(sgqlc.types.list_of(sgqlc.types.non_null(_schema.MessageHistoryInput))), pipelineType=sgqlc.types.Arg(_schema.PipelineType)))
+    _op_queue_chat_question = _op.queue_chat_question(thread_id=sgqlc.types.Variable('threadId'), question=sgqlc.types.Variable('question'), skip_cache=sgqlc.types.Variable('skipCache'), model_overrides=sgqlc.types.Variable('modelOverrides'), indicated_skills=sgqlc.types.Variable('indicatedSkills'), history=sgqlc.types.Variable('history'), pipeline_type=sgqlc.types.Variable('pipelineType'))
     _op_queue_chat_question.thread_id()
     _op_queue_chat_question.id()
     return _op
@@ -1007,6 +1007,29 @@ def query_get_dataset_kshot_by_id():
     return _op
 
 
+def query_get_dynamic_layout():
+    _op = sgqlc.operation.Operation(_schema_root.query_type, name='getDynamicLayout', variables=dict(id=sgqlc.types.Arg(sgqlc.types.non_null(_schema.UUID))))
+    _op_get_dynamic_layout = _op.get_dynamic_layout(id=sgqlc.types.Variable('id'))
+    _op_get_dynamic_layout.id()
+    _op_get_dynamic_layout.name()
+    _op_get_dynamic_layout.layout_json()
+    _op_get_dynamic_layout_input_variables = _op_get_dynamic_layout.input_variables()
+    _op_get_dynamic_layout_input_variables.name()
+    return _op
+
+
+def query_generate_embeddings():
+    _op = sgqlc.operation.Operation(_schema_root.query_type, name='GenerateEmbeddings', variables=dict(texts=sgqlc.types.Arg(sgqlc.types.non_null(sgqlc.types.list_of(sgqlc.types.non_null(_schema.String)))), modelOverride=sgqlc.types.Arg(_schema.String)))
+    _op_generate_embeddings = _op.generate_embeddings(texts=sgqlc.types.Variable('texts'), model_override=sgqlc.types.Variable('modelOverride'))
+    _op_generate_embeddings.success()
+    _op_generate_embeddings.code()
+    _op_generate_embeddings.error()
+    _op_generate_embeddings_embeddings = _op_generate_embeddings.embeddings()
+    _op_generate_embeddings_embeddings.text()
+    _op_generate_embeddings_embeddings.vector()
+    return _op
+
+
 def query_chat_completion():
     _op = sgqlc.operation.Operation(_schema_root.query_type, name='ChatCompletion', variables=dict(messages=sgqlc.types.Arg(sgqlc.types.non_null(sgqlc.types.list_of(sgqlc.types.non_null(_schema.LlmChatMessage)))), modelSelection=sgqlc.types.Arg(_schema.LlmModelSelection), llmMeta=sgqlc.types.Arg(_schema.LlmMeta), functions=sgqlc.types.Arg(sgqlc.types.list_of(sgqlc.types.non_null(_schema.LlmFunction)))))
     _op.chat_completion(messages=sgqlc.types.Variable('messages'), model_selection=sgqlc.types.Variable('modelSelection'), llm_meta=sgqlc.types.Variable('llmMeta'), functions=sgqlc.types.Variable('functions'))
@@ -1078,6 +1101,7 @@ class Query:
     chat_thread = query_chat_thread()
     current_user = query_current_user()
     dataframes_for_entry = query_dataframes_for_entry()
+    generate_embeddings = query_generate_embeddings()
     get_async_skill_run_status = query_get_async_skill_run_status()
     get_chat_artifact = query_get_chat_artifact()
     get_chat_artifacts = query_get_chat_artifacts()
@@ -1094,6 +1118,7 @@ class Query:
     get_dataset_kshot_by_id = query_get_dataset_kshot_by_id()
     get_dataset_kshots = query_get_dataset_kshots()
     get_datasets = query_get_datasets()
+    get_dynamic_layout = query_get_dynamic_layout()
     get_grounded_value = query_get_grounded_value()
     get_max_agent_workflow = query_get_max_agent_workflow()
     get_max_llm_prompt = query_get_max_llm_prompt()
