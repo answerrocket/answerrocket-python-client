@@ -1890,6 +1890,7 @@ class Query(sgqlc.types.Type):
         ('prompt_name', sgqlc.types.Arg(sgqlc.types.non_null(String), graphql_name='promptName', default=None)),
         ('prompt_variables', sgqlc.types.Arg(JSON, graphql_name='promptVariables', default=None)),
         ('messages', sgqlc.types.Arg(sgqlc.types.list_of(sgqlc.types.non_null(LlmChatMessage)), graphql_name='messages', default=None)),
+        ('model_selection', sgqlc.types.Arg(LlmModelSelection, graphql_name='modelSelection', default=None)),
         ('llm_meta', sgqlc.types.Arg(LlmMeta, graphql_name='llmMeta', default=None)),
         ('functions', sgqlc.types.Arg(sgqlc.types.list_of(sgqlc.types.non_null(LlmFunction)), graphql_name='functions', default=None)),
 ))
@@ -1898,6 +1899,7 @@ class Query(sgqlc.types.Type):
         ('prompt_name', sgqlc.types.Arg(sgqlc.types.non_null(String), graphql_name='promptName', default=None)),
         ('prompt_variables', sgqlc.types.Arg(JSON, graphql_name='promptVariables', default=None)),
         ('messages', sgqlc.types.Arg(sgqlc.types.list_of(sgqlc.types.non_null(LlmChatMessage)), graphql_name='messages', default=None)),
+        ('model_selection', sgqlc.types.Arg(LlmModelSelection, graphql_name='modelSelection', default=None)),
         ('llm_meta', sgqlc.types.Arg(LlmMeta, graphql_name='llmMeta', default=None)),
         ('functions', sgqlc.types.Arg(sgqlc.types.list_of(sgqlc.types.non_null(LlmFunction)), graphql_name='functions', default=None)),
 ))
