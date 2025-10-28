@@ -89,18 +89,6 @@ def mutation_set_skill_memory():
     return _op
 
 
-def mutation_set_max_agent_workflow():
-    _op = sgqlc.operation.Operation(_schema_root.mutation_type, name='SetMaxAgentWorkflow', variables=dict(entryId=sgqlc.types.Arg(sgqlc.types.non_null(_schema.UUID)), agentRunState=sgqlc.types.Arg(sgqlc.types.non_null(sgqlc.types.list_of(sgqlc.types.non_null(_schema.JSON))))))
-    _op.set_max_agent_workflow(entry_id=sgqlc.types.Variable('entryId'), agent_run_state=sgqlc.types.Variable('agentRunState'))
-    return _op
-
-
-def mutation_import_copilot_skill_from_zip():
-    _op = sgqlc.operation.Operation(_schema_root.mutation_type, name='ImportCopilotSkillFromZip', variables=dict(copilotId=sgqlc.types.Arg(sgqlc.types.non_null(_schema.UUID)), skillName=sgqlc.types.Arg(sgqlc.types.non_null(_schema.String))))
-    _op.import_copilot_skill_from_zip(copilot_id=sgqlc.types.Variable('copilotId'), skill_name=sgqlc.types.Variable('skillName'))
-    return _op
-
-
 def mutation_import_skill_from_repo():
     _op = sgqlc.operation.Operation(_schema_root.mutation_type, name='ImportSkillFromRepo', variables=dict(copilotId=sgqlc.types.Arg(sgqlc.types.non_null(_schema.UUID)), skillName=sgqlc.types.Arg(sgqlc.types.non_null(_schema.String)), repositoryId=sgqlc.types.Arg(sgqlc.types.non_null(_schema.UUID))))
     _op.import_skill_from_repo(copilot_id=sgqlc.types.Variable('copilotId'), skill_name=sgqlc.types.Variable('skillName'), repository_id=sgqlc.types.Variable('repositoryId'))
@@ -131,16 +119,6 @@ def mutation_get_test_run_output():
     return _op
 
 
-def mutation_create_chat_artifact():
-    _op = sgqlc.operation.Operation(_schema_root.mutation_type, name='CreateChatArtifact', variables=dict(chatArtifact=sgqlc.types.Arg(sgqlc.types.non_null(_schema.JSON))))
-    _op.create_chat_artifact(chat_artifact=sgqlc.types.Variable('chatArtifact'))
-    return _op
-
-
-def mutation_delete_chat_artifact():
-    _op = sgqlc.operation.Operation(_schema_root.mutation_type, name='DeleteChatArtifact', variables=dict(chatArtifactId=sgqlc.types.Arg(sgqlc.types.non_null(_schema.UUID))))
-    _op.delete_chat_artifact(chat_artifact_id=sgqlc.types.Variable('chatArtifactId'))
-    return _op
 
 
 def mutation_clear_copilot_cache():
@@ -148,34 +126,6 @@ def mutation_clear_copilot_cache():
     _op_clear_copilot_cache = _op.clear_copilot_cache(copilot_id=sgqlc.types.Variable('copilotId'))
     _op_clear_copilot_cache.success()
     _op_clear_copilot_cache.error()
-    return _op
-
-
-def mutation_create_copilot_test_run():
-    _op = sgqlc.operation.Operation(_schema_root.mutation_type, name='CreateCopilotTestRun', variables=dict(copilotId=sgqlc.types.Arg(sgqlc.types.non_null(_schema.UUID)), questionIds=sgqlc.types.Arg(sgqlc.types.non_null(sgqlc.types.list_of(sgqlc.types.non_null(_schema.UUID)))), modelOverrides=sgqlc.types.Arg(sgqlc.types.list_of(sgqlc.types.non_null(_schema.ModelOverride))), dryRunType=sgqlc.types.Arg(_schema.ChatDryRunType), name=sgqlc.types.Arg(_schema.String)))
-    _op_create_copilot_test_run = _op.create_copilot_test_run(copilot_id=sgqlc.types.Variable('copilotId'), question_ids=sgqlc.types.Variable('questionIds'), model_overrides=sgqlc.types.Variable('modelOverrides'), dry_run_type=sgqlc.types.Variable('dryRunType'), name=sgqlc.types.Variable('name'))
-    _op_create_copilot_test_run.copilot_test_run_id()
-    _op_create_copilot_test_run.code()
-    _op_create_copilot_test_run.success()
-    _op_create_copilot_test_run.errors()
-    return _op
-
-
-def mutation_run_copilot_test_run():
-    _op = sgqlc.operation.Operation(_schema_root.mutation_type, name='RunCopilotTestRun', variables=dict(questionIds=sgqlc.types.Arg(sgqlc.types.non_null(sgqlc.types.list_of(sgqlc.types.non_null(_schema.UUID)))), testRunId=sgqlc.types.Arg(sgqlc.types.non_null(_schema.UUID)), promptMap=sgqlc.types.Arg(sgqlc.types.non_null(_schema.JSON)), overrideUserId=sgqlc.types.Arg(_schema.UUID)))
-    _op_run_copilot_test_run = _op.run_copilot_test_run(question_ids=sgqlc.types.Variable('questionIds'), test_run_id=sgqlc.types.Variable('testRunId'), prompt_map=sgqlc.types.Variable('promptMap'), override_user_id=sgqlc.types.Variable('overrideUserId'))
-    _op_run_copilot_test_run.copilot_test_run_id()
-    _op_run_copilot_test_run.code()
-    _op_run_copilot_test_run.success()
-    _op_run_copilot_test_run.errors()
-    return _op
-
-
-def mutation_cancel_copilot_test_run():
-    _op = sgqlc.operation.Operation(_schema_root.mutation_type, name='CancelCopilotTestRun', variables=dict(copilotId=sgqlc.types.Arg(sgqlc.types.non_null(_schema.UUID)), copilotTestRunId=sgqlc.types.Arg(sgqlc.types.non_null(_schema.UUID))))
-    _op_cancel_copilot_test_run = _op.cancel_copilot_test_run(copilot_id=sgqlc.types.Variable('copilotId'), copilot_test_run_id=sgqlc.types.Variable('copilotTestRunId'))
-    _op_cancel_copilot_test_run.success()
-    _op_cancel_copilot_test_run.error()
     return _op
 
 
@@ -543,29 +493,22 @@ class Mutation:
     add_feedback = mutation_add_feedback()
     ask_chat_question = mutation_ask_chat_question()
     cancel_chat_question = mutation_cancel_chat_question()
-    cancel_copilot_test_run = mutation_cancel_copilot_test_run()
     clear_copilot_cache = mutation_clear_copilot_cache()
-    create_chat_artifact = mutation_create_chat_artifact()
     create_chat_thread = mutation_create_chat_thread()
-    create_copilot_test_run = mutation_create_copilot_test_run()
     create_database_kshot = mutation_create_database_kshot()
     create_dataset = mutation_create_dataset()
     create_dataset_from_table = mutation_create_dataset_from_table()
     create_dataset_kshot = mutation_create_dataset_kshot()
     create_dimension = mutation_create_dimension()
     create_metric = mutation_create_metric()
-    delete_chat_artifact = mutation_delete_chat_artifact()
     delete_database_kshot = mutation_delete_database_kshot()
     delete_dataset_kshot = mutation_delete_dataset_kshot()
     delete_dimension = mutation_delete_dimension()
     delete_metric = mutation_delete_metric()
     get_test_run_output = mutation_get_test_run_output()
-    import_copilot_skill_from_zip = mutation_import_copilot_skill_from_zip()
     import_skill_from_repo = mutation_import_skill_from_repo()
     queue_chat_question = mutation_queue_chat_question()
     run_copilot_skill_async = mutation_run_copilot_skill_async()
-    run_copilot_test_run = mutation_run_copilot_test_run()
-    set_max_agent_workflow = mutation_set_max_agent_workflow()
     set_skill_memory = mutation_set_skill_memory()
     sync_max_skill_repository = mutation_sync_max_skill_repository()
     test_run_copilot_skill = mutation_test_run_copilot_skill()
@@ -660,41 +603,6 @@ def query_all_chat_entries():
 def query_skill_memory():
     _op = sgqlc.operation.Operation(_schema_root.query_type, name='SkillMemory', variables=dict(entryId=sgqlc.types.Arg(sgqlc.types.non_null(_schema.UUID))))
     _op.skill_memory(entry_id=sgqlc.types.Variable('entryId'))
-    return _op
-
-
-def query_get_max_agent_workflow():
-    _op = sgqlc.operation.Operation(_schema_root.query_type, name='GetMaxAgentWorkflow', variables=dict(agentWorkflowId=sgqlc.types.Arg(sgqlc.types.non_null(_schema.UUID)), version=sgqlc.types.Arg(_schema.Int)))
-    _op.get_max_agent_workflow(agent_workflow_id=sgqlc.types.Variable('agentWorkflowId'), version=sgqlc.types.Variable('version'))
-    return _op
-
-
-def query_get_chat_artifact():
-    _op = sgqlc.operation.Operation(_schema_root.query_type, name='GetChatArtifact', variables=dict(chatArtifactId=sgqlc.types.Arg(sgqlc.types.non_null(_schema.UUID))))
-    _op_get_chat_artifact = _op.get_chat_artifact(chat_artifact_id=sgqlc.types.Variable('chatArtifactId'))
-    _op_get_chat_artifact.chat_artifact_id()
-    _op_get_chat_artifact.name()
-    _op_get_chat_artifact.owner_user_id()
-    _op_get_chat_artifact.chat_entry_id()
-    _op_get_chat_artifact.content_block_id()
-    _op_get_chat_artifact.block_data()
-    _op_get_chat_artifact.misc_info()
-    _op_get_chat_artifact.created_utc()
-    return _op
-
-
-def query_get_chat_artifacts():
-    _op = sgqlc.operation.Operation(_schema_root.query_type, name='GetChatArtifacts', variables=dict(searchInput=sgqlc.types.Arg(sgqlc.types.non_null(_schema.ChatArtifactSearchInput)), paging=sgqlc.types.Arg(sgqlc.types.non_null(_schema.PagingInput))))
-    _op_get_chat_artifacts = _op.get_chat_artifacts(search_input=sgqlc.types.Variable('searchInput'), paging=sgqlc.types.Variable('paging'))
-    _op_get_chat_artifacts.total_rows()
-    _op_get_chat_artifacts_rows = _op_get_chat_artifacts.rows()
-    _op_get_chat_artifacts_rows.chat_artifact_id()
-    _op_get_chat_artifacts_rows.name()
-    _op_get_chat_artifacts_rows.owner_user_id()
-    _op_get_chat_artifacts_rows.chat_entry_id()
-    _op_get_chat_artifacts_rows.content_block_id()
-    _op_get_chat_artifacts_rows.misc_info()
-    _op_get_chat_artifacts_rows.created_utc()
     return _op
 
 
@@ -873,99 +781,6 @@ def query_get_copilot_hydrated_reports():
     _op_get_copilot_hydrated_reports.type()
     _op_get_copilot_hydrated_reports.use_predicate_filters()
     _op_get_copilot_hydrated_reports.meta()
-    return _op
-
-
-def query_get_copilot_test_run():
-    _op = sgqlc.operation.Operation(_schema_root.query_type, name='GetCopilotTestRun', variables=dict(copilotId=sgqlc.types.Arg(sgqlc.types.non_null(_schema.UUID)), copilotTestRunId=sgqlc.types.Arg(sgqlc.types.non_null(_schema.UUID))))
-    _op_get_copilot_test_run = _op.get_copilot_test_run(copilot_id=sgqlc.types.Variable('copilotId'), copilot_test_run_id=sgqlc.types.Variable('copilotTestRunId'))
-    _op_get_copilot_test_run.copilot_test_run_id()
-    _op_get_copilot_test_run.name()
-    _op_get_copilot_test_run.initiated_by()
-    _op_get_copilot_test_run_test_run_iterations = _op_get_copilot_test_run.test_run_iterations()
-    _op_get_copilot_test_run_test_run_iterations.copilot_test_run_iteration_id()
-    _op_get_copilot_test_run_test_run_iterations.thread_id()
-    _op_get_copilot_test_run_test_run_iterations.entry_id()
-    _op_get_copilot_test_run_test_run_iterations.copilot_question_id()
-    _op_get_copilot_test_run_test_run_iterations.name()
-    _op_get_copilot_test_run_test_run_iterations.is_loading()
-    _op_get_copilot_test_run_test_run_iterations.evaluation_result()
-    _op_get_copilot_test_run_test_run_iterations_skill_evaluation_results = _op_get_copilot_test_run_test_run_iterations.skill_evaluation_results()
-    _op_get_copilot_test_run_test_run_iterations_skill_evaluation_results.skill_evaluation_result_id()
-    _op_get_copilot_test_run_test_run_iterations_skill_evaluation_results.skill_evaluation_id()
-    _op_get_copilot_test_run_test_run_iterations_skill_evaluation_results.copilot_skill_id()
-    _op_get_copilot_test_run_test_run_iterations_skill_evaluation_results.result()
-    _op_get_copilot_test_run_test_run_iterations_skill_evaluation_results.message()
-    _op_get_copilot_test_run_test_run_iterations_skill_evaluation_results.html()
-    _op_get_copilot_test_run_test_run_iterations.skill_failed()
-    _op_get_copilot_test_run_test_run_iterations.start_utc()
-    _op_get_copilot_test_run_test_run_iterations.end_utc()
-    _op_get_copilot_test_run.total_iterations()
-    _op_get_copilot_test_run.is_loading()
-    _op_get_copilot_test_run.is_canceled()
-    _op_get_copilot_test_run.dry_run_type()
-    _op_get_copilot_test_run.pass_rate()
-    _op_get_copilot_test_run.total_cost()
-    _op_get_copilot_test_run.start_utc()
-    _op_get_copilot_test_run.end_utc()
-    _op_get_copilot_test_run.created_user_id()
-    _op_get_copilot_test_run.created_user_name()
-    _op_get_copilot_test_run_model_overrides = _op_get_copilot_test_run.model_overrides()
-    _op_get_copilot_test_run_model_overrides.model_type()
-    _op_get_copilot_test_run_model_overrides.model_name()
-    return _op
-
-
-def query_get_paged_copilot_test_runs():
-    _op = sgqlc.operation.Operation(_schema_root.query_type, name='GetPagedCopilotTestRuns', variables=dict(copilotId=sgqlc.types.Arg(sgqlc.types.non_null(_schema.UUID)), pageNumber=sgqlc.types.Arg(sgqlc.types.non_null(_schema.Int)), pageSize=sgqlc.types.Arg(sgqlc.types.non_null(_schema.Int))))
-    _op_get_paged_copilot_test_runs = _op.get_paged_copilot_test_runs(copilot_id=sgqlc.types.Variable('copilotId'), page_number=sgqlc.types.Variable('pageNumber'), page_size=sgqlc.types.Variable('pageSize'))
-    _op_get_paged_copilot_test_runs.row_count()
-    _op_get_paged_copilot_test_runs_test_runs = _op_get_paged_copilot_test_runs.test_runs()
-    _op_get_paged_copilot_test_runs_test_runs.copilot_test_run_id()
-    _op_get_paged_copilot_test_runs_test_runs.name()
-    _op_get_paged_copilot_test_runs_test_runs.initiated_by()
-    _op_get_paged_copilot_test_runs_test_runs_test_run_iterations = _op_get_paged_copilot_test_runs_test_runs.test_run_iterations()
-    _op_get_paged_copilot_test_runs_test_runs_test_run_iterations.copilot_test_run_iteration_id()
-    _op_get_paged_copilot_test_runs_test_runs_test_run_iterations.thread_id()
-    _op_get_paged_copilot_test_runs_test_runs_test_run_iterations.entry_id()
-    _op_get_paged_copilot_test_runs_test_runs_test_run_iterations.copilot_question_id()
-    _op_get_paged_copilot_test_runs_test_runs_test_run_iterations.name()
-    _op_get_paged_copilot_test_runs_test_runs_test_run_iterations.is_loading()
-    _op_get_paged_copilot_test_runs_test_runs_test_run_iterations.evaluation_result()
-    _op_get_paged_copilot_test_runs_test_runs_test_run_iterations_skill_evaluation_results = _op_get_paged_copilot_test_runs_test_runs_test_run_iterations.skill_evaluation_results()
-    _op_get_paged_copilot_test_runs_test_runs_test_run_iterations_skill_evaluation_results.skill_evaluation_result_id()
-    _op_get_paged_copilot_test_runs_test_runs_test_run_iterations_skill_evaluation_results.skill_evaluation_id()
-    _op_get_paged_copilot_test_runs_test_runs_test_run_iterations_skill_evaluation_results.copilot_skill_id()
-    _op_get_paged_copilot_test_runs_test_runs_test_run_iterations_skill_evaluation_results.result()
-    _op_get_paged_copilot_test_runs_test_runs_test_run_iterations_skill_evaluation_results.message()
-    _op_get_paged_copilot_test_runs_test_runs_test_run_iterations_skill_evaluation_results.html()
-    _op_get_paged_copilot_test_runs_test_runs_test_run_iterations.skill_failed()
-    _op_get_paged_copilot_test_runs_test_runs_test_run_iterations.start_utc()
-    _op_get_paged_copilot_test_runs_test_runs_test_run_iterations.end_utc()
-    _op_get_paged_copilot_test_runs_test_runs.total_iterations()
-    _op_get_paged_copilot_test_runs_test_runs.is_loading()
-    _op_get_paged_copilot_test_runs_test_runs.is_canceled()
-    _op_get_paged_copilot_test_runs_test_runs.dry_run_type()
-    _op_get_paged_copilot_test_runs_test_runs.pass_rate()
-    _op_get_paged_copilot_test_runs_test_runs.total_cost()
-    _op_get_paged_copilot_test_runs_test_runs.start_utc()
-    _op_get_paged_copilot_test_runs_test_runs.end_utc()
-    _op_get_paged_copilot_test_runs_test_runs.created_user_id()
-    _op_get_paged_copilot_test_runs_test_runs.created_user_name()
-    _op_get_paged_copilot_test_runs_test_runs_model_overrides = _op_get_paged_copilot_test_runs_test_runs.model_overrides()
-    _op_get_paged_copilot_test_runs_test_runs_model_overrides.model_type()
-    _op_get_paged_copilot_test_runs_test_runs_model_overrides.model_name()
-    return _op
-
-
-def query_get_copilot_question_folders():
-    _op = sgqlc.operation.Operation(_schema_root.query_type, name='GetCopilotQuestionFolders', variables=dict(copilotId=sgqlc.types.Arg(sgqlc.types.non_null(_schema.UUID))))
-    _op_get_copilot_question_folders = _op.get_copilot_question_folders(copilot_id=sgqlc.types.Variable('copilotId'))
-    _op_get_copilot_question_folders.copilot_question_folder_id()
-    _op_get_copilot_question_folders.name()
-    _op_get_copilot_question_folders_copilot_questions = _op_get_copilot_question_folders.copilot_questions()
-    _op_get_copilot_question_folders_copilot_questions.copilot_question_id()
-    _op_get_copilot_question_folders_copilot_questions.nl()
     return _op
 
 
@@ -1227,13 +1042,9 @@ class Query:
     dataframes_for_entry = query_dataframes_for_entry()
     generate_embeddings = query_generate_embeddings()
     get_async_skill_run_status = query_get_async_skill_run_status()
-    get_chat_artifact = query_get_chat_artifact()
-    get_chat_artifacts = query_get_chat_artifacts()
     get_copilot_hydrated_reports = query_get_copilot_hydrated_reports()
     get_copilot_info = query_get_copilot_info()
-    get_copilot_question_folders = query_get_copilot_question_folders()
     get_copilot_skill = query_get_copilot_skill()
-    get_copilot_test_run = query_get_copilot_test_run()
     get_copilots = query_get_copilots()
     get_database = query_get_database()
     get_database_kshot_by_id = query_get_database_kshot_by_id()
@@ -1246,9 +1057,7 @@ class Query:
     get_datasets = query_get_datasets()
     get_dynamic_layout = query_get_dynamic_layout()
     get_grounded_value = query_get_grounded_value()
-    get_max_agent_workflow = query_get_max_agent_workflow()
     get_max_llm_prompt = query_get_max_llm_prompt()
-    get_paged_copilot_test_runs = query_get_paged_copilot_test_runs()
     narrative_completion = query_narrative_completion()
     narrative_completion_with_prompt = query_narrative_completion_with_prompt()
     research_completion = query_research_completion()
