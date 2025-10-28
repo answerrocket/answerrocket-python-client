@@ -178,3 +178,126 @@ mutation ClearCopilotCache($copilotId: UUID!) {
         error
     }
 }
+
+query GetCopilotTestRun($copilotId: UUID!, $copilotTestRunId: UUID!) {
+    getCopilotTestRun(copilotId: $copilotId, copilotTestRunId: $copilotTestRunId) {
+        copilotTestRunId
+        name
+        initiatedBy
+        testRunIterations {
+            copilotTestRunIterationId
+            threadId
+            entryId
+            copilotQuestionId
+            name
+            isLoading
+            evaluationResult
+            skillEvaluationResults {
+                skillEvaluationResultId
+                skillEvaluationId
+                copilotSkillId
+                result
+                message
+                html
+            }
+            skillFailed
+            startUtc
+            endUtc
+        }
+        totalIterations
+        isLoading
+        isCanceled
+        dryRunType
+        passRate
+        totalCost
+        startUtc
+        endUtc
+        createdUserId
+        createdUserName
+        modelOverrides {
+            modelType
+            modelName
+        }
+    }
+}
+
+query GetPagedCopilotTestRuns($copilotId: UUID!, $pageNumber: Int!, $pageSize: Int!) {
+    getPagedCopilotTestRuns(copilotId: $copilotId, pageNumber: $pageNumber, pageSize: $pageSize) {
+        rowCount
+        testRuns {
+            copilotTestRunId
+            name
+            initiatedBy
+            testRunIterations {
+                copilotTestRunIterationId
+                threadId
+                entryId
+                copilotQuestionId
+                name
+                isLoading
+                evaluationResult
+                skillEvaluationResults {
+                    skillEvaluationResultId
+                    skillEvaluationId
+                    copilotSkillId
+                    result
+                    message
+                    html
+                }
+                skillFailed
+                startUtc
+                endUtc
+            }
+            totalIterations
+            isLoading
+            isCanceled
+            dryRunType
+            passRate
+            totalCost
+            startUtc
+            endUtc
+            createdUserId
+            createdUserName
+            modelOverrides {
+                modelType
+                modelName
+            }
+        }
+    }
+}
+
+query GetCopilotQuestionFolders($copilotId: UUID!) {
+    getCopilotQuestionFolders(copilotId: $copilotId) {
+        copilotQuestionFolderId
+        name
+        copilotQuestions {
+            copilotQuestionId
+            nl
+        }
+    }
+}
+
+mutation CreateCopilotTestRun($copilotId: UUID!, $questionIds: [UUID!]!, $modelOverrides: [ModelOverride!], $dryRunType: ChatDryRunType, $name: String) {
+    createCopilotTestRun(copilotId: $copilotId, questionIds: $questionIds, modelOverrides: $modelOverrides, dryRunType: $dryRunType, name: $name) {
+        copilotTestRunId
+        code
+        success
+        errors
+    }
+}
+
+mutation RunCopilotTestRun($questionIds: [UUID!]!, $testRunId: UUID!, $promptMap: JSON!, $overrideUserId: UUID) {
+    runCopilotTestRun(questionIds: $questionIds, testRunId: $testRunId, promptMap: $promptMap, overrideUserId: $overrideUserId) {
+        copilotTestRunId
+        code
+        success
+        errors
+    }
+}
+
+mutation CancelCopilotTestRun($copilotId: UUID!, $copilotTestRunId: UUID!) {
+    cancelCopilotTestRun(copilotId: $copilotId, copilotTestRunId: $copilotTestRunId) {
+        success
+        error
+    }
+}

@@ -4,12 +4,14 @@ from uuid import UUID
 
 from answer_rocket.client_config import ClientConfig
 from answer_rocket.graphql.sdk_operations import Operations
-from sgqlc.types import Variable, Arg, non_null, String
+from sgqlc.types import Variable, Arg, non_null, String, Int, list_of
 
 from answer_rocket.graphql.client import GraphQlClient
 from answer_rocket.graphql.schema import UUID as GQL_UUID, MaxCopilotSkill, MaxCopilot, \
     MaxMutationResponse, MaxCopilotQuestionInput, \
-    MaxCreateCopilotQuestionResponse, MaxUser, MaxLLmPrompt, Boolean, HydratedReport
+    MaxCreateCopilotQuestionResponse, MaxUser, MaxLLmPrompt, Boolean, HydratedReport, \
+    CopilotTestRun, PagedCopilotTestRuns, CreateCopilotTestRunResponse, ModelOverride, \
+    ChatDryRunType, JSON, CopilotQuestionFolder
 
 
 class Config:
@@ -33,57 +35,6 @@ class Config:
         self.copilot_id = self._config.copilot_id
         self.copilot_skill_id = self._config.copilot_skill_id
 
-    def get_artifact(self, artifact_path: str) -> str:
-        """
-        artifact path: this is the filepath to your artifact relative to the root of your project.
-        Server-side overrides are keyed on this path and will be fetched first when running inside AnswerRocket
-        """
-        if self._config.is_live_run:
-            server_artifact = self._get_artifact_from_server(artifact_path)
-            if server_artifact:
-                return server_artifact
-
-        # it is possible this could be put inside an else block if the above call were changed to get either the
-        # override or the base artifact if one does not exist
-        with open(_complete_artifact_path(artifact_path, self._config.resource_base_path)) as artifact_file:
-            return artifact_file.read()
-
-    def _get_artifact_from_server(self, artifact_path: str) -> Optional[dict]:
-        """
-        Retrieve an artifact from the server.
-
-        Parameters
-        ----------
-        artifact_path : str
-            The path to the artifact relative to the project root.
-
-        Returns
-        -------
-        dict | None
-            The artifact data if found, None otherwise.
-        """
-        if not self.copilot_id or not self.copilot_skill_id:
-            return None
-        artifact_query_args = {
-            'copilotId': self.copilot_id,
-            'copilotSkillId': self.copilot_skill_id,
-            'artifactPath': artifact_path,
-        }
-        artifact_query_vars = {
-            'copilot_id': Arg(non_null(GQL_UUID)),
-            'copilot_skill_id': Arg(non_null(GQL_UUID)),
-            'artifact_path': Arg(non_null(String)),
-        }
-        operation = self._gql_client.query(variables=artifact_query_vars)
-        copilot_query = operation.get_copilot_skill_artifact_by_path(
-            copilot_id=Variable('copilot_id'),
-            copilot_skill_id=Variable('copilot_skill_id'),
-            artifact_path=Variable('artifact_path'),
-        )
-        copilot_query.artifact()
-        result = self._gql_client.submit(operation, artifact_query_args)
-        if result.get_copilot_skill_artifact_by_path and result.get_copilot_skill_artifact_by_path.artifact:
-            return result.get_copilot_skill_artifact_by_path.artifact
 
     def get_copilots(self) -> list[MaxCopilot]:
         """
@@ -459,6 +410,222 @@ class Config:
             return result.clear_copilot_cache
         except Exception as e:
             return None
+
+    def get_copilot_test_run(self, copilot_test_run_id: UUID, copilot_id: Optional[UUID] = None) -> Optional[CopilotTestRun]:
+        """
+        Retrieve a specific copilot test run by its ID.
+
+        Parameters
+        ----------
+        copilot_test_run_id : UUID
+            The ID of the test run to retrieve.
+        copilot_id : UUID, optional
+            The ID of the copilot. If None, uses the configured copilot ID.
+
+        Returns
+        -------
+        CopilotTestRun | None
+            The test run information, or None if an error occurs.
+        """
+        try:
+            query_args = {
+                'copilotId': str(copilot_id) if copilot_id else self.copilot_id,
+                'copilotTestRunId': str(copilot_test_run_id),
+            }
+
+            op = Operations.query.get_copilot_test_run
+
+            result = self._gql_client.submit(op, query_args)
+
+            return result.get_copilot_test_run
+        except Exception as e:
+            return None
+
+    def get_paged_copilot_test_runs(self, page_number: int = 1, page_size: int = 10, copilot_id: Optional[UUID] = None) -> Optional[PagedCopilotTestRuns]:
+        """
+        Retrieve a paginated list of copilot test runs.
+
+        Parameters
+        ----------
+        page_number : int, optional
+            The page number to retrieve. Defaults to 1.
+        page_size : int, optional
+            The number of test runs per page. Defaults to 10.
+        copilot_id : UUID, optional
+            The ID of the copilot. If None, uses the configured copilot ID.
+
+        Returns
+        -------
+        PagedCopilotTestRuns | None
+            The paginated test runs, or None if an error occurs.
+        """
+        try:
+            query_args = {
+                'copilotId': str(copilot_id) if copilot_id else self.copilot_id,
+                'pageNumber': page_number,
+                'pageSize': page_size,
+            }
+
+            op = Operations.query.get_paged_copilot_test_runs
+
+            result = self._gql_client.submit(op, query_args)
+
+            return result.get_paged_copilot_test_runs
+        except Exception as e:
+            return None
+
+    def create_copilot_test_run(
+        self,
+        question_ids: list[UUID],
+        model_overrides: Optional[list[Dict[str, str]]] = None,
+        dry_run_type: Optional[str] = None,
+        name: Optional[str] = None,
+        copilot_id: Optional[UUID] = None
+    ) -> Optional[CreateCopilotTestRunResponse]:
+        """
+        Create a new copilot test run.
+
+        Parameters
+        ----------
+        question_ids : list[UUID]
+            List of copilot question IDs to test.
+        model_overrides : list[Dict[str, str]], optional
+            List of model override configurations. Each dict should have:
+            - modelType: str (e.g., 'CHAT', 'SQL', 'EVALUATIONS')
+            - modelName: str (e.g., 'gpt-4', 'claude-3-opus')
+        dry_run_type : str, optional
+            The type of dry run to perform.
+        name : str, optional
+            A name for this test run.
+        copilot_id : UUID, optional
+            The ID of the copilot. If None, uses the configured copilot ID.
+
+        Returns
+        -------
+        CreateCopilotTestRunResponse | None
+            The response containing the created test run ID, or None if an error occurs.
+        """
+        try:
+            mutation_args = {
+                'copilotId': str(copilot_id) if copilot_id else self.copilot_id,
+                'questionIds': [str(qid) for qid in question_ids],
+            }
+
+            if model_overrides:
+                mutation_args['modelOverrides'] = model_overrides
+            if dry_run_type:
+                mutation_args['dryRunType'] = dry_run_type
+            if name:
+                mutation_args['name'] = name
+
+            op = Operations.mutation.create_copilot_test_run
+
+            result = self._gql_client.submit(op, mutation_args)
+
+            return result.create_copilot_test_run
+        except Exception as e:
+            return None
+
+    def run_copilot_test_run(
+        self,
+        test_run_id: UUID,
+        question_ids: list[UUID],
+        prompt_map: Dict[str, Any],
+        override_user_id: Optional[UUID] = None
+    ) -> Optional[CreateCopilotTestRunResponse]:
+        """
+        Run an existing copilot test run with specific prompt overrides.
+
+        Parameters
+        ----------
+        test_run_id : UUID
+            The ID of the test run to execute.
+        question_ids : list[UUID]
+            List of copilot question IDs to test.
+        prompt_map : Dict[str, Any]
+            Map of prompt overrides to use for this test run.
+        override_user_id : UUID, optional
+            Optional user ID to run the test as.
+
+        Returns
+        -------
+        CreateCopilotTestRunResponse | None
+            The response containing the test run execution details, or None if an error occurs.
+        """
+        try:
+            mutation_args = {
+                'testRunId': str(test_run_id),
+                'questionIds': [str(qid) for qid in question_ids],
+                'promptMap': prompt_map,
+            }
+
+            if override_user_id:
+                mutation_args['overrideUserId'] = str(override_user_id)
+
+            op = Operations.mutation.run_copilot_test_run
+
+            result = self._gql_client.submit(op, mutation_args)
+
+            return result.run_copilot_test_run
+        except Exception as e:
+            return None
+
+    def cancel_copilot_test_run(self, copilot_test_run_id: UUID, copilot_id: Optional[UUID] = None) -> Optional[MaxMutationResponse]:
+        """
+        Cancel a running copilot test run.
+
+        Parameters
+        ----------
+        copilot_test_run_id : UUID
+            The ID of the test run to cancel.
+        copilot_id : UUID, optional
+            The ID of the copilot. If None, uses the configured copilot ID.
+
+        Returns
+        -------
+        MaxMutationResponse | None
+            The response from the cancel operation, or None if an error occurs.
+        """
+        try:
+            mutation_args = {
+                'copilotId': str(copilot_id) if copilot_id else self.copilot_id,
+                'copilotTestRunId': str(copilot_test_run_id),
+            }
+
+            op = Operations.mutation.cancel_copilot_test_run
+
+            result = self._gql_client.submit(op, mutation_args)
+
+            return result.cancel_copilot_test_run
+        except Exception as e:
+            return None
+
+    def get_copilot_question_folders(self, copilot_id: Optional[UUID] = None) -> list[CopilotQuestionFolder]:
+        """
+        Retrieve all question folders for a copilot, organized by folder with their questions.
+
+        Parameters
+        ----------
+        copilot_id : UUID, optional
+            The ID of the copilot. If None, uses the configured copilot ID.
+
+        Returns
+        -------
+        list[CopilotQuestionFolder]
+            A list of question folders, each containing its questions. Returns empty list if an error occurs.
+        """
+        try:
+            query_args = {
+                'copilotId': str(copilot_id) if copilot_id else self.copilot_id,
+            }
+
+            op = Operations.query.get_copilot_question_folders
+
+            result = self._gql_client.submit(op, query_args)
+
+            return result.get_copilot_question_folders or []
+        except Exception as e:
+            return []
 
 
 def _complete_artifact_path(artifact_path: str, resource_base_path=None) -> str:
