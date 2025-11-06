@@ -331,31 +331,28 @@ class Data:
         -----
         This method uses a GraphQL client to submit a query to fetch the data.
         """
-        try:
-            if not search_input:
-                search_input = DatabaseTableSearchInput(
-                    name_contains=None,
-                )
+        if not search_input:
+            search_input = DatabaseTableSearchInput(
+                name_contains=None,
+            )
 
-            if not paging:
-                paging = PagingInput(
-                    page_num=1,
-                    page_size=100
-                )
+        if not paging:
+            paging = PagingInput(
+                page_num=1,
+                page_size=100
+            )
 
-            query_args = {
-                'databaseId': str(database_id),
-                'searchInput': search_input.__to_json_value__(),
-                'paging': paging.__to_json_value__()
-            }
+        query_args = {
+            'databaseId': str(database_id),
+            'searchInput': search_input.__to_json_value__(),
+            'paging': paging.__to_json_value__()
+        }
 
-            op = Operations.query.get_database_tables
+        op = Operations.query.get_database_tables
 
-            result = self._gql_client.submit(op, query_args)
+        result = self._gql_client.submit(op, query_args)
 
-            return result.get_database_tables
-        except Exception as e:
-            return PagedDatabaseTables()
+        return result.get_database_tables
 
     def get_database_kshots(self, database_id: UUID, search_input: Optional[DatabaseKShotSearchInput]=None, paging: Optional[PagingInput]=None) -> PagedDatabaseKShots:
         """
@@ -788,7 +785,7 @@ class Data:
         
         try:
             query_args = {
-                'datasetId': dataset_id,
+                'datasetId': str(dataset_id),
                 'value': value,
                 'domainEntity': domain_entity,
                 'copilotId': copilot_id or self.copilot_id,
