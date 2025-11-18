@@ -523,6 +523,15 @@ def mutation_delete_dataset_kshot():
     return _op
 
 
+def mutation_send_email():
+    _op = sgqlc.operation.Operation(_schema_root.mutation_type, name='SendEmail', variables=dict(userIds=sgqlc.types.Arg(sgqlc.types.list_of(sgqlc.types.non_null(_schema.UUID))), groupIds=sgqlc.types.Arg(sgqlc.types.list_of(sgqlc.types.non_null(_schema.UUID))), subject=sgqlc.types.Arg(sgqlc.types.non_null(_schema.String)), body=sgqlc.types.Arg(sgqlc.types.non_null(_schema.String)), bodyFormat=sgqlc.types.Arg(_schema.EmailBodyFormat)))
+    _op_send_email = _op.send_email(user_ids=sgqlc.types.Variable('userIds'), group_ids=sgqlc.types.Variable('groupIds'), subject=sgqlc.types.Variable('subject'), body=sgqlc.types.Variable('body'), body_format=sgqlc.types.Variable('bodyFormat'))
+    _op_send_email.success()
+    _op_send_email.recipient_count()
+    _op_send_email.error()
+    return _op
+
+
 def mutation_update_loading_message():
     _op = sgqlc.operation.Operation(_schema_root.mutation_type, name='UpdateLoadingMessage', variables=dict(answerId=sgqlc.types.Arg(sgqlc.types.non_null(_schema.UUID)), message=sgqlc.types.Arg(sgqlc.types.non_null(_schema.String))))
     _op.update_loading_message(answer_id=sgqlc.types.Variable('answerId'), message=sgqlc.types.Variable('message'))
@@ -565,6 +574,7 @@ class Mutation:
     queue_chat_question = mutation_queue_chat_question()
     run_copilot_skill_async = mutation_run_copilot_skill_async()
     run_copilot_test_run = mutation_run_copilot_test_run()
+    send_email = mutation_send_email()
     set_max_agent_workflow = mutation_set_max_agent_workflow()
     set_skill_memory = mutation_set_skill_memory()
     sync_max_skill_repository = mutation_sync_max_skill_repository()
