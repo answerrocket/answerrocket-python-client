@@ -23,8 +23,7 @@ class Email:
         subject: str,
         body: str,
         user_ids: Optional[List[UUID]] = None,
-        group_ids: Optional[List[UUID]] = None,
-        body_format: Optional[str] = None
+        group_ids: Optional[List[UUID]] = None
     ) -> EmailSendResponse:
         """
         Send an email to specified users and/or groups.
@@ -34,14 +33,11 @@ class Email:
         subject : str
             The email subject line.
         body : str
-            The email body content. Format depends on body_format parameter.
+            The email body content.
         user_ids : List[UUID], optional
             List of user IDs to send the email to.
         group_ids : List[UUID], optional
             List of group IDs to send the email to. All members of these groups will receive the email.
-        body_format : str, optional
-            The format of the email body. Valid values are 'HTML' or 'PLAIN_TEXT'.
-            Defaults to 'HTML' if not specified.
 
         Returns
         -------
@@ -53,23 +49,21 @@ class Email:
 
         Examples
         --------
-        Send an HTML email to specific users:
+        Send an email to specific users:
 
         >>> result = max.email.send_email(
         ...     user_ids=[uuid.UUID("12345678-1234-1234-1234-123456789abc")],
         ...     subject="Test Email",
-        ...     body="<h1>Hello!</h1><p>This is a test.</p>",
-        ...     body_format="HTML"
+        ...     body="Hello! This is a test email."
         ... )
         >>> print(f"Sent to {result.recipient_count} recipients")
 
-        Send a plain text email to a group:
+        Send an email to a group:
 
         >>> result = max.email.send_email(
         ...     group_ids=[uuid.UUID("11111111-1111-1111-1111-111111111111")],
         ...     subject="Group Notification",
-        ...     body="This is a plain text notification.",
-        ...     body_format="PLAIN_TEXT"
+        ...     body="This is a notification for the group."
         ... )
         """
         mutation_args = {
@@ -77,7 +71,6 @@ class Email:
             'groupIds': [str(gid) for gid in group_ids] if group_ids else None,
             'subject': subject,
             'body': body,
-            'bodyFormat': body_format,
         }
 
         op = Operations.mutation.send_email

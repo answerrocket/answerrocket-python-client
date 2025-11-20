@@ -33,11 +33,6 @@ class DpsAggMethod(sgqlc.types.Enum):
     __choices__ = ('AVG', 'COUNT', 'CUSTOM', 'MAX', 'MIN', 'NONE', 'SUM')
 
 
-class EmailBodyFormat(sgqlc.types.Enum):
-    __schema__ = schema
-    __choices__ = ('HTML', 'PLAIN_TEXT')
-
-
 class FeedbackType(sgqlc.types.Enum):
     __schema__ = schema
     __choices__ = ('CHAT_NEGATIVE', 'CHAT_POSITIVE')
@@ -1592,7 +1587,6 @@ class Mutation(sgqlc.types.Type):
         ('group_ids', sgqlc.types.Arg(sgqlc.types.list_of(sgqlc.types.non_null(UUID)), graphql_name='groupIds', default=None)),
         ('subject', sgqlc.types.Arg(sgqlc.types.non_null(String), graphql_name='subject', default=None)),
         ('body', sgqlc.types.Arg(sgqlc.types.non_null(String), graphql_name='body', default=None)),
-        ('body_format', sgqlc.types.Arg(EmailBodyFormat, graphql_name='bodyFormat', default='HTML')),
 ))
     )
 
