@@ -980,15 +980,15 @@ def query_get_copilot_question_folders():
 
 
 def query_get_grounded_value():
-    _op = sgqlc.operation.Operation(_schema_root.query_type, name='GetGroundedValue', variables=dict(datasetId=sgqlc.types.Arg(sgqlc.types.non_null(_schema.UUID)), value=sgqlc.types.Arg(sgqlc.types.non_null(_schema.String)), domainEntity=sgqlc.types.Arg(_schema.String), copilotId=sgqlc.types.Arg(_schema.UUID)))
-    _op_get_grounded_value = _op.get_grounded_value(dataset_id=sgqlc.types.Variable('datasetId'), value=sgqlc.types.Variable('value'), domain_entity=sgqlc.types.Variable('domainEntity'), copilot_id=sgqlc.types.Variable('copilotId'))
+    _op = sgqlc.operation.Operation(_schema_root.query_type, name='GetGroundedValue', variables=dict(datasetId=sgqlc.types.Arg(sgqlc.types.non_null(_schema.UUID)), value=sgqlc.types.Arg(sgqlc.types.non_null(_schema.String)), dimensionName=sgqlc.types.Arg(_schema.String), copilotId=sgqlc.types.Arg(_schema.UUID)))
+    _op_get_grounded_value = _op.get_grounded_value(dataset_id=sgqlc.types.Variable('datasetId'), value=sgqlc.types.Variable('value'), dimension_name=sgqlc.types.Variable('dimensionName'), copilot_id=sgqlc.types.Variable('copilotId'))
     _op_get_grounded_value.matched_value()
     _op_get_grounded_value.match_quality()
     _op_get_grounded_value.match_type()
     _op_get_grounded_value.mapped_indicator()
     _op_get_grounded_value.mapped_value()
     _op_get_grounded_value.preferred()
-    _op_get_grounded_value.domain_entity()
+    _op_get_grounded_value.dimension_name()
     _op_get_grounded_value.other_matches()
     return _op
 

@@ -55,6 +55,11 @@ class LlmResponse(sgqlc.types.Scalar):
     __schema__ = schema
 
 
+class MatchType(sgqlc.types.Enum):
+    __schema__ = schema
+    __choices__ = ('DEFAULT', 'EMBEDDED', 'EXACT', 'FUZZY')
+
+
 class MetricType(sgqlc.types.Enum):
     __schema__ = schema
     __choices__ = ('BASIC', 'RATIO', 'SHARE')
@@ -705,17 +710,27 @@ class GenerateVisualizationResponse(sgqlc.types.Type):
     visualization = sgqlc.types.Field(JSON, graphql_name='visualization')
 
 
+class GroundedMatch(sgqlc.types.Type):
+    __schema__ = schema
+    __field_names__ = ('value', 'score', 'match_type', 'dimension_name', 'mapped_value')
+    value = sgqlc.types.Field(sgqlc.types.non_null(String), graphql_name='value')
+    score = sgqlc.types.Field(sgqlc.types.non_null(Float), graphql_name='score')
+    match_type = sgqlc.types.Field(sgqlc.types.non_null(MatchType), graphql_name='matchType')
+    dimension_name = sgqlc.types.Field(String, graphql_name='dimensionName')
+    mapped_value = sgqlc.types.Field(String, graphql_name='mappedValue')
+
+
 class GroundedValueResponse(sgqlc.types.Type):
     __schema__ = schema
-    __field_names__ = ('matched_value', 'match_quality', 'match_type', 'mapped_indicator', 'mapped_value', 'preferred', 'domain_entity', 'other_matches')
+    __field_names__ = ('matched_value', 'match_quality', 'match_type', 'mapped_indicator', 'mapped_value', 'preferred', 'dimension_name', 'other_matches')
     matched_value = sgqlc.types.Field(String, graphql_name='matchedValue')
     match_quality = sgqlc.types.Field(Float, graphql_name='matchQuality')
-    match_type = sgqlc.types.Field(String, graphql_name='matchType')
+    match_type = sgqlc.types.Field(MatchType, graphql_name='matchType')
     mapped_indicator = sgqlc.types.Field(Boolean, graphql_name='mappedIndicator')
     mapped_value = sgqlc.types.Field(String, graphql_name='mappedValue')
     preferred = sgqlc.types.Field(Boolean, graphql_name='preferred')
-    domain_entity = sgqlc.types.Field(String, graphql_name='domainEntity')
-    other_matches = sgqlc.types.Field(sgqlc.types.list_of(sgqlc.types.non_null(JSON)), graphql_name='otherMatches')
+    dimension_name = sgqlc.types.Field(String, graphql_name='dimensionName')
+    other_matches = sgqlc.types.Field(sgqlc.types.list_of(sgqlc.types.non_null(GroundedMatch)), graphql_name='otherMatches')
 
 
 class HydratedReport(sgqlc.types.Type):
@@ -1772,7 +1787,7 @@ class Query(sgqlc.types.Type):
     )
     get_grounded_value = sgqlc.types.Field(GroundedValueResponse, graphql_name='getGroundedValue', args=sgqlc.types.ArgDict((
         ('dataset_id', sgqlc.types.Arg(sgqlc.types.non_null(UUID), graphql_name='datasetId', default=None)),
-        ('domain_entity', sgqlc.types.Arg(String, graphql_name='domainEntity', default=None)),
+        ('dimension_name', sgqlc.types.Arg(String, graphql_name='dimensionName', default=None)),
         ('value', sgqlc.types.Arg(sgqlc.types.non_null(String), graphql_name='value', default=None)),
         ('copilot_id', sgqlc.types.Arg(UUID, graphql_name='copilotId', default=None)),
 ))

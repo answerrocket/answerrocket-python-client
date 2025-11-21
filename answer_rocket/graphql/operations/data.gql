@@ -1,13 +1,13 @@
 query GetGroundedValue(
   $datasetId: UUID!
   $value: String!
-  $domainEntity: String
+  $dimensionName: String
   $copilotId: UUID
 ) {
   getGroundedValue(
     datasetId: $datasetId
     value: $value
-    domainEntity: $domainEntity
+    dimensionName: $dimensionName
     copilotId: $copilotId
   ) {
     matchedValue
@@ -16,7 +16,7 @@ query GetGroundedValue(
     mappedIndicator
     mappedValue
     preferred
-    domainEntity
+    dimensionName
     otherMatches
   }
 }
