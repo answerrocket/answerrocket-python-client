@@ -761,7 +761,7 @@ class Data:
 
             return domain_object_result
 
-    def get_grounded_value(self, dataset_id: UUID, value: str, domain_entity: Optional[str] = None, copilot_id: Optional[UUID] = None) -> GroundedValueResponse:
+    def get_grounded_value(self, dataset_id: UUID, value: str, dimension_name: Optional[str] = None, copilot_id: Optional[UUID] = None) -> GroundedValueResponse:
         """
         Get grounded values for fuzzy matching against domain values.
 
@@ -771,9 +771,9 @@ class Data:
             The UUID of the dataset.
         value : str
             The value to ground (single string).
-        domain_entity : str, optional
-            The domain entity to search within. Can be "metrics", "dimensions",
-            a specific domain attribute name, or None to search all. Defaults to None.
+        dimension_name : str, optional
+            The dimension name to search within. Can be
+            a specific dimension attribute name, or None to search all. Defaults to None.
         copilot_id : UUID, optional
             The UUID of the copilot. Defaults to the configured copilot_id.
 
@@ -787,7 +787,7 @@ class Data:
             query_args = {
                 'datasetId': str(dataset_id),
                 'value': value,
-                'domainEntity': domain_entity,
+                'dimensionName': dimension_name,
                 'copilotId': copilot_id or self.copilot_id,
             }
     
