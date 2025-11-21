@@ -9,13 +9,14 @@ from answer_rocket.output import OutputBuilder
 from answer_rocket.skill import Skill
 from answer_rocket.llm import Llm
 from answer_rocket.layouts import DynamicLayouts
+from answer_rocket.email import Email
 
 
 class AnswerRocketClient:
 	"""
 	Main client for interacting with AnswerRocket services.
 
-	Provides access to data, configuration, chat, output building, skills, and LLM functionality.
+	Provides access to data, configuration, chat, output building, skills, email, and LLM functionality.
 	"""
 
 	def __init__(self, url: Optional[str] = None, token: Optional[str] = None, tenant: str = None):
@@ -40,6 +41,7 @@ class AnswerRocketClient:
 		self.skill = Skill(self._client_config, self._gql_client)
 		self.llm = Llm(self._client_config, self._gql_client)
 		self.dynamic_layouts = DynamicLayouts(self._client_config, self._gql_client)
+		self.email = Email(self._client_config, self._gql_client)
 
 	def can_connect(self) -> bool:
 		"""

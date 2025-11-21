@@ -634,6 +634,14 @@ class DomainObjectResponse(sgqlc.types.Type):
     domain_object = sgqlc.types.Field(MaxDomainObject, graphql_name='domainObject')
 
 
+class EmailSendResponse(sgqlc.types.Type):
+    __schema__ = schema
+    __field_names__ = ('success', 'recipient_count', 'error')
+    success = sgqlc.types.Field(sgqlc.types.non_null(Boolean), graphql_name='success')
+    recipient_count = sgqlc.types.Field(sgqlc.types.non_null(Int), graphql_name='recipientCount')
+    error = sgqlc.types.Field(String, graphql_name='error')
+
+
 class EmbeddingResult(sgqlc.types.Type):
     __schema__ = schema
     __field_names__ = ('text', 'vector')
@@ -1204,7 +1212,7 @@ class ModelOverrideResult(sgqlc.types.Type):
 
 class Mutation(sgqlc.types.Type):
     __schema__ = schema
-    __field_names__ = ('create_max_copilot_skill_chat_question', 'update_max_copilot_skill_chat_question', 'delete_max_copilot_skill_chat_question', 'create_max_copilot_question', 'update_max_copilot_question', 'delete_max_copilot_question', 'run_copilot_skill_async', 'clear_copilot_cache', 'create_copilot_test_run', 'run_copilot_test_run', 'cancel_copilot_test_run', 'set_max_agent_workflow', 'import_copilot_skill_from_zip', 'sync_max_skill_repository', 'import_skill_from_repo', 'test_run_copilot_skill', 'get_test_run_output', 'reload_dataset', 'update_database_name', 'update_database_description', 'update_database_llm_description', 'update_database_mermaid_er_diagram', 'update_database_kshot_limit', 'update_dataset_name', 'update_dataset_description', 'update_dataset_date_range', 'update_dataset_data_interval', 'update_dataset_misc_info', 'update_dataset_source', 'update_dataset_query_row_limit', 'update_dataset_use_database_casing', 'update_dataset_kshot_limit', 'create_dataset', 'create_dataset_from_table', 'create_dimension', 'update_dimension', 'delete_dimension', 'create_metric', 'update_metric', 'delete_metric', 'create_database_kshot', 'update_database_kshot_question', 'update_database_kshot_rendered_prompt', 'update_database_kshot_explanation', 'update_database_kshot_sql', 'update_database_kshot_title', 'update_database_kshot_visualization', 'delete_database_kshot', 'create_dataset_kshot', 'update_dataset_kshot_question', 'update_dataset_kshot_rendered_prompt', 'update_dataset_kshot_explanation', 'update_dataset_kshot_sql', 'update_dataset_kshot_title', 'update_dataset_kshot_visualization', 'delete_dataset_kshot', 'update_chat_answer_payload', 'ask_chat_question', 'evaluate_chat_question', 'queue_chat_question', 'cancel_chat_question', 'create_chat_thread', 'add_feedback', 'set_skill_memory', 'share_thread', 'update_loading_message', 'create_chat_artifact', 'delete_chat_artifact')
+    __field_names__ = ('create_max_copilot_skill_chat_question', 'update_max_copilot_skill_chat_question', 'delete_max_copilot_skill_chat_question', 'create_max_copilot_question', 'update_max_copilot_question', 'delete_max_copilot_question', 'run_copilot_skill_async', 'clear_copilot_cache', 'create_copilot_test_run', 'run_copilot_test_run', 'cancel_copilot_test_run', 'set_max_agent_workflow', 'import_copilot_skill_from_zip', 'sync_max_skill_repository', 'import_skill_from_repo', 'test_run_copilot_skill', 'get_test_run_output', 'reload_dataset', 'update_database_name', 'update_database_description', 'update_database_llm_description', 'update_database_mermaid_er_diagram', 'update_database_kshot_limit', 'update_dataset_name', 'update_dataset_description', 'update_dataset_date_range', 'update_dataset_data_interval', 'update_dataset_misc_info', 'update_dataset_source', 'update_dataset_query_row_limit', 'update_dataset_use_database_casing', 'update_dataset_kshot_limit', 'create_dataset', 'create_dataset_from_table', 'create_dimension', 'update_dimension', 'delete_dimension', 'create_metric', 'update_metric', 'delete_metric', 'create_database_kshot', 'update_database_kshot_question', 'update_database_kshot_rendered_prompt', 'update_database_kshot_explanation', 'update_database_kshot_sql', 'update_database_kshot_title', 'update_database_kshot_visualization', 'delete_database_kshot', 'create_dataset_kshot', 'update_dataset_kshot_question', 'update_dataset_kshot_rendered_prompt', 'update_dataset_kshot_explanation', 'update_dataset_kshot_sql', 'update_dataset_kshot_title', 'update_dataset_kshot_visualization', 'delete_dataset_kshot', 'update_chat_answer_payload', 'ask_chat_question', 'evaluate_chat_question', 'queue_chat_question', 'cancel_chat_question', 'create_chat_thread', 'add_feedback', 'set_skill_memory', 'share_thread', 'update_loading_message', 'create_chat_artifact', 'delete_chat_artifact', 'send_email')
     create_max_copilot_skill_chat_question = sgqlc.types.Field(sgqlc.types.non_null(CreateMaxCopilotSkillChatQuestionResponse), graphql_name='createMaxCopilotSkillChatQuestion', args=sgqlc.types.ArgDict((
         ('copilot_id', sgqlc.types.Arg(sgqlc.types.non_null(UUID), graphql_name='copilotId', default=None)),
         ('copilot_skill_id', sgqlc.types.Arg(sgqlc.types.non_null(UUID), graphql_name='copilotSkillId', default=None)),
@@ -1572,6 +1580,13 @@ class Mutation(sgqlc.types.Type):
     )
     delete_chat_artifact = sgqlc.types.Field(sgqlc.types.non_null(MaxMutationResponse), graphql_name='deleteChatArtifact', args=sgqlc.types.ArgDict((
         ('chat_artifact_id', sgqlc.types.Arg(sgqlc.types.non_null(UUID), graphql_name='chatArtifactId', default=None)),
+))
+    )
+    send_email = sgqlc.types.Field(sgqlc.types.non_null(EmailSendResponse), graphql_name='sendEmail', args=sgqlc.types.ArgDict((
+        ('user_ids', sgqlc.types.Arg(sgqlc.types.list_of(sgqlc.types.non_null(UUID)), graphql_name='userIds', default=None)),
+        ('group_ids', sgqlc.types.Arg(sgqlc.types.list_of(sgqlc.types.non_null(UUID)), graphql_name='groupIds', default=None)),
+        ('subject', sgqlc.types.Arg(sgqlc.types.non_null(String), graphql_name='subject', default=None)),
+        ('body', sgqlc.types.Arg(sgqlc.types.non_null(String), graphql_name='body', default=None)),
 ))
     )
 

@@ -1,0 +1,17 @@
+mutation SendEmail(
+  $userIds: [UUID!]
+  $groupIds: [UUID!]
+  $subject: String!
+  $body: String!
+) {
+  sendEmail(
+    userIds: $userIds
+    groupIds: $groupIds
+    subject: $subject
+    body: $body
+  ) {
+    success
+    recipientCount
+    error
+  }
+}
