@@ -23,7 +23,8 @@ class Email:
         subject: str,
         body: str,
         user_ids: Optional[List[UUID]] = None,
-        group_ids: Optional[List[UUID]] = None
+        group_ids: Optional[List[UUID]] = None,
+        attachments: Optional[List[dict]] = None
     ) -> EmailSendResponse:
         """
         Send an email to specified users and/or groups.
@@ -38,6 +39,11 @@ class Email:
             List of user IDs to send the email to.
         group_ids : List[UUID], optional
             List of group IDs to send the email to. All members of these groups will receive the email.
+        attachments : List[dict], optional
+            List of email attachments. Each attachment should be a dictionary with:
+            - filename: str - Name of the file
+            - payload: str - Base64-encoded file content
+            - type: str - MIME type (e.g., 'text/plain', 'application/pdf')
 
         Returns
         -------
@@ -65,12 +71,29 @@ class Email:
         ...     subject="Group Notification",
         ...     body="This is a notification for the group."
         ... )
+
+        Send an email with attachments:
+
+        >>> import base64
+        >>> with open('report.pdf', 'rb') as f:
+        ...     pdf_content = base64.b64encode(f.read()).decode('utf-8')
+        >>> result = max.email.send_email(
+        ...     user_ids=[uuid.UUID("12345678-1234-1234-1234-123456789abc")],
+        ...     subject="Monthly Report",
+        ...     body="Please find the attached report.",
+        ...     attachments=[{
+        ...         'filename': 'report.pdf',
+        ...         'payload': pdf_content,
+        ...         'type': 'application/pdf'
+        ...     }]
+        ... )
         """
         mutation_args = {
             'userIds': [str(uid) for uid in user_ids] if user_ids else None,
             'groupIds': [str(gid) for gid in group_ids] if group_ids else None,
             'subject': subject,
             'body': body,
+            'attachments': attachments if attachments else None,
         }
 
         op = Operations.mutation.send_email

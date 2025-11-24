@@ -524,8 +524,8 @@ def mutation_delete_dataset_kshot():
 
 
 def mutation_send_email():
-    _op = sgqlc.operation.Operation(_schema_root.mutation_type, name='SendEmail', variables=dict(userIds=sgqlc.types.Arg(sgqlc.types.list_of(sgqlc.types.non_null(_schema.UUID))), groupIds=sgqlc.types.Arg(sgqlc.types.list_of(sgqlc.types.non_null(_schema.UUID))), subject=sgqlc.types.Arg(sgqlc.types.non_null(_schema.String)), body=sgqlc.types.Arg(sgqlc.types.non_null(_schema.String))))
-    _op_send_email = _op.send_email(user_ids=sgqlc.types.Variable('userIds'), group_ids=sgqlc.types.Variable('groupIds'), subject=sgqlc.types.Variable('subject'), body=sgqlc.types.Variable('body'))
+    _op = sgqlc.operation.Operation(_schema_root.mutation_type, name='SendEmail', variables=dict(userIds=sgqlc.types.Arg(sgqlc.types.list_of(sgqlc.types.non_null(_schema.UUID))), groupIds=sgqlc.types.Arg(sgqlc.types.list_of(sgqlc.types.non_null(_schema.UUID))), subject=sgqlc.types.Arg(sgqlc.types.non_null(_schema.String)), body=sgqlc.types.Arg(sgqlc.types.non_null(_schema.String)), attachments=sgqlc.types.Arg(sgqlc.types.list_of(sgqlc.types.non_null(_schema.EmailAttachment)))))
+    _op_send_email = _op.send_email(user_ids=sgqlc.types.Variable('userIds'), group_ids=sgqlc.types.Variable('groupIds'), subject=sgqlc.types.Variable('subject'), body=sgqlc.types.Variable('body'), attachments=sgqlc.types.Variable('attachments'))
     _op_send_email.success()
     _op_send_email.recipient_count()
     _op_send_email.error()

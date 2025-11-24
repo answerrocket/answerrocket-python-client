@@ -3,12 +3,14 @@ mutation SendEmail(
   $groupIds: [UUID!]
   $subject: String!
   $body: String!
+  $attachments: [EmailAttachment!]
 ) {
   sendEmail(
     userIds: $userIds
     groupIds: $groupIds
     subject: $subject
     body: $body
+    attachments: $attachments
   ) {
     success
     recipientCount

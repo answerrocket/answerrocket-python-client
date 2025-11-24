@@ -148,6 +148,14 @@ class DatasetSearchInput(sgqlc.types.Input):
     name_contains = sgqlc.types.Field(String, graphql_name='nameContains')
 
 
+class EmailAttachment(sgqlc.types.Input):
+    __schema__ = schema
+    __field_names__ = ('filename', 'payload', 'type')
+    filename = sgqlc.types.Field(sgqlc.types.non_null(String), graphql_name='filename')
+    payload = sgqlc.types.Field(sgqlc.types.non_null(String), graphql_name='payload')
+    type = sgqlc.types.Field(sgqlc.types.non_null(String), graphql_name='type')
+
+
 class FunctionCallMessageInput(sgqlc.types.Input):
     __schema__ = schema
     __field_names__ = ('name', 'arguments')
@@ -1602,6 +1610,7 @@ class Mutation(sgqlc.types.Type):
         ('group_ids', sgqlc.types.Arg(sgqlc.types.list_of(sgqlc.types.non_null(UUID)), graphql_name='groupIds', default=None)),
         ('subject', sgqlc.types.Arg(sgqlc.types.non_null(String), graphql_name='subject', default=None)),
         ('body', sgqlc.types.Arg(sgqlc.types.non_null(String), graphql_name='body', default=None)),
+        ('attachments', sgqlc.types.Arg(sgqlc.types.list_of(sgqlc.types.non_null(EmailAttachment)), graphql_name='attachments', default=None)),
 ))
     )
 
