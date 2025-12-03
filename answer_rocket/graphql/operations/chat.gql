@@ -9,6 +9,7 @@ mutation AskChatQuestion(
   $history: [MessageHistoryInput!]
   $questionType: QuestionType
   $threadType: ThreadType
+  $pipelineType: PipelineType
 ) {
   askChatQuestion(
     copilotId: $copilotId
@@ -21,6 +22,7 @@ mutation AskChatQuestion(
     history: $history
     questionType: $questionType
     threadType: $threadType
+    pipelineType: $pipelineType
   ) {
     id
     threadId
@@ -37,6 +39,7 @@ mutation QueueChatQuestion(
   $modelOverrides: [ModelOverride]
   $indicatedSkills: [String]
   $history: [MessageHistoryInput!]
+  $pipelineType: PipelineType
 ) {
   queueChatQuestion(
     threadId: $threadId
@@ -45,6 +48,7 @@ mutation QueueChatQuestion(
     modelOverrides: $modelOverrides
     indicatedSkills: $indicatedSkills
     history: $history
+    pipelineType: $pipelineType
   ) {
     threadId
     id
@@ -76,6 +80,8 @@ fragment ChatResultFragment on MaxChatResult {
       title
       layoutJson
     }
+    preview
+    finalMessage
   }
   threadId
   userId
@@ -149,11 +155,11 @@ query AllChatEntries($offset: Int, $limit: Int, $filters: JSON) {
   }
 }
 
-mutation CreateChatThread($copilotId: UUID!) {
-  createChatThread(copilotId: $copilotId) {
-    id
-    copilotId
-  }
+mutation CreateChatThread($copilotId: UUID!, $threadType: ThreadType) {
+    createChatThread(copilotId: $copilotId, threadType: $threadType) {
+        id
+        copilotId
+    }
 }
 
 mutation AddFeedback(

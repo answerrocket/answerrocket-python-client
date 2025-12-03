@@ -4,12 +4,14 @@ from uuid import UUID
 
 from answer_rocket.client_config import ClientConfig
 from answer_rocket.graphql.sdk_operations import Operations
-from sgqlc.types import Variable, Arg, non_null, String
+from sgqlc.types import Variable, Arg, non_null, String, Int, list_of
 
 from answer_rocket.graphql.client import GraphQlClient
 from answer_rocket.graphql.schema import UUID as GQL_UUID, MaxCopilotSkill, MaxCopilot, \
     MaxMutationResponse, MaxCopilotQuestionInput, \
-    MaxCreateCopilotQuestionResponse, MaxUser, MaxSkillComponent, MaxLLmPrompt, Boolean, HydratedReport
+    MaxCreateCopilotQuestionResponse, MaxUser, MaxLLmPrompt, Boolean, HydratedReport, \
+    CopilotTestRun, PagedCopilotTestRuns, CreateCopilotTestRunResponse, ModelOverride, \
+    ChatDryRunType, JSON, CopilotQuestionFolder
 
 
 class Config:
@@ -18,65 +20,30 @@ class Config:
     """
 
     def __init__(self, config: ClientConfig, gql_client: GraphQlClient) -> None:
+        """
+        Initialize the Config helper.
+
+        Parameters
+        ----------
+        config : ClientConfig
+            The client configuration containing copilot and connection details.
+        gql_client : GraphQlClient
+            The GraphQL client for making server requests.
+        """
         self._gql_client = gql_client
         self._config = config
         self.copilot_id = self._config.copilot_id
         self.copilot_skill_id = self._config.copilot_skill_id
 
-    def get_artifact(self, artifact_path: str) -> str:
-        """
-        artifact path: this is the filepath to your artifact relative to the root of your project.
-        Server-side overrides are keyed on this path and will be fetched first when running inside AnswerRocket
-        """
-        if self._config.is_live_run:
-            server_artifact = self._get_artifact_from_server(artifact_path)
-            if server_artifact:
-                return server_artifact
-
-        # it is possible this could be put inside an else block if the above call were changed to get either the
-        # override or the base artifact if one does not exist
-        with open(_complete_artifact_path(artifact_path, self._config.resource_base_path)) as artifact_file:
-            return artifact_file.read()
-
-    def _get_artifact_from_server(self, artifact_path: str) -> Optional[dict]:
-        """
-        Retrieve an artifact
-
-        Args:
-            artifact_path (str): The path to the artifact relative to the project root.
-
-        Returns:
-            Optional[dict]: The artifact data if found, None otherwise.
-        """
-        if not self.copilot_id or not self.copilot_skill_id:
-            return None
-        artifact_query_args = {
-            'copilotId': self.copilot_id,
-            'copilotSkillId': self.copilot_skill_id,
-            'artifactPath': artifact_path,
-        }
-        artifact_query_vars = {
-            'copilot_id': Arg(non_null(GQL_UUID)),
-            'copilot_skill_id': Arg(non_null(GQL_UUID)),
-            'artifact_path': Arg(non_null(String)),
-        }
-        operation = self._gql_client.query(variables=artifact_query_vars)
-        copilot_query = operation.get_copilot_skill_artifact_by_path(
-            copilot_id=Variable('copilot_id'),
-            copilot_skill_id=Variable('copilot_skill_id'),
-            artifact_path=Variable('artifact_path'),
-        )
-        copilot_query.artifact()
-        result = self._gql_client.submit(operation, artifact_query_args)
-        if result.get_copilot_skill_artifact_by_path and result.get_copilot_skill_artifact_by_path.artifact:
-            return result.get_copilot_skill_artifact_by_path.artifact
 
     def get_copilots(self) -> list[MaxCopilot]:
         """
-        Retrieves all copilots available to the user with their metadata.
+        Retrieve all copilots available to the user with their metadata.
 
-        Returns:
-            list[MaxCopilot]: A list of MaxCopilot objects.
+        Returns
+        -------
+        list[MaxCopilot]
+            A list of MaxCopilot objects.
         """
         try:
             op = Operations.query.get_copilots
@@ -91,12 +58,17 @@ class Config:
         """
         Retrieve information about a specific copilot.
 
-        Args:
-            use_published_version (bool, optional): Whether to use the published version. Defaults to True.
-            copilot_id (str, optional): The ID of the copilot. If None, uses the configured copilot ID.
+        Parameters
+        ----------
+        use_published_version : bool, optional
+            Whether to use the published version. Defaults to True.
+        copilot_id : str, optional
+            The ID of the copilot. If None, uses the configured copilot ID.
 
-        Returns:
-            MaxCopilot: The copilot information, or None if an error occurs.
+        Returns
+        -------
+        MaxCopilot | None
+            The copilot information, or None if an error occurs.
         """
         try:
             query_args = {
@@ -129,13 +101,19 @@ class Config:
         """
         Retrieve information about a specific copilot skill.
 
-        Args:
-            use_published_version (bool, optional): Whether to use the published version. Defaults to True.
-            copilot_id (str, optional): The ID of the copilot. If None, uses the configured copilot ID.
-            copilot_skill_id (str, optional): The ID of the copilot skill. If None, uses the configured skill ID.
+        Parameters
+        ----------
+        use_published_version : bool, optional
+            Whether to use the published version. Defaults to True.
+        copilot_id : str, optional
+            The ID of the copilot. If None, uses the configured copilot ID.
+        copilot_skill_id : str, optional
+            The ID of the copilot skill. If None, uses the configured skill ID.
 
-        Returns:
-            MaxCopilotSkill: The copilot skill information, or None if an error occurs.
+        Returns
+        -------
+        MaxCopilotSkill | None
+            The copilot skill information, or None if an error occurs.
         """
         try:
             query_args = {
@@ -152,42 +130,23 @@ class Config:
         except Exception as e:
             return None
 
-    def get_skill_components(self) -> [MaxSkillComponent]:
-        """
-        Retrieve all available skill components.
-
-        Returns:
-            list[MaxSkillComponent]: A list of skill components, or None if an error occurs.
-        """
-        try:
-            query_args = {
-            }
-
-            query_vars = {
-            }
-
-            operation = self._gql_client.query(variables=query_vars)
-
-            gql_query = operation.get_skill_components(
-            )
-
-            result = self._gql_client.submit(operation, query_args)
-
-            skill_components = result.get_skill_components
-
-            return skill_components
-        except Exception as e:
-            return None
-
     def get_copilot_hydrated_reports(self, copilot_id: Optional[str] = None, override_dataset_id: Optional[str] = None, load_all_skills: bool = False) -> [HydratedReport]:
         """
         Get hydrated reports for a copilot.
 
-        :param copilot_id: The copilot ID (defaults to the configured copilot_id)
-        :param override_dataset_id: Optional dataset ID to override the copilot's default dataset
-        :param load_all_skills: Whether to load all skills or just active ones (defaults to False)
+        Parameters
+        ----------
+        copilot_id : str, optional
+            The copilot ID. Defaults to the configured copilot_id.
+        override_dataset_id : str, optional
+            Optional dataset ID to override the copilot's default dataset.
+        load_all_skills : bool, optional
+            Whether to load all skills or just active ones. Defaults to False.
 
-        :returns List of hydrated report objects
+        Returns
+        -------
+        list[HydratedReport] | None
+            List of hydrated report objects, or None if an error occurs.
         """
         try:
             effective_copilot_id = copilot_id or self.copilot_id
@@ -216,14 +175,21 @@ class Config:
         """
         Create a new copilot question.
 
-        Args:
-            nl (str): The natural language question.
-            skill_id (UUID, optional): The ID of the skill to associate with the question.
-            hint (str, optional): A hint for the question.
-            parameters: Additional parameters for the question.
+        Parameters
+        ----------
+        nl : str
+            The natural language question.
+        skill_id : UUID, optional
+            The ID of the skill to associate with the question.
+        hint : str, optional
+            A hint for the question.
+        parameters : Any, optional
+            Additional parameters for the question.
 
-        Returns:
-            MaxCreateCopilotQuestionResponse: The response containing the created question, or None if an error occurs.
+        Returns
+        -------
+        MaxCreateCopilotQuestionResponse | None
+            The response containing the created question, or None if an error occurs.
         """
         try:
             mutation_args = {
@@ -260,15 +226,23 @@ class Config:
         """
         Update an existing copilot question.
 
-        Args:
-            copilot_question_id (UUID): The ID of the question to update.
-            nl (str, optional): The updated natural language question.
-            skill_id (UUID, optional): The updated skill ID.
-            hint (str, optional): The updated hint.
-            parameters: The updated parameters.
+        Parameters
+        ----------
+        copilot_question_id : UUID
+            The ID of the question to update.
+        nl : str, optional
+            The updated natural language question.
+        skill_id : UUID, optional
+            The updated skill ID.
+        hint : str, optional
+            The updated hint.
+        parameters : Any, optional
+            The updated parameters.
 
-        Returns:
-            MaxMutationResponse: The mutation response, or None if an error occurs.
+        Returns
+        -------
+        MaxMutationResponse | None
+            The mutation response, or None if an error occurs.
         """
         try:
             mutation_args = {
@@ -308,11 +282,15 @@ class Config:
         """
         Delete a copilot question.
 
-        Args:
-            copilot_question_id (UUID): The ID of the question to delete.
+        Parameters
+        ----------
+        copilot_question_id : UUID
+            The ID of the question to delete.
 
-        Returns:
-            MaxMutationResponse: The mutation response, or None if an error occurs.
+        Returns
+        -------
+        MaxMutationResponse | None
+            The mutation response, or None if an error occurs.
         """
         try:
             mutation_args = {
@@ -344,25 +322,19 @@ class Config:
         """
         Retrieve information about the current authenticated user.
 
-        Returns:
-            MaxUser: The current user information, or None if an error occurs.
+        Returns
+        -------
+        MaxUser | None
+            The current user information, or None if an error occurs.
         """
         try:
-            query_args = {
-            }
+            query_args = {}
 
-            query_vars = {
-            }
+            op = Operations.query.current_user
 
-            operation = self._gql_client.query(variables=query_vars)
+            result = self._gql_client.submit(op, query_args)
 
-            operation.current_user()
-
-            result = self._gql_client.submit(operation, query_args)
-
-            max_user = result.current_user
-
-            return max_user
+            return result.current_user
         except Exception as e:
             return None
 
@@ -375,13 +347,19 @@ class Config:
         """
         Retrieve an LLM prompt with template variables and k-shot matching.
 
-        Args:
-            llm_prompt_id (UUID): The ID of the LLM prompt to retrieve.
-            template_vars (Dict[str, Any]): Template variables to substitute in the prompt.
-            k_shot_match (str): The k-shot matching criteria.
+        Parameters
+        ----------
+        llm_prompt_id : UUID
+            The ID of the LLM prompt to retrieve.
+        template_vars : Dict[str, Any]
+            Template variables to substitute in the prompt.
+        k_shot_match : str
+            The k-shot matching criteria.
 
-        Returns:
-            MaxLLmPrompt: The LLM prompt with substitutions applied, or None if an error occurs.
+        Returns
+        -------
+        MaxLLmPrompt | None
+            The LLM prompt with substitutions applied, or None if an error occurs.
         """
         try:
             query_args = {
@@ -397,6 +375,257 @@ class Config:
             return result.get_max_llm_prompt
         except Exception as e:
             return None
+
+    def clear_copilot_cache(self, copilot_id: UUID = None) -> MaxMutationResponse:
+        """
+        Clear the cache for a copilot.
+
+        Parameters
+        ----------
+        copilot_id : UUID, optional
+            The ID of the copilot to clear cache for. If None, uses the configured copilot ID.
+
+        Returns
+        -------
+        MaxMutationResponse
+            The response from the clear cache operation, or None if an error occurs.
+        """
+        try:
+            mutation_args = {
+                'copilotId': str(copilot_id) if copilot_id else self.copilot_id,
+            }
+
+            mutation_vars = {
+                'copilot_id': Arg(non_null(GQL_UUID)),
+            }
+
+            operation = self._gql_client.mutation(variables=mutation_vars)
+
+            operation.clear_copilot_cache(
+                copilot_id=Variable('copilot_id')
+            )
+
+            result = self._gql_client.submit(operation, mutation_args)
+
+            return result.clear_copilot_cache
+        except Exception as e:
+            return None
+
+    def get_copilot_test_run(self, copilot_test_run_id: UUID, copilot_id: Optional[UUID] = None) -> Optional[CopilotTestRun]:
+        """
+        Retrieve a specific copilot test run by its ID.
+
+        Parameters
+        ----------
+        copilot_test_run_id : UUID
+            The ID of the test run to retrieve.
+        copilot_id : UUID, optional
+            The ID of the copilot. If None, uses the configured copilot ID.
+
+        Returns
+        -------
+        CopilotTestRun | None
+            The test run information, or None if an error occurs.
+        """
+        try:
+            query_args = {
+                'copilotId': str(copilot_id) if copilot_id else self.copilot_id,
+                'copilotTestRunId': str(copilot_test_run_id),
+            }
+
+            op = Operations.query.get_copilot_test_run
+
+            result = self._gql_client.submit(op, query_args)
+
+            return result.get_copilot_test_run
+        except Exception as e:
+            return None
+
+    def get_paged_copilot_test_runs(self, page_number: int = 1, page_size: int = 10, copilot_id: Optional[UUID] = None) -> Optional[PagedCopilotTestRuns]:
+        """
+        Retrieve a paginated list of copilot test runs.
+
+        Parameters
+        ----------
+        page_number : int, optional
+            The page number to retrieve. Defaults to 1.
+        page_size : int, optional
+            The number of test runs per page. Defaults to 10.
+        copilot_id : UUID, optional
+            The ID of the copilot. If None, uses the configured copilot ID.
+
+        Returns
+        -------
+        PagedCopilotTestRuns | None
+            The paginated test runs, or None if an error occurs.
+        """
+        try:
+            query_args = {
+                'copilotId': str(copilot_id) if copilot_id else self.copilot_id,
+                'pageNumber': page_number,
+                'pageSize': page_size,
+            }
+
+            op = Operations.query.get_paged_copilot_test_runs
+
+            result = self._gql_client.submit(op, query_args)
+
+            return result.get_paged_copilot_test_runs
+        except Exception as e:
+            return None
+
+    def create_copilot_test_run(
+        self,
+        question_ids: list[UUID],
+        model_overrides: Optional[list[Dict[str, str]]] = None,
+        dry_run_type: Optional[str] = None,
+        name: Optional[str] = None,
+        copilot_id: Optional[UUID] = None
+    ) -> Optional[CreateCopilotTestRunResponse]:
+        """
+        Create a new copilot test run.
+
+        Parameters
+        ----------
+        question_ids : list[UUID]
+            List of copilot question IDs to test.
+        model_overrides : list[Dict[str, str]], optional
+            List of model override configurations. Each dict should have:
+            - modelType: str (e.g., 'CHAT', 'SQL', 'EVALUATIONS')
+            - modelName: str (e.g., 'gpt-4', 'claude-3-opus')
+        dry_run_type : str, optional
+            The type of dry run to perform.
+        name : str, optional
+            A name for this test run.
+        copilot_id : UUID, optional
+            The ID of the copilot. If None, uses the configured copilot ID.
+
+        Returns
+        -------
+        CreateCopilotTestRunResponse | None
+            The response containing the created test run ID, or None if an error occurs.
+        """
+        try:
+            mutation_args = {
+                'copilotId': str(copilot_id) if copilot_id else self.copilot_id,
+                'questionIds': [str(qid) for qid in question_ids],
+            }
+
+            if model_overrides:
+                mutation_args['modelOverrides'] = model_overrides
+            if dry_run_type:
+                mutation_args['dryRunType'] = dry_run_type
+            if name:
+                mutation_args['name'] = name
+
+            op = Operations.mutation.create_copilot_test_run
+
+            result = self._gql_client.submit(op, mutation_args)
+
+            return result.create_copilot_test_run
+        except Exception as e:
+            return None
+
+    def run_copilot_test_run(
+        self,
+        test_run_id: UUID,
+        question_ids: list[UUID],
+        prompt_map: Dict[str, Any],
+        override_user_id: Optional[UUID] = None
+    ) -> Optional[CreateCopilotTestRunResponse]:
+        """
+        Run an existing copilot test run with specific prompt overrides.
+
+        Parameters
+        ----------
+        test_run_id : UUID
+            The ID of the test run to execute.
+        question_ids : list[UUID]
+            List of copilot question IDs to test.
+        prompt_map : Dict[str, Any]
+            Map of prompt overrides to use for this test run.
+        override_user_id : UUID, optional
+            Optional user ID to run the test as.
+
+        Returns
+        -------
+        CreateCopilotTestRunResponse | None
+            The response containing the test run execution details, or None if an error occurs.
+        """
+        try:
+            mutation_args = {
+                'testRunId': str(test_run_id),
+                'questionIds': [str(qid) for qid in question_ids],
+                'promptMap': prompt_map,
+            }
+
+            if override_user_id:
+                mutation_args['overrideUserId'] = str(override_user_id)
+
+            op = Operations.mutation.run_copilot_test_run
+
+            result = self._gql_client.submit(op, mutation_args)
+
+            return result.run_copilot_test_run
+        except Exception as e:
+            return None
+
+    def cancel_copilot_test_run(self, copilot_test_run_id: UUID, copilot_id: Optional[UUID] = None) -> Optional[MaxMutationResponse]:
+        """
+        Cancel a running copilot test run.
+
+        Parameters
+        ----------
+        copilot_test_run_id : UUID
+            The ID of the test run to cancel.
+        copilot_id : UUID, optional
+            The ID of the copilot. If None, uses the configured copilot ID.
+
+        Returns
+        -------
+        MaxMutationResponse | None
+            The response from the cancel operation, or None if an error occurs.
+        """
+        try:
+            mutation_args = {
+                'copilotId': str(copilot_id) if copilot_id else self.copilot_id,
+                'copilotTestRunId': str(copilot_test_run_id),
+            }
+
+            op = Operations.mutation.cancel_copilot_test_run
+
+            result = self._gql_client.submit(op, mutation_args)
+
+            return result.cancel_copilot_test_run
+        except Exception as e:
+            return None
+
+    def get_copilot_question_folders(self, copilot_id: Optional[UUID] = None) -> list[CopilotQuestionFolder]:
+        """
+        Retrieve all question folders for a copilot, organized by folder with their questions.
+
+        Parameters
+        ----------
+        copilot_id : UUID, optional
+            The ID of the copilot. If None, uses the configured copilot ID.
+
+        Returns
+        -------
+        list[CopilotQuestionFolder]
+            A list of question folders, each containing its questions. Returns empty list if an error occurs.
+        """
+        try:
+            query_args = {
+                'copilotId': str(copilot_id) if copilot_id else self.copilot_id,
+            }
+
+            op = Operations.query.get_copilot_question_folders
+
+            result = self._gql_client.submit(op, query_args)
+
+            return result.get_copilot_question_folders or []
+        except Exception as e:
+            return []
 
 
 def _complete_artifact_path(artifact_path: str, resource_base_path=None) -> str:

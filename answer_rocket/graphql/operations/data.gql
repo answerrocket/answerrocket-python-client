@@ -1,13 +1,13 @@
 query GetGroundedValue(
   $datasetId: UUID!
   $value: String!
-  $domainEntity: String
+  $dimensionName: String
   $copilotId: UUID
 ) {
   getGroundedValue(
     datasetId: $datasetId
     value: $value
-    domainEntity: $domainEntity
+    dimensionName: $dimensionName
     copilotId: $copilotId
   ) {
     matchedValue
@@ -16,7 +16,7 @@ query GetGroundedValue(
     mappedIndicator
     mappedValue
     preferred
-    domainEntity
+    dimensionName
     otherMatches
   }
 }
@@ -58,35 +58,6 @@ query GetDatabaseTables($databaseId: UUID!, $searchInput: DatabaseTableSearchInp
     rows {
       tableName
     }
-  }
-}
-
-query GetDatabaseKShots($databaseId: UUID!, $searchInput: DatabaseKShotSearchInput!, $paging: PagingInput!) {
-  getDatabaseKShots(databaseId: $databaseId, searchInput: $searchInput, paging: $paging) {
-    totalRows
-    rows {
-      databaseKShotId
-      question
-      renderedPrompt
-      explanation
-      sql
-      title
-      visualization
-      isActive
-    }
-  }
-}
-
-query GetDatabaseKShotById($databaseKShotId: UUID!) {
-  getDatabaseKShotById(databaseKShotId: $databaseKShotId) {
-    databaseKShotId
-    question
-    renderedPrompt
-    explanation
-    sql
-    title
-    visualization
-    isActive
   }
 }
 
@@ -438,111 +409,3 @@ mutation DeleteMetric(
   }
 }
 
-mutation CreateDatabaseKShot(
-  $databaseKShot: JSON!
-) {
-  createDatabaseKShot(
-    databaseKShot: $databaseKShot
-  ) {
-    databaseKShotId
-    success
-    code
-    error
-  }
-}
-
-mutation UpdateDatabaseKShotQuestion(
-  $databaseKShotId: UUID!
-  $question: String!
-) {
-  updateDatabaseKShotQuestion(
-    databaseKShotId: $databaseKShotId
-    question: $question
-  ) {
-    success
-    code
-    error
-  }
-}
-
-mutation UpdateDatabaseKShotRenderedPrompt(
-  $databaseKShotId: UUID!
-  $renderedPrompt: String
-) {
-  updateDatabaseKShotRenderedPrompt(
-    databaseKShotId: $databaseKShotId
-    renderedPrompt: $renderedPrompt
-  ) {
-    success
-    code
-    error
-  }
-}
-
-mutation UpdateDatabaseKShotExplanation(
-  $databaseKShotId: UUID!
-  $explanation: String
-) {
-  updateDatabaseKShotExplanation(
-    databaseKShotId: $databaseKShotId
-    explanation: $explanation
-  ) {
-    success
-    code
-    error
-  }
-}
-
-mutation UpdateDatabaseKShotSql(
-  $databaseKShotId: UUID!
-  $sql: String
-) {
-  updateDatabaseKShotSql(
-    databaseKShotId: $databaseKShotId
-    sql: $sql
-  ) {
-    success
-    code
-    error
-  }
-}
-
-mutation UpdateDatabaseKShotTitle(
-  $databaseKShotId: UUID!
-  $title: String
-) {
-  updateDatabaseKShotTitle(
-    databaseKShotId: $databaseKShotId
-    title: $title
-  ) {
-    success
-    code
-    error
-  }
-}
-
-mutation UpdateDatabaseKShotVisualization(
-  $databaseKShotId: UUID!
-  $visualization: JSON
-) {
-  updateDatabaseKShotVisualization(
-    databaseKShotId: $databaseKShotId
-    visualization: $visualization
-  ) {
-    success
-    code
-    error
-  }
-}
-
-mutation DeleteDatabaseKShot(
-  $databaseKShotId: UUID!
-) {
-  deleteDatabaseKShot(
-    databaseKShotId: $databaseKShotId
-  ) {
-    success
-    code
-    error
-  }
-}

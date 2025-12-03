@@ -1,18 +1,17 @@
 import io
 import logging
+import pandas as pd
 import uuid
 from datetime import datetime
+from sgqlc.types import Variable, non_null, String, Arg, list_of
 from typing import Literal, Optional
 
-import pandas as pd
-from sgqlc.types import Variable, non_null, String, Arg, list_of
-
+from answer_rocket.client_config import ClientConfig
 from answer_rocket.graphql.client import GraphQlClient
 from answer_rocket.graphql.schema import (UUID, Int, DateTime, ChatDryRunType, MaxChatEntry, MaxChatThread,
                                           SharedThread, MaxChatUser, ChatArtifact, MaxMutationResponse,
-                                          ChatArtifactSearchInput, PagingInput, PagedChatArtifacts)
+                                          ChatArtifactSearchInput, PagingInput, PagedChatArtifacts, PipelineType)
 from answer_rocket.graphql.sdk_operations import Operations
-from answer_rocket.client_config import ClientConfig
 
 logger = logging.getLogger(__name__)
 
@@ -32,7 +31,7 @@ class Chat:
         self.gql_client = gql_client
         self._config = config
 
-    def ask_question(self, copilot_id: str, question: str, thread_id: str = None, skip_report_cache: bool = False, dry_run_type: str = None, model_overrides: dict = None, indicated_skills: list[str] = None, history: list[dict] = None, question_type: QuestionType = None, thread_type: ThreadType = None) -> MaxChatEntry:
+    def ask_question(self, copilot_id: str, question: str, thread_id: str = None, skip_report_cache: bool = False, dry_run_type: str = None, model_overrides: dict = None, indicated_skills: list[str] = None, history: list[dict] = None, question_type: QuestionType = None, thread_type: ThreadType = None, pipeline_type: PipelineType = None) -> MaxChatEntry:
         """
         Calls the Max chat pipeline to answer a natural language question and receive analysis and insights
         in response.
@@ -47,6 +46,7 @@ class Chat:
         :param history: If provided, a list of messages to be used as the conversation history for the question
         :param question_type: If provided, the type of question being asked. This is used to categorize the question and can determine how the UI chooses to display it.
         :param thread_type: If provided, the type of thread being created. This is used to categorize the thread and can determine how the UI chooses to display it.
+        :param pipeline_type: If provided, specifies which pipeline type to use for processing the question. Options are 'MAX' (the chat pipeline) and 'RESEARCH' (the research pipeline). Defaults to 'MAX' if not specified.
         :return: the ChatEntry response object associate with the answer from the pipeline
         """
         override_list = []
@@ -64,7 +64,8 @@ class Chat:
             'indicatedSkills': indicated_skills,
             'history': history if history else None,
             'questionType': question_type,
-            'threadType': thread_type
+            'threadType': thread_type,
+            'pipelineType': pipeline_type
         }
 
         op = Operations.mutation.ask_chat_question
@@ -243,25 +244,27 @@ class Chat:
         result = self.gql_client.submit(op, get_chat_thread_args)
         return result.chat_thread
 
-    def create_new_thread(self, copilot_id: str) -> MaxChatThread:
+    def create_new_thread(self, copilot_id: str, thread_type: ThreadType = "CHAT") -> MaxChatThread:
         """
         Create a new chat thread for the specified agent.
 
         Args:
             copilot_id: The ID of the agent to create the thread for
+            thread_type: The type of thread to create, defaults to CHAT. For most purposes CHAT is the only type needed.
 
         Returns:
             MaxChatThread: The newly created chat thread object
         """
         create_chat_thread_args = {
             'copilotId': copilot_id,
+            'threadType': thread_type
         }
 
         op = Operations.mutation.create_chat_thread
         result = self.gql_client.submit(op, create_chat_thread_args)
         return result.create_chat_thread
 
-    def queue_chat_question(self, question: str, thread_id: str, skip_cache: bool = False, model_overrides: dict = None, indicated_skills: list[str] = None, history: list[dict] = None) -> MaxChatEntry:
+    def queue_chat_question(self, question: str, thread_id: str, skip_cache: bool = False, model_overrides: dict = None, indicated_skills: list[str] = None, history: list[dict] = None, pipeline_type: PipelineType = None) -> MaxChatEntry:
         """
         This queues up a question for processing. Unlike ask_question, this will not wait for the processing to
         complete. It will immediately return a shell entry with an id you can use to query for the results.
@@ -271,6 +274,7 @@ class Chat:
         :param model_overrides: If provided, a dictionary of model types to model names to override the LLM model used. Model type options are 'CHAT', 'EMBEDDINGS', 'NARRATIVE'
         :param indicated_skills: If provided, a list of skill names that the copilot will be limited to choosing from. If only 1 skill is provided the copilot will be guaranteed to execute that skill.
         :param history: If provided, a list of messages to be used as the conversation history for the question
+        :param pipeline_type: If provided, specifies which pipeline type to use for processing the question. Options are 'MAX' (the chat pipeline) and 'RESEARCH' (the research pipeline). Defaults to 'MAX' if not specified.
         :return:
         """
 
@@ -285,7 +289,8 @@ class Chat:
             'threadId': thread_id,
             'modelOverrides': override_list if override_list else None,
             'indicatedSkills': indicated_skills,
-            'history': history if history else None
+            'history': history if history else None,
+            'pipelineType': pipeline_type
         }
 
         op = Operations.mutation.queue_chat_question
@@ -472,75 +477,6 @@ class Chat:
         result = self.gql_client.submit(op, set_skill_memory_args)
         return result.set_skill_memory
     
-    def set_agent_run_state(self, agent_run_state: list[dict], chat_entry_id: str) -> bool:
-        """
-        TODO: This is meant to be temprorary, used for skill builder and should be removed once builder is moved internal
-        Sets the agent_run_state to a workflow document.
-        :param chat_entry_id: the id of the chat entry
-        :param agent_run_state: the agent workflow state to set -- must be JSON serializable
-        :return: True if the agent_run_state was set successfully, False otherwise
-        """
-
-        if chat_entry_id is None:
-            chat_entry_id = self._config.chat_entry_id
-            if chat_entry_id is None: 
-               logger.warning("No chat entry id provided, no config chat entry id found, aborting.")
-               return None
-
-        set_agent_run_state_args = {
-            'entryId': UUID(chat_entry_id),
-            'agentRunState': agent_run_state,
-        }
-        op = Operations.mutation.set_max_agent_workflow
-        result = self.gql_client.submit(op, set_agent_run_state_args)
-        return result.set_max_agent_workflow
-    
-    def get_agent_workflow(self, workflow_id: str, version: int = None):
-        """
-        TODO: This is meant to be temprorary, used for skill builder and should be removed once builder is moved internal
-        Gets the workflow document for a given workflow id and version.
-        :param workflow_id: the id of the workflow
-        :param version: the version of the workflow
-        :return: MaxAgentWorkflow object
-        """
-
-        if workflow_id is None:
-            logger.warning("No workflow id provided, aborting.")
-            return None
-
-        get_agent_workflow_args = {
-            'agentWorkflowId': UUID(workflow_id),
-            'version': version,
-        }
-        op = Operations.query.get_max_agent_workflow
-        result = self.gql_client.submit(op, get_agent_workflow_args)
-        return result.get_max_agent_workflow
-    
-    def import_copilot_skill_from_zip(self, copilot_id: str, skill_name: str):
-        """
-        TODO: This is meant to be temprorary, used for skill builder and should be removed or reworked once builder is moved internal
-        Imports an agent workflow from a zip file.
-        :param copilot_id: the id of the copilot to import to
-        :param skill_name: the name of the skill to import the workflow for
-        :return: True if the workflow was imported successfully, False otherwise
-        """
-
-        if copilot_id is None:
-            logger.warning("No copilot id provided, aborting.")
-            return None
-        
-        if skill_name is None:
-            logger.warning("No skill name provided, aborting.")
-            return None
-
-        import_copilot_skill_from_zip_args = {
-            'copilotId': UUID(copilot_id),
-            'skillName': skill_name,
-        }
-        op = Operations.mutation.import_copilot_skill_from_zip
-        result = self.gql_client.submit(op, import_copilot_skill_from_zip_args)
-        return result.import_copilot_skill_from_zip
-    
     def import_skill_from_repo(self, copilot_id: str, skill_name: str, repository_id: str):
         """
         TODO: This is meant to be temprorary, used for skill builder and should be removed or reworked once builder is moved internal
@@ -653,136 +589,9 @@ class Chat:
         df_dicts = result.chat_entry.answer.report_results[0].gzipped_dataframes_and_metadata
 
         def transform_df(df_dict: dict):
-            df = pd.read_csv(io.StringIO(df_dict.get("df")), compression='gzip')
+            df = pd.read_csv(io.StringIO(df_dict.get("df")))
             df.max_metadata.hydrate(df_dict.get("metadata", {}))
             return {**df_dict, "df": df}
 
         return [transform_df(d) for d in df_dicts]
 
-    def get_chat_artifact(self, chat_artifact_id: UUID) -> Optional[ChatArtifact]:
-        """
-        Retrieve a chat artifact by its ID.
-
-        This method queries the backend for a chat artifact using the given unique identifier.
-        If the artifact is found, it is returned as a `ChatArtifact` object. If not found or
-        if an error occurs during the query, `None` is returned.
-
-        Parameters
-        ----------
-        chat_artifact_id : UUID
-            The unique identifier of the chat artifact to retrieve.
-
-        Returns
-        -------
-        ChatArtifact or None
-            The chat artifact object if found, or `None` if not found or if an error occurs.
-        """
-        try:
-            query_args = {
-                'chatArtifactId': str(chat_artifact_id),
-            }
-
-            op = Operations.query.get_chat_artifact
-
-            result = self.gql_client.submit(op, query_args)
-
-            return result.get_chat_artifact
-        except Exception as e:
-            return None
-
-    def get_chat_artifacts(self, search_input: Optional[ChatArtifactSearchInput]=None, paging: Optional[PagingInput]=None) -> PagedChatArtifacts:
-        """
-        Retrieve paged chat artifacts based on optional search and paging criteria.
-
-        If no `search_input` or `paging` is provided, default values will be used.
-
-        Parameters
-        ----------
-        search_input : ChatArtifactSearchInput, optional
-            An object specifying the search criteria for chat artifacts.
-            If None, no filters are applied on name or misc_info.
-        paging : PagingInput, optional
-            An object specifying pagination details such as page number and page size.
-            If None, defaults to page 1 with a page size of 100.
-
-        Returns
-        -------
-        PagedChatArtifacts
-            A paged collection of chat artifacts. Returns an empty `PagedChatArtifacts` instance if an error occurs during retrieval.
-
-        Notes
-        -----
-        This method uses a GraphQL client to submit a query to fetch the data.
-        """
-        try:
-            if not search_input:
-                search_input = ChatArtifactSearchInput(
-                    name_contains=None,
-                    misc_info=None
-                )
-
-            if not paging:
-                paging = PagingInput(
-                    page_num=1,
-                    page_size=100
-                )
-
-            query_args = {
-                'searchInput': search_input.__to_json_value__(),
-                'paging': paging.__to_json_value__()
-            }
-
-            op = Operations.query.get_chat_artifacts
-
-            result = self.gql_client.submit(op, query_args)
-
-            return result.get_chat_artifacts
-        except Exception as e:
-            return PagedChatArtifacts()
-
-    def create_chat_artifact(self, chat_artifact: ChatArtifact) -> MaxMutationResponse:
-        """
-        Submits a GraphQL mutation to create a new chat artifact.
-
-        Parameters
-        ----------
-        chat_artifact : ChatArtifact
-            The chat artifact object containing the data to be created.
-
-        Returns
-        -------
-        MaxMutationResponse
-            The response object containing the result of the mutation,
-            specifically the created chat artifact.
-        """
-        mutation_args = {
-            'chatArtifact': chat_artifact
-        }
-
-        op = Operations.mutation.create_chat_artifact
-        result = self.gql_client.submit(op, mutation_args)
-
-        return result.create_chat_artifact
-
-    def delete_chat_artifact(self, chat_artifact_id: uuid) -> MaxMutationResponse:
-        """
-        Submits a GraphQL mutation to delete an existing chat artifact by its ID.
-
-        Parameters
-        ----------
-        chat_artifact_id : uuid
-            The UUID of the chat artifact to delete.
-
-        Returns
-        -------
-        MaxMutationResponse
-            The response object containing the result of the deletion mutation.
-        """
-        mutation_args = {
-            'chatArtifactId': str(chat_artifact_id)
-        }
-
-        op = Operations.mutation.delete_chat_artifact
-        result = self.gql_client.submit(op, mutation_args)
-
-        return result.delete_chat_artifact
