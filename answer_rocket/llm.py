@@ -104,6 +104,10 @@ class Llm:
         -------
         dict
             The raw response from the model API.
+
+        Permissions
+        -----------
+        Any authenticated user can call this method.
         """
         op = Operations.query.chat_completion
         args = {
@@ -144,6 +148,10 @@ class Llm:
         -------
         dict
             The raw response from the model API.
+
+        Permissions
+        -----------
+        Any authenticated user can call this method.
         """
         op = Operations.query.chat_completion_with_prompt
         args = {
@@ -180,6 +188,10 @@ class Llm:
         -------
         dict
             The raw response from the model API.
+
+        Permissions
+        -----------
+        Any authenticated user can call this method.
         """
         op = Operations.query.narrative_completion
         args = {
@@ -216,6 +228,10 @@ class Llm:
         -------
         dict
             The raw response from the model API.
+
+        Permissions
+        -----------
+        Any authenticated user can call this method.
         """
         op = Operations.query.narrative_completion_with_prompt
         args = {
@@ -255,6 +271,10 @@ class Llm:
         -------
         dict
             The raw response from the model API.
+
+        Permissions
+        -----------
+        Any authenticated user can call this method.
         """
         op = Operations.query.sql_completion
         args = {
@@ -294,6 +314,10 @@ class Llm:
         -------
         dict
             The raw response from the model API.
+
+        Permissions
+        -----------
+        Any authenticated user can call this method.
         """
         op = Operations.query.research_completion
         args = {
@@ -336,6 +360,10 @@ class Llm:
         -------
         dict
             The raw response from the model API.
+
+        Permissions
+        -----------
+        Any authenticated user can call this method.
         """
         op = Operations.query.research_completion_with_prompt
         args = {
@@ -372,6 +400,10 @@ class Llm:
         dict
             The response containing success status, error (if any), and embeddings.
             Each embedding includes the original text and its vector representation.
+
+        Permissions
+        -----------
+        Any authenticated user can call this method.
         """
         query_args = {
             'texts': texts,
