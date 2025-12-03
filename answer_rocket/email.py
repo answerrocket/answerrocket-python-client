@@ -87,6 +87,10 @@ class Email:
         ...         'type': 'application/pdf'
         ...     }]
         ... )
+
+        Permissions
+        -----------
+        Requires Admin role or Email Configuration permission.
         """
         mutation_args = {
             'userIds': [str(uid) for uid in user_ids] if user_ids else None,

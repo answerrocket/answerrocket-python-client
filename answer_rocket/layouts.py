@@ -18,11 +18,19 @@ class DynamicLayouts:
         """
         Get a dynamic layout by id.
 
-        Args:
-            id (str): The UUID of the dynamic layout to retrieve.
+        Parameters
+        ----------
+        id : str
+            The UUID of the dynamic layout to retrieve.
 
-        Returns:
+        Returns
+        -------
+        MaxDynamicLayout
             The dynamic layout data from the server.
+
+        Permissions
+        -----------
+        Any authenticated user can call this method.
         """
         try:
             op = Operations.query.get_dynamic_layout

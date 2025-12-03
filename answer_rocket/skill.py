@@ -84,6 +84,11 @@ class Skill:
         -------
         RunSkillResult
             The full output object of the skill execution.
+
+        Permissions
+        -----------
+        API key: User must be assigned to the copilot.
+        OAuth: Requires execute:copilotSkills scope. User must be assigned to the copilot.
         """
 
         final_result = RunSkillResult(None)
@@ -153,6 +158,11 @@ class Skill:
         -------
         AsyncSkillRunResult
             Result containing execution_id if successful.
+
+        Permissions
+        -----------
+        API key: User must be assigned to the copilot.
+        OAuth: Requires execute:copilotSkills scope. User must be assigned to the copilot.
         """
         try:
             async_query_args = {
@@ -194,6 +204,11 @@ class Skill:
         -------
         AsyncSkillStatusResponse
             Result with status and data if completed, None if error occurs.
+
+        Permissions
+        -----------
+        API key: Any authenticated user can call this method.
+        OAuth: Requires execute:copilotSkills scope.
         """
         try:
 
@@ -218,6 +233,11 @@ class Skill:
         ----------
         message : str
             The loading message to display to the user.
+
+        Permissions
+        -----------
+        User must be the owner of the answer (the user who initiated the skill execution).
+        Typically called from within a running skill.
         """
         if self._config.entry_answer_id:
             args = {
