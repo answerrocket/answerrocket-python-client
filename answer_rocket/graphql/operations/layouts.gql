@@ -8,3 +8,12 @@ query getDynamicLayout($id: UUID!) {
     }
   }
 }
+
+mutation GeneratePdfFromLayouts($layouts: [String!]!) {
+  generatePdfFromLayouts(layouts: $layouts) {
+    success
+    code
+    error
+    pdf
+  }
+}

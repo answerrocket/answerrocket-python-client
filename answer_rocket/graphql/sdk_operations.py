@@ -532,6 +532,16 @@ def mutation_send_email():
     return _op
 
 
+def mutation_generate_pdf_from_layouts():
+    _op = sgqlc.operation.Operation(_schema_root.mutation_type, name='GeneratePdfFromLayouts', variables=dict(layouts=sgqlc.types.Arg(sgqlc.types.non_null(sgqlc.types.list_of(sgqlc.types.non_null(_schema.String))))))
+    _op_generate_pdf_from_layouts = _op.generate_pdf_from_layouts(layouts=sgqlc.types.Variable('layouts'))
+    _op_generate_pdf_from_layouts.success()
+    _op_generate_pdf_from_layouts.code()
+    _op_generate_pdf_from_layouts.error()
+    _op_generate_pdf_from_layouts.pdf()
+    return _op
+
+
 def mutation_update_loading_message():
     _op = sgqlc.operation.Operation(_schema_root.mutation_type, name='UpdateLoadingMessage', variables=dict(answerId=sgqlc.types.Arg(sgqlc.types.non_null(_schema.UUID)), message=sgqlc.types.Arg(sgqlc.types.non_null(_schema.String))))
     _op.update_loading_message(answer_id=sgqlc.types.Variable('answerId'), message=sgqlc.types.Variable('message'))
@@ -568,6 +578,7 @@ class Mutation:
     delete_dataset_kshot = mutation_delete_dataset_kshot()
     delete_dimension = mutation_delete_dimension()
     delete_metric = mutation_delete_metric()
+    generate_pdf_from_layouts = mutation_generate_pdf_from_layouts()
     get_test_run_output = mutation_get_test_run_output()
     import_copilot_skill_from_zip = mutation_import_copilot_skill_from_zip()
     import_skill_from_repo = mutation_import_skill_from_repo()
