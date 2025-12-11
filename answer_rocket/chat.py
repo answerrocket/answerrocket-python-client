@@ -586,7 +586,9 @@ class Chat:
         op = Operations.query.dataframes_for_entry
         result = self.gql_client.submit(op, get_dataframes_for_entry_args)
 
-        df_dicts = result.chat_entry.answer.report_results[0].gzipped_dataframes_and_metadata
+        df_dicts = [report.gzipped_dataframes_and_metadata for report in result.chat_entry.answer.report_results if report.gzipped_dataframes_and_metadata]
+        # flatten
+        df_dicts = [df for sublist in df_dicts for df in sublist]
 
         def transform_df(df_dict: dict):
             df = pd.read_csv(io.StringIO(df_dict.get("df")))
