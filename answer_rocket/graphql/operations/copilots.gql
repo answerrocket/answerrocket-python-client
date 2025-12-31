@@ -301,3 +301,10 @@ mutation CancelCopilotTestRun($copilotId: UUID!, $copilotTestRunId: UUID!) {
         error
     }
 }
+
+mutation UpdateCopilotSkillField($copilotId: UUID!, $copilotSkillId: UUID!, $fieldName: String!, $fieldValue: JSON!) {
+    updateCopilotSkillField(copilotId: $copilotId, copilotSkillId: $copilotSkillId, field: $fieldName, value: $fieldValue) {
+        success
+        error
+    }
+}
