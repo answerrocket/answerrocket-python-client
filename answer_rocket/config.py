@@ -627,6 +627,42 @@ class Config:
         except Exception as e:
             return []
 
+    def update_copilot_skill_field(self, copilot_id: UUID, skill_id: UUID, field_name: str, field_value: Any) -> Optional[MaxMutationResponse]:
+        """
+        Update a specific field of a copilot skill.
+
+        Parameters
+        ----------
+        copilot_id : UUID
+            The ID of the copilot.
+        skill_id : UUID
+            The ID of the skill to update.
+        field_name : str
+            The name of the field to update.
+        field_value : Any
+            The new value for the field.
+
+        Returns
+        -------
+        MaxMutationResponse | None
+            The response from the update operation, or None if an error occurs.
+        """
+        try:
+            mutation_args = {
+                'copilotId': str(copilot_id),
+                'copilotSkillId': str(skill_id),
+                'fieldName': field_name,
+                'fieldValue': field_value
+            }
+
+            op = Operations.mutation.update_copilot_skill_field
+
+            result = self._gql_client.submit(op, mutation_args)
+
+            return result.update_copilot_skill_field
+        except Exception as e:
+            return None
+
 
 def _complete_artifact_path(artifact_path: str, resource_base_path=None) -> str:
     """

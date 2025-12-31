@@ -179,6 +179,14 @@ def mutation_cancel_copilot_test_run():
     return _op
 
 
+def mutation_update_copilot_skill_field():
+    _op = sgqlc.operation.Operation(_schema_root.mutation_type, name='UpdateCopilotSkillField', variables=dict(copilotId=sgqlc.types.Arg(sgqlc.types.non_null(_schema.UUID)), copilotSkillId=sgqlc.types.Arg(sgqlc.types.non_null(_schema.UUID)), fieldName=sgqlc.types.Arg(sgqlc.types.non_null(_schema.String)), fieldValue=sgqlc.types.Arg(sgqlc.types.non_null(_schema.JSON))))
+    _op_update_copilot_skill_field = _op.update_copilot_skill_field(copilot_id=sgqlc.types.Variable('copilotId'), copilot_skill_id=sgqlc.types.Variable('copilotSkillId'), field=sgqlc.types.Variable('fieldName'), value=sgqlc.types.Variable('fieldValue'))
+    _op_update_copilot_skill_field.success()
+    _op_update_copilot_skill_field.error()
+    return _op
+
+
 def mutation_update_database_name():
     _op = sgqlc.operation.Operation(_schema_root.mutation_type, name='UpdateDatabaseName', variables=dict(databaseId=sgqlc.types.Arg(sgqlc.types.non_null(_schema.UUID)), name=sgqlc.types.Arg(sgqlc.types.non_null(_schema.String))))
     _op_update_database_name = _op.update_database_name(database_id=sgqlc.types.Variable('databaseId'), name=sgqlc.types.Variable('name'))
@@ -590,6 +598,7 @@ class Mutation:
     set_skill_memory = mutation_set_skill_memory()
     sync_max_skill_repository = mutation_sync_max_skill_repository()
     test_run_copilot_skill = mutation_test_run_copilot_skill()
+    update_copilot_skill_field = mutation_update_copilot_skill_field()
     update_database_description = mutation_update_database_description()
     update_database_kshot_explanation = mutation_update_database_kshot_explanation()
     update_database_kshot_limit = mutation_update_database_kshot_limit()
