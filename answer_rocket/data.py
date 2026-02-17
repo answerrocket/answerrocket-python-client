@@ -1138,6 +1138,7 @@ class Data:
         domain_object.synonyms()
         domain_object.output_label_plural()
         domain_object.hide_from_user()
+        domain_object.misc_info()
 
     def _add_domain_attribute_fields(self, fragment: Fragment):
         fragment.display_format()
