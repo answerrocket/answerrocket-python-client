@@ -167,6 +167,11 @@ class Data:
         -------
         ExecuteSqlQueryResult
             The result of the SQL execution process.
+
+        Permissions
+        -----------
+        Results filtered by database project access. User must have Owner Access role,
+        be the database owner, or be assigned to the database project.
         """
 
         result = ExecuteSqlQueryResult()
@@ -242,6 +247,11 @@ class Data:
         -------
         Database or None
             The database object if found, or `None` if not found or if an error occurs.
+
+        Permissions
+        -----------
+        Results filtered by database project access. User must have Owner Access role,
+        be the database owner, or be assigned to the database project.
         """
         try:
             query_args = {
@@ -279,6 +289,11 @@ class Data:
         Notes
         -----
         This method uses a GraphQL client to submit a query to fetch the data.
+
+        Permissions
+        -----------
+        Results filtered by database project access. User must have Owner Access role,
+        be the database owner, or be assigned to the database project.
         """
         try:
             if not search_input:
@@ -330,6 +345,11 @@ class Data:
         Notes
         -----
         This method uses a GraphQL client to submit a query to fetch the data.
+
+        Permissions
+        -----------
+        Results filtered by database project access. User must have Owner Access role,
+        be the database owner, or be assigned to the database project.
         """
         if not search_input:
             search_input = DatabaseTableSearchInput(
@@ -379,6 +399,11 @@ class Data:
         Notes
         -----
         This method uses a GraphQL client to submit a query to fetch the data.
+
+        Permissions
+        -----------
+        Results filtered by database project access. User must have Owner Access role,
+        be the database owner, or be assigned to the database project.
         """
         if not search_input:
             search_input = DatabaseKShotSearchInput(
@@ -421,6 +446,10 @@ class Data:
         -------
         DatabaseKShot or None
             The database k-shot object if found, or `None` if not found or if an error occurs.
+
+        Permissions
+        -----------
+        Requires one of the following roles: Admin, Data
         """
         query_args = {
             'databaseKShotId': str(database_kshot_id),
@@ -455,6 +484,11 @@ class Data:
         Notes
         -----
         This method uses a GraphQL client to submit a query to fetch the data.
+
+        Permissions
+        -----------
+        Results filtered by dataset security. User must have Owner Access role,
+        be the dataset owner, or be assigned to the dataset.
         """
         try:
             if not search_input:
@@ -497,6 +531,11 @@ class Data:
         -------
         Optional[UUID]
             The UUID of the dataset if found, otherwise None.
+
+        Permissions
+        -----------
+        Results filtered by dataset security. User must have Owner Access role,
+        be the dataset owner, or be assigned to the dataset.
         """
         try:
             query_args = {
@@ -544,6 +583,11 @@ class Data:
         -------
         Optional[MaxDataset]
             The dataset object if found, otherwise None.
+
+        Permissions
+        -----------
+        Results filtered by dataset security. User must have Owner Access role,
+        be the dataset owner, or be assigned to the dataset.
         """
         try:
             query_args = {
@@ -624,6 +668,11 @@ class Data:
         -------
         Dataset or None
             The dataset object if found, or `None` if not found or if an error occurs.
+
+        Permissions
+        -----------
+        Results filtered by dataset security. User must have Owner Access role,
+        be the dataset owner, or be assigned to the dataset.
         """
         try:
             query_args = {
@@ -654,6 +703,11 @@ class Data:
         -------
         DomainObjectResult
             The result containing success status, error information, and the domain object if found.
+
+        Permissions
+        -----------
+        Results filtered by dataset security. User must have Owner Access role,
+        be the dataset owner, or be assigned to the dataset.
         """
         try:
             query_args = {
@@ -715,6 +769,11 @@ class Data:
         -------
         DomainObjectResult
             The result containing success status, error information, and the domain object if found.
+
+        Permissions
+        -----------
+        Results filtered by dataset security. User must have Owner Access role,
+        be the dataset owner, or be assigned to the dataset.
         """
         try:
             query_args = {
@@ -781,8 +840,13 @@ class Data:
         -------
         GroundedValueResponse
             The grounded value response from the GraphQL schema.
+
+        Permissions
+        -----------
+        Results filtered by dataset security. User must have Owner Access role,
+        be the dataset owner, or be assigned to the dataset.
         """
-        
+
         try:
             query_args = {
                 'datasetId': str(dataset_id),
@@ -817,6 +881,11 @@ class Data:
         -------
         RunMaxSqlGenResult
             The result of the SQL generation process.
+
+        Permissions
+        -----------
+        Results filtered by dataset security. User must have Owner Access role,
+        be the dataset owner, or be assigned to the dataset.
         """
 
         result = RunMaxSqlGenResult()
@@ -905,6 +974,11 @@ class Data:
         -------
         RunSqlAiResult
             The result of the SQL AI generation process.
+
+        Permissions
+        -----------
+        Results filtered by dataset/database security. User must have Owner Access role,
+        be the owner, or be assigned to the dataset/database.
         """
 
         result = RunSqlAiResult()
@@ -1003,6 +1077,10 @@ class Data:
         GenerateVisualizationResponse | None
             A HighchartsChart dynamic vis layout component based on provided data and metadata.
             Returns None if an error occurs.
+
+        Permissions
+        -----------
+        Any authenticated user can call this method.
         """
         try:
             query_args = {
@@ -1178,6 +1256,10 @@ class Data:
         -------
         MaxMutationResponse
             The result of the GraphQL mutation containing the updated database name.
+
+        Permissions
+        -----------
+        Requires Owner Access role OR ownership of the database.
         """
         mutation_args = {
             'databaseId': str(database_id),
@@ -1204,6 +1286,10 @@ class Data:
         -------
         MaxMutationResponse
             The result of the GraphQL mutation containing the updated database description.
+
+        Permissions
+        -----------
+        Requires one of the following roles: Admin, Data, Agents
         """
         mutation_args = {
             'databaseId': str(database_id),
@@ -1233,6 +1319,10 @@ class Data:
         -------
         MaxMutationResponse
             The result of the GraphQL mutation containing the updated LLM description.
+
+        Permissions
+        -----------
+        Requires Owner Access role OR ownership of the database.
         """
         mutation_args = {
             'databaseId': str(database_id),
@@ -1262,6 +1352,10 @@ class Data:
         -------
         MaxMutationResponse
             The result of the GraphQL mutation containing the updated ER diagram information.
+
+        Permissions
+        -----------
+        Requires Owner Access role OR ownership of the database.
         """
         mutation_args = {
             'databaseId': str(database_id),
@@ -1291,6 +1385,10 @@ class Data:
         -------
         MaxMutationResponse
             The result of the GraphQL mutation containing the updated k-shot limit.
+
+        Permissions
+        -----------
+        Requires one of the following roles: Admin, Data, Agents
         """
         mutation_args = {
             'databaseId': str(database_id),
@@ -1319,6 +1417,11 @@ class Data:
         -------
         MaxMutationResponse
             The result of the reload operation, or None if an error occurs.
+
+        Permissions
+        -----------
+        Results filtered by dataset/database security. User must have Owner Access role,
+        be the owner, or be assigned to the dataset/database.
         """
         try:
             mutation_args = {
@@ -1364,6 +1467,10 @@ class Data:
         -------
         MaxMutationResponse
             The result of the GraphQL mutation containing the updated dataset information.
+
+        Permissions
+        -----------
+        Requires Owner Access role OR ownership of the dataset.
         """
         mutation_args = {
             'datasetId': str(dataset_id),
@@ -1390,6 +1497,10 @@ class Data:
         -------
         MaxMutationResponse
             The result of the GraphQL mutation containing the updated dataset information.
+
+        Permissions
+        -----------
+        Requires Owner Access role OR ownership of the dataset.
         """
         mutation_args = {
             'datasetId': str(dataset_id),
@@ -1420,6 +1531,10 @@ class Data:
         -------
         MaxMutationResponse
             The result of the GraphQL mutation containing the updated dataset date range.
+
+        Permissions
+        -----------
+        Requires Owner Access role OR ownership of the dataset.
         """
         min_date_arg = min_date
         max_date_arg = max_date
@@ -1464,6 +1579,10 @@ class Data:
         -------
         MaxMutationResponse
             The result of the GraphQL mutation containing the updated dataset data interval.
+
+        Permissions
+        -----------
+        Requires Owner Access role OR ownership of the dataset.
         """
         mutation_args = {
             'datasetId': str(dataset_id),
@@ -1492,6 +1611,10 @@ class Data:
         -------
         MaxMutationResponse
             The result of the GraphQL mutation containing the updated dataset information.
+
+        Permissions
+        -----------
+        Requires Owner Access role OR ownership of the dataset.
         """
         mutation_args = {
             'datasetId': str(dataset_id),
@@ -1522,6 +1645,10 @@ class Data:
         -------
         MaxMutationResponse
             The result of the update operation.
+
+        Permissions
+        -----------
+        Requires Owner Access role OR ownership of the dataset.
         """
         mutation_args = {
             'datasetId': str(dataset_id),
@@ -1550,6 +1677,10 @@ class Data:
         -------
         MaxMutationResponse
             The result of the GraphQL mutation containing the updated row limit setting.
+
+        Permissions
+        -----------
+        Requires Owner Access role OR ownership of the dataset.
         """
         mutation_args = {
             'datasetId': str(dataset_id),
@@ -1577,6 +1708,10 @@ class Data:
         -------
         MaxMutationResponse
             The result of the GraphQL mutation reflecting the updated casing preference.
+
+        Permissions
+        -----------
+        Requires Owner Access role OR ownership of the dataset.
         """
         mutation_args = {
             'datasetId': str(dataset_id),
@@ -1604,6 +1739,10 @@ class Data:
         -------
         MaxMutationResponse
             The result of the GraphQL mutation containing the updated k-shot limit.
+
+        Permissions
+        -----------
+        Requires one of the following roles: Admin, Data, Agents
         """
         mutation_args = {
             'datasetId': str(dataset_id),
@@ -1707,6 +1846,10 @@ class Data:
         ...     ]
         ... }
         >>> response = max.data.create_dataset(dataset)
+
+        Permissions
+        -----------
+        Requires Owner Access role OR ownership of the database.
         """
         mutation_args = {
             'dataset': dataset,
@@ -1732,6 +1875,10 @@ class Data:
         -------
         CreateDatasetFromTableResponse
             The result of the GraphQL mutation containing the created dataset details.
+
+        Permissions
+        -----------
+        Requires Owner Access role OR ownership of the database.
         """
         mutation_args = {
             'databaseId': str(database_id),
@@ -1759,6 +1906,10 @@ class Data:
         -------
         MaxMutationResponse
             The result of the create operation.
+
+        Permissions
+        -----------
+        Requires Owner Access role OR ownership of the dataset.
         """
         # Convert Dimension object to dictionary if needed
         if hasattr(dimension, '__to_json_value__'):
@@ -1796,6 +1947,10 @@ class Data:
         -------
         MaxMutationResponse
             The result of the update operation.
+
+        Permissions
+        -----------
+        Requires Owner Access role OR ownership of the dataset.
         """
         # Convert Dimension object to dictionary if needed
         if hasattr(dimension, '__to_json_value__'):
@@ -1832,6 +1987,10 @@ class Data:
         -------
         MaxMutationResponse
             The result of the delete operation.
+
+        Permissions
+        -----------
+        Requires Owner Access role OR ownership of the dataset.
         """
         mutation_args = {
             'datasetId': str(dataset_id),
@@ -1859,6 +2018,10 @@ class Data:
         -------
         MaxMutationResponse
             The result of the create operation.
+
+        Permissions
+        -----------
+        Requires Owner Access role OR ownership of the dataset.
         """
         # Convert Metric object to dictionary if needed
         if hasattr(metric, '__to_json_value__'):
@@ -1898,6 +2061,10 @@ class Data:
         -------
         MaxMutationResponse
             The result of the update operation.
+
+        Permissions
+        -----------
+        Requires Owner Access role OR ownership of the dataset.
         """
         # Convert Metric object to dictionary if needed
         if hasattr(metric, '__to_json_value__'):
@@ -1936,6 +2103,10 @@ class Data:
         -------
         MaxMutationResponse
             The result of the delete operation.
+
+        Permissions
+        -----------
+        Requires Owner Access role OR ownership of the dataset.
         """
         mutation_args = {
             'datasetId': str(dataset_id),
@@ -1969,6 +2140,10 @@ class Data:
         -------
         CreateDatabaseKShotResponse
             The result of the GraphQL mutation containing the created k-shot details.
+
+        Permissions
+        -----------
+        Requires one of the following roles: Admin, Data
         """
         mutation_args = {
             'databaseKShot': database_kshot,
@@ -1992,6 +2167,10 @@ class Data:
         -------
         MaxMutationResponse
             The result of the delete operation.
+
+        Permissions
+        -----------
+        Requires one of the following roles: Admin, Data
         """
         mutation_args = {
             'databaseKShotId': str(database_kshot_id),
@@ -2017,6 +2196,10 @@ class Data:
         -------
         MaxMutationResponse
             The result of the GraphQL mutation containing the updated question.
+
+        Permissions
+        -----------
+        Requires one of the following roles: Admin, Data
         """
         mutation_args = {
             'databaseKShotId': str(database_kshot_id),
@@ -2043,6 +2226,10 @@ class Data:
         -------
         MaxMutationResponse
             The result of the GraphQL mutation containing the updated rendered prompt.
+
+        Permissions
+        -----------
+        Requires one of the following roles: Admin, Data
         """
         mutation_args = {
             'databaseKShotId': str(database_kshot_id),
@@ -2069,6 +2256,10 @@ class Data:
         -------
         MaxMutationResponse
             The result of the GraphQL mutation containing the updated explanation.
+
+        Permissions
+        -----------
+        Requires one of the following roles: Admin, Data
         """
         mutation_args = {
             'databaseKShotId': str(database_kshot_id),
@@ -2095,6 +2286,10 @@ class Data:
         -------
         MaxMutationResponse
             The result of the GraphQL mutation containing the updated SQL.
+
+        Permissions
+        -----------
+        Requires one of the following roles: Admin, Data
         """
         mutation_args = {
             'databaseKShotId': str(database_kshot_id),
@@ -2121,6 +2316,10 @@ class Data:
         -------
         MaxMutationResponse
             The result of the GraphQL mutation containing the updated title.
+
+        Permissions
+        -----------
+        Requires one of the following roles: Admin, Data
         """
         mutation_args = {
             'databaseKShotId': str(database_kshot_id),
@@ -2147,6 +2346,10 @@ class Data:
         -------
         MaxMutationResponse
             The result of the GraphQL mutation containing the updated visualization.
+
+        Permissions
+        -----------
+        Requires one of the following roles: Admin, Data
         """
         mutation_args = {
             'databaseKShotId': str(database_kshot_id),
@@ -2184,6 +2387,11 @@ class Data:
         Notes
         -----
         This method uses a GraphQL client to submit a query to fetch the data.
+
+        Permissions
+        -----------
+        Results filtered by dataset security. User must have Owner Access role,
+        be the dataset owner, or be assigned to the dataset.
         """
         if not search_input:
             search_input = DatasetKShotSearchInput(
@@ -2226,6 +2434,10 @@ class Data:
         -------
         DatasetKShot or None
             The dataset k-shot object if found, or `None` if not found or if an error occurs.
+
+        Permissions
+        -----------
+        Requires one of the following roles: Admin, Data
         """
         query_args = {
             'datasetKShotId': str(dataset_kshot_id),
@@ -2259,6 +2471,10 @@ class Data:
         -------
         CreateDatasetKShotResponse
             The result of the GraphQL mutation containing the created k-shot details.
+
+        Permissions
+        -----------
+        Requires one of the following roles: Admin, Data
         """
         mutation_args = {
             'datasetKShot': dataset_kshot,
@@ -2282,6 +2498,10 @@ class Data:
         -------
         MaxMutationResponse
             The result of the GraphQL mutation containing the deletion details.
+
+        Permissions
+        -----------
+        Requires one of the following roles: Admin, Data
         """
         mutation_args = {
             'datasetKShotId': str(dataset_kshot_id),
@@ -2307,6 +2527,10 @@ class Data:
         -------
         MaxMutationResponse
             The result of the GraphQL mutation containing the updated question.
+
+        Permissions
+        -----------
+        Requires one of the following roles: Admin, Data
         """
         mutation_args = {
             'datasetKShotId': str(dataset_kshot_id),
@@ -2333,6 +2557,10 @@ class Data:
         -------
         MaxMutationResponse
             The result of the GraphQL mutation containing the updated rendered prompt.
+
+        Permissions
+        -----------
+        Requires one of the following roles: Admin, Data
         """
         mutation_args = {
             'datasetKShotId': str(dataset_kshot_id),
@@ -2359,6 +2587,10 @@ class Data:
         -------
         MaxMutationResponse
             The result of the GraphQL mutation containing the updated explanation.
+
+        Permissions
+        -----------
+        Requires one of the following roles: Admin, Data
         """
         mutation_args = {
             'datasetKShotId': str(dataset_kshot_id),
@@ -2385,6 +2617,10 @@ class Data:
         -------
         MaxMutationResponse
             The result of the GraphQL mutation containing the updated SQL.
+
+        Permissions
+        -----------
+        Requires one of the following roles: Admin, Data
         """
         mutation_args = {
             'datasetKShotId': str(dataset_kshot_id),
@@ -2411,6 +2647,10 @@ class Data:
         -------
         MaxMutationResponse
             The result of the GraphQL mutation containing the updated title.
+
+        Permissions
+        -----------
+        Requires one of the following roles: Admin, Data
         """
         mutation_args = {
             'datasetKShotId': str(dataset_kshot_id),
@@ -2437,6 +2677,10 @@ class Data:
         -------
         MaxMutationResponse
             The result of the GraphQL mutation containing the updated visualization.
+
+        Permissions
+        -----------
+        Requires one of the following roles: Admin, Data
         """
         mutation_args = {
             'datasetKShotId': str(dataset_kshot_id),
