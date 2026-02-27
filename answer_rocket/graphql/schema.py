@@ -240,12 +240,13 @@ class PagingInput(sgqlc.types.Input):
 ########################################################################
 class DomainArtifact(sgqlc.types.Interface):
     __schema__ = schema
-    __field_names__ = ('id', 'name', 'description', 'output_label', 'is_active', 'misc_info')
+    __field_names__ = ('id', 'name', 'description', 'output_label', 'is_active', 'hide_from_user', 'misc_info')
     id = sgqlc.types.Field(sgqlc.types.non_null(String), graphql_name='id')
     name = sgqlc.types.Field(sgqlc.types.non_null(String), graphql_name='name')
     description = sgqlc.types.Field(String, graphql_name='description')
     output_label = sgqlc.types.Field(sgqlc.types.non_null(String), graphql_name='outputLabel')
     is_active = sgqlc.types.Field(sgqlc.types.non_null(Boolean), graphql_name='isActive')
+    hide_from_user = sgqlc.types.Field(sgqlc.types.non_null(Boolean), graphql_name='hideFromUser')
     misc_info = sgqlc.types.Field(String, graphql_name='miscInfo')
 
 
