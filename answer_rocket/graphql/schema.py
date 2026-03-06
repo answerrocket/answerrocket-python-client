@@ -240,12 +240,13 @@ class PagingInput(sgqlc.types.Input):
 ########################################################################
 class DomainArtifact(sgqlc.types.Interface):
     __schema__ = schema
-    __field_names__ = ('id', 'name', 'description', 'output_label', 'is_active', 'misc_info')
+    __field_names__ = ('id', 'name', 'description', 'output_label', 'is_active', 'hide_from_user', 'misc_info')
     id = sgqlc.types.Field(sgqlc.types.non_null(String), graphql_name='id')
     name = sgqlc.types.Field(sgqlc.types.non_null(String), graphql_name='name')
     description = sgqlc.types.Field(String, graphql_name='description')
     output_label = sgqlc.types.Field(sgqlc.types.non_null(String), graphql_name='outputLabel')
     is_active = sgqlc.types.Field(sgqlc.types.non_null(Boolean), graphql_name='isActive')
+    hide_from_user = sgqlc.types.Field(sgqlc.types.non_null(Boolean), graphql_name='hideFromUser')
     misc_info = sgqlc.types.Field(String, graphql_name='miscInfo')
 
 
@@ -2062,7 +2063,7 @@ class UserGroup(sgqlc.types.Type):
 
 class AzureOpenaiCompletionLLMApiConfig(sgqlc.types.Type, LLMApiConfig):
     __schema__ = schema
-    __field_names__ = ('api_base_url', 'api_version', 'openai_model_name', 'max_tokens_input', 'max_tokens_content_generation', 'temperature', 'top_p', 'presence_penalty', 'frequency_penalty', 'cost_per_model_input_unit', 'cost_per_model_output_unit')
+    __field_names__ = ('api_base_url', 'api_version', 'openai_model_name', 'max_tokens_input', 'max_tokens_content_generation', 'temperature', 'top_p', 'presence_penalty', 'frequency_penalty', 'cost_per_model_input_unit', 'cost_per_model_output_unit', 'use_apim_auth')
     api_base_url = sgqlc.types.Field(sgqlc.types.non_null(String), graphql_name='apiBaseUrl')
     api_version = sgqlc.types.Field(sgqlc.types.non_null(String), graphql_name='apiVersion')
     openai_model_name = sgqlc.types.Field(sgqlc.types.non_null(String), graphql_name='openaiModelName')
@@ -2074,13 +2075,15 @@ class AzureOpenaiCompletionLLMApiConfig(sgqlc.types.Type, LLMApiConfig):
     frequency_penalty = sgqlc.types.Field(sgqlc.types.non_null(Float), graphql_name='frequencyPenalty')
     cost_per_model_input_unit = sgqlc.types.Field(Float, graphql_name='costPerModelInputUnit')
     cost_per_model_output_unit = sgqlc.types.Field(Float, graphql_name='costPerModelOutputUnit')
+    use_apim_auth = sgqlc.types.Field(Boolean, graphql_name='useApimAuth')
 
 
 class AzureOpenaiEmbeddingLLMApiConfig(sgqlc.types.Type, LLMApiConfig):
     __schema__ = schema
-    __field_names__ = ('api_base_url', 'api_version')
+    __field_names__ = ('api_base_url', 'api_version', 'use_apim_auth')
     api_base_url = sgqlc.types.Field(sgqlc.types.non_null(String), graphql_name='apiBaseUrl')
     api_version = sgqlc.types.Field(sgqlc.types.non_null(String), graphql_name='apiVersion')
+    use_apim_auth = sgqlc.types.Field(Boolean, graphql_name='useApimAuth')
 
 
 class Dimension(sgqlc.types.Type, DomainArtifact):
