@@ -48,6 +48,10 @@ class Chat:
         :param thread_type: If provided, the type of thread being created. This is used to categorize the thread and can determine how the UI chooses to display it.
         :param pipeline_type: If provided, specifies which pipeline type to use for processing the question. Options are 'MAX' (the chat pipeline) and 'RESEARCH' (the research pipeline). Defaults to 'MAX' if not specified.
         :return: the ChatEntry response object associate with the answer from the pipeline
+
+        Permissions
+        -----------
+        User must be assigned to the copilot (via copilot user assignments in admin settings).
         """
         override_list = []
         if model_overrides:
@@ -80,6 +84,10 @@ class Chat:
         :param feedback_type: the type of feedback to add
         :param feedback_text: the text of the feedback
         :return: True if the feedback was added successfully, False otherwise
+
+        Permissions
+        -----------
+        User must be assigned to the copilot that owns this entry.
         """
 
         add_feedback_mutation_args = {
@@ -99,6 +107,10 @@ class Chat:
         :param start_date: the start date of the range to fetch threads for
         :param end_date: the end date of the range to fetch threads for
         :return: a list of ChatThread IDs
+
+        Permissions
+        -----------
+        User must be assigned to the copilot. Only returns threads owned by the current user.
         """
 
         def format_date(input_date: datetime):
@@ -134,6 +146,10 @@ class Chat:
         :param offset: (optional) the offset to start fetching entries from
         :param limit: (optional) the maximum number of entries to fetch
         :return: a list of ChatEntry objects
+
+        Permissions
+        -----------
+        User must own the thread or be assigned to the thread's copilot.
         """
         get_entries_query_args = {
             'threadId': UUID(thread_id),
@@ -162,6 +178,10 @@ class Chat:
         :param entry_id: the ID of the entry to fetch evaluation for
         :param evals: a list of strings containing the evaluations to run on the entry
         :return: a ChatEntryEvaluation object
+
+        Permissions
+        -----------
+        User must own the entry or be assigned to the entry's copilot.
         """
         evaluate_entry_mutation_args = {
             'entryId': UUID(entry_id),
@@ -190,6 +210,10 @@ class Chat:
 
         Returns:
             SharedThread: The shared thread object
+
+        Permissions
+        -----------
+        User must own the thread.
         """
         mutation_args = {
             'originalThreadId': original_thread_id
@@ -217,6 +241,10 @@ class Chat:
 
         Returns:
             MaxChatEntry: The chat entry object
+
+        Permissions
+        -----------
+        User must own the entry or be assigned to the entry's copilot.
         """
         get_chat_entry_args = {
             'id': UUID(entry_id),
@@ -235,6 +263,10 @@ class Chat:
 
         Returns:
             MaxChatThread: The chat thread object
+
+        Permissions
+        -----------
+        User must own the thread or be assigned to the thread's copilot.
         """
         get_chat_thread_args = {
             'id': UUID(thread_id),
@@ -254,6 +286,10 @@ class Chat:
 
         Returns:
             MaxChatThread: The newly created chat thread object
+
+        Permissions
+        -----------
+        User must be assigned to the copilot.
         """
         create_chat_thread_args = {
             'copilotId': copilot_id,
@@ -276,6 +312,10 @@ class Chat:
         :param history: If provided, a list of messages to be used as the conversation history for the question
         :param pipeline_type: If provided, specifies which pipeline type to use for processing the question. Options are 'MAX' (the chat pipeline) and 'RESEARCH' (the research pipeline). Defaults to 'MAX' if not specified.
         :return:
+
+        Permissions
+        -----------
+        User must own the thread or be assigned to the thread's copilot.
         """
 
         override_list = []
@@ -304,6 +344,10 @@ class Chat:
         This deletes the entry from its thread and attempts to abandon the question's processing if it is still ongoing.
         :param entry_id: the id of the chat entry
         :return: the deleted entry
+
+        Permissions
+        -----------
+        User must own the entry or be assigned to the entry's copilot.
         """
         cancel_chat_question_args = {
             'entryId': entry_id,
@@ -320,6 +364,10 @@ class Chat:
         This fetches a user by their ID.
         :param user_id: the id of the user
         :return: A MaxChatUser object
+
+        Permissions
+        -----------
+        Requires one of the following roles: Admin, User Management
         """
 
         get_user_query_args = {
@@ -429,6 +477,10 @@ class Chat:
 
 
         :return: a list of ChatEntry objects
+
+        Permissions
+        -----------
+        Returns entries only for copilots the user is assigned to.
         """
         get_all_chat_entries_query_args = {
             'offset': offset,
@@ -447,6 +499,10 @@ class Chat:
         Fetches the skill memory payload for a given chat entry.
         :param chat_entry_id: the id of the chat entry
         :return: the skill memory payload for the given chat entry
+
+        Permissions
+        -----------
+        User must own the entry or be assigned to the entry's copilot.
         """
         skill_memory_args = {
             'entryId': UUID(chat_entry_id),
@@ -461,6 +517,10 @@ class Chat:
         :param chat_entry_id: the id of the chat entry
         :param skill_memory_payload: the skill memory payload to set -- must be JSON serializable
         :return: True if the skill memory payload was set successfully, False otherwise
+
+        Permissions
+        -----------
+        User must own the entry or be assigned to the entry's copilot.
         """
 
         if chat_entry_id is None:
@@ -486,20 +546,24 @@ class Chat:
 
         :param repository_id: the id of the repository to import from
         :return: True if the workflow was imported successfully, False otherwise
+
+        Permissions
+        -----------
+        User must be assigned to the copilot.
         """
 
         if copilot_id is None:
             logger.warning("No copilot id provided, aborting.")
             return None
-        
+
         if skill_name is None:
             logger.warning("No skill name provided, aborting.")
             return None
-        
+
         if repository_id is None:
             logger.warning("No repository id provided, aborting.")
-            return None 
-        
+            return None
+
         import_skill_from_repo_args = {
             'copilotId': UUID(copilot_id),
             'skillName': skill_name,
@@ -515,6 +579,10 @@ class Chat:
         Syncs a repository.
         :param repository_id: the id of the repository to sync
         :return: True if the repository was synced successfully, False otherwise
+
+        Permissions
+        -----------
+        Any authenticated user can call this method.
         """
 
         if repository_id is None:
@@ -537,15 +605,19 @@ class Chat:
         :param nl: the natural language query to test run
         :param parameters: the parameters to pass to the skill
         :return: True if the test run was successful, False otherwise
+
+        Permissions
+        -----------
+        User must be assigned to the copilot.
         """
         if copilot_id is None:
             logger.warning("No copilot id provided, aborting.")
             return None
-        
+
         if skill_name is None:
             logger.warning("No skill name provided, aborting.")
             return None
-        
+
         test_run_copilot_skill_args = {
             'copilotId': UUID(copilot_id),
             'skillName': skill_name,
@@ -562,11 +634,15 @@ class Chat:
         Gets the output of a test run.
         :param answer_id: the id of the answer to get the output for
         :return: the output of the test run
+
+        Permissions
+        -----------
+        Any authenticated user can call this method.
         """
         if answer_id is None:
             logger.warning("No answer id provided, aborting.")
             return None
-        
+
         get_test_run_output_args = {
             'answerId': UUID(answer_id),
         }
@@ -579,6 +655,10 @@ class Chat:
         This fetches the dataframes (with metadata) for a given chat entry.
         :param entry_id: The answer entry to fetch dataframes for
         :return: a list of dataframes and metadata for the given chat entry
+
+        Permissions
+        -----------
+        User must own the entry or be assigned to the entry's copilot.
         """
         get_dataframes_for_entry_args = {
             'entryId': UUID(entry_id),
