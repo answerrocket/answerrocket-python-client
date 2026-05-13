@@ -10,6 +10,7 @@ from answer_rocket.skill import Skill
 from answer_rocket.llm import Llm
 from answer_rocket.layouts import DynamicLayouts
 from answer_rocket.email import Email
+from answer_rocket.observability import Observability
 
 class AnswerRocketClient:
 	"""
@@ -41,6 +42,7 @@ class AnswerRocketClient:
 		self.llm = Llm(self._client_config, self._gql_client)
 		self.dynamic_layouts = DynamicLayouts(self._client_config, self._gql_client)
 		self.email = Email(self._client_config, self._gql_client)
+		self.observability = Observability(self._client_config)
 
 	def can_connect(self) -> bool:
 		"""
