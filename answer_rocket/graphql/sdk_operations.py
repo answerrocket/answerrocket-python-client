@@ -1247,6 +1247,34 @@ def query_current_user():
     return _op
 
 
+def query_get_tracked_dimension_values():
+    _op = sgqlc.operation.Operation(_schema_root.query_type, name='GetTrackedDimensionValues', variables=dict(datasetId=sgqlc.types.Arg(sgqlc.types.non_null(_schema.UUID))))
+    _op_get_tracked_dimension_values = _op.get_tracked_dimension_values(dataset_id=sgqlc.types.Variable('datasetId'))
+    _op_get_tracked_dimension_values.dimension_attribute_id()
+    _op_get_tracked_dimension_values.dimension_name()
+    _op_get_tracked_dimension_values.values()
+    return _op
+
+
+def query_get_all_tracked_dimension_values():
+    _op = sgqlc.operation.Operation(_schema_root.query_type, name='GetAllTrackedDimensionValues', variables=dict(offset=sgqlc.types.Arg(_schema.Int), limit=sgqlc.types.Arg(_schema.Int), datasetId=sgqlc.types.Arg(_schema.UUID), filters=sgqlc.types.Arg(_schema.JSON), sort=sgqlc.types.Arg(_schema.JSON)))
+    _op_get_all_tracked_dimension_values = _op.get_all_tracked_dimension_values(offset=sgqlc.types.Variable('offset'), limit=sgqlc.types.Variable('limit'), dataset_id=sgqlc.types.Variable('datasetId'), filters=sgqlc.types.Variable('filters'), sort=sgqlc.types.Variable('sort'))
+    _op_get_all_tracked_dimension_values.total_count()
+    _op_get_all_tracked_dimension_values_rows = _op_get_all_tracked_dimension_values.rows()
+    _op_get_all_tracked_dimension_values_rows.watch_set_id()
+    _op_get_all_tracked_dimension_values_rows.user_id()
+    _op_get_all_tracked_dimension_values_rows.user_name()
+    _op_get_all_tracked_dimension_values_rows.user_email()
+    _op_get_all_tracked_dimension_values_rows.dataset_id()
+    _op_get_all_tracked_dimension_values_rows.dataset_name()
+    _op_get_all_tracked_dimension_values_rows.dimension_attribute_id()
+    _op_get_all_tracked_dimension_values_rows.dimension_name()
+    _op_get_all_tracked_dimension_values_rows.value()
+    _op_get_all_tracked_dimension_values_rows.added_utc()
+    _op_get_all_tracked_dimension_values_rows.last_modified_utc()
+    return _op
+
+
 class Query:
     all_chat_entries = query_all_chat_entries()
     chat_completion = query_chat_completion()
@@ -1256,6 +1284,7 @@ class Query:
     current_user = query_current_user()
     dataframes_for_entry = query_dataframes_for_entry()
     generate_embeddings = query_generate_embeddings()
+    get_all_tracked_dimension_values = query_get_all_tracked_dimension_values()
     get_async_skill_run_status = query_get_async_skill_run_status()
     get_chat_artifact = query_get_chat_artifact()
     get_chat_artifacts = query_get_chat_artifacts()
@@ -1279,6 +1308,7 @@ class Query:
     get_max_agent_workflow = query_get_max_agent_workflow()
     get_max_llm_prompt = query_get_max_llm_prompt()
     get_paged_copilot_test_runs = query_get_paged_copilot_test_runs()
+    get_tracked_dimension_values = query_get_tracked_dimension_values()
     narrative_completion = query_narrative_completion()
     narrative_completion_with_prompt = query_narrative_completion_with_prompt()
     research_completion = query_research_completion()

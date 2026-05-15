@@ -1696,7 +1696,7 @@ class ParameterDefinition(sgqlc.types.Type):
 
 class Query(sgqlc.types.Type):
     __schema__ = schema
-    __field_names__ = ('ping', 'current_user', 'get_copilot_skill_artifact_by_path', 'get_copilots', 'get_copilot_info', 'get_copilot_skill', 'run_copilot_skill', 'get_skill_components', 'get_copilot_hydrated_reports', 'get_async_skill_run_status', 'get_copilot_test_run', 'get_paged_copilot_test_runs', 'get_copilot_question_folders', 'get_max_agent_workflow', 'execute_sql_query', 'execute_rql_query', 'get_databases', 'get_database', 'get_database_tables', 'get_dataset_id', 'get_dataset', 'get_dataset2', 'get_datasets', 'get_domain_object', 'get_domain_object_by_name', 'get_grounded_value', 'get_database_kshots', 'get_database_kshot_by_id', 'get_dataset_kshots', 'get_dataset_kshot_by_id', 'run_max_sql_gen', 'run_sql_ai', 'generate_visualization', 'llmapi_config_for_sdk', 'generate_embeddings', 'get_max_llm_prompt', 'user_chat_threads', 'user_chat_entries', 'chat_thread', 'chat_entry', 'user', 'all_chat_entries', 'skill_memory', 'chat_completion', 'narrative_completion', 'narrative_completion_with_prompt', 'sql_completion', 'research_completion', 'chat_completion_with_prompt', 'research_completion_with_prompt', 'get_chat_artifact', 'get_chat_artifacts', 'get_dynamic_layout')
+    __field_names__ = ('ping', 'current_user', 'get_copilot_skill_artifact_by_path', 'get_copilots', 'get_copilot_info', 'get_copilot_skill', 'run_copilot_skill', 'get_skill_components', 'get_copilot_hydrated_reports', 'get_async_skill_run_status', 'get_copilot_test_run', 'get_paged_copilot_test_runs', 'get_copilot_question_folders', 'get_max_agent_workflow', 'execute_sql_query', 'execute_rql_query', 'get_databases', 'get_database', 'get_database_tables', 'get_dataset_id', 'get_dataset', 'get_dataset2', 'get_datasets', 'get_domain_object', 'get_domain_object_by_name', 'get_grounded_value', 'get_database_kshots', 'get_database_kshot_by_id', 'get_dataset_kshots', 'get_dataset_kshot_by_id', 'run_max_sql_gen', 'run_sql_ai', 'generate_visualization', 'llmapi_config_for_sdk', 'generate_embeddings', 'get_max_llm_prompt', 'user_chat_threads', 'user_chat_entries', 'chat_thread', 'chat_entry', 'user', 'all_chat_entries', 'skill_memory', 'chat_completion', 'narrative_completion', 'narrative_completion_with_prompt', 'sql_completion', 'research_completion', 'chat_completion_with_prompt', 'research_completion_with_prompt', 'get_chat_artifact', 'get_chat_artifacts', 'get_dynamic_layout', 'get_tracked_dimension_values', 'get_all_tracked_dimension_values')
     ping = sgqlc.types.Field(String, graphql_name='ping')
     current_user = sgqlc.types.Field(MaxUser, graphql_name='currentUser')
     get_copilot_skill_artifact_by_path = sgqlc.types.Field(CopilotSkillArtifact, graphql_name='getCopilotSkillArtifactByPath', args=sgqlc.types.ArgDict((
@@ -1977,6 +1977,18 @@ class Query(sgqlc.types.Type):
         ('id', sgqlc.types.Arg(sgqlc.types.non_null(UUID), graphql_name='id', default=None)),
 ))
     )
+    get_tracked_dimension_values = sgqlc.types.Field(sgqlc.types.non_null(sgqlc.types.list_of(sgqlc.types.non_null('TrackedDimensionAttribute'))), graphql_name='getTrackedDimensionValues', args=sgqlc.types.ArgDict((
+        ('dataset_id', sgqlc.types.Arg(sgqlc.types.non_null(UUID), graphql_name='datasetId', default=None)),
+))
+    )
+    get_all_tracked_dimension_values = sgqlc.types.Field(sgqlc.types.non_null('TrackedDimensionValuesPage'), graphql_name='getAllTrackedDimensionValues', args=sgqlc.types.ArgDict((
+        ('offset', sgqlc.types.Arg(Int, graphql_name='offset', default=0)),
+        ('limit', sgqlc.types.Arg(Int, graphql_name='limit', default=100)),
+        ('dataset_id', sgqlc.types.Arg(UUID, graphql_name='datasetId', default=None)),
+        ('filters', sgqlc.types.Arg(JSON, graphql_name='filters', default=None)),
+        ('sort', sgqlc.types.Arg(JSON, graphql_name='sort', default=None)),
+))
+    )
 
 
 class RunMaxSqlGenResponse(sgqlc.types.Type):
@@ -2054,6 +2066,37 @@ class SkillParameter(sgqlc.types.Type):
     match_values = sgqlc.types.Field(MatchValues, graphql_name='matchValues')
 
 
+class TrackedDimensionAttribute(sgqlc.types.Type):
+    __schema__ = schema
+    __field_names__ = ('dimension_attribute_id', 'dimension_name', 'values')
+    dimension_attribute_id = sgqlc.types.Field(sgqlc.types.non_null(String), graphql_name='dimensionAttributeId')
+    dimension_name = sgqlc.types.Field(sgqlc.types.non_null(String), graphql_name='dimensionName')
+    values = sgqlc.types.Field(sgqlc.types.non_null(sgqlc.types.list_of(sgqlc.types.non_null(String))), graphql_name='values')
+
+
+class TrackedDimensionValueRow(sgqlc.types.Type):
+    __schema__ = schema
+    __field_names__ = ('watch_set_id', 'user_id', 'user_name', 'user_email', 'dataset_id', 'dataset_name', 'dimension_attribute_id', 'dimension_name', 'value', 'added_utc', 'last_modified_utc')
+    watch_set_id = sgqlc.types.Field(sgqlc.types.non_null(UUID), graphql_name='watchSetId')
+    user_id = sgqlc.types.Field(sgqlc.types.non_null(UUID), graphql_name='userId')
+    user_name = sgqlc.types.Field(String, graphql_name='userName')
+    user_email = sgqlc.types.Field(String, graphql_name='userEmail')
+    dataset_id = sgqlc.types.Field(sgqlc.types.non_null(UUID), graphql_name='datasetId')
+    dataset_name = sgqlc.types.Field(String, graphql_name='datasetName')
+    dimension_attribute_id = sgqlc.types.Field(sgqlc.types.non_null(String), graphql_name='dimensionAttributeId')
+    dimension_name = sgqlc.types.Field(sgqlc.types.non_null(String), graphql_name='dimensionName')
+    value = sgqlc.types.Field(sgqlc.types.non_null(String), graphql_name='value')
+    added_utc = sgqlc.types.Field(DateTime, graphql_name='addedUtc')
+    last_modified_utc = sgqlc.types.Field(DateTime, graphql_name='lastModifiedUtc')
+
+
+class TrackedDimensionValuesPage(sgqlc.types.Type):
+    __schema__ = schema
+    __field_names__ = ('rows', 'total_count')
+    rows = sgqlc.types.Field(sgqlc.types.non_null(sgqlc.types.list_of(sgqlc.types.non_null(TrackedDimensionValueRow))), graphql_name='rows')
+    total_count = sgqlc.types.Field(sgqlc.types.non_null(Int), graphql_name='totalCount')
+
+
 class UserGroup(sgqlc.types.Type):
     __schema__ = schema
     __field_names__ = ('user_group_id', 'name')
@@ -2069,10 +2112,10 @@ class AzureOpenaiCompletionLLMApiConfig(sgqlc.types.Type, LLMApiConfig):
     openai_model_name = sgqlc.types.Field(sgqlc.types.non_null(String), graphql_name='openaiModelName')
     max_tokens_input = sgqlc.types.Field(Int, graphql_name='maxTokensInput')
     max_tokens_content_generation = sgqlc.types.Field(Int, graphql_name='maxTokensContentGeneration')
-    temperature = sgqlc.types.Field(sgqlc.types.non_null(Float), graphql_name='temperature')
-    top_p = sgqlc.types.Field(sgqlc.types.non_null(Float), graphql_name='topP')
-    presence_penalty = sgqlc.types.Field(sgqlc.types.non_null(Float), graphql_name='presencePenalty')
-    frequency_penalty = sgqlc.types.Field(sgqlc.types.non_null(Float), graphql_name='frequencyPenalty')
+    temperature = sgqlc.types.Field(Float, graphql_name='temperature')
+    top_p = sgqlc.types.Field(Float, graphql_name='topP')
+    presence_penalty = sgqlc.types.Field(Float, graphql_name='presencePenalty')
+    frequency_penalty = sgqlc.types.Field(Float, graphql_name='frequencyPenalty')
     cost_per_model_input_unit = sgqlc.types.Field(Float, graphql_name='costPerModelInputUnit')
     cost_per_model_output_unit = sgqlc.types.Field(Float, graphql_name='costPerModelOutputUnit')
     use_apim_auth = sgqlc.types.Field(Boolean, graphql_name='useApimAuth')
@@ -2183,10 +2226,10 @@ class OpenaiCompletionLLMApiConfig(sgqlc.types.Type, LLMApiConfig):
     __field_names__ = ('organization', 'max_tokens_content_generation', 'temperature', 'top_p', 'presence_penalty', 'frequency_penalty', 'cost_per_model_input_unit', 'cost_per_model_output_unit')
     organization = sgqlc.types.Field(sgqlc.types.non_null(String), graphql_name='organization')
     max_tokens_content_generation = sgqlc.types.Field(Int, graphql_name='maxTokensContentGeneration')
-    temperature = sgqlc.types.Field(sgqlc.types.non_null(Float), graphql_name='temperature')
-    top_p = sgqlc.types.Field(sgqlc.types.non_null(Float), graphql_name='topP')
-    presence_penalty = sgqlc.types.Field(sgqlc.types.non_null(Float), graphql_name='presencePenalty')
-    frequency_penalty = sgqlc.types.Field(sgqlc.types.non_null(Float), graphql_name='frequencyPenalty')
+    temperature = sgqlc.types.Field(Float, graphql_name='temperature')
+    top_p = sgqlc.types.Field(Float, graphql_name='topP')
+    presence_penalty = sgqlc.types.Field(Float, graphql_name='presencePenalty')
+    frequency_penalty = sgqlc.types.Field(Float, graphql_name='frequencyPenalty')
     cost_per_model_input_unit = sgqlc.types.Field(Float, graphql_name='costPerModelInputUnit')
     cost_per_model_output_unit = sgqlc.types.Field(Float, graphql_name='costPerModelOutputUnit')
 
