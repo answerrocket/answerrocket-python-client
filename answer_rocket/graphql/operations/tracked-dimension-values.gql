@@ -1,0 +1,38 @@
+query GetTrackedDimensionValues($datasetId: UUID!) {
+  getTrackedDimensionValues(datasetId: $datasetId) {
+    dimensionAttributeId
+    dimensionName
+    values
+  }
+}
+
+query GetAllTrackedDimensionValues(
+  $offset: Int
+  $limit: Int
+  $datasetId: UUID
+  $filters: JSON
+  $sort: JSON
+) {
+  getAllTrackedDimensionValues(
+    offset: $offset
+    limit: $limit
+    datasetId: $datasetId
+    filters: $filters
+    sort: $sort
+  ) {
+    totalCount
+    rows {
+      watchSetId
+      userId
+      userName
+      userEmail
+      datasetId
+      datasetName
+      dimensionAttributeId
+      dimensionName
+      value
+      addedUtc
+      lastModifiedUtc
+    }
+  }
+}

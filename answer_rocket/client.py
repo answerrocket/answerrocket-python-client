@@ -11,7 +11,6 @@ from answer_rocket.llm import Llm
 from answer_rocket.layouts import DynamicLayouts
 from answer_rocket.email import Email
 
-
 class AnswerRocketClient:
 	"""
 	Main client for interacting with AnswerRocket services.
