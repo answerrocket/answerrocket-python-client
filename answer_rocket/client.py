@@ -42,7 +42,7 @@ class AnswerRocketClient:
 		self.llm = Llm(self._client_config, self._gql_client)
 		self.dynamic_layouts = DynamicLayouts(self._client_config, self._gql_client)
 		self.email = Email(self._client_config, self._gql_client)
-		self.observability = Observability(self._client_config)
+		self.observability = Observability(self._client_config, self._gql_client)
 
 	def can_connect(self) -> bool:
 		"""
