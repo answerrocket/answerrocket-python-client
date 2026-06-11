@@ -34,3 +34,12 @@ class GraphQlClient:
         if variables:
             return Operation(Mutation, variables=variables)
         return Operation(Mutation)
+
+    def query_raw(self, query: str, variables: dict | None = None) -> dict:
+        """Execute a raw GraphQL query string and return the data dict."""
+        response = self._endpoint(query, variables)
+        if 'errors' in response:
+            raise Exception(response['errors'][0]['message'])
+        if 'errorMessage' in response:
+            raise Exception(response['errorMessage'])
+        return response.get('data', {})
