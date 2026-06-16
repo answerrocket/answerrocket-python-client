@@ -1694,9 +1694,18 @@ class ParameterDefinition(sgqlc.types.Type):
     type = sgqlc.types.Field(sgqlc.types.non_null(String), graphql_name='type')
 
 
+class ObservabilityTracesResult(sgqlc.types.Type):
+    __schema__ = schema
+    __field_names__ = ('count', 'has_more', 'next_cursor', 'traces')
+    count = sgqlc.types.Field(sgqlc.types.non_null(Int), graphql_name='count')
+    has_more = sgqlc.types.Field(sgqlc.types.non_null(Boolean), graphql_name='hasMore')
+    next_cursor = sgqlc.types.Field(String, graphql_name='nextCursor')
+    traces = sgqlc.types.Field(sgqlc.types.non_null(sgqlc.types.list_of(sgqlc.types.non_null(JSON))), graphql_name='traces')
+
+
 class Query(sgqlc.types.Type):
     __schema__ = schema
-    __field_names__ = ('ping', 'current_user', 'get_copilot_skill_artifact_by_path', 'get_copilots', 'get_copilot_info', 'get_copilot_skill', 'run_copilot_skill', 'get_skill_components', 'get_copilot_hydrated_reports', 'get_async_skill_run_status', 'get_copilot_test_run', 'get_paged_copilot_test_runs', 'get_copilot_question_folders', 'get_max_agent_workflow', 'execute_sql_query', 'execute_rql_query', 'get_databases', 'get_database', 'get_database_tables', 'get_dataset_id', 'get_dataset', 'get_dataset2', 'get_datasets', 'get_domain_object', 'get_domain_object_by_name', 'get_grounded_value', 'get_database_kshots', 'get_database_kshot_by_id', 'get_dataset_kshots', 'get_dataset_kshot_by_id', 'run_max_sql_gen', 'run_sql_ai', 'generate_visualization', 'llmapi_config_for_sdk', 'generate_embeddings', 'get_max_llm_prompt', 'user_chat_threads', 'user_chat_entries', 'chat_thread', 'chat_entry', 'user', 'all_chat_entries', 'skill_memory', 'chat_completion', 'narrative_completion', 'narrative_completion_with_prompt', 'sql_completion', 'research_completion', 'chat_completion_with_prompt', 'research_completion_with_prompt', 'get_chat_artifact', 'get_chat_artifacts', 'get_dynamic_layout', 'get_tracked_dimension_values', 'get_all_tracked_dimension_values')
+    __field_names__ = ('ping', 'current_user', 'get_copilot_skill_artifact_by_path', 'get_copilots', 'get_copilot_info', 'get_copilot_skill', 'run_copilot_skill', 'get_skill_components', 'get_copilot_hydrated_reports', 'get_async_skill_run_status', 'get_copilot_test_run', 'get_paged_copilot_test_runs', 'get_copilot_question_folders', 'get_max_agent_workflow', 'execute_sql_query', 'execute_rql_query', 'get_databases', 'get_database', 'get_database_tables', 'get_dataset_id', 'get_dataset', 'get_dataset2', 'get_datasets', 'get_domain_object', 'get_domain_object_by_name', 'get_grounded_value', 'get_database_kshots', 'get_database_kshot_by_id', 'get_dataset_kshots', 'get_dataset_kshot_by_id', 'run_max_sql_gen', 'run_sql_ai', 'generate_visualization', 'llmapi_config_for_sdk', 'generate_embeddings', 'get_max_llm_prompt', 'user_chat_threads', 'user_chat_entries', 'chat_thread', 'chat_entry', 'user', 'all_chat_entries', 'skill_memory', 'chat_completion', 'narrative_completion', 'narrative_completion_with_prompt', 'sql_completion', 'research_completion', 'chat_completion_with_prompt', 'research_completion_with_prompt', 'get_chat_artifact', 'get_chat_artifacts', 'get_dynamic_layout', 'get_tracked_dimension_values', 'get_all_tracked_dimension_values', 'observability_traces')
     ping = sgqlc.types.Field(String, graphql_name='ping')
     current_user = sgqlc.types.Field(MaxUser, graphql_name='currentUser')
     get_copilot_skill_artifact_by_path = sgqlc.types.Field(CopilotSkillArtifact, graphql_name='getCopilotSkillArtifactByPath', args=sgqlc.types.ArgDict((
@@ -1987,6 +1996,11 @@ class Query(sgqlc.types.Type):
         ('dataset_id', sgqlc.types.Arg(UUID, graphql_name='datasetId', default=None)),
         ('filters', sgqlc.types.Arg(JSON, graphql_name='filters', default=None)),
         ('sort', sgqlc.types.Arg(JSON, graphql_name='sort', default=None)),
+))
+    )
+    observability_traces = sgqlc.types.Field(sgqlc.types.non_null(ObservabilityTracesResult), graphql_name='observabilityTraces', args=sgqlc.types.ArgDict((
+        ('since', sgqlc.types.Arg(sgqlc.types.non_null(String), graphql_name='since', default=None)),
+        ('limit', sgqlc.types.Arg(Int, graphql_name='limit', default=None)),
 ))
     )
 
