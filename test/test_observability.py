@@ -2,6 +2,7 @@
 
 import sys
 import os
+import json
 sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
 from unittest.mock import MagicMock, patch
@@ -235,3 +236,92 @@ def test_poll_traces_on_batch_callback():
 
     assert len(received) == 1
     assert received[0] == _SAMPLE_OTLP_TRACE
+
+
+# ---------------------------------------------------------------------------
+# Cursor handling
+# ---------------------------------------------------------------------------
+
+def test_get_traces_converts_datetime_cursor_to_iso():
+    config, gql_client, obs = _make_client()
+    mock_result = MagicMock()
+    mock_result.observability_traces = _make_gql_page()
+    gql_client.submit.return_value = mock_result
+    mock_op = MagicMock()
+    gql_client.query.return_value = mock_op
+
+    obs.get_traces(datetime(2026, 5, 1, 12, 0, 0, tzinfo=timezone.utc), limit=10)
+
+    _, kwargs = mock_op.observability_traces.call_args
+    assert kwargs["since"].startswith("2026-05-01T12:00:00")
+    assert kwargs["limit"] == 10
+
+
+def test_iter_traces_threads_next_cursor_as_since():
+    """Page 2 must be requested with `since` == page 1's next_cursor (no re-scan, no gaps)."""
+    config, gql_client, obs = _make_client()
+    page1 = MagicMock()
+    page1.observability_traces = _make_gql_page(
+        traces=[_SAMPLE_OTLP_TRACE], has_more=True, next_cursor="2026-05-01T12:00:01Z"
+    )
+    page2 = MagicMock()
+    page2.observability_traces = _make_gql_page(traces=[_SAMPLE_OTLP_TRACE], has_more=False)
+    gql_client.submit.side_effect = [page1, page2]
+
+    mock_op = MagicMock()
+    gql_client.query.return_value = mock_op
+
+    list(obs.iter_traces("2026-05-01T00:00:00Z"))
+
+    calls = mock_op.observability_traces.call_args_list
+    assert len(calls) == 2
+    assert calls[0].kwargs["since"] == "2026-05-01T00:00:00Z"
+    assert calls[1].kwargs["since"] == "2026-05-01T12:00:01Z"
+
+
+# ---------------------------------------------------------------------------
+# Contract: SDK faithfully passes server-assembled OTLP through (ties both PRs)
+# ---------------------------------------------------------------------------
+
+def _load_golden_trace():
+    path = os.path.join(os.path.dirname(os.path.abspath(__file__)), "fixtures", "example_otlp_trace.json")
+    with open(path) as f:
+        return json.load(f)
+
+
+def test_contract_passes_real_server_trace_through_verbatim():
+    config, gql_client, obs = _make_client()
+    golden = _load_golden_trace()
+    mock_result = MagicMock()
+    mock_result.observability_traces = _make_gql_page(traces=[golden], count=1, has_more=False)
+    gql_client.submit.return_value = mock_result
+
+    batch = obs.get_traces("2026-05-01T00:00:00Z")
+
+    assert batch.success is True
+    assert batch.count == 1
+    # The SDK must not mutate or re-assemble; it returns the server's OTLP untouched.
+    assert batch.traces[0] == golden
+
+
+def test_contract_returned_trace_is_valid_otlp():
+    config, gql_client, obs = _make_client()
+    golden = _load_golden_trace()
+    mock_result = MagicMock()
+    mock_result.observability_traces = _make_gql_page(traces=[golden], count=1)
+    gql_client.submit.return_value = mock_result
+
+    trace = obs.get_traces("2026-05-01T00:00:00Z").traces[0]
+
+    spans = trace["resourceSpans"][0]["scopeSpans"][0]["spans"]
+    names = [s["name"] for s in spans]
+    assert "chat.pipeline" in names
+    assert any(n.startswith("phase.") for n in names)
+    assert "skill.narrative" in names
+    # All spans share one traceId; every span has the required OTLP fields.
+    trace_ids = {s["traceId"] for s in spans}
+    assert len(trace_ids) == 1
+    for s in spans:
+        assert s["spanId"]
+        assert s["startTimeUnixNano"] and s["endTimeUnixNano"]
+        assert int(s["startTimeUnixNano"]) <= int(s["endTimeUnixNano"])
