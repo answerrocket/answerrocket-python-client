@@ -27,13 +27,56 @@ _SAMPLE_OTLP_TRACE = {
 }
 
 
+def _typed_span(s):
+    """Mimic a typed sgqlc Span object built from an OTLP span dict."""
+    m = MagicMock()
+    m.trace_id = s["traceId"]
+    m.span_id = s["spanId"]
+    m.name = s["name"]
+    m.kind = s["kind"]
+    m.start_time_unix_nano = s["startTimeUnixNano"]
+    m.end_time_unix_nano = s["endTimeUnixNano"]
+    m.attributes = s.get("attributes", [])
+    m.parent_span_id = s.get("parentSpanId")          # None when absent
+    m.events = s.get("events")                        # None when absent
+    if "status" in s:
+        st = MagicMock(); st.code = s["status"]["code"]; m.status = st
+    else:
+        m.status = None
+    return m
+
+
+def _typed_scope_spans(ss):
+    m = MagicMock()
+    sc = MagicMock(); sc.name = ss["scope"]["name"]; sc.version = ss["scope"].get("version")
+    m.scope = sc
+    m.spans = [_typed_span(s) for s in ss["spans"]]
+    return m
+
+
+def _typed_resource_spans(rs):
+    m = MagicMock()
+    res = MagicMock(); res.attributes = rs["resource"]["attributes"]
+    m.resource = res
+    m.scope_spans = [_typed_scope_spans(ss) for ss in rs["scopeSpans"]]
+    return m
+
+
+def _typed_trace(otlp):
+    """Mimic the typed sgqlc ObservabilityTrace tree built from an OTLP dict."""
+    t = MagicMock()
+    t.resource_spans = [_typed_resource_spans(rs) for rs in otlp["resourceSpans"]]
+    return t
+
+
 def _make_gql_page(traces=None, count=None, has_more=False, next_cursor=None):
-    """Build a mock sgqlc result for observability_traces."""
+    """Build a mock sgqlc result whose `traces` are typed objects (as the server returns)."""
+    otlp = traces or []
     page = MagicMock()
-    page.count = count if count is not None else len(traces or [])
+    page.count = count if count is not None else len(otlp)
     page.has_more = has_more
     page.next_cursor = next_cursor
-    page.traces = traces or []
+    page.traces = [_typed_trace(t) for t in otlp]
     return page
 
 
@@ -289,7 +332,7 @@ def _load_golden_trace():
         return json.load(f)
 
 
-def test_contract_passes_real_server_trace_through_verbatim():
+def test_contract_reconstructs_real_server_trace_to_identical_otlp():
     config, gql_client, obs = _make_client()
     golden = _load_golden_trace()
     mock_result = MagicMock()
@@ -300,8 +343,33 @@ def test_contract_passes_real_server_trace_through_verbatim():
 
     assert batch.success is True
     assert batch.count == 1
-    # The SDK must not mutate or re-assemble; it returns the server's OTLP untouched.
+    # The typed span tree must reconstruct byte-identically to the server's OTLP.
     assert batch.traces[0] == golden
+
+
+def test_reconstruction_omits_absent_optional_span_fields():
+    from answer_rocket.observability import _span_to_otlp
+    full = _typed_span({
+        "traceId": "t", "spanId": "s", "name": "n", "kind": "SPAN_KIND_INTERNAL",
+        "startTimeUnixNano": "1", "endTimeUnixNano": "2", "attributes": [{"key": "k", "value": {"stringValue": "v"}}],
+        "parentSpanId": "p", "events": [{"name": "e"}], "status": {"code": "STATUS_CODE_OK"},
+    })
+    assert _span_to_otlp(full) == {
+        "traceId": "t", "spanId": "s", "name": "n", "kind": "SPAN_KIND_INTERNAL",
+        "startTimeUnixNano": "1", "endTimeUnixNano": "2",
+        "attributes": [{"key": "k", "value": {"stringValue": "v"}}],
+        "parentSpanId": "p", "events": [{"name": "e"}], "status": {"code": "STATUS_CODE_OK"},
+    }
+
+    minimal = _typed_span({
+        "traceId": "t", "spanId": "s", "name": "root", "kind": "SPAN_KIND_SERVER",
+        "startTimeUnixNano": "1", "endTimeUnixNano": "2", "attributes": [],
+    })
+    out = _span_to_otlp(minimal)
+    assert "parentSpanId" not in out
+    assert "events" not in out
+    assert "status" not in out
+    assert out["attributes"] == []
 
 
 def test_contract_returned_trace_is_valid_otlp():
