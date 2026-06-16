@@ -1694,13 +1694,67 @@ class ParameterDefinition(sgqlc.types.Type):
     type = sgqlc.types.Field(sgqlc.types.non_null(String), graphql_name='type')
 
 
+class SpanStatus(sgqlc.types.Type):
+    __schema__ = schema
+    __field_names__ = ('code',)
+    code = sgqlc.types.Field(String, graphql_name='code')
+
+
+class Span(sgqlc.types.Type):
+    __schema__ = schema
+    __field_names__ = ('trace_id', 'span_id', 'parent_span_id', 'name', 'kind', 'start_time_unix_nano', 'end_time_unix_nano', 'attributes', 'events', 'status')
+    trace_id = sgqlc.types.Field(sgqlc.types.non_null(String), graphql_name='traceId')
+    span_id = sgqlc.types.Field(sgqlc.types.non_null(String), graphql_name='spanId')
+    parent_span_id = sgqlc.types.Field(String, graphql_name='parentSpanId')
+    name = sgqlc.types.Field(sgqlc.types.non_null(String), graphql_name='name')
+    kind = sgqlc.types.Field(sgqlc.types.non_null(String), graphql_name='kind')
+    start_time_unix_nano = sgqlc.types.Field(sgqlc.types.non_null(String), graphql_name='startTimeUnixNano')
+    end_time_unix_nano = sgqlc.types.Field(sgqlc.types.non_null(String), graphql_name='endTimeUnixNano')
+    attributes = sgqlc.types.Field(sgqlc.types.non_null(JSON), graphql_name='attributes')
+    events = sgqlc.types.Field(JSON, graphql_name='events')
+    status = sgqlc.types.Field(SpanStatus, graphql_name='status')
+
+
+class InstrumentationScope(sgqlc.types.Type):
+    __schema__ = schema
+    __field_names__ = ('name', 'version')
+    name = sgqlc.types.Field(sgqlc.types.non_null(String), graphql_name='name')
+    version = sgqlc.types.Field(String, graphql_name='version')
+
+
+class ScopeSpans(sgqlc.types.Type):
+    __schema__ = schema
+    __field_names__ = ('scope', 'spans')
+    scope = sgqlc.types.Field(sgqlc.types.non_null(InstrumentationScope), graphql_name='scope')
+    spans = sgqlc.types.Field(sgqlc.types.non_null(sgqlc.types.list_of(sgqlc.types.non_null(Span))), graphql_name='spans')
+
+
+class OtlpResource(sgqlc.types.Type):
+    __schema__ = schema
+    __field_names__ = ('attributes',)
+    attributes = sgqlc.types.Field(sgqlc.types.non_null(JSON), graphql_name='attributes')
+
+
+class ResourceSpans(sgqlc.types.Type):
+    __schema__ = schema
+    __field_names__ = ('resource', 'scope_spans')
+    resource = sgqlc.types.Field(sgqlc.types.non_null(OtlpResource), graphql_name='resource')
+    scope_spans = sgqlc.types.Field(sgqlc.types.non_null(sgqlc.types.list_of(sgqlc.types.non_null(ScopeSpans))), graphql_name='scopeSpans')
+
+
+class ObservabilityTrace(sgqlc.types.Type):
+    __schema__ = schema
+    __field_names__ = ('resource_spans',)
+    resource_spans = sgqlc.types.Field(sgqlc.types.non_null(sgqlc.types.list_of(sgqlc.types.non_null(ResourceSpans))), graphql_name='resourceSpans')
+
+
 class ObservabilityTracesResult(sgqlc.types.Type):
     __schema__ = schema
     __field_names__ = ('count', 'has_more', 'next_cursor', 'traces')
     count = sgqlc.types.Field(sgqlc.types.non_null(Int), graphql_name='count')
     has_more = sgqlc.types.Field(sgqlc.types.non_null(Boolean), graphql_name='hasMore')
     next_cursor = sgqlc.types.Field(String, graphql_name='nextCursor')
-    traces = sgqlc.types.Field(sgqlc.types.non_null(sgqlc.types.list_of(sgqlc.types.non_null(JSON))), graphql_name='traces')
+    traces = sgqlc.types.Field(sgqlc.types.non_null(sgqlc.types.list_of(sgqlc.types.non_null(ObservabilityTrace))), graphql_name='traces')
 
 
 class Query(sgqlc.types.Type):

@@ -67,7 +67,26 @@ class Observability:
             obs.count()
             obs.has_more()
             obs.next_cursor()
-            obs.traces()
+            # The trace shape is strongly typed in the schema, so the full span tree must be
+            # selected explicitly; attributes/events remain JSON scalars.
+            resource_spans = obs.traces().resource_spans()
+            resource_spans.resource().attributes()
+            scope_spans = resource_spans.scope_spans()
+            scope = scope_spans.scope()
+            scope.name()
+            scope.version()
+            spans = scope_spans.spans()
+            spans.trace_id()
+            spans.span_id()
+            spans.parent_span_id()
+            spans.name()
+            spans.kind()
+            spans.start_time_unix_nano()
+            spans.end_time_unix_nano()
+            spans.attributes()
+            spans.events()
+            spans.status().code()
+
             result = self._gql_client.submit(op)
             page = result.observability_traces
         except Exception as exc:
@@ -78,7 +97,7 @@ class Observability:
             count=page.count,
             has_more=page.has_more,
             next_cursor=page.next_cursor,
-            traces=list(page.traces or []),
+            traces=[_trace_to_otlp(t) for t in (page.traces or [])],
         )
 
     def iter_traces(
@@ -132,3 +151,48 @@ def _to_iso(dt: str | datetime) -> str:
             dt = dt.replace(tzinfo=timezone.utc)
         return dt.isoformat()
     return dt
+
+
+# ---------------------------------------------------------------------------
+# Reconstruct OTLP/JSON dicts from the typed GraphQL Span tree.
+#
+# The server emits a versionable typed span tree; collectors want plain OTLP JSON.
+# These helpers map the typed objects back to the OTLP wire shape, omitting absent
+# optional fields so the output matches what an OTLP exporter would produce.
+# ---------------------------------------------------------------------------
+
+def _trace_to_otlp(trace) -> dict:
+    return {"resourceSpans": [_resource_spans_to_otlp(rs) for rs in (trace.resource_spans or [])]}
+
+
+def _resource_spans_to_otlp(rs) -> dict:
+    return {
+        "resource": {"attributes": rs.resource.attributes},
+        "scopeSpans": [_scope_spans_to_otlp(ss) for ss in (rs.scope_spans or [])],
+    }
+
+
+def _scope_spans_to_otlp(ss) -> dict:
+    scope: dict = {"name": ss.scope.name}
+    if ss.scope.version is not None:
+        scope["version"] = ss.scope.version
+    return {"scope": scope, "spans": [_span_to_otlp(s) for s in (ss.spans or [])]}
+
+
+def _span_to_otlp(s) -> dict:
+    out = {
+        "traceId": s.trace_id,
+        "spanId": s.span_id,
+        "name": s.name,
+        "kind": s.kind,
+        "startTimeUnixNano": s.start_time_unix_nano,
+        "endTimeUnixNano": s.end_time_unix_nano,
+        "attributes": s.attributes or [],
+    }
+    if s.parent_span_id is not None:
+        out["parentSpanId"] = s.parent_span_id
+    if s.events is not None:
+        out["events"] = s.events
+    if s.status is not None:
+        out["status"] = {"code": s.status.code}
+    return out
