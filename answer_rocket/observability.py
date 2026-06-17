@@ -67,10 +67,10 @@ class Observability:
             obs.count()
             obs.has_more()
             obs.next_cursor()
-            # The trace shape is strongly typed in the schema, so the full span tree must be
-            # selected explicitly; attributes/events remain JSON scalars.
+            # The full OTLP span tree is strongly typed in the schema, so every field
+            # (including attribute KeyValue/AnyValue) must be selected explicitly.
             resource_spans = obs.traces().resource_spans()
-            resource_spans.resource().attributes()
+            _select_key_values(resource_spans.resource().attributes())
             scope_spans = resource_spans.scope_spans()
             scope = scope_spans.scope()
             scope.name()
@@ -83,8 +83,11 @@ class Observability:
             spans.kind()
             spans.start_time_unix_nano()
             spans.end_time_unix_nano()
-            spans.attributes()
-            spans.events()
+            _select_key_values(spans.attributes())
+            events = spans.events()
+            events.time_unix_nano()
+            events.name()
+            _select_key_values(events.attributes())
             spans.status().code()
 
             result = self._gql_client.submit(op)
@@ -154,12 +157,27 @@ def _to_iso(dt: str | datetime) -> str:
 
 
 # ---------------------------------------------------------------------------
-# Reconstruct OTLP/JSON dicts from the typed GraphQL Span tree.
+# GraphQL selection + reconstruction of OTLP/JSON from the typed span tree.
 #
-# The server emits a versionable typed span tree; collectors want plain OTLP JSON.
-# These helpers map the typed objects back to the OTLP wire shape, omitting absent
-# optional fields so the output matches what an OTLP exporter would produce.
+# The server emits a fully-typed, versionable span tree; collectors want plain OTLP
+# JSON. These helpers select every typed field and map the objects back to the OTLP
+# wire shape, omitting absent optional fields so the output matches an OTLP exporter.
 # ---------------------------------------------------------------------------
+
+def _select_key_values(kv_selector) -> None:
+    """Select an OTLP KeyValue list, including one level of AnyValue.arrayValue."""
+    kv_selector.key()
+    value = kv_selector.value()
+    value.string_value()
+    value.bool_value()
+    value.int_value()
+    value.double_value()
+    inner = value.array_value().values()
+    inner.string_value()
+    inner.bool_value()
+    inner.int_value()
+    inner.double_value()
+
 
 def _trace_to_otlp(trace) -> dict:
     return {"resourceSpans": [_resource_spans_to_otlp(rs) for rs in (trace.resource_spans or [])]}
@@ -167,7 +185,7 @@ def _trace_to_otlp(trace) -> dict:
 
 def _resource_spans_to_otlp(rs) -> dict:
     return {
-        "resource": {"attributes": rs.resource.attributes},
+        "resource": {"attributes": [_key_value_to_otlp(kv) for kv in (rs.resource.attributes or [])]},
         "scopeSpans": [_scope_spans_to_otlp(ss) for ss in (rs.scope_spans or [])],
     }
 
@@ -187,12 +205,37 @@ def _span_to_otlp(s) -> dict:
         "kind": s.kind,
         "startTimeUnixNano": s.start_time_unix_nano,
         "endTimeUnixNano": s.end_time_unix_nano,
-        "attributes": s.attributes or [],
+        "attributes": [_key_value_to_otlp(kv) for kv in (s.attributes or [])],
+        "events": [_event_to_otlp(e) for e in (s.events or [])],
     }
     if s.parent_span_id is not None:
         out["parentSpanId"] = s.parent_span_id
-    if s.events is not None:
-        out["events"] = s.events
     if s.status is not None:
         out["status"] = {"code": s.status.code}
     return out
+
+
+def _event_to_otlp(e) -> dict:
+    out = {"name": e.name, "attributes": [_key_value_to_otlp(kv) for kv in (e.attributes or [])]}
+    if e.time_unix_nano is not None:
+        out["timeUnixNano"] = e.time_unix_nano
+    return out
+
+
+def _key_value_to_otlp(kv) -> dict:
+    return {"key": kv.key, "value": _any_value_to_otlp(kv.value)}
+
+
+def _any_value_to_otlp(v) -> dict:
+    """Map a typed OTLP AnyValue back to its single-key wire form."""
+    if v.string_value is not None:
+        return {"stringValue": v.string_value}
+    if v.bool_value is not None:
+        return {"boolValue": v.bool_value}
+    if v.int_value is not None:
+        return {"intValue": v.int_value}
+    if v.double_value is not None:
+        return {"doubleValue": v.double_value}
+    if v.array_value is not None:
+        return {"arrayValue": {"values": [_any_value_to_otlp(x) for x in (v.array_value.values or [])]}}
+    return {}

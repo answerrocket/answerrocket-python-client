@@ -1694,6 +1694,37 @@ class ParameterDefinition(sgqlc.types.Type):
     type = sgqlc.types.Field(sgqlc.types.non_null(String), graphql_name='type')
 
 
+class AnyValue(sgqlc.types.Type):
+    __schema__ = schema
+    __field_names__ = ('string_value', 'bool_value', 'int_value', 'double_value', 'array_value')
+    string_value = sgqlc.types.Field(String, graphql_name='stringValue')
+    bool_value = sgqlc.types.Field(Boolean, graphql_name='boolValue')
+    int_value = sgqlc.types.Field(String, graphql_name='intValue')
+    double_value = sgqlc.types.Field(Float, graphql_name='doubleValue')
+    array_value = sgqlc.types.Field('ArrayValue', graphql_name='arrayValue')
+
+
+class ArrayValue(sgqlc.types.Type):
+    __schema__ = schema
+    __field_names__ = ('values',)
+    values = sgqlc.types.Field(sgqlc.types.non_null(sgqlc.types.list_of(sgqlc.types.non_null(AnyValue))), graphql_name='values')
+
+
+class KeyValue(sgqlc.types.Type):
+    __schema__ = schema
+    __field_names__ = ('key', 'value')
+    key = sgqlc.types.Field(sgqlc.types.non_null(String), graphql_name='key')
+    value = sgqlc.types.Field(sgqlc.types.non_null(AnyValue), graphql_name='value')
+
+
+class SpanEvent(sgqlc.types.Type):
+    __schema__ = schema
+    __field_names__ = ('time_unix_nano', 'name', 'attributes')
+    time_unix_nano = sgqlc.types.Field(String, graphql_name='timeUnixNano')
+    name = sgqlc.types.Field(sgqlc.types.non_null(String), graphql_name='name')
+    attributes = sgqlc.types.Field(sgqlc.types.non_null(sgqlc.types.list_of(sgqlc.types.non_null(KeyValue))), graphql_name='attributes')
+
+
 class SpanStatus(sgqlc.types.Type):
     __schema__ = schema
     __field_names__ = ('code',)
@@ -1710,8 +1741,8 @@ class Span(sgqlc.types.Type):
     kind = sgqlc.types.Field(sgqlc.types.non_null(String), graphql_name='kind')
     start_time_unix_nano = sgqlc.types.Field(sgqlc.types.non_null(String), graphql_name='startTimeUnixNano')
     end_time_unix_nano = sgqlc.types.Field(sgqlc.types.non_null(String), graphql_name='endTimeUnixNano')
-    attributes = sgqlc.types.Field(sgqlc.types.non_null(JSON), graphql_name='attributes')
-    events = sgqlc.types.Field(JSON, graphql_name='events')
+    attributes = sgqlc.types.Field(sgqlc.types.non_null(sgqlc.types.list_of(sgqlc.types.non_null(KeyValue))), graphql_name='attributes')
+    events = sgqlc.types.Field(sgqlc.types.non_null(sgqlc.types.list_of(sgqlc.types.non_null(SpanEvent))), graphql_name='events')
     status = sgqlc.types.Field(SpanStatus, graphql_name='status')
 
 
@@ -1732,7 +1763,7 @@ class ScopeSpans(sgqlc.types.Type):
 class OtlpResource(sgqlc.types.Type):
     __schema__ = schema
     __field_names__ = ('attributes',)
-    attributes = sgqlc.types.Field(sgqlc.types.non_null(JSON), graphql_name='attributes')
+    attributes = sgqlc.types.Field(sgqlc.types.non_null(sgqlc.types.list_of(sgqlc.types.non_null(KeyValue))), graphql_name='attributes')
 
 
 class ResourceSpans(sgqlc.types.Type):
