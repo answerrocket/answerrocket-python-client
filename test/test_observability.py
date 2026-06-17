@@ -21,10 +21,36 @@ _SAMPLE_OTLP_TRACE = {
         "scopeSpans": [{"scope": {"name": "answerrocket.copilot"}, "spans": [
             {"traceId": "abc123", "spanId": "def456", "name": "chat.pipeline",
              "kind": "SPAN_KIND_SERVER", "startTimeUnixNano": "1000", "endTimeUnixNano": "2000",
-             "attributes": [], "status": {"code": "STATUS_CODE_OK"}},
+             "attributes": [], "events": [], "status": {"code": "STATUS_CODE_OK"}},
         ]}],
     }]
 }
+
+
+def _typed_any_value(v):
+    """Mimic a typed sgqlc AnyValue from an OTLP value dict (one populated variant)."""
+    m = MagicMock()
+    m.string_value = v.get("stringValue")
+    m.bool_value = v.get("boolValue")
+    m.int_value = v.get("intValue")
+    m.double_value = v.get("doubleValue")
+    if "arrayValue" in v:
+        arr = MagicMock(); arr.values = [_typed_any_value(x) for x in v["arrayValue"]["values"]]
+        m.array_value = arr
+    else:
+        m.array_value = None
+    return m
+
+
+def _typed_key_value(kv):
+    m = MagicMock(); m.key = kv["key"]; m.value = _typed_any_value(kv["value"])
+    return m
+
+
+def _typed_event(e):
+    m = MagicMock(); m.name = e["name"]; m.time_unix_nano = e.get("timeUnixNano")
+    m.attributes = [_typed_key_value(kv) for kv in e.get("attributes", [])]
+    return m
 
 
 def _typed_span(s):
@@ -36,9 +62,9 @@ def _typed_span(s):
     m.kind = s["kind"]
     m.start_time_unix_nano = s["startTimeUnixNano"]
     m.end_time_unix_nano = s["endTimeUnixNano"]
-    m.attributes = s.get("attributes", [])
-    m.parent_span_id = s.get("parentSpanId")          # None when absent
-    m.events = s.get("events")                        # None when absent
+    m.attributes = [_typed_key_value(kv) for kv in s.get("attributes", [])]
+    m.events = [_typed_event(e) for e in s.get("events", [])]   # always a list (non-null in schema)
+    m.parent_span_id = s.get("parentSpanId")                    # None when absent
     if "status" in s:
         st = MagicMock(); st.code = s["status"]["code"]; m.status = st
     else:
@@ -56,7 +82,7 @@ def _typed_scope_spans(ss):
 
 def _typed_resource_spans(rs):
     m = MagicMock()
-    res = MagicMock(); res.attributes = rs["resource"]["attributes"]
+    res = MagicMock(); res.attributes = [_typed_key_value(kv) for kv in rs["resource"]["attributes"]]
     m.resource = res
     m.scope_spans = [_typed_scope_spans(ss) for ss in rs["scopeSpans"]]
     return m
@@ -347,28 +373,44 @@ def test_contract_reconstructs_real_server_trace_to_identical_otlp():
     assert batch.traces[0] == golden
 
 
-def test_reconstruction_omits_absent_optional_span_fields():
+def test_reconstruction_handles_typed_attributes_and_optionals():
     from answer_rocket.observability import _span_to_otlp
     full = _typed_span({
         "traceId": "t", "spanId": "s", "name": "n", "kind": "SPAN_KIND_INTERNAL",
-        "startTimeUnixNano": "1", "endTimeUnixNano": "2", "attributes": [{"key": "k", "value": {"stringValue": "v"}}],
-        "parentSpanId": "p", "events": [{"name": "e"}], "status": {"code": "STATUS_CODE_OK"},
+        "startTimeUnixNano": "1", "endTimeUnixNano": "2",
+        "attributes": [
+            {"key": "ar.run_id", "value": {"stringValue": "v"}},
+            {"key": "ar.tokens.total", "value": {"intValue": "42"}},
+            {"key": "ar.cost", "value": {"doubleValue": 0.01}},
+            {"key": "ar.flag", "value": {"boolValue": True}},
+            {"key": "ar.answer.suggestions", "value": {"arrayValue": {"values": [{"stringValue": "a"}, {"stringValue": "b"}]}}},
+        ],
+        "events": [{"name": "e", "attributes": []}],
+        "parentSpanId": "p", "status": {"code": "STATUS_CODE_OK"},
     })
     assert _span_to_otlp(full) == {
         "traceId": "t", "spanId": "s", "name": "n", "kind": "SPAN_KIND_INTERNAL",
         "startTimeUnixNano": "1", "endTimeUnixNano": "2",
-        "attributes": [{"key": "k", "value": {"stringValue": "v"}}],
-        "parentSpanId": "p", "events": [{"name": "e"}], "status": {"code": "STATUS_CODE_OK"},
+        "attributes": [
+            {"key": "ar.run_id", "value": {"stringValue": "v"}},
+            {"key": "ar.tokens.total", "value": {"intValue": "42"}},
+            {"key": "ar.cost", "value": {"doubleValue": 0.01}},
+            {"key": "ar.flag", "value": {"boolValue": True}},
+            {"key": "ar.answer.suggestions", "value": {"arrayValue": {"values": [{"stringValue": "a"}, {"stringValue": "b"}]}}},
+        ],
+        "events": [{"name": "e", "attributes": []}],
+        "parentSpanId": "p", "status": {"code": "STATUS_CODE_OK"},
     }
 
+    # Optional parentSpanId/status are omitted when absent; events is always a (possibly empty) list.
     minimal = _typed_span({
         "traceId": "t", "spanId": "s", "name": "root", "kind": "SPAN_KIND_SERVER",
-        "startTimeUnixNano": "1", "endTimeUnixNano": "2", "attributes": [],
+        "startTimeUnixNano": "1", "endTimeUnixNano": "2", "attributes": [], "events": [],
     })
     out = _span_to_otlp(minimal)
     assert "parentSpanId" not in out
-    assert "events" not in out
     assert "status" not in out
+    assert out["events"] == []
     assert out["attributes"] == []
 
 
