@@ -2452,33 +2452,9 @@ class Data:
         self, dataset_id: UUID
     ) -> List[TrackedDimensionAttribute]:
         """
-        Get currently-active starred values for the calling user on a dataset,
-        grouped by dimension.
-
-        Parameters
-        ----------
-        dataset_id : UUID
-            Dataset the starred values belong to.
-
-        Returns
-        -------
-        List[TrackedDimensionAttribute]
-            One entry per dimension the caller has stars in. Each entry exposes
-            ``dimension_attribute_id``, ``dimension_name``, and ``values``
-            (currently-active starred values for that dimension).
-
-        Examples
-        --------
-        >>> attrs = max.tracked_values.get_tracked_dimension_values(
-        ...     dataset_id=uuid.UUID("...")
-        ... )
-        >>> for attr in attrs:
-        ...     print(attr.dimension_name, attr.values)
+        DEPRECATED in v0.2.106
         """
-        query_args = {"datasetId": str(dataset_id)}
-        op = Operations.query.get_tracked_dimension_values
-        result = self._gql_client.submit(op, query_args)
-        return result.get_tracked_dimension_values
+        raise DeprecationWarning("Deprecated in v0.2.106")
 
     def get_all_tracked_dimension_values(
         self,
@@ -2489,48 +2465,6 @@ class Data:
         sort: Optional[list] = None,
     ) -> TrackedDimensionValuesPage:
         """
-        Get a flat, paginated view of tracked values. Admins see every user's
-        rows; non-admins see only their own.
-
-        Parameters
-        ----------
-        offset : int, default 0
-            Zero-based offset for paging.
-        limit : int, default 100
-            Max rows to return.
-        dataset_id : UUID, optional
-            If provided, scope results to a single dataset.
-        filters : dict, optional
-            AG-Grid filterModel JSON (per-column filters). Keys are column ids
-            (e.g. ``"userName"``, ``"value"``, ``"addedUtc"``); values follow
-            AG-Grid's text/set/date filter shapes.
-        sort : list, optional
-            AG-Grid sortModel JSON (list of ``{"colId": ..., "sort": "asc" |
-            "desc", "sortIndex": ...}`` entries).
-
-        Returns
-        -------
-        TrackedDimensionValuesPage
-            Object with ``total_count`` (count after filters but before paging)
-            and ``rows`` (the requested page of joined user/dataset rows).
-
-        Examples
-        --------
-        >>> page = max.tracked_values.get_all_tracked_dimension_values(
-        ...     dataset_id=uuid.UUID("..."),
-        ...     limit=500,
-        ... )
-        >>> print(page.total_count)
-        >>> for row in page.rows:
-        ...     print(row.user_name, row.dimension_name, row.value)
+        DEPRECATED in v0.2.106
         """
-        query_args: dict[str, Any] = {
-            "offset": offset,
-            "limit": limit,
-            "datasetId": str(dataset_id) if dataset_id is not None else None,
-            "filters": filters,
-            "sort": sort,
-        }
-        op = Operations.query.get_all_tracked_dimension_values
-        result = self._gql_client.submit(op, query_args)
-        return result.get_all_tracked_dimension_values
+        raise DeprecationWarning("Deprecated in v0.2.106")
