@@ -1250,9 +1250,12 @@ def query_current_user():
 def query_get_tracked_dimension_values():
     _op = sgqlc.operation.Operation(_schema_root.query_type, name='GetTrackedDimensionValues', variables=dict(datasetId=sgqlc.types.Arg(sgqlc.types.non_null(_schema.UUID))))
     _op_get_tracked_dimension_values = _op.get_tracked_dimension_values(dataset_id=sgqlc.types.Variable('datasetId'))
-    _op_get_tracked_dimension_values.dimension_attribute_id()
-    _op_get_tracked_dimension_values.dimension_name()
-    _op_get_tracked_dimension_values.values()
+    _op_get_tracked_dimension_values.watch_set_id()
+    _op_get_tracked_dimension_values.id()
+    _op_get_tracked_dimension_values_tuples = _op_get_tracked_dimension_values.tuples()
+    _op_get_tracked_dimension_values_tuples.dimension_attribute_id()
+    _op_get_tracked_dimension_values_tuples.dimension_name()
+    _op_get_tracked_dimension_values_tuples.value()
     return _op
 
 
@@ -1267,10 +1270,14 @@ def query_get_all_tracked_dimension_values():
     _op_get_all_tracked_dimension_values_rows.user_email()
     _op_get_all_tracked_dimension_values_rows.dataset_id()
     _op_get_all_tracked_dimension_values_rows.dataset_name()
-    _op_get_all_tracked_dimension_values_rows.dimension_attribute_id()
-    _op_get_all_tracked_dimension_values_rows.dimension_name()
-    _op_get_all_tracked_dimension_values_rows.value()
-    _op_get_all_tracked_dimension_values_rows.added_utc()
+    _op_get_all_tracked_dimension_values_rows_tuples = _op_get_all_tracked_dimension_values_rows.tuples()
+    _op_get_all_tracked_dimension_values_rows_tuples.dimension_attribute_id()
+    _op_get_all_tracked_dimension_values_rows_tuples.dimension_name()
+    _op_get_all_tracked_dimension_values_rows_tuples.value()
+    _op_get_all_tracked_dimension_values_rows.tuples_key()
+    _op_get_all_tracked_dimension_values_rows.is_tracked()
+    _op_get_all_tracked_dimension_values_rows.starred_utc()
+    _op_get_all_tracked_dimension_values_rows.unstarred_utc()
     _op_get_all_tracked_dimension_values_rows.last_modified_utc()
     return _op
 

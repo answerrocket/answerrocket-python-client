@@ -1,8 +1,12 @@
 query GetTrackedDimensionValues($datasetId: UUID!) {
   getTrackedDimensionValues(datasetId: $datasetId) {
-    dimensionAttributeId
-    dimensionName
-    values
+    watchSetId
+    id
+    tuples {
+      dimensionAttributeId
+      dimensionName
+      value
+    }
   }
 }
 
@@ -28,10 +32,15 @@ query GetAllTrackedDimensionValues(
       userEmail
       datasetId
       datasetName
-      dimensionAttributeId
-      dimensionName
-      value
-      addedUtc
+      tuples {
+        dimensionAttributeId
+        dimensionName
+        value
+      }
+      tuplesKey
+      isTracked
+      starredUtc
+      unstarredUtc
       lastModifiedUtc
     }
   }
