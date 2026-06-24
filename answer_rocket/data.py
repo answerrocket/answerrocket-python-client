@@ -19,7 +19,7 @@ from answer_rocket.graphql.schema import UUID as GQL_UUID, GenerateVisualization
     Metric, Dataset, DatasetDataInterval, Database, DatabaseSearchInput, PagingInput, PagedDatabases, \
     DatabaseTableSearchInput, PagedDatabaseTables, CreateDatasetFromTableResponse, DatasetSearchInput, PagedDatasets, \
     DatabaseKShotSearchInput, PagedDatabaseKShots, DatabaseKShot, CreateDatabaseKShotResponse, \
-    DatasetKShotSearchInput, PagedDatasetKShots, DatasetKShot, CreateDatasetKShotResponse, TrackedDimensionAttribute, TrackedDimensionValuesPage
+    DatasetKShotSearchInput, PagedDatasetKShots, DatasetKShot, CreateDatasetKShotResponse, TrackedItem, TrackedDimensionValuesPage
 from answer_rocket.graphql.sdk_operations import Operations
 from answer_rocket.types import MaxResult, RESULT_EXCEPTION_CODE
 
@@ -2450,7 +2450,7 @@ class Data:
     
     def get_tracked_dimension_values(
         self, dataset_id: UUID
-    ) -> List[TrackedDimensionAttribute]:
+    ) -> List[TrackedItem]:
         """
         DEPRECATED in v0.2.106
         """
@@ -2465,6 +2465,49 @@ class Data:
         sort: Optional[list] = None,
     ) -> TrackedDimensionValuesPage:
         """
-        DEPRECATED in v0.2.106
+        Retrieve a paged, filtered view of tracked dimension values (admin audit view).
+
+        Admins see rows across all users; non-admins see only their own. Both open
+        (tracked) and closed (unstarred) episodes are returned.
+
+        Parameters
+        ----------
+        offset : int
+            Row offset for pagination (default 0).
+        limit : int
+            Maximum number of rows to return (default 100).
+        dataset_id : UUID, optional
+            Scope the results to a single dataset. If None, spans all datasets.
+        filters : dict, optional
+            AG-Grid filter model keyed by column id. Supported columns:
+            `userName`, `datasetName`, `tuples`, `tuplesKey`, `status`
+            (text filters) and `starredUtc`, `unstarredUtc`, `lastModifiedUtc`
+            (date filters). Example:
+            ``{"status": {"filterType": "text", "type": "equals", "filter": "tracked"}}``.
+        sort : list, optional
+            AG-Grid sort model, e.g. ``[{"colId": "starredUtc", "sort": "desc"}]``.
+            Sorting is supported on `status`, `tuplesKey`, `starredUtc`,
+            `unstarredUtc`, and `lastModifiedUtc`.
+
+        Returns
+        -------
+        TrackedDimensionValuesPage
+            A page of `rows` plus the `totalCount` of matching rows.
+
+        Notes
+        -----
+        This method uses a GraphQL client to submit a query to fetch the data.
         """
-        raise DeprecationWarning("Deprecated in v0.2.106")
+        query_args = {
+            'offset': offset,
+            'limit': limit,
+            'datasetId': str(dataset_id) if dataset_id is not None else None,
+            'filters': filters,
+            'sort': sort,
+        }
+
+        op = Operations.query.get_all_tracked_dimension_values
+
+        result = self._gql_client.submit(op, query_args)
+
+        return result.get_all_tracked_dimension_values

@@ -2028,7 +2028,7 @@ class Query(sgqlc.types.Type):
         ('id', sgqlc.types.Arg(sgqlc.types.non_null(UUID), graphql_name='id', default=None)),
 ))
     )
-    get_tracked_dimension_values = sgqlc.types.Field(sgqlc.types.non_null(sgqlc.types.list_of(sgqlc.types.non_null('TrackedDimensionAttribute'))), graphql_name='getTrackedDimensionValues', args=sgqlc.types.ArgDict((
+    get_tracked_dimension_values = sgqlc.types.Field(sgqlc.types.non_null(sgqlc.types.list_of(sgqlc.types.non_null('TrackedItem'))), graphql_name='getTrackedDimensionValues', args=sgqlc.types.ArgDict((
         ('dataset_id', sgqlc.types.Arg(sgqlc.types.non_null(UUID), graphql_name='datasetId', default=None)),
 ))
     )
@@ -2165,27 +2165,28 @@ class SpanStatus(sgqlc.types.Type):
     code = sgqlc.types.Field(String, graphql_name='code')
 
 
-class TrackedDimensionAttribute(sgqlc.types.Type):
+class TrackedDimensionTuple(sgqlc.types.Type):
     __schema__ = schema
-    __field_names__ = ('dimension_attribute_id', 'dimension_name', 'values')
+    __field_names__ = ('dimension_attribute_id', 'dimension_name', 'value')
     dimension_attribute_id = sgqlc.types.Field(sgqlc.types.non_null(String), graphql_name='dimensionAttributeId')
     dimension_name = sgqlc.types.Field(sgqlc.types.non_null(String), graphql_name='dimensionName')
-    values = sgqlc.types.Field(sgqlc.types.non_null(sgqlc.types.list_of(sgqlc.types.non_null(String))), graphql_name='values')
+    value = sgqlc.types.Field(sgqlc.types.non_null(String), graphql_name='value')
 
 
 class TrackedDimensionValueRow(sgqlc.types.Type):
     __schema__ = schema
-    __field_names__ = ('watch_set_id', 'user_id', 'user_name', 'user_email', 'dataset_id', 'dataset_name', 'dimension_attribute_id', 'dimension_name', 'value', 'added_utc', 'last_modified_utc')
+    __field_names__ = ('watch_set_id', 'user_id', 'user_name', 'user_email', 'dataset_id', 'dataset_name', 'tuples', 'tuples_key', 'is_tracked', 'starred_utc', 'unstarred_utc', 'last_modified_utc')
     watch_set_id = sgqlc.types.Field(sgqlc.types.non_null(UUID), graphql_name='watchSetId')
     user_id = sgqlc.types.Field(sgqlc.types.non_null(UUID), graphql_name='userId')
     user_name = sgqlc.types.Field(String, graphql_name='userName')
     user_email = sgqlc.types.Field(String, graphql_name='userEmail')
     dataset_id = sgqlc.types.Field(sgqlc.types.non_null(UUID), graphql_name='datasetId')
     dataset_name = sgqlc.types.Field(String, graphql_name='datasetName')
-    dimension_attribute_id = sgqlc.types.Field(sgqlc.types.non_null(String), graphql_name='dimensionAttributeId')
-    dimension_name = sgqlc.types.Field(sgqlc.types.non_null(String), graphql_name='dimensionName')
-    value = sgqlc.types.Field(sgqlc.types.non_null(String), graphql_name='value')
-    added_utc = sgqlc.types.Field(DateTime, graphql_name='addedUtc')
+    tuples = sgqlc.types.Field(sgqlc.types.non_null(sgqlc.types.list_of(sgqlc.types.non_null(TrackedDimensionTuple))), graphql_name='tuples')
+    tuples_key = sgqlc.types.Field(sgqlc.types.non_null(String), graphql_name='tuplesKey')
+    is_tracked = sgqlc.types.Field(sgqlc.types.non_null(Boolean), graphql_name='isTracked')
+    starred_utc = sgqlc.types.Field(DateTime, graphql_name='starredUtc')
+    unstarred_utc = sgqlc.types.Field(DateTime, graphql_name='unstarredUtc')
     last_modified_utc = sgqlc.types.Field(DateTime, graphql_name='lastModifiedUtc')
 
 
@@ -2194,6 +2195,14 @@ class TrackedDimensionValuesPage(sgqlc.types.Type):
     __field_names__ = ('rows', 'total_count')
     rows = sgqlc.types.Field(sgqlc.types.non_null(sgqlc.types.list_of(sgqlc.types.non_null(TrackedDimensionValueRow))), graphql_name='rows')
     total_count = sgqlc.types.Field(sgqlc.types.non_null(Int), graphql_name='totalCount')
+
+
+class TrackedItem(sgqlc.types.Type):
+    __schema__ = schema
+    __field_names__ = ('watch_set_id', 'id', 'tuples')
+    watch_set_id = sgqlc.types.Field(sgqlc.types.non_null(UUID), graphql_name='watchSetId')
+    id = sgqlc.types.Field(sgqlc.types.non_null(String), graphql_name='id')
+    tuples = sgqlc.types.Field(sgqlc.types.non_null(sgqlc.types.list_of(sgqlc.types.non_null(TrackedDimensionTuple))), graphql_name='tuples')
 
 
 class UserGroup(sgqlc.types.Type):
