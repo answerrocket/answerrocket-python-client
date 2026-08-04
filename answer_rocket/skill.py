@@ -3,7 +3,7 @@ from dataclasses import dataclass
 from sgqlc.types import Arg, non_null, Variable
 from answer_rocket.client_config import ClientConfig
 from answer_rocket.graphql.client import GraphQlClient
-from answer_rocket.graphql.schema import JSON, String, UUID, Boolean, AsyncSkillStatusResponse
+from answer_rocket.graphql.schema import JSON, String, UUID, Boolean, AsyncSkillStatusResponse, RequestSource
 from answer_rocket.graphql.sdk_operations import Operations
 from answer_rocket.output import ChatReportOutput
 from answer_rocket.graphql.schema import UUID as GQL_UUID
@@ -63,7 +63,7 @@ class Skill:
         self._config = config
         self._gql_client = gql_client
 
-    def run(self, copilot_id: str, skill_name: str, parameters: dict | None = None, validate_parameters: bool = False) -> RunSkillResult:
+    def run(self, copilot_id: str, skill_name: str, parameters: dict | None = None, validate_parameters: bool = False, request_source: str = None) -> RunSkillResult:
         """
         Run a skill synchronously and return its full output.
 
@@ -93,6 +93,7 @@ class Skill:
             "skillName": skill_name,
             'parameters': parameters or {},
             'validateParameters': validate_parameters,
+            'requestSource': request_source,
         }
 
         preview_query_vars = {
@@ -100,6 +101,7 @@ class Skill:
             'skill_name': Arg(non_null(String)),
             'parameters': Arg(JSON),
             'validate_parameters': Arg(Boolean),
+            'request_source': Arg(RequestSource),
         }
 
         operation = self._gql_client.query(variables=preview_query_vars)
@@ -109,6 +111,7 @@ class Skill:
             skill_name=Variable('skill_name'),
             parameters=Variable('parameters'),
             validate_parameters=Variable('validate_parameters'),
+            request_source=Variable('request_source'),
         )
 
         try:
@@ -136,7 +139,7 @@ class Skill:
 
         return final_result
 
-    def run_async(self, copilot_id: str, skill_name: str, parameters: dict | None = None) -> AsyncSkillRunResult:
+    def run_async(self, copilot_id: str, skill_name: str, parameters: dict | None = None, request_source: str = None) -> AsyncSkillRunResult:
         """
         Start a skill execution asynchronously and return an execution ID immediately.
 
@@ -158,7 +161,8 @@ class Skill:
             async_query_args = {
                 "copilotId": UUID(copilot_id),
                 "skillName": skill_name,
-                'parameters': parameters or {}
+                'parameters': parameters or {},
+                'requestSource': request_source
             }
 
             op = Operations.mutation.run_copilot_skill_async
