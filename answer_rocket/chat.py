@@ -127,6 +127,41 @@ class Chat:
 
         return result.user_chat_threads
 
+    def get_all_threads(self, copilot_id: str, start_date: datetime = None, end_date: datetime = None):
+        """
+        Fetches threads for a copilot across ALL users. Admin / query-browser only.
+        :param copilot_id: the ID of the copilot to fetch threads for
+        :param start_date: the start date of the range to fetch threads for
+        :param end_date: the end date of the range to fetch threads for
+        :return: a list of chat threads across all users
+        """
+
+        def format_date(input_date: datetime):
+            if not input_date:
+                return None
+            return str(input_date.isoformat()).replace(" ", "T") + "Z"
+
+        get_all_threads_query_args = {
+            'copilotId': UUID(copilot_id),
+            'startDate': format_date(start_date),
+            'endDate': format_date(end_date),
+        }
+        get_all_threads_query_vars = {
+            'copilot_id': Arg(non_null(UUID)),
+            'start_date': Arg(DateTime),
+            'end_date': Arg(DateTime),
+        }
+        operation = self.gql_client.query(variables=get_all_threads_query_vars)
+        get_all_threads_query = operation.all_chat_threads(
+            copilot_id=Variable('copilot_id'),
+            start_date=Variable('start_date'),
+            end_date=Variable('end_date'),
+        )
+
+        result = self.gql_client.submit(operation, get_all_threads_query_args)
+
+        return result.all_chat_threads
+
     def get_entries(self, thread_id: str, offset: int = None, limit: int = None):
         """
         Fetches all entries for a given thread.
