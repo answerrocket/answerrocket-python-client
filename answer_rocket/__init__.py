@@ -5,7 +5,7 @@ __all__ = [
     'MetaDataFrame'
 ]
 
-__version__ = "0.2.107"
+__version__ = "0.2.108"
 
 from answer_rocket.client import AnswerRocketClient
 from answer_rocket.error import AnswerRocketClientError
