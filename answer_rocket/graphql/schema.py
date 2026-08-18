@@ -1175,12 +1175,13 @@ class MaxReportParamsAndValues(sgqlc.types.Type):
 
 class MaxReportResult(sgqlc.types.Type):
     __schema__ = schema
-    __field_names__ = ('title', 'report_name', 'parameters', 'custom_payload', 'content_blocks', 'gzipped_dataframes_and_metadata', 'final_message', 'preview')
+    __field_names__ = ('title', 'report_name', 'parameters', 'custom_payload', 'content_blocks', 'alt_visualizations', 'gzipped_dataframes_and_metadata', 'final_message', 'preview')
     title = sgqlc.types.Field(String, graphql_name='title')
     report_name = sgqlc.types.Field(sgqlc.types.non_null(String), graphql_name='reportName')
     parameters = sgqlc.types.Field(sgqlc.types.list_of(sgqlc.types.non_null(MaxReportParamsAndValues)), graphql_name='parameters')
     custom_payload = sgqlc.types.Field(JSON, graphql_name='customPayload')
     content_blocks = sgqlc.types.Field(sgqlc.types.list_of(sgqlc.types.non_null(MaxContentBlock)), graphql_name='contentBlocks')
+    alt_visualizations = sgqlc.types.Field(sgqlc.types.list_of(sgqlc.types.non_null(MaxContentBlock)), graphql_name='altVisualizations')
     gzipped_dataframes_and_metadata = sgqlc.types.Field(sgqlc.types.list_of(JSON), graphql_name='gzippedDataframesAndMetadata')
     final_message = sgqlc.types.Field(String, graphql_name='finalMessage')
     preview = sgqlc.types.Field(String, graphql_name='preview')
