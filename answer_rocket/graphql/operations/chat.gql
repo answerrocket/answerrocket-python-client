@@ -80,6 +80,10 @@ fragment ChatResultFragment on MaxChatResult {
       title
       layoutJson
     }
+    altVisualizations {
+      title
+      layoutJson
+    }
     preview
     finalMessage
   }
