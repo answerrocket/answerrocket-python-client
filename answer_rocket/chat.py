@@ -31,7 +31,7 @@ class Chat:
         self.gql_client = gql_client
         self._config = config
 
-    def ask_question(self, copilot_id: str, question: str, thread_id: str = None, skip_report_cache: bool = False, dry_run_type: str = None, model_overrides: dict = None, indicated_skills: list[str] = None, history: list[dict] = None, question_type: QuestionType = None, thread_type: ThreadType = None, pipeline_type: PipelineType = None) -> MaxChatEntry:
+    def ask_question(self, copilot_id: str, question: str, thread_id: str = None, skip_report_cache: bool = False, dry_run_type: str = None, model_overrides: dict = None, indicated_skills: list[str] = None, history: list[dict] = None, question_type: QuestionType = None, thread_type: ThreadType = None, pipeline_type: PipelineType = None, request_source: str = None) -> MaxChatEntry:
         """
         Calls the Max chat pipeline to answer a natural language question and receive analysis and insights
         in response.
@@ -65,7 +65,8 @@ class Chat:
             'history': history if history else None,
             'questionType': question_type,
             'threadType': thread_type,
-            'pipelineType': pipeline_type
+            'pipelineType': pipeline_type,
+            'requestSource': request_source
         }
 
         op = Operations.mutation.ask_chat_question
@@ -299,7 +300,7 @@ class Chat:
         result = self.gql_client.submit(op, create_chat_thread_args)
         return result.create_chat_thread
 
-    def queue_chat_question(self, question: str, thread_id: str, skip_cache: bool = False, model_overrides: dict = None, indicated_skills: list[str] = None, history: list[dict] = None, pipeline_type: PipelineType = None) -> MaxChatEntry:
+    def queue_chat_question(self, question: str, thread_id: str, skip_cache: bool = False, model_overrides: dict = None, indicated_skills: list[str] = None, history: list[dict] = None, pipeline_type: PipelineType = None, request_source: str = None) -> MaxChatEntry:
         """
         This queues up a question for processing. Unlike ask_question, this will not wait for the processing to
         complete. It will immediately return a shell entry with an id you can use to query for the results.
@@ -325,7 +326,8 @@ class Chat:
             'modelOverrides': override_list if override_list else None,
             'indicatedSkills': indicated_skills,
             'history': history if history else None,
-            'pipelineType': pipeline_type
+            'pipelineType': pipeline_type,
+            'requestSource': request_source
         }
 
         op = Operations.mutation.queue_chat_question
